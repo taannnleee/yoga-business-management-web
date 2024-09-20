@@ -18,10 +18,11 @@ import java.util.List;
 public class Group extends AbstractEntity <Long>{
     private String name;
     private String description;
-
-    @OneToOne
-    private Role role;
+    private int kind;
 
     @OneToMany(mappedBy = "group")
     private List<GroupHasUser> groupHasUsers;
+
+    @OneToMany(mappedBy = "group")
+    private List<GroupHasPermission> groupHasPermissions;
 }

@@ -27,4 +27,14 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @Column(name = "status")
     private String status;
 
+    @OneToOne(mappedBy = "product")
+    private CartItem cartItem;
+
+    @ManyToOne()
+    @JoinColumn(name = "wishlist_id")
+    private Wishlist wishlist;
+
+    @OneToOne
+    @JoinColumn(name = "promotion_id")
+    private Promotion promotion;
 }

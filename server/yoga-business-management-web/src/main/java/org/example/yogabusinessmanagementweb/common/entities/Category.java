@@ -28,7 +28,7 @@ public class Category extends AbstractEntity<Long> implements Serializable  {
     private String categoryName;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
+//    @JsonIgnore
     private List<Product> listproducts;
 
 

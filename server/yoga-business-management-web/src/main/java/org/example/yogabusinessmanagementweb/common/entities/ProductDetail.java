@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "ProductDetail")
@@ -22,7 +23,7 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
     private String name;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String imagePath;
 
     @Column(name = "decription")
     private String decription;
@@ -47,7 +48,7 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
 
 
     @OneToOne(mappedBy = "productDetail")
-    @JsonIgnore
+//    @JsonIgnore
     private Product product;
 
 

@@ -18,7 +18,8 @@ import java.util.List;
 public class Permission extends AbstractEntity<Integer> {
     private String name;
     private String description;
+    private String pCode;
 
     @OneToMany(mappedBy = "permission")
-    private List<RoleHasPermission> roleHasPermissions;
+    private List<GroupHasPermission> groupHasPermissions;
 }

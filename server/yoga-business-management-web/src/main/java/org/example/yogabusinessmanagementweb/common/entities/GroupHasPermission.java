@@ -7,19 +7,18 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
-@Table(name = "UserHasRole")
+@Table(name = "GroupHasPermission")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class UserHasRole  extends AbstractEntity<Long>{
+public class GroupHasPermission extends AbstractEntity<Long> {
     @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
+    @JoinColumn(name = "permission_id")
+    private Permission permission;
 }

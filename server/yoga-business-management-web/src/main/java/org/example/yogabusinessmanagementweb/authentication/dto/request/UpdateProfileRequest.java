@@ -1,18 +1,22 @@
 package org.example.yogabusinessmanagementweb.authentication.dto.request;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 
-@Getter
-@Setter
+@Data
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class UpdateProfileRequest implements Serializable {
-    private String fullname;
-    private String username;
-    private String email;
-    private String phone;
-    private String street;
-    private String city;
-    private String state;
+    String fullname;
+    String username;
+    String email;
+    String phone;
+    String street;
+    String city;
+    String state;
 }

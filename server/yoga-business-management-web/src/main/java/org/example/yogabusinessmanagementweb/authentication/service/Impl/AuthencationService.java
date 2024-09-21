@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.LoginRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.ResetPasswordDTO;
@@ -30,14 +31,15 @@ import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthencationService {
-    private final AuthenticationManager authenticationManager;
-    private  final UserRepository userRepository;
-    private  final JwtService jwtService;
-    private final TokenService tokenService;
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    AuthenticationManager authenticationManager;
+    UserRepository userRepository;
+    JwtService jwtService;
+    TokenService tokenService;
+    UserService userService;
+    PasswordEncoder passwordEncoder;
+    EmailService emailService;
 
     public TokenRespone authentication(LoginRequest loginRequest){
         try {

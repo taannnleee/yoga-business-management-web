@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 @Builder
+
 public class TokenRespone implements Serializable {
     private String accesstoken;
     private String refreshtoken;

@@ -4,6 +4,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "GroupHasUser")
@@ -12,14 +13,14 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class GroupHasUser extends AbstractEntity<Long>{
     @ManyToOne
     @JoinColumn(name = "group_id")
-    private Group group;
+    Group group;
 
     @ManyToOne
-    @JoinColumn(name = "user_idd")
-    private User user;
+    @JoinColumn(name = "user_id")
+    User user;
 
 }

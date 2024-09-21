@@ -5,6 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "GroupHasPermission")
@@ -13,12 +14,13 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class GroupHasPermission extends AbstractEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "group_id")
-    private Group group;
+    Group group;
 
     @ManyToOne
     @JoinColumn(name = "permission_id")
-    private Permission permission;
+    Permission permission;
 }

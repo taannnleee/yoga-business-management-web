@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,28 +14,29 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 
 public class Product extends AbstractEntity<Long> implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_detail_id")
-    private ProductDetail productDetail;
+    ProductDetail productDetail;
 
     @ManyToOne()
     @JoinColumn(name = "category_id")
-    private Category category;
+    Category category;
 
     @Column(name = "status")
-    private String status;
+    String status;
 
     @OneToOne(mappedBy = "product")
-    private CartItem cartItem;
+    CartItem cartItem;
 
     @ManyToOne()
     @JoinColumn(name = "wishlist_id")
-    private Wishlist wishlist;
+    Wishlist wishlist;
 
     @OneToOne
     @JoinColumn(name = "promotion_id")
-    private Promotion promotion;
+    Promotion promotion;
 }

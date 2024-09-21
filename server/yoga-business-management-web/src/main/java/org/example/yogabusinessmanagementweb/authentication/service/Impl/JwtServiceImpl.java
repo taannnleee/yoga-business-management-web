@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.service.JwtService;
 import org.example.yogabusinessmanagementweb.common.Enum.ETokenType;
 import org.example.yogabusinessmanagementweb.common.entities.User;
@@ -22,18 +24,20 @@ import java.util.function.Function;
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class JwtServiceImpl implements JwtService {
     @Value("${jwt.expiryTime}")
-    private String expirytime  ;
+    String expirytime  ;
 
     @Value("${jwt.secretKey}")
-    private String secretKey;
+    String secretKey;
 
     @Value("${jwt.refreshkey}")
-    private String refreshkey;
+    String refreshkey;
 
     @Value("${jwt.resetKey}")
-    private String resetKey;
+    String resetKey;
 
     @Override
     public String generateToken(User user){

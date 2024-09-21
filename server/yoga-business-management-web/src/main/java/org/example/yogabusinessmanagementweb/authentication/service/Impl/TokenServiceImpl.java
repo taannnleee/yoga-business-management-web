@@ -1,6 +1,7 @@
 package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.repositories.TokenRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.TokenService;
 import org.example.yogabusinessmanagementweb.common.entities.Token;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+
 @RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class TokenServiceImpl implements TokenService {
-    private final TokenRepository tokenRepository;
+    TokenRepository tokenRepository;
 
     @Override
     public Long save(Token token) {

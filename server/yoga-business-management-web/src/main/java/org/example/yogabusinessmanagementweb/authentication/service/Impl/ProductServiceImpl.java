@@ -1,5 +1,7 @@
 package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.repositories.ProductRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
@@ -10,9 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ProductServiceImpl implements ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
     @Override
     public List<Product> getAllProduct() {
         return productRepository.findAll();

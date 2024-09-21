@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,40 +17,40 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProductDetail extends AbstractEntity<Long> implements Serializable {
 
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Column(name = "image_url")
-    private String imagePath;
+    String imagePath;
 
     @Column(name = "decription")
-    private String decription;
+    String decription;
 
     @Column(name = "price")
-    private BigDecimal price;
+    BigDecimal price;
 
     @Column(name = "material")
-    private String material;
+    String material;
 
     @Column(name = "dimensions")
-    private String dimensions;
+    String dimensions;
 
     @Column(name = "thickness")
-    private String thickness;
+    String thickness;
 
     @Column(name = "weight")
-    private String weight;
+    String weight;
 
     @Column(name = "color")
-    private String color;
+    String color;
 
 
     @OneToOne(mappedBy = "productDetail")
 //    @JsonIgnore
-    private Product product;
+    Product product;
 
 
 }

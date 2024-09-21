@@ -4,6 +4,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,21 +16,21 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Category extends AbstractEntity<Long> implements Serializable  {
 
     @Column(name = "url_image")
-    private String urlImage;
+    String urlImage;
 
     @Column(name = "status")
-    private String status;
+    String status;
 
     @Column(name = "category_name")
-    private String categoryName;
+    String categoryName;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JsonIgnore
-    private List<Product> listproducts;
+    List<Product> listproducts;
 
 
 }

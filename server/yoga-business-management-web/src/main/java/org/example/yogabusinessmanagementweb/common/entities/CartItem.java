@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "CartItem")
@@ -10,16 +11,17 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CartItem extends AbstractEntity<Long>{
-    private int totalItem;
-    private Long totalPrice;
+    int totalItem;
+    Long totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
-    private Cart cart;
+    Cart cart;
 
     @OneToOne
     @JoinColumn(name = "cartitem_id")
-    private Product product;
+    Product product;
 
 }

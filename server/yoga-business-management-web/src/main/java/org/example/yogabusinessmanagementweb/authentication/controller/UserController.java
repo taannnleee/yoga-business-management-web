@@ -1,6 +1,7 @@
 package org.example.yogabusinessmanagementweb.authentication.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ProfileResponse;
@@ -15,13 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/user")
 @Slf4j
 public class UserController {
-    private final UserService userService;
-    private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final AuthencationService authencationService;
+    UserService userService;
+    UserRepository userRepository;
+    EmailService emailService;
+    AuthencationService authencationService;
 
     @GetMapping("/getProfile/{id}")
     public ResponseData<?> getProfile(@PathVariable String id){

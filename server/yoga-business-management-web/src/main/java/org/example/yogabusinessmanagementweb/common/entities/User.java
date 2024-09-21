@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,31 +20,45 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class User extends AbstractEntity<Long>  implements UserDetails, Serializable {
-    private String username;
-    private String fullname;
-    private String phone;
-    private String email;
-    private String password;
-    private Date dateOfBirth;
-    private int gender;
-    private boolean status;
-    private int kind;
-    private String imagePath;
+    String username;
+    String fullname;
+    String phone;
+    String email;
+    String password;
+    Date dateOfBirth;
+    int gender;
+    boolean status;
+    int kind;
+    String imagePath;
 
     @OneToMany(mappedBy = "user")
-    private List<GroupHasUser> groupHasUsers;
+    List<GroupHasUser> groupHasUsers;
 
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Address> addresses ;
+    List<Address> addresses ;
 
     @OneToOne(mappedBy = "user")
-    private Cart cart;
+    Cart cart;
 
     @OneToOne(mappedBy = "user")
-    private Wishlist wishlist;
+    Wishlist wishlist;
+
+    @OneToMany(mappedBy = "user")
+    List<Order> order;
+
+    @OneToOne()
+    @JoinColumn(name = "token_id")
+    Token token;
+
+    @OneToOne()
+    @JoinColumn(name = "healthyinformation_id")
+    HealthyInformation healthyinformation;
+
+    @OneToMany(mappedBy = "user")
+    List<UserHasYogaWorkout> yogaWorkouts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

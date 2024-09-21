@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -15,11 +16,12 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Permission extends AbstractEntity<Integer> {
-    private String name;
-    private String description;
-    private String pCode;
+    String name;
+    String description;
+    String pCode;
 
     @OneToMany(mappedBy = "permission")
-    private List<GroupHasPermission> groupHasPermissions;
+    List<GroupHasPermission> groupHasPermissions;
 }

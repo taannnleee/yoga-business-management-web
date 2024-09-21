@@ -4,24 +4,25 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "Cart")
+@Table(name = "UserHasYogaWorkout")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class Cart extends AbstractEntity<Long>{
-    int totalItem;
-    Long totalPrice;
+public class UserHasYogaWorkout extends AbstractEntity<Long>  implements Serializable {
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "cart")
-    List<CartItem> cartItems;
+    @ManyToOne
+    @JoinColumn(name = "yogaworkout_id")
+    YogaWorkout yogaWorkout;
+
+    Boolean isDone;
 }

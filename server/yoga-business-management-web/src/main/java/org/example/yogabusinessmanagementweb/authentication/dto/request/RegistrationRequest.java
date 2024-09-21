@@ -1,21 +1,25 @@
 package org.example.yogabusinessmanagementweb.authentication.dto.request;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class RegistrationRequest {
-    private String username;
-    private String fullname;
-    private String email;
-    private String phone;
-    private String password;
-    private String confirmpassword;
-    private Date dateOfBirth;
-    private String gender;
-    private String status;
+    String username;
+    String fullname;
+    String email;
+    String phone;
+    String password;
+    String confirmpassword;
+    Date dateOfBirth;
+    String gender;
+    String status;
 
 }

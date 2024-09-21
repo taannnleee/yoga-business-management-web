@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,12 +15,13 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Wishlist  extends AbstractEntity<Long> implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
 
     @OneToMany(mappedBy = "wishlist")
-    private List<Product> productList;
+    List<Product> productList;
 }

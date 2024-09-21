@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -10,18 +11,24 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "Promotion")
+@Table(name = "Rating")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class Promotion  extends AbstractEntity<Long> implements Serializable {
-    Date endDate;
-    Date startDate;
-    int percent;
+public class Rating extends AbstractEntity<Long> implements Serializable {
+    @Column(name = "rate_point")
+    int ratePoint;
 
-    @OneToOne(mappedBy = "promotion")
-    Product product;
+    @Column(name = "content")
+    String content;
+
+    @Column(name = "review_date")
+    Date reviewDate;
+
+    @OneToOne(mappedBy = "rating")
+    OrderItem orderItem;
+
 }

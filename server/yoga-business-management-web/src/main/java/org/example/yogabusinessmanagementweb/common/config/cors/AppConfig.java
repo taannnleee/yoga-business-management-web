@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.common.config.cors;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,10 +26,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AppConfig {
 
-    private final UserService userService;
-    private final PreFilter preFilter;
+    UserService userService;
+    PreFilter preFilter;
 
     private String[] WHITE_LIST = {"/api/auth/**"};
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};

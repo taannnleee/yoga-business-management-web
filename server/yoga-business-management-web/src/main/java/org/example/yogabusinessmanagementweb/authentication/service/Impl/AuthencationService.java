@@ -120,7 +120,7 @@ public class AuthencationService {
         return "delete!";
     }
 
-    public String forgotPassword(String email) {
+    public String sendOTP(String email) {
         // Check if email exists
         Optional<User> userOptional = userService.findByEmail(email);
         if (userOptional.isEmpty()) {
@@ -147,7 +147,7 @@ public class AuthencationService {
             token = new Token();
             token.setUsername(user.getUsername());
         }
-        token.setOTP(OTP);  // Overwrite or set new OTP
+        token.setOTP(OTP);
         tokenService.save(token);
 
         // Return success response

@@ -29,4 +29,9 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+
+    @Override
+    public boolean addProduct() {
+
+    }
 }

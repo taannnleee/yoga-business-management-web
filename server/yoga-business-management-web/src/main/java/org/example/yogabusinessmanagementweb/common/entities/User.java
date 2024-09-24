@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "User")
@@ -23,39 +24,31 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class User extends AbstractEntity<Long>  implements UserDetails, Serializable {
     String username;
-    String fullname;
-    String phone;
-    String email;
     String password;
+    String phone;
+    String gender;
+    String email;
+
+    String fullname;
+
     Date dateOfBirth;
-    int gender;
-    boolean status;
-    int kind;
     String imagePath;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    Set<Address> addresses;
 
     @OneToMany(mappedBy = "user")
     List<GroupHasUser> groupHasUsers;
+    int kind;
+    boolean status;
 
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Address> addresses ;
-
-    @OneToOne(mappedBy = "user")
-    Cart cart;
-
-    @OneToOne(mappedBy = "user")
+    @OneToOne()
     Wishlist wishlist;
 
-    @OneToMany(mappedBy = "user")
-    List<Order> order;
-
-    @OneToOne(mappedBy = "user")
+    @OneToOne()
     Token token;
 
-    @OneToOne(mappedBy = "user")
-    HealthyInformation healthyinformation;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany()
     List<UserHasYogaWorkout> yogaWorkouts;
 
     @Override

@@ -26,9 +26,6 @@ public class Token extends AbstractEntity<Long> implements Serializable {
     String refreshToken;
     String OTP;
 
-    @OneToOne()
-    @JoinColumn(name = "user_id")
-    User user;
 
 
 }

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus(false);
 
         address.setUser(user);
-        user.setAddresses(arrayList);
+        user.setAddresses((Set<Address>) arrayList);
         userRepository.save(user);
         authencationService.sendOTP(registrationRequest.getEmail());
 
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService {
         ProfileResponse profileResponse = Mappers.convertToDto(user, ProfileResponse.class);
         profileResponse.setCity(address.getCity());
         profileResponse.setStreet(address.getStreet());
-        profileResponse.setState(address.getState());
+        profileResponse.setState(address.getDistrict());
         return profileResponse;
     }
 
@@ -129,7 +130,7 @@ public class UserServiceImpl implements UserService {
         Address address = addressService.findAddressByUser(user);
         address.setCity(updateProfileRequest.getCity());
         address.setStreet(updateProfileRequest.getStreet());
-        address.setState(updateProfileRequest.getState());
+        address.setDistrict(updateProfileRequest.getState());
 
         // Lưu lại thông tin đã được cập nhật
         userRepository.save(user);

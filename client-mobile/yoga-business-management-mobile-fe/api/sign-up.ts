@@ -15,7 +15,6 @@ export const signUp = async (form: {
       },
       body: JSON.stringify(form),
     });
-
     // Check if the response is ok (status code in the range 200-299)
     if (response.ok) {
       const result = await response.json();

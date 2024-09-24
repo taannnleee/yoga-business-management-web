@@ -22,6 +22,6 @@ public class Promotion  extends AbstractEntity<Long> implements Serializable {
     Date startDate;
     int percent;
 
-    @OneToOne(mappedBy = "promotion")
+    @OneToOne()
     Product product;
 }

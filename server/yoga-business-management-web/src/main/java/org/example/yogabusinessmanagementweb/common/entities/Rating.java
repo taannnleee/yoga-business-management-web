@@ -25,10 +25,4 @@ public class Rating extends AbstractEntity<Long> implements Serializable {
     @Column(name = "content")
     String content;
 
-    @Column(name = "review_date")
-    Date reviewDate;
-
-    @OneToOne(mappedBy = "rating")
-    OrderItem orderItem;
-
 }

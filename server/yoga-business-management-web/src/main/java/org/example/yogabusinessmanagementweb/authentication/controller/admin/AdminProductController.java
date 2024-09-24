@@ -35,6 +35,8 @@ public class AdminProductController {
         }
     }
 
+
+    // hàm xóa thẳng bản ghi(thường ít ai dùng)
     @PostMapping("/delete-product/{productId}")
     public ResponseData<?> deleteProduct(@PathVariable String productId) {
         try{
@@ -44,5 +46,4 @@ public class AdminProductController {
             return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());
         }
     }
-
 }

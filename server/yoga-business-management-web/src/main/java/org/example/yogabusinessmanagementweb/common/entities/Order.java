@@ -44,4 +44,7 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "address_id")
     Address address;
 
+    @OneToOne(mappedBy = "order")
+    Payment payment;
+
 }

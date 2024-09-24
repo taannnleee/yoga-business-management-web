@@ -22,7 +22,7 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "product_detail_id")
     ProductDetail productDetail;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     Category category;
 

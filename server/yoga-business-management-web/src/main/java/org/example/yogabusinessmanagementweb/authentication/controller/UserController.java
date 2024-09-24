@@ -25,6 +25,11 @@ public class UserController {
     EmailService emailService;
     AuthencationService authencationService;
 
+    @GetMapping("/getAllUser")
+    public ResponseData<?> getAllUser() {
+        return new ResponseData<>(HttpStatus.OK.value(), "Get all user success", userService.getAllUser());
+    }
+
     @GetMapping("/getProfile/{id}")
     public ResponseData<?> getProfile(@PathVariable String id){
         try{

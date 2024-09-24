@@ -21,7 +21,7 @@ public class CartItem extends AbstractEntity<Long>{
     Cart cart;
 
     @OneToOne
-    @JoinColumn(name = "cartitem_id")
+    @JoinColumn(name = "product_id")
     Product product;
 
 }

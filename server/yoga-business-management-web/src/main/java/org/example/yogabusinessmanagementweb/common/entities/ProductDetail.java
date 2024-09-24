@@ -26,8 +26,8 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
     @Column(name = "image_url")
     String imagePath;
 
-    @Column(name = "decription")
-    String decription;
+    @Column(name = "description")
+    String description;
 
     @Column(name = "price")
     BigDecimal price;

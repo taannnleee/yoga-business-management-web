@@ -49,12 +49,10 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @OneToMany(mappedBy = "user")
     List<Order> order;
 
-    @OneToOne()
-    @JoinColumn(name = "token_id")
+    @OneToOne(mappedBy = "user")
     Token token;
 
-    @OneToOne()
-    @JoinColumn(name = "healthyinformation_id")
+    @OneToOne(mappedBy = "user")
     HealthyInformation healthyinformation;
 
     @OneToMany(mappedBy = "user")

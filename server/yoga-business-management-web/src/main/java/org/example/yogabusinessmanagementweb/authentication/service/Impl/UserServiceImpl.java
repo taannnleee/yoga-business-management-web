@@ -5,6 +5,7 @@ import org.example.yogabusinessmanagementweb.authentication.dto.request.LoginReq
 import org.example.yogabusinessmanagementweb.authentication.dto.request.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ProfileResponse;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.RegistrationResponse;
 import org.example.yogabusinessmanagementweb.authentication.exception.InvalidPasswordException;
 import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RegistrationRequest registerUser(RegistrationRequest registrationRequest) {
+    public RegistrationResponse registerUser(RegistrationRequest registrationRequest) {
         ArrayList arrayList = new ArrayList();
         Address address = new Address();
         arrayList.add(address);
@@ -72,10 +73,10 @@ public class UserServiceImpl implements UserService {
         address.setUser(user);
         user.setAddresses(arrayList);
         userRepository.save(user);
-        authencationService.forgotPassword(registrationRequest.getEmail());
+        authencationService.sendOTP(registrationRequest.getEmail());
 
-        RegistrationRequest registrationRequest1 = Mappers.convertToDto(user, RegistrationRequest.class);
-        return registrationRequest1;
+        RegistrationResponse registrationResponse = Mappers.convertToDto(user, RegistrationResponse.class);
+        return registrationResponse;
     }
 
     @Override
@@ -145,6 +146,20 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
+    public boolean checkUserNotExist(RegistrationRequest registrationRequest) {
+        // Kiểm tra xem mật khẩu và xác nhận mật khẩu có khớp không
+        if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmpassword())) {
+            throw new InvalidPasswordException("Passwords do not match");
+        }
+
+        // Kiểm tra xem username, phone, hoặc email có tồn tại hay không
+        boolean userExists = findByUserName(registrationRequest.getUsername()).isPresent() ||
+                findByPhone(registrationRequest.getPhone()).isPresent() ||
+                findByEmail(registrationRequest.getEmail()).isPresent();
+
+        return !userExists;
+    }
 
     @Override
     public User checkUser(RegistrationRequest registrationRequest) {
@@ -169,7 +184,6 @@ public class UserServiceImpl implements UserService {
         if (optionalUserByEmail.isPresent()) {
             return optionalUserByEmail.get();
         }
-
         throw new UserNotFoundException("Username, phone or email number not found.");
     }
 

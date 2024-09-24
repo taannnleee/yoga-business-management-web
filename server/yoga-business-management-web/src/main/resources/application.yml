@@ -1,0 +1,36 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: yoga-business-management
+  datasource:
+    url: jdbc:mysql://localhost:3306/yoga-business-management?createDatabaseIfNotExist=true
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+openapi:
+  service:
+    api-docs: api-service
+    server: http://localhost:8080
+    title: API Service
+    version: 1.0.0
+
+jwt:
+  expiryTime: 100*60*60*24
+  secretKey: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+  refreshkey: d6cc0a088c07683c65cd266860cab8d94b3a1937b17420d9da30ca299c09fb77
+  resetKey: 01be30bb4a27765c37462e6bf2a0bf8b6c109f9be9d81e6fd56455db1a736a43
+#server:
+#  port: 8089
+#spring:
+#  application:
+#    name: yoga-business-management
+#  profiles:
+#    active: @spring.profiles.active@

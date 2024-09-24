@@ -1,10 +1,7 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +26,8 @@ public class Token extends AbstractEntity<Long> implements Serializable {
     String refreshToken;
     String OTP;
 
-    @OneToOne(mappedBy = "token")
+    @OneToOne()
+    @JoinColumn(name = "user_id")
     User user;
 
 

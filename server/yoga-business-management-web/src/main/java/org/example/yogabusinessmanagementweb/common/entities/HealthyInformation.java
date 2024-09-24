@@ -38,7 +38,8 @@ public class HealthyInformation extends AbstractEntity<Long>  implements Seriali
     @Column(name = "meal_per_day")
     int mealPerDay;
 
-    @OneToOne(mappedBy = "healthyinformation")
+    @OneToOne()
+    @JoinColumn(name = "user_id")
     User user;
 
     @OneToOne(mappedBy = "healthyInformation")

@@ -50,29 +50,20 @@ declare interface FoodProps {
   vegetarian: string; // Assuming this is a string representation of a boolean
 }
 
-declare interface RestaurantProps {
+declare interface ProductProps {
   id: string;
-  name: string;
-  description: string;
-  cuisineType: string;
-  address: {
-    id: number;
-    streetAddress: string;
-    city: string;
-    stateProvince: string;
-    postalCode: string;
-    country: string;
+  title: string;
+  averageRating: string;
+  productDetail: {
+    name: string;
+    imagePath: string;
+    color: string;
+    size: string;
+    price: string;
+    code: string;
+    brand: string;
+    description: string;
   };
-  contactInformation: {
-    email: string;
-    mobile: string;
-    twitter?: string; // Optional properties
-    instagram?: string; // Optional properties
-  };
-  openingHours: string;
-  images: string[]; // Array of image URLs
-  registrationDate: string; // ISO Date string
-  open: boolean; // Boolean to indicate if the restaurant is open
 }
 
 declare interface Ride {
@@ -119,6 +110,10 @@ declare interface GoogleInputProps {
     longitude: number;
     address: string;
   }) => void;
+  keyword: string;
+  setKeyword: (value: string) => void;
+  setPage: (value: number) => void;
+  setProducts: (products: any[]) => void;
 }
 
 declare interface InputFieldProps extends TextInputProps {

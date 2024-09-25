@@ -15,4 +15,5 @@ public interface ProductService {
     boolean addProduct(AddProductRequest addProductRequest);
 
     boolean delete(String productId);
+    Page<Product> searchProducts(String keyword, Pageable pageable);
 }

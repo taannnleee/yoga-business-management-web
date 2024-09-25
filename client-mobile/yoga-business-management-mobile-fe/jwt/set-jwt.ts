@@ -5,7 +5,6 @@ export const saveJwtToken = async (
   refreshToken: string,
 ) => {
   try {
-    console.log("asdasdasd" + accessToken, refreshToken);
     await SecureStore.setItemAsync("accessToken", accessToken);
     await SecureStore.setItemAsync("refreshToken", refreshToken);
   } catch (error) {

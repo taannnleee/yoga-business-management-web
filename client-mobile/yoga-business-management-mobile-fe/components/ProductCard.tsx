@@ -1,21 +1,11 @@
-import { RestaurantProps, Ride } from "@/types/type";
+import { ProductProps } from "@/types/type";
 import { Image, Text, View } from "react-native";
 import { icons } from "@/constants";
 
-const RestaurantCard = ({
-  restaurant: {
-    contactInformation,
-    images,
-    description,
-    name,
-    open,
-    openingHours,
-    registrationDate,
-    cuisineType,
-    address,
-  },
+const ProductCard = ({
+  product: { id, title, averageRating, productDetail },
 }: {
-  restaurant: RestaurantProps;
+  product: ProductProps;
 }) => {
   return (
     <View
@@ -27,19 +17,18 @@ const RestaurantCard = ({
         <View className={"flex flex-row items-center justify-between"}>
           <Image
             className={"w-[80px] h-[90px] rounded-lg"}
-            source={{ uri: images[0] }}
+            source={{ uri: productDetail.imagePath }}
           />
           <View className={"flex flex-col mx-5 gap-y-5 flex-1"}>
             <View className={"flex flex-row items-center gap-x-2"}>
-              <Image source={icons.restaurant} className={"w-5 h-5"} />
               <Text numberOfLines={1} className={"text-md font-JakartaMedium"}>
-                {name}
+                {title}
               </Text>
             </View>
             <View className={"flex flex-row items-center gap-x-2"}>
-              <Image source={icons.point} className={"w-5 h-5"} />
+              <Image source={icons.star} className={"w-5 h-5"} />
               <Text numberOfLines={1} className={"text-md font-JakartaMedium"}>
-                {address.streetAddress} , {address.city}
+                {averageRating}
               </Text>
             </View>
           </View>
@@ -53,27 +42,27 @@ const RestaurantCard = ({
             className={"flex flex-row items-center w-full justify-between mb-5"}
           >
             <Text className={"text-md font-JakartaMedium text-gray-500 "}>
-              Thời gian
+              Giá
             </Text>
             <Text className={"text-md font-JakartaMedium text-gray-500 "}>
-              {openingHours}
+              đ{productDetail.price}
             </Text>
           </View>
 
-          <View
-            className={"flex flex-row items-center w-full justify-between mb-5"}
-          >
-            <Text className={"text-md font-JakartaMedium text-gray-500 "}>
-              Loại món ăn
-            </Text>
-            <Text className={"text-md font-JakartaMedium text-gray-500 "}>
-              {cuisineType}
-            </Text>
-          </View>
+          {/*<View*/}
+          {/*  className={"flex flex-row items-center w-full justify-between mb-5"}*/}
+          {/*>*/}
+          {/*  <Text className={"text-md font-JakartaMedium text-gray-500 "}>*/}
+          {/*    Loại món ăn*/}
+          {/*  </Text>*/}
+          {/*  <Text className={"text-md font-JakartaMedium text-gray-500 "}>*/}
+          {/*    {cuisineType}*/}
+          {/*  </Text>*/}
+          {/*</View>*/}
         </View>
       </View>
     </View>
   );
 };
 
-export default RestaurantCard;
+export default ProductCard;

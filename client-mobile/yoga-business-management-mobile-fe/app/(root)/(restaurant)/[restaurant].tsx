@@ -1,10 +1,10 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
 import { FlatList, Text, View, Image, ActivityIndicator } from "react-native";
-import RestaurantCard from "@/components/RestaurantCard";
+import ProductCard from "@/components/ProductCard";
 import TextInputSearch from "@/components/TextInputSearch";
 import { icons, images } from "@/constants";
-import { getRestaurants } from "@/api/get-restaurant";
+import { getRestaurants } from "@/api/get-product";
 import { getJwt } from "@/jwt/get-jwt";
 import { SearchBar } from "react-native-elements";
 import { useLocalSearchParams } from "expo-router";

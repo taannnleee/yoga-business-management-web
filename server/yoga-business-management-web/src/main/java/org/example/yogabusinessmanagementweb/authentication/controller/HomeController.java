@@ -37,10 +37,13 @@ public class HomeController {
     @GetMapping("/getAllProduct")
     public ResponseData<?> getAllProduct(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword) { // Nhận từ khóa tìm kiếm từ request
         try {
-            Pageable pageable = PageRequest.of(page-1, size);
-            Page<Product> productPage = productService.getAllProduct(pageable);
+            Pageable pageable = PageRequest.of(page - 1, size);
+
+            // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
+            Page<Product> productPage = productService.searchProducts(keyword, pageable);
 
             return new ResponseData<>(HttpStatus.OK.value(), "Get all products successfully", productPage);
         } catch (RuntimeException e) {

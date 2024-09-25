@@ -110,7 +110,7 @@ public class AuthencationService {
         }
 
         //extract user from token
-        final String userName = jwtService.extractUsername(refresh_token, ACCESSTOKEN);
+        final String userName = jwtService.extractUsername(refresh_token, REFRESHTOKEN);
 
         //check token in db
         Token tokenCurrent = tokenService.getTokenByUsername(userName);

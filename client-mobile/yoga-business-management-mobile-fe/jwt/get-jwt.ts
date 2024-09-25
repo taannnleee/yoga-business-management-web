@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 
 export const getJwt = async (): Promise<string | null> => {
   try {
-    const userToken = await SecureStore.getItemAsync("jwt");
+    const userToken = await SecureStore.getItemAsync("accessToken");
 
     return userToken || null; // Returns the token if it exists, otherwise returns null
   } catch (e) {

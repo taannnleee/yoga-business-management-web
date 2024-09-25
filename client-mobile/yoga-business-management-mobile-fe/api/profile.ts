@@ -1,36 +1,59 @@
-// sign-up.ts
 import { BASE_URL } from "@/api/config";
-// Sign-up API function
-export const proFile = async (profileData: {
-  fullname: string;
-  username: string;
-  email: string;
-  phone: string;
-  city: string;
-  street: string;
-  state: string;
+import { Alert } from "react-native";
 
-}) => {
+export const getProFile = async (token: string) => {
   try {
-    const accesstoken = "hiih"
-    const response = await fetch(`${BASE_URL}/user/getProfile/1`, {
+    const response = await fetch(`${BASE_URL}/api/user/getProfile`, {
       method: "GET",
       headers: {
-        'Authorization': `Bearer ${accesstoken}`,
+        'Authorization': `Bearer ${token}`,
+        'x-token': token,
         'Content-Type': 'application/json',
+        
       },
-      body: JSON.stringify(profileData),
     });
-
     if (response.ok) {
       const result = await response.json();
       return { success: true, data: result };
     } else {
       const error = await response.json();
-      return { success: false, error: error.message || "Get profile fail" };
+      return { success: false, error: error.message || "Failed to fetch profile" };
     }
   } catch (error) {
-    // @ts-ignore
-    return { success: false, error: error.message || "Network error occurred" };
+    return { success: false, error:  "Network error occurred" };
+  }
+};
+
+export const updateProfile = async (token: string,profileData: 
+  { 
+    fullname: string;
+    username: string;
+    email: string;
+    phone: string;
+    city: string;
+    street: string;
+    state: string;
+  }
+  ) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/user/updateProfile`, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-token': token,
+        'Content-Type': 'application/json',
+        
+      },
+      body: JSON.stringify(profileData),
+    });
+    if (response.ok) {
+      const result = await response.json();
+      return { success: true, data: result };
+    } else {
+      const error = await response.json();
+      return { success: false, error: error.message || "Failed to fetch profile" };
+    }
+  } catch (error) {
+    return { success: false, error:  "Network error occurred" };
   }
 };

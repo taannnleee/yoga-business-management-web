@@ -1,6 +1,8 @@
 package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.LoginRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
@@ -10,6 +12,7 @@ import org.example.yogabusinessmanagementweb.authentication.exception.InvalidPas
 import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.AddressService;
+import org.example.yogabusinessmanagementweb.authentication.service.JwtService;
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.example.yogabusinessmanagementweb.common.entities.Address;
 import org.example.yogabusinessmanagementweb.common.entities.User;
@@ -18,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.ACCESSTOKEN;
+import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.REFRESHTOKEN;
 
 
 @Service
@@ -47,6 +54,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private JwtService jwtService;;
 
     @Override
     public List<User> getAllUser() {
@@ -92,18 +102,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ProfileResponse getProfile(String id) {
-        Optional<User>  userOptional =  userRepository.findById(Long.valueOf(id));
+    public ProfileResponse getProfile(HttpServletRequest request) {
+        String access_token = request.getHeader("x-token");
+
+        if(StringUtils.isBlank(access_token)){
+            throw new InvalidDataAccessApiUsageException("Token is empty");
+        }
+
+        final String userName = jwtService.extractUsername(access_token, ACCESSTOKEN);
+
+        Optional<User> user =  userRepository.findByUsername(userName);
+
+        //validate xem token có hợp lệ không
+        if(!jwtService.isValid(access_token, ACCESSTOKEN,user.get())){
+            throw new InvalidDataAccessApiUsageException("Token is invalid");
+        }
+
+        Optional<User>  userOptional =  userRepository.findById(Long.valueOf(user.get().getId()));
         if(userOptional.isEmpty()){
             throw new UserNotFoundException("User not found");
         }
-        User user = userOptional.get();
-        Address address =  addressService.findAddressByUser(user);
+        User _user = userOptional.get();
+        Address address =  addressService.findAddressByUser(_user);
         if(address == null){
             throw new UserNotFoundException("Address not found");
         }
 
-        ProfileResponse profileResponse = Mappers.convertToDto(user, ProfileResponse.class);
+        ProfileResponse profileResponse = Mappers.convertToDto(_user, ProfileResponse.class);
         profileResponse.setCity(address.getCity());
         profileResponse.setStreet(address.getStreet());
         profileResponse.setState(address.getDistrict());
@@ -111,29 +136,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateProfile(UpdateProfileRequest updateProfileRequest, String id) {
-        Optional<User> userOptional = userRepository.findById(Long.valueOf(id));
+    public void updateProfile(UpdateProfileRequest updateProfileRequest, HttpServletRequest request) {
+        String access_token = request.getHeader("x-token");
 
+        if(StringUtils.isBlank(access_token)){
+            throw new InvalidDataAccessApiUsageException("Token is empty");
+        }
+
+        final String userName = jwtService.extractUsername(access_token, ACCESSTOKEN);
+
+        Optional<User> user =  userRepository.findByUsername(userName);
+
+        //validate xem token có hợp lệ không
+        if(!jwtService.isValid(access_token, ACCESSTOKEN,user.get())){
+            throw new InvalidDataAccessApiUsageException("Token is invalid");
+        }
+
+        Optional<User>  userOptional =  userRepository.findById(Long.valueOf(user.get().getId()));
         if(userOptional.isEmpty()){
             throw new UserNotFoundException("User not found");
         }
 
-        User user = userOptional.get();
+        User _user = userOptional.get();
 
         // Cập nhật thông tin người dùng từ request
-        user.setFullname(updateProfileRequest.getFullname());
-        user.setUsername(updateProfileRequest.getUsername());
-        user.setEmail(updateProfileRequest.getEmail());
-        user.setPhone(updateProfileRequest.getPhone());
+        _user.setFullname(updateProfileRequest.getFullname());
+        _user.setUsername(updateProfileRequest.getUsername());
+        _user.setEmail(updateProfileRequest.getEmail());
+        _user.setPhone(updateProfileRequest.getPhone());
 
         // Cập nhật địa chỉ
-        Address address = addressService.findAddressByUser(user);
+        Address address = addressService.findAddressByUser(_user);
         address.setCity(updateProfileRequest.getCity());
         address.setStreet(updateProfileRequest.getStreet());
         address.setDistrict(updateProfileRequest.getState());
 
         // Lưu lại thông tin đã được cập nhật
-        userRepository.save(user);
+        userRepository.save(_user);
     }
 
 

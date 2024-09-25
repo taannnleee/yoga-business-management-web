@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus(false);
 
         address.setUser(user);
-        user.setAddresses((Set<Address>) arrayList);
+        user.setAddresses(arrayList);
         userRepository.save(user);
         authencationService.sendOTP(registrationRequest.getEmail());
 

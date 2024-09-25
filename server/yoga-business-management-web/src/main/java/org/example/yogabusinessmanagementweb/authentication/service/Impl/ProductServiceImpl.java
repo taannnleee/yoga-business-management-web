@@ -12,6 +12,8 @@ import org.example.yogabusinessmanagementweb.common.entities.ProductDetail;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +29,8 @@ public class ProductServiceImpl implements ProductService {
     TempRepository tempRepository;
 
     @Override
-    public List<Product> getAllProduct() {
-        return productRepository.findAll();
+    public Page<Product> getAllProduct(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
     @Override
     public Product getProductById(String id) {

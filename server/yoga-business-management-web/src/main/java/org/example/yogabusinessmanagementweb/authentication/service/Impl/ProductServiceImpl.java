@@ -38,7 +38,13 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findProductById(Long.valueOf(id))
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
-
+    public Page<Product> searchProducts(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.isEmpty()) {
+            return productRepository.findAll(pageable); // Nếu không có keyword, trả về tất cả sản phẩm
+        } else {
+            return productRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        }
+    }
     @Override
     public boolean addProduct(AddProductRequest addProductRequest)  {
         try {

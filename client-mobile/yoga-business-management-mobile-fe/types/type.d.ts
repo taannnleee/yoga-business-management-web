@@ -32,6 +32,7 @@ declare interface MapProps {
   selectedDriver?: number | null;
   onMapReady?: () => void;
 }
+
 declare interface FoodProps {
   id: string;
   name: string;
@@ -48,6 +49,7 @@ declare interface FoodProps {
   seasonal: string; // Assuming this is a string representation of a boolean
   vegetarian: string; // Assuming this is a string representation of a boolean
 }
+
 declare interface RestaurantProps {
   id: string;
   name: string;

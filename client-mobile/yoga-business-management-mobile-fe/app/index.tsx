@@ -11,6 +11,8 @@ const Home = () => {
   useEffect(() => {
     const checkJwt = async () => {
       const isAuth = await getJwt();
+      console.log("isAuth", isAuth);
+      // @ts-ignore
       setIsAuthenticated(isAuth);
       setLoading(false);
     };

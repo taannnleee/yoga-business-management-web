@@ -22,7 +22,7 @@ import { saveJwtToken } from "@/jwt/set-jwt";
 const SignIn = gestureHandlerRootHOC(() => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -31,8 +31,9 @@ const SignIn = gestureHandlerRootHOC(() => {
     const response = await signIn(form); // Use the API function
     setLoading(false);
     if (response.success) {
+      const tokens = response.data.data;
       // Save JWT token to SecureStore
-      await saveJwtToken(response.data.jwt);
+      await saveJwtToken(tokens.accesstoken, tokens.refreshtoken);
       Alert.alert("Đăng nhập thành công!");
       // @ts-ignore
       router.replace("/(root)/(tabs)/home");
@@ -63,8 +64,8 @@ const SignIn = gestureHandlerRootHOC(() => {
             label={"Email"}
             placeholder={"Nhập email của bạn"}
             icon={icons.email}
-            value={form.email}
-            onChangeText={(value) => setForm({ ...form, email: value })}
+            value={form.username}
+            onChangeText={(value) => setForm({ ...form, username: value })}
           />
           <InputField
             label={"Mật khẩu"}

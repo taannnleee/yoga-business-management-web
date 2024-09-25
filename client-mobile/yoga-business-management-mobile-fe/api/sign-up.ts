@@ -2,26 +2,33 @@
 import { BASE_URL } from "@/api/config";
 // Sign-up API function
 export const signUp = async (form: {
-  fullName: string;
+  username: string;
+  fullname: string;
   email: string;
+  phone: string;
   password: string;
-  role: string;
+  confirmpassword: string;
 }) => {
   try {
-    const response = await fetch(`${BASE_URL}/auth/signup`, {
+    const response = await fetch(`${BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(form),
     });
+    const responseData = await response.json();
     // Check if the response is ok (status code in the range 200-299)
-    if (response.ok) {
-      const result = await response.json();
-      return { success: true, data: result };
+    console.log("response", responseData.status);
+    if (responseData.status === 200) {
+      console.log("haha");
+      return { success: true, data: responseData.message };
     } else {
-      const error = await response.json();
-      return { success: false, error: error.message || "Sign-up failed" };
+      console.log("haha");
+      return {
+        success: false,
+        error: responseData.message || "Sign-up failed",
+      };
     }
   } catch (error) {
     // @ts-ignore

@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
+import org.example.yogabusinessmanagementweb.authentication.exception.ProductNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.*;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductDetailService;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductService;
@@ -34,11 +35,8 @@ public class ProductServiceImpl implements ProductService {
     }
     @Override
     public Product getProductById(String id) {
-        Optional<Product>  productOptional =  productRepository.findProductById(Long.valueOf(id));
-        if(productOptional.isPresent()){
-            return productOptional.get();
-        }
-        return null;
+        return productRepository.findProductById(Long.valueOf(id))
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override

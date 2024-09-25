@@ -43,7 +43,7 @@ public class HomeController {
             Page<Product> productPage = productService.getAllProduct(pageable);
 
             return new ResponseData<>(HttpStatus.OK.value(), "Get all products successfully", productPage);
-        } catch (UserNotFoundException e) {
+        } catch (RuntimeException e) {
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }

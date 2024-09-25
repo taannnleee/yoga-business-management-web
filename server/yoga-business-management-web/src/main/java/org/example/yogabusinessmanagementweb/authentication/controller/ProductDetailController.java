@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ResponseData;
+import org.example.yogabusinessmanagementweb.authentication.exception.ProductNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.Impl.AuthencationService;
@@ -32,11 +33,12 @@ public class ProductDetailController {
     @GetMapping("/getProduct/{id}")
     public ResponseData<?> getProductDetail(@PathVariable String id){
         try{
-            Product product = productService.getProductById(id);
-            return new ResponseData<>(HttpStatus.OK.value(), "get all product successfully",product);
 
-        }catch (UserNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            Product product = productService.getProductById(id);
+            return new ResponseData<>(HttpStatus.OK.value(), "get product detail successfully",product);
+
+        }catch (ProductNotFoundException e){
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "product with id not found");
         }
     }
 }

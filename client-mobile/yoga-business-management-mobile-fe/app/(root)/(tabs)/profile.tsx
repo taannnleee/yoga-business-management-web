@@ -1,7 +1,9 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { proFile } from "@/api/profile";
+import { getProFile } from "@/api/profile";
+import { updateProfile } from "@/api/profile";
+import { getJwt } from "@/jwt/get-jwt";
+
 const Profile = () => {
   const [profileData, setProfileData] = useState({
     fullname: '',
@@ -12,15 +14,46 @@ const Profile = () => {
     street: '',
     state: ''
   });
+  
   const [updatedData, setUpdatedData] = useState({ ...profileData });
 
-  const handleSave = async () => {
-    const response = await proFile(profileData); 
+  // Hàm lấy thông tin người dùng khi component mount
+  const fetchProfileData = async () => {
+    const token = await getJwt();
+    if (!token) {
+      Alert.alert("Error", "Token not found!");
+      return;
+    } 
+
+    const response = await getProFile(token);
+    if (response.success) {
+      setProfileData(response.data.data);
+      setUpdatedData(response.data.data); 
+    } else {
+      // Alert.alert("Error",  "Failed to fetch profile");
+    }
   };
-  
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const handleSave = async () => {
+    const token = await getJwt();
+    if (!token) {
+      Alert.alert("Error", "Token not found!");
+      return;
+    }
+    const response = await updateProfile(token,updatedData);
+    if (response.success) {
+      Alert.alert("Success", "Profile updated successfully");
+    } else {
+      Alert.alert("Error", response.error || "Failed to update profile");
+    }
+  };
 
   return (
-      <View style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.profileContainer}>
         <Text style={styles.label}>Full Name:</Text>
         <TextInput
@@ -71,9 +104,7 @@ const Profile = () => {
           onChangeText={(text) => setUpdatedData({ ...updatedData, state: text })}
         />
 
-        <TouchableOpacity onPress={handleSave}
-          style={styles.button}
-        >
+        <TouchableOpacity onPress={handleSave} style={styles.button}>
           <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>
       </View>

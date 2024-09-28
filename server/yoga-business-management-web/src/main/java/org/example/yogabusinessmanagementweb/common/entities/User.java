@@ -41,7 +41,6 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     int kind;
     boolean status;
 
-
     @OneToOne()
     Wishlist wishlist;
 

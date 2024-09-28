@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.AddYogaWorkoutRequest;
 import org.example.yogabusinessmanagementweb.authentication.exception.ProductNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.*;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductDetailService;
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.findByTitleContainingIgnoreCase(keyword, pageable);
         }
     }
+
     @Override
     public boolean addProduct(AddProductRequest addProductRequest)  {
         try {

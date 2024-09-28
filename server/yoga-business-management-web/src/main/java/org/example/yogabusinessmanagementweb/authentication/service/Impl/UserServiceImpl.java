@@ -3,15 +3,12 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.example.yogabusinessmanagementweb.authentication.dto.request.LoginRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ProfileResponse;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.RegistrationResponse;
 import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
 import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
-import org.example.yogabusinessmanagementweb.authentication.exception.InvalidPasswordException;
-import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.AddressService;
 import org.example.yogabusinessmanagementweb.authentication.service.JwtService;
@@ -25,18 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.ACCESSTOKEN;
-import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.REFRESHTOKEN;
 
 
 @Service

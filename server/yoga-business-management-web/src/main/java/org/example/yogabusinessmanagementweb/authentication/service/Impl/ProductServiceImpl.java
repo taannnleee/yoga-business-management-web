@@ -3,24 +3,18 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
-import org.example.yogabusinessmanagementweb.authentication.dto.response.AddYogaWorkoutRequest;
 import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
 import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
-import org.example.yogabusinessmanagementweb.authentication.exception.ProductNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.*;
-import org.example.yogabusinessmanagementweb.authentication.service.ProductDetailService;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductService;
-import org.example.yogabusinessmanagementweb.common.entities.Category;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.ProductDetail;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

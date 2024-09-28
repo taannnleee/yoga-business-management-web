@@ -26,8 +26,8 @@ public enum ErrorCode {
     OTP_INVALID(10015, "OTP is invalid"),
     PRODUCT_NOT_FOUND(10016, "Product not found"),
     USERNAME_ALREADY_EXISTS(10017, "Username already exists"),
-    PHONE_ALREADY_EXISTS(10017, "Phone already exists"),
-    EMAIL_ALREADY_EXISTS(10017, "Email already exists"),
+    PHONE_ALREADY_EXISTS(10018, "Phone already exists"),
+    EMAIL_ALREADY_EXISTS(10019, "Email already exists"),
 
 
 

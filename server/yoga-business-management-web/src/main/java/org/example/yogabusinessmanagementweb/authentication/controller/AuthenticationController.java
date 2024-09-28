@@ -34,13 +34,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseData<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
-        try {
-            userService.checkUserNotExist(registrationRequest);
-            RegistrationResponse rp = userService.registerUser(registrationRequest);
-            return new ResponseData<>(HttpStatus.OK.value(), "User registered successfully", rp);
-        } catch (AppException e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-        }
+        userService.checkUserNotExist(registrationRequest);
+        RegistrationResponse rp = userService.registerUser(registrationRequest);
+        return new ResponseData<>(HttpStatus.OK.value(), "User registered successfully", rp);
+
     }
 
 
@@ -62,9 +59,6 @@ public class AuthenticationController {
             return new ResponseData<>( HttpStatus.OK.value(),"Login Success",tokenRespone);
         }catch (BadCredentialsException e){
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");
-        }
-        catch (AccoutIsNotActive e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(),"Account Is Not Active");
         }
     }
 

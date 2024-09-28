@@ -34,7 +34,7 @@ public class AdminYogaWorkoutController {
     @PostMapping("/add-yoga-workout")
     public ResponseData<?> creatProduct(@RequestBody AddYogaWorkoutRequest addYogaWorkoutRequest) {
         try{
-            productService.addYogaWorkout(addYogaWorkoutRequest);
+//            productService.addYogaWorkout(addYogaWorkoutRequest);
             return new ResponseData<>(HttpStatus.OK.value(), "create product  successfully",true);
         }catch (Exception e){
             return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage(),false);

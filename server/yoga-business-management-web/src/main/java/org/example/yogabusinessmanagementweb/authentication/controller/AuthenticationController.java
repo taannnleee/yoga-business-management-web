@@ -35,29 +35,20 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseData<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
         try {
-            boolean userNotExist =  userService.checkUserNotExist(registrationRequest);
-            if(!userNotExist) {
-                return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "Phone number,username or email already exists");
-            }
+            userService.checkUserNotExist(registrationRequest);
             RegistrationResponse rp = userService.registerUser(registrationRequest);
-            return new ResponseData<>(HttpStatus.OK.value(), "User registered successfully",rp);
-        }
-        catch (InvalidPasswordException e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "Passwords do not match");
-        }
-        catch (Exception e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "An error occurred during registration");
+            return new ResponseData<>(HttpStatus.OK.value(), "User registered successfully", rp);
+        } catch (AppException e) {
+            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
         }
     }
 
+
     @PostMapping("verifyOTP_register")
     public ResponseData<TokenRespone> verifyOTPRegister(@RequestParam String OTP,@RequestParam  String email) {
-        try {
-            authencationService.verifyOTP_register(OTP, email);
-            return new ResponseData<>(HttpStatus.OK.value(), "OTP is valid. Proceed with register.");
-        } catch (UserNotFoundException | TokenNotFoundException | InvalidOtpException e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
+        authencationService.verifyOTP_register(OTP, email);
+        return new ResponseData<>(HttpStatus.OK.value(), "OTP is valid. Proceed with register.");
+
     }
 
     @PostMapping("/refresh")
@@ -84,26 +75,15 @@ public class AuthenticationController {
 
     @PostMapping("/forgot-password")
     public ResponseData<?> forgotPassword(@RequestBody String email) {
-        try {
-            String result = authencationService.sendOTP(email);
-            return new ResponseData<>(HttpStatus.OK.value(), "Success"+result);
-        } catch (UserNotFoundException e) {
-            return new ResponseData<>(HttpStatus.NOT_FOUND.value(), "NOT_FOUND");
-        } catch (InvalidDataAccessApiUsageException e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST");
-        } catch (Exception e) {
-            return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "INTERNAL_SERVER_ERROR");
-        }
+        String result = authencationService.sendOTP(email);
+        return new ResponseData<>(HttpStatus.OK.value(), "Success"+result);
     }
 
     @PostMapping("/reset-password")
     public ResponseData<?> resetPassword(@RequestBody String OTP,String email) {
-        try {
-            authencationService.resetPassword(OTP, email);
-            return new ResponseData<>(HttpStatus.OK.value(), "OTP is valid. Proceed with password reset.");
-        } catch (UserNotFoundException | TokenNotFoundException | InvalidOtpException e) {
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
+        authencationService.resetPassword(OTP, email);
+        return new ResponseData<>(HttpStatus.OK.value(), "OTP is valid. Proceed with password reset.");
+
     }
 
     @PostMapping("/change-password")

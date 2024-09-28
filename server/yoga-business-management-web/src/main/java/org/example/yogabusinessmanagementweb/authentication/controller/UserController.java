@@ -33,22 +33,13 @@ public class UserController {
 
     @GetMapping("/getProfile")
     public ResponseData<?> getProfile(HttpServletRequest request){
-        try{
-            ProfileResponse profileResponse =  userService.getProfile(request);
-            return new ResponseData<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
-
-        }catch (UserNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-        }
+        ProfileResponse profileResponse =  userService.getProfile(request);
+        return new ResponseData<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
     }
     @PostMapping("/updateProfile")
     public ResponseData<?> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest, HttpServletRequest request){
-        try{
-            userService.updateProfile(updateProfileRequest, request);
-            return new ResponseData<>(HttpStatus.OK.value(), "update profile successfully");
+        userService.updateProfile(updateProfileRequest, request);
+        return new ResponseData<>(HttpStatus.OK.value(), "update profile successfully");
 
-        }catch (UserNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
     }
 }

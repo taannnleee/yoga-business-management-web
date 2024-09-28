@@ -32,13 +32,7 @@ public class ProductDetailController {
 
     @GetMapping("/getProduct/{id}")
     public ResponseData<?> getProductDetail(@PathVariable String id){
-        try{
-
-            Product product = productService.getProductById(id);
-            return new ResponseData<>(HttpStatus.OK.value(), "get product detail successfully",product);
-
-        }catch (ProductNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), "product with id not found");
-        }
+        Product product = productService.getProductById(id);
+        return new ResponseData<>(HttpStatus.OK.value(), "get product detail successfully",product);
     }
 }

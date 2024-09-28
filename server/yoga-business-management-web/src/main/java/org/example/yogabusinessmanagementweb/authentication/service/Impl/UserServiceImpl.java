@@ -8,6 +8,8 @@ import org.example.yogabusinessmanagementweb.authentication.dto.request.Registra
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ProfileResponse;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.RegistrationResponse;
+import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
+import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.exception.InvalidPasswordException;
 import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
@@ -26,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +67,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserById(String id) {
+        return userRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
     public UserDetailsService userDetailsService() {
         return username ->
                 userRepository.findByUsername(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
@@ -91,8 +100,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
@@ -106,29 +116,21 @@ public class UserServiceImpl implements UserService {
         String access_token = request.getHeader("x-token");
 
         if(StringUtils.isBlank(access_token)){
-            throw new InvalidDataAccessApiUsageException("Token is empty");
+            throw new AppException(ErrorCode.TOKEN_EMPTY);
         }
 
         final String userName = jwtService.extractUsername(access_token, ACCESSTOKEN);
 
-        Optional<User> user =  userRepository.findByUsername(userName);
+        User user =  userRepository.findByUsername(userName).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));;
 
         //validate xem token có hợp lệ không
-        if(!jwtService.isValid(access_token, ACCESSTOKEN,user.get())){
-            throw new InvalidDataAccessApiUsageException("Token is invalid");
+        if(!jwtService.isValid(access_token, ACCESSTOKEN,user)){
+            throw new AppException(ErrorCode.TOKEN_INVALID);
         }
 
-        Optional<User>  userOptional =  userRepository.findById(Long.valueOf(user.get().getId()));
-        if(userOptional.isEmpty()){
-            throw new UserNotFoundException("User not found");
-        }
-        User _user = userOptional.get();
-        Address address =  addressService.findAddressByUser(_user);
-        if(address == null){
-            throw new UserNotFoundException("Address not found");
-        }
+        Address address =  addressService.findAddressByUser(user);
 
-        ProfileResponse profileResponse = Mappers.convertToDto(_user, ProfileResponse.class);
+        ProfileResponse profileResponse = Mappers.convertToDto(user, ProfileResponse.class);
         profileResponse.setCity(address.getCity());
         profileResponse.setStreet(address.getStreet());
         profileResponse.setState(address.getDistrict());
@@ -145,112 +147,63 @@ public class UserServiceImpl implements UserService {
 
         final String userName = jwtService.extractUsername(access_token, ACCESSTOKEN);
 
-        Optional<User> user =  userRepository.findByUsername(userName);
+        User user =  userRepository.findByUsername(userName).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         //validate xem token có hợp lệ không
-        if(!jwtService.isValid(access_token, ACCESSTOKEN,user.get())){
-            throw new InvalidDataAccessApiUsageException("Token is invalid");
+        if(!jwtService.isValid(access_token, ACCESSTOKEN,user)){
+            throw new AppException(ErrorCode.TOKEN_INVALID);
         }
-
-        Optional<User>  userOptional =  userRepository.findById(Long.valueOf(user.get().getId()));
-        if(userOptional.isEmpty()){
-            throw new UserNotFoundException("User not found");
-        }
-
-        User _user = userOptional.get();
 
         // Cập nhật thông tin người dùng từ request
-        _user.setFullname(updateProfileRequest.getFullname());
-        _user.setUsername(updateProfileRequest.getUsername());
-        _user.setEmail(updateProfileRequest.getEmail());
-        _user.setPhone(updateProfileRequest.getPhone());
+        user.setFullname(updateProfileRequest.getFullname());
+        user.setUsername(updateProfileRequest.getUsername());
+        user.setEmail(updateProfileRequest.getEmail());
+        user.setPhone(updateProfileRequest.getPhone());
 
         // Cập nhật địa chỉ
-        Address address = addressService.findAddressByUser(_user);
+        Address address = addressService.findAddressByUser(user);
         address.setCity(updateProfileRequest.getCity());
         address.setStreet(updateProfileRequest.getStreet());
         address.setDistrict(updateProfileRequest.getState());
 
         // Lưu lại thông tin đã được cập nhật
-        userRepository.save(_user);
+        userRepository.save(user);
     }
 
 
     @Override
-    public Optional<User> findByPhone(String phoneNumber) {
-        return userRepository.findByPhone(phoneNumber);
+    public User findByPhone(String phoneNumber) {
+        return userRepository.findByPhone(phoneNumber).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
-    public Optional<User> findByUserName(String username) {
-        return userRepository.findByUsername(username);
+    public User findByUserName(String username) {
+        return userRepository.findByUsername(username).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
     public boolean checkUserNotExist(RegistrationRequest registrationRequest) {
         // Kiểm tra xem mật khẩu và xác nhận mật khẩu có khớp không
         if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmpassword())) {
-            throw new InvalidPasswordException("Passwords do not match");
+            throw new AppException(ErrorCode.PASS_WORD_NOT_MATCHED);
         }
 
-        // Kiểm tra xem username, phone, hoặc email có tồn tại hay không
-        boolean userExists = findByUserName(registrationRequest.getUsername()).isPresent() ||
-                findByPhone(registrationRequest.getPhone()).isPresent() ||
-                findByEmail(registrationRequest.getEmail()).isPresent();
-
-        return !userExists;
-    }
-
-    @Override
-    public User checkUser(RegistrationRequest registrationRequest) {
-        if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmpassword())) {
-            throw new InvalidPasswordException("Passwords do not match");
+        // Kiểm tra xem username đã tồn tại chưa
+        if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
+            throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
 
-        Optional<User> optionalUserByUsername = findByUserName(registrationRequest.getUsername());
-
-        Optional<User> optionalUserByPhone = findByPhone(registrationRequest.getPhone());
-
-        Optional<User>optionalUserByEmail = findByEmail(registrationRequest.getEmail());
-
-        if (optionalUserByUsername.isPresent()) {
-            return optionalUserByUsername.get();
+        // Kiểm tra xem phone đã tồn tại chưa
+        if (userRepository.findByPhone(registrationRequest.getPhone()).isPresent()) {
+            throw new AppException(ErrorCode.PHONE_ALREADY_EXISTS);
         }
 
-        if (optionalUserByPhone.isPresent()) {
-            return optionalUserByPhone.get();
+        // Kiểm tra xem email đã tồn tại chưa
+        if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
+            throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
 
-        if (optionalUserByEmail.isPresent()) {
-            return optionalUserByEmail.get();
-        }
-        throw new UserNotFoundException("Username, phone or email number not found.");
-    }
-
-
-    @Override
-    public User checkLogin(LoginRequest loginRequest) {
-        User user = userRepository.findByPhone(loginRequest.getUsername()).orElse(null);
-        if (user != null) {
-            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public boolean changePassword(String email, String newPassword) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setPassword(newPassword);
-            userRepository.save(user);
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
 }

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.AddYogaWorkoutRequest;
+import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
+import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.exception.ProductNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.*;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductDetailService;
@@ -37,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(String id) {
         return productRepository.findProductById(Long.valueOf(id))
-                .orElseThrow(() -> new ProductNotFoundException(id));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
     }
     public Page<Product> searchProducts(String keyword, Pageable pageable) {
         if (keyword == null || keyword.isEmpty()) {

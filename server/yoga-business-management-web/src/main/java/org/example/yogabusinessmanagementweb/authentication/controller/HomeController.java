@@ -11,9 +11,13 @@ import org.example.yogabusinessmanagementweb.authentication.service.ProductServi
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.sendEmail.service.EmailService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,13 +35,18 @@ public class HomeController {
     ProductService productService;
 
     @GetMapping("/getAllProduct")
-    public ResponseData<?> getAllProduct(){
-        try{
-            List<Product> productList =  productService.getAllProduct();
+    public ResponseData<?> getAllProduct(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword) { // Nhận từ khóa tìm kiếm từ request
+        try {
+            Pageable pageable = PageRequest.of(page - 1, size);
 
-            return new ResponseData<>(HttpStatus.OK.value(), "get all product successfully",productList);
+            // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
+            Page<Product> productPage = productService.searchProducts(keyword, pageable);
 
-        }catch (UserNotFoundException e){
+            return new ResponseData<>(HttpStatus.OK.value(), "Get all products successfully", productPage);
+        } catch (RuntimeException e) {
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }

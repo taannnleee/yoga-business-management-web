@@ -18,33 +18,22 @@ import java.util.List;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Order extends AbstractEntity<Long> implements Serializable {
-    @Column(name = "order_date")
-    Date orderDate;
-
     @Column(name = "deliveryDate")
     Date deliveryDate;
-
     @Column(name = "total_price")
     Long totalPrice;
-
     @Column(name = "total_item")
     int totalItem;
-
-    @Column(name = "order_status")
-    EStatus orderStatus    ;
-
+    @OneToOne()
+    Payment payment;
+    @Column(name = "order_date")
+    Date orderDate;
     @ManyToOne()
     @JoinColumn(name = "user_id")
     User user;
-
-    @OneToMany(mappedBy = "order")
-    List<OrderItem> orderItems;
-
     @OneToOne()
     @JoinColumn(name = "address_id")
     Address address;
-
-    @OneToOne(mappedBy = "order")
-    Payment payment;
-
+    @OneToMany()
+    List<OrderItem> orderItems;
 }

@@ -20,8 +20,4 @@ public class WeighPlan extends AbstractEntity<Long>  implements Serializable {
 
     @Column(name = "description")
     String description;
-
-    @OneToOne
-    @JoinColumn(name = "healthy_information_id")
-    HealthyInformation healthyInformation;
 }

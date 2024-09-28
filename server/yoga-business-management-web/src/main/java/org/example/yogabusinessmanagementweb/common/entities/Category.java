@@ -26,11 +26,8 @@ public class Category extends AbstractEntity<Long> implements Serializable  {
     String status;
 
     @Column(name = "category_name")
-    String categoryName;
+    String name;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonIgnore
-    List<Product> listproducts;
 
 
 }

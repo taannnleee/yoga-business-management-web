@@ -19,20 +19,15 @@ public class OrderItem extends AbstractEntity<Long> implements Serializable {
     @Column(name = "title")
     String title;
 
-    @Column(name = "quanlity")
-    int quanlity;
-
-    @Column(name = "total_price")
-    Long totalPrice;
-
-    @Column(name = "order_status")
-    EStatus orderStatus;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    Order order;
-
+    @Column(name = "quantity")
+    int quantity;
     @OneToOne()
     @JoinColumn(name = "rating_id")
     Rating rating;
+    @Column(name = "order_status")
+    @Enumerated(EnumType.STRING) // Store enum as a string in the database
+    EStatus orderStatus;
+    @Column(name = "total_price")
+    Long totalPrice;
+
 }

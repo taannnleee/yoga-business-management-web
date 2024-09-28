@@ -51,7 +51,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("verifyOTP_register")
-    public ResponseData<TokenRespone> verifyOTPRegister(String OTP,  String email) {
+    public ResponseData<TokenRespone> verifyOTPRegister(@RequestParam String OTP,@RequestParam  String email) {
         try {
             authencationService.verifyOTP_register(OTP, email);
             return new ResponseData<>(HttpStatus.OK.value(), "OTP is valid. Proceed with register.");

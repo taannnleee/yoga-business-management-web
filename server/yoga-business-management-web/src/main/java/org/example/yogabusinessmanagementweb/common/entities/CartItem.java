@@ -13,15 +13,9 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CartItem extends AbstractEntity<Long>{
-    int totalItem;
-    Long totalPrice;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    Cart cart;
-
     @OneToOne
     @JoinColumn(name = "product_id")
     Product product;
-
+    int quantity;
+    Long totalPrice;
 }

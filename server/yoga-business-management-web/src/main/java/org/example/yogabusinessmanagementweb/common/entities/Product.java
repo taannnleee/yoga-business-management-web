@@ -22,21 +22,13 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "product_detail_id")
     ProductDetail productDetail;
 
+    @Column(name = "title")
+    String title;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    Category category;
-
-    @Column(name = "status")
-    String status;
-
-    @OneToOne(mappedBy = "product")
-    CartItem cartItem;
-
-    @ManyToOne()
-    @JoinColumn(name = "wishlist_id")
-    Wishlist wishlist;
-
-    @OneToOne
-    @JoinColumn(name = "promotion_id")
-    Promotion promotion;
+    @JoinColumn(name = "subCategory_id")
+    SubCategory subCategory;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<Rating> ratings;
+    @Column(name = "average_rating")
+    Double averageRating;
 }

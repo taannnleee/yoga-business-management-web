@@ -11,6 +11,8 @@ const Home = () => {
   useEffect(() => {
     const checkJwt = async () => {
       const isAuth = await getJwt();
+      console.log("isAuth", isAuth);
+      // @ts-ignore
       setIsAuthenticated(isAuth);
       setLoading(false);
     };
@@ -32,6 +34,7 @@ const Home = () => {
     <Redirect href="/(root)/(tabs)/home" />
   ) : (
     <Redirect href="/(auth)/welcome" />
+    // <Redirect href="/(root)/(tabs)/profile" />
   );
 };
 

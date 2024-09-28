@@ -6,9 +6,12 @@ import { icons } from "@/constants"; // Assuming icons is an object with SVGs or
 const TextInputSearch = ({
   // @ts-ignore
   keyword,
+  setPage,
+  // @ts-ignore
+  icon,
   // @ts-ignore
   setKeyword,
-  icon,
+  setProducts,
   initialLocation,
   containerStyle,
   textInputBackgroundColor,
@@ -18,13 +21,16 @@ const TextInputSearch = ({
 
   // Function to handle the "Done" button press
   const handleSubmitEditing = () => {
+    setPage(1); // Reset the page to 1
+    setProducts([]); // Clear the products list
     // Save or process the inputValue here
     setKeyword(inputValue); // Example of a callback or state update
     // Example of a callback or state update
   };
 
   const handleClear = () => {
-    setInputValue("");
+    setPage(1); // Reset the page to 1
+    setProducts([]);
     setKeyword("");
   };
 
@@ -35,7 +41,7 @@ const TextInputSearch = ({
       <TextInput
         textAlign={"left"}
         className={`w-full py-2 mx-5 ${textInputBackgroundColor || ""}`}
-        placeholder={"Bạn muốn ăn gì"}
+        placeholder={"Bạn muốn mua gì"}
         clearButtonMode={"always"}
         value={inputValue}
         onChangeText={(text) => {

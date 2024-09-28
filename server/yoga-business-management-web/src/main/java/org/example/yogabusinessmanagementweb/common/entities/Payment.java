@@ -19,8 +19,4 @@ import java.util.List;
 public class Payment extends AbstractEntity<Long> implements Serializable {
     @Column(name = "name_method")
     String nameMethod;
-
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    Order order;
 }

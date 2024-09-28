@@ -22,33 +22,22 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
 
     @Column(name = "name")
     String name;
-
     @Column(name = "image_url")
     String imagePath;
-
+    @Column(name = "color")
+    String color;
+    @Column(name = "size")
+    String size;
+    @Column(name = "price")
+    BigDecimal price;
+    @Column(name = "code")
+    String code;
+    @Column(name = "brand")
+    String brand;
     @Column(name = "description")
     String description;
 
-    @Column(name = "price")
-    BigDecimal price;
-
-    @Column(name = "material")
-    String material;
-
-    @Column(name = "dimensions")
-    String dimensions;
-
-    @Column(name = "thickness")
-    String thickness;
-
-    @Column(name = "weight")
-    String weight;
-
-    @Column(name = "color")
-    String color;
-
-
-    @OneToOne(mappedBy = "productDetail")
+    @OneToOne()
 //    @JsonIgnore
     Product product;
 

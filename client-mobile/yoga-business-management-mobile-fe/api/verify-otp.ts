@@ -1,11 +1,11 @@
 import { BASE_URL } from "@/api/config";
-// Verify OTP API function using query parameters
+
 export const verifyOtp = async (email: string | string[], otp: string) => {
   try {
     // Construct the URL with query parameters
-    const url = new URL(`${BASE_URL}/auth/verify-otp`);
-    url.searchParams.append("email", email as string); // ensure email is string
-    url.searchParams.append("otp", otp);
+    const url = new URL(`${BASE_URL}/api/auth/verifyOTP_register`);
+    url.searchParams.append("OTP", otp);
+    url.searchParams.append("email", email as string); // Ensure email is string
 
     const response = await fetch(url.toString(), {
       method: "POST",
@@ -14,25 +14,33 @@ export const verifyOtp = async (email: string | string[], otp: string) => {
       },
     });
 
-    // Read the response body once
-    const responseText = await response.text(); // Read response as text
+    // Parse the response JSON
+    const responseData = await response.json();
 
-    if (response.ok) {
-      try {
-        // Attempt to parse response text as JSON
-        const result = JSON.parse(responseText);
-        return { success: true, data: result };
-      } catch (jsonError) {
-        // If parsing fails, handle it as a non-JSON response
-        return { success: true, data: responseText };
-      }
+    // Debugging: log the entire response object as a string
+    console.log("Full Response Object:", JSON.stringify(responseData, null, 2));
+    console.log("Status", responseData.status);
+
+    // Check if the status is 200
+    if (responseData.status === 200) {
+      console.log("Hahaa");
+      return {
+        success: true,
+        data: responseData.message, // Assuming message contains the desired information
+      };
     } else {
       // Handle non-200 responses
-      return { success: false, error: responseText || "Verify failed" };
+      return {
+        success: false,
+        error: responseData.message || "Verify failed",
+      };
     }
   } catch (error) {
-    // Handle network errors
-    // @ts-ignore
-    return { success: false, error: error.message || "Network error occurred" };
+    // Handle network or other errors
+    console.error("Network Error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "An error occurred",
+    };
   }
 };

@@ -22,6 +22,6 @@ public class Cart extends AbstractEntity<Long>{
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany()
     List<CartItem> cartItems;
 }

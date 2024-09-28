@@ -3,17 +3,19 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
-import org.example.yogabusinessmanagementweb.authentication.repositories.CategoryRepository;
-import org.example.yogabusinessmanagementweb.authentication.repositories.ProductDetailRepository;
-import org.example.yogabusinessmanagementweb.authentication.repositories.ProductRepository;
-import org.example.yogabusinessmanagementweb.authentication.repositories.TempRepository;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.AddYogaWorkoutRequest;
+import org.example.yogabusinessmanagementweb.authentication.exception.ProductNotFoundException;
+import org.example.yogabusinessmanagementweb.authentication.repositories.*;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductDetailService;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.ProductDetail;
+import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,21 +26,25 @@ import java.util.Optional;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
-    CategoryRepository categoryRepository;
+    SubCategoryRepository subCategoryRepository;
     ProductDetailRepository productDetailRepository;
     TempRepository tempRepository;
 
     @Override
-    public List<Product> getAllProduct() {
-        return productRepository.findAll();
+    public Page<Product> getAllProduct(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
     @Override
     public Product getProductById(String id) {
-        Optional<Product>  productOptional =  productRepository.findProductById(Long.valueOf(id));
-        if(productOptional.isPresent()){
-            return productOptional.get();
+        return productRepository.findProductById(Long.valueOf(id))
+                .orElseThrow(() -> new ProductNotFoundException(id));
+    }
+    public Page<Product> searchProducts(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.isEmpty()) {
+            return productRepository.findAll(pageable); // Nếu không có keyword, trả về tất cả sản phẩm
+        } else {
+            return productRepository.findByTitleContainingIgnoreCase(keyword, pageable);
         }
-        return null;
     }
 
     @Override
@@ -51,15 +57,15 @@ public class ProductServiceImpl implements ProductService {
             product.setProductDetail(productDetail);
 
             //xử lý Category
-            Category category = categoryRepository.findById(addProductRequest.getCategoryId())
+            SubCategory subCategory = subCategoryRepository.findById(addProductRequest.getCategoryId())
                     .orElseGet(() -> {
-                        Category newCategory = new Category();
-                        newCategory.setId(addProductRequest.getCategoryId());
-                        newCategory.setCategoryName("Default Category");
-                        newCategory.setStatus("active");
-                        return categoryRepository.save(newCategory);
+                        SubCategory newSubCategory = new SubCategory();
+                        newSubCategory.setId(addProductRequest.getCategoryId());
+                        newSubCategory.setName("Default Category");
+                        newSubCategory.setStatus("active");
+                        return subCategoryRepository.save(newSubCategory);
                     });
-            product.setCategory(category);
+            product.setSubCategory(subCategory);
 
             //Lưu product
             productRepository.save(product);

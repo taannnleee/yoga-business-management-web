@@ -1,6 +1,7 @@
 package org.example.yogabusinessmanagementweb.authentication.service;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.LoginRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
@@ -25,7 +26,7 @@ public interface UserService {
     Optional<User> findByEmail(String email);
     long saveUser(User user);
 
-    ProfileResponse getProfile(String id);
+    ProfileResponse getProfile(HttpServletRequest request);
 
-    void updateProfile(UpdateProfileRequest updateProfileRequest, String id);
+    void updateProfile(UpdateProfileRequest updateProfileRequest, HttpServletRequest request);
 }

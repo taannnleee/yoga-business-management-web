@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.authentication.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -30,20 +31,20 @@ public class UserController {
         return new ResponseData<>(HttpStatus.OK.value(), "Get all user success", userService.getAllUser());
     }
 
-    @GetMapping("/getProfile/{id}")
-    public ResponseData<?> getProfile(@PathVariable String id){
+    @GetMapping("/getProfile")
+    public ResponseData<?> getProfile(HttpServletRequest request){
         try{
-            ProfileResponse profileResponse =  userService.getProfile(id);
+            ProfileResponse profileResponse =  userService.getProfile(request);
             return new ResponseData<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
 
         }catch (UserNotFoundException e){
             return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
         }
     }
-    @PostMapping("/updateProfile/{id}")
-    public ResponseData<?> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest, @PathVariable String id){
+    @PostMapping("/updateProfile")
+    public ResponseData<?> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest, HttpServletRequest request){
         try{
-            userService.updateProfile(updateProfileRequest, id);
+            userService.updateProfile(updateProfileRequest, request);
             return new ResponseData<>(HttpStatus.OK.value(), "update profile successfully");
 
         }catch (UserNotFoundException e){

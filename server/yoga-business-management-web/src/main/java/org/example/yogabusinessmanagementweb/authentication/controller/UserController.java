@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ProfileResponse;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ResponseData;
-import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.Impl.AuthencationService;
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
@@ -33,22 +32,13 @@ public class UserController {
 
     @GetMapping("/getProfile")
     public ResponseData<?> getProfile(HttpServletRequest request){
-        try{
-            ProfileResponse profileResponse =  userService.getProfile(request);
-            return new ResponseData<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
-
-        }catch (UserNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-        }
+        ProfileResponse profileResponse =  userService.getProfile(request);
+        return new ResponseData<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
     }
     @PostMapping("/updateProfile")
     public ResponseData<?> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest, HttpServletRequest request){
-        try{
-            userService.updateProfile(updateProfileRequest, request);
-            return new ResponseData<>(HttpStatus.OK.value(), "update profile successfully");
+        userService.updateProfile(updateProfileRequest, request);
+        return new ResponseData<>(HttpStatus.OK.value(), "update profile successfully");
 
-        }catch (UserNotFoundException e){
-            return new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
     }
 }

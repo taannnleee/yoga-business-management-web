@@ -46,7 +46,7 @@ public class AuthencationService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         }
         catch (BadCredentialsException e) {
-            throw new RuntimeException("Username or Password is incorrect", e);
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));

@@ -30,6 +30,8 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(10019, "Email already exists"),
 
 
+  
+
     INVALID_CREDENTIALS(10020,"Invalid credentials" ),;
 
     // MODULE ERROR

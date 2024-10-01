@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.AddProductResponse;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ResponseData;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.Impl.AuthencationService;
@@ -27,12 +28,8 @@ public class AdminProductController {
 
     @PostMapping("/add-product")
     public ResponseData<?> creatProduct(@RequestBody AddProductRequest addProductRequest) {
-        try{
-            productService.addProduct(addProductRequest);
-            return new ResponseData<>(HttpStatus.OK.value(), "create product  successfully",true);
-        }catch (Exception e){
-            return new ResponseData<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage(),false);
-        }
+        AddProductResponse addProductResponse = productService.addProduct(addProductRequest);
+        return new ResponseData<>(HttpStatus.OK.value(), "create product  successfully",addProductResponse);
     }
 
 

@@ -29,11 +29,9 @@ public enum ErrorCode {
     PHONE_ALREADY_EXISTS(10018, "Phone already exists"),
     EMAIL_ALREADY_EXISTS(10019, "Email already exists"),
 
+  
 
-
-
-
-    ;
+    INVALID_CREDENTIALS(10020,"Invalid credentials" ),;
 
     // MODULE ERROR
 

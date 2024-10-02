@@ -18,6 +18,7 @@ public enum ErrorCode {
     SYLLABUS_NOT_FOUND(1007,"Syllabus not found"),
     ADDRESS_NOT_FOUND(1008, "Address not found"),
     USER_NOT_FOUND(1009, "User not found"),
+
     TOKEN_INVALID(1010, "Token is invalid"),
     PASS_WORD_NOT_MATCHED(1011, "Password word not matched"),
     TOKEN_EMPTY(1012, "Token is empty"),
@@ -29,9 +30,12 @@ public enum ErrorCode {
     PHONE_ALREADY_EXISTS(1018, "Phone already exists"),
     EMAIL_ALREADY_EXISTS(1019, "Email already exists"),
 
+    CART_NOT_FOUND(1020, "Cart not found"),
+    PRODUCT_NOT_EXISTS(1021, "Product not exists"),
 
 
-    INVALID_CREDENTIALS(1020,"Invalid credentials" ),;
+
+    INVALID_CREDENTIALS(1022,"Invalid credentials" ),;
 
     // MODULE ERROR
 

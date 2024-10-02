@@ -22,6 +22,8 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "product_detail_id")
     ProductDetail productDetail;
 
+    String status;
+
     @Column(name = "title")
     String title;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

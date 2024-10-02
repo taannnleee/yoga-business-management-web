@@ -18,9 +18,5 @@ public class ProductDetailDTO {
     String imagePath;
     String description;
     BigDecimal price;
-    String material;
-    String dimensions;
-    String thickness;
-    String weight;
     String color;
 }

@@ -1,6 +1,7 @@
 package org.example.yogabusinessmanagementweb.authentication.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,7 @@ import org.example.yogabusinessmanagementweb.authentication.service.ProductServi
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.example.yogabusinessmanagementweb.sendEmail.service.EmailService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +34,12 @@ public class CartController {
     @PostMapping("/add-to-cart")
     public ResponseData<?> addToCart(@RequestBody CartCreationRequest cartCreationRequest) {
         CartResponse cartResponse =  cartService.addToCart(cartCreationRequest);
-        return new ResponseData<>(HttpStatus.OK.value(), "add to cart success");
+        return new ResponseData<>(HttpStatus.OK.value(), "add to cart success",cartResponse);
+    }
 
+    @GetMapping("/show-cart/{cartId}")
+    public ResponseData<?> showCart(@PathVariable String cartId) {
+        CartResponse cartResponse = cartService.showCart(cartId);
+        return new ResponseData<>(HttpStatus.OK.value(), "add to cart success",cartResponse);
     }
 }

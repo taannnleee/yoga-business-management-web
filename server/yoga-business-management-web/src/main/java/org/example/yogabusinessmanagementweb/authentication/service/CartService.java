@@ -5,4 +5,6 @@ import org.example.yogabusinessmanagementweb.authentication.dto.response.cart.Ca
 
 public interface CartService {
     CartResponse addToCart(CartCreationRequest cartCreationRequest);
+
+    CartResponse showCart(String cartId);
 }

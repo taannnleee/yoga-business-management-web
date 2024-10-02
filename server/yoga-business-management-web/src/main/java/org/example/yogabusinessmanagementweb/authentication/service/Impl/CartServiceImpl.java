@@ -3,8 +3,12 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.java.Log;
+import org.example.yogabusinessmanagementweb.authentication.dto.CartItemDTO;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.cart.CartCreationRequest;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.AddProductResponse;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.cart.CartResponse;
+import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
+import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.repositories.CartItemRepository;
 import org.example.yogabusinessmanagementweb.authentication.repositories.CartRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.CartService;
@@ -13,6 +17,7 @@ import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.example.yogabusinessmanagementweb.common.entities.Cart;
 import org.example.yogabusinessmanagementweb.common.entities.CartItem;
 import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -89,9 +94,29 @@ public class CartServiceImpl implements CartService {
         // Lưu lại cart
         cartRepository.save(cart);
         // Trả về response
-        CartResponse response = new CartResponse();
+        CartResponse response = Mappers.convertToDto(cart, CartResponse.class);
         return response;
     }
 
+    @Override
+    public CartResponse showCart(String cartId) {
+        // Chuyển đổi cartId từ String sang Long
+        Long id = Long.parseLong(cartId);
 
+        // Tìm giỏ hàng theo cartId
+        Optional<Cart> cartOptional = cartRepository.findById(id);
+
+        // Nếu không tìm thấy giỏ hàng, có thể trả về null hoặc một thông điệp lỗi tùy theo yêu cầu
+        if (cartOptional.isEmpty()) {
+            throw new AppException(ErrorCode.CART_NOT_FOUND);
+        }
+
+        Cart cart = cartOptional.get();
+
+        List<CartItemDTO> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemDTO.class);
+
+        CartResponse response  = Mappers.convertToDto(cart, CartResponse.class);
+        response.setCartItem(itemDTOS);
+        return response;
+    }
 }

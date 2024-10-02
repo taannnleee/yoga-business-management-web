@@ -27,7 +27,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderCreationResponse createOrder(OrderCreationRequest orderCreationRequest) {
-        User user = userService.findUserById(String.valueOf(orderCreationRequest.getUserId()));
+        User user = userService.findUserById(orderCreationRequest.getUserId());
+
         Optional<Cart> cartResponse = cartRepository.findCartByUser(user);
 
         if (!cartResponse.isPresent() || cartResponse.get().getCartItems().isEmpty()) {

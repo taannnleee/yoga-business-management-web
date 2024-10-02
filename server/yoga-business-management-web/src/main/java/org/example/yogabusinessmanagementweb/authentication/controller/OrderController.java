@@ -38,6 +38,6 @@ public class OrderController {
     @PostMapping("/create-order")
     public ResponseData<?> createOrder(@RequestBody OrderCreationRequest orderCreationRequest) {
         OrderCreationResponse orderCreationResponse =  orderService.createOrder(orderCreationRequest);
-        return new ResponseData<>(HttpStatus.OK.value(), "create order success",orderCreationResponse);
+        return new ResponseData<>(HttpStatus.OK.value(), "create order success");
     }
 }

@@ -11,5 +11,5 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class OrderCreationRequest {
-    Long userId;
+    String userId;
 }

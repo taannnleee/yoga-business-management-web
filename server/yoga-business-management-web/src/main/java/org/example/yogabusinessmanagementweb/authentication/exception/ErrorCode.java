@@ -29,8 +29,7 @@ public enum ErrorCode {
     PHONE_ALREADY_EXISTS(10018, "Phone already exists"),
     EMAIL_ALREADY_EXISTS(10019, "Email already exists"),
     CART_NOT_FOUND(10020, "Cart not found"),
-
-  
+    PRODUCT_NOT_EXISTS(10021, "Product not exists"),
 
     INVALID_CREDENTIALS(10020,"Invalid credentials" ),;
 

@@ -37,9 +37,23 @@ public class CartController {
         return new ResponseData<>(HttpStatus.OK.value(), "add to cart success",cartResponse);
     }
 
+    @PostMapping("/subtract-from-cart-item")
+    public ResponseData<?> subtractFromCartItem(@RequestBody CartCreationRequest cartCreationRequest) {
+        CartResponse cartResponse =  cartService.subtractFromCartItem(cartCreationRequest);
+        return new ResponseData<>(HttpStatus.OK.value(), "add to cart success",cartResponse);
+    }
+
+    @PostMapping("/remove-from-cart")
+    public ResponseData<?> removeFromCart(@RequestBody CartCreationRequest cartCreationRequest) {
+        CartResponse cartResponse =  cartService.removeFromCart(cartCreationRequest);
+        return new ResponseData<>(HttpStatus.OK.value(), "add to cart success",cartResponse);
+    }
+
     @GetMapping("/show-cart/{cartId}")
     public ResponseData<?> showCart(@PathVariable String cartId) {
         CartResponse cartResponse = cartService.showCart(cartId);
         return new ResponseData<>(HttpStatus.OK.value(), "add to cart success",cartResponse);
     }
+
+
 }

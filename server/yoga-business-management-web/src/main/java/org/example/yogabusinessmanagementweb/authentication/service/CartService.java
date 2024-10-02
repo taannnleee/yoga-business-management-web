@@ -7,4 +7,8 @@ public interface CartService {
     CartResponse addToCart(CartCreationRequest cartCreationRequest);
 
     CartResponse showCart(String cartId);
+
+    CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest);
+
+    CartResponse removeFromCart(CartCreationRequest cartCreationRequest);
 }

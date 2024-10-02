@@ -22,6 +22,6 @@ public class Cart extends AbstractEntity<Long>{
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<CartItem> cartItems;
 }

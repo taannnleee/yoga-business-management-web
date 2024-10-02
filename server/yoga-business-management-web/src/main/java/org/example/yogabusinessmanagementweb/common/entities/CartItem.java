@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CartItem extends AbstractEntity<Long>{
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     Product product;
     int quantity;

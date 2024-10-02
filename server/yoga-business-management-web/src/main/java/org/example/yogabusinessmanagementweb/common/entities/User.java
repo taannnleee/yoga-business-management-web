@@ -33,7 +33,7 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
 
     Date dateOfBirth;
     String imagePath;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Address> addresses;
 
     @OneToMany(mappedBy = "user")

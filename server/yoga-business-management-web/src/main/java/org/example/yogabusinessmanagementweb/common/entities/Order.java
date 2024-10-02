@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @Column(name = "deliveryDate")
     Date deliveryDate;
     @Column(name = "total_price")
-    Long totalPrice;
+    BigDecimal totalPrice;
     @Column(name = "total_item")
     int totalItem;
     @OneToOne()
@@ -34,6 +35,6 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @OneToOne()
     @JoinColumn(name = "address_id")
     Address address;
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<OrderItem> orderItems;
 }

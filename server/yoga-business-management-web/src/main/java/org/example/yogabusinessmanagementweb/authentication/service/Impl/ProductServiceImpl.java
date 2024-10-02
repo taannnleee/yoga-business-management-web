@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.AddProductResponse;
 import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
 import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.repositories.*;

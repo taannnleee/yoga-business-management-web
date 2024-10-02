@@ -37,9 +37,7 @@ public class AuthenticationController {
         userService.checkUserNotExist(registrationRequest);
         RegistrationResponse rp = userService.registerUser(registrationRequest);
         return new ResponseData<>(HttpStatus.OK.value(), "User registered successfully", rp);
-
     }
-
 
     @PostMapping("verifyOTP_register")
     public ResponseData<TokenRespone> verifyOTPRegister(@RequestParam String OTP,@RequestParam  String email) {

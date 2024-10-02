@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ResponseData;
-import org.example.yogabusinessmanagementweb.authentication.exception.UserNotFoundException;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.Impl.AuthencationService;
 import org.example.yogabusinessmanagementweb.authentication.service.ProductService;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

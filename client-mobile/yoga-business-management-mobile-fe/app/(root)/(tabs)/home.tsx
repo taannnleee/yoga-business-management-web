@@ -23,8 +23,6 @@ const Home = () => {
   const [page, setPage] = useState(1); // Start from page 1
   const [isLoadingMore, setIsLoadingMore] = useState(false); // For tracking lazy loading state
   const [hasMore, setHasMore] = useState(true); // For tracking if more products are available
-  console.log("Page", page);
-  console.log("keyword", keyword);
   // Fetch products using getProducts function
   useEffect(() => {
     const fetchProducts = async () => {

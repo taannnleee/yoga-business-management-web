@@ -2,6 +2,8 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
+import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.repositories.AddressRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.AddressService;
 import org.example.yogabusinessmanagementweb.common.entities.Address;
@@ -18,10 +20,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address findAddressByUser(User user) {
-        Optional<Address> address =   addressRepository.findAddressByUser(user);
-        if(address.isPresent()){
-            return address.get();
-        }
-        return null;
+        return addressRepository.findAddressByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
     }
 }

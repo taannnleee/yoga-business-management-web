@@ -14,16 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+    User findUserById(String id);
     List<User> getAllUser();
-    Optional<User>  findByUserName(String username);
+    User findByUserName(String username);
     boolean checkUserNotExist(RegistrationRequest registrationRequest);
-    User checkUser(RegistrationRequest registrationRequest);
     RegistrationResponse registerUser(RegistrationRequest registrationRequest);
-    Optional<User> findByPhone(String phoneNumber);
-    User checkLogin(LoginRequest loginRequest);
-    boolean changePassword(String email, String newPassword);
+    User findByPhone(String phoneNumber);
     UserDetailsService userDetailsService();
-    Optional<User> findByEmail(String email);
+    User findByEmail(String email);
     long saveUser(User user);
 
     ProfileResponse getProfile(HttpServletRequest request);

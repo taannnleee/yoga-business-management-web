@@ -170,20 +170,20 @@ const Product = () => {
           </View>
         </View>
       </ScrollView>
-      <View className="flex-row justify-between p-2">
+      <View className="flex-row justify-between ">
         <Button
           title="Chat ngay"
-          className={"bg-red-500"}
+          className={"bg-red-500 "}
           onPress={() => console.log("Chat ngay pressed")}
         />
         <Button
-          title="Thêm vào giỏ hàng"
-          className="bg-green-500 w-1/3 " // Màu xanh lá cây
+          title="Thêm giỏ hàng"
+          className="bg-green-500" // Màu xanh lá cây
           onPress={() => console.log("Thêm vào giỏ hàng pressed")}
         />
         <Button
           title="Mua hàng"
-          className="bg-orange-500 w-1/3" // Màu cam
+          className="bg-orange-500" // Màu cam
           onPress={() => console.log("Mua hàng pressed")}
         />
       </View>

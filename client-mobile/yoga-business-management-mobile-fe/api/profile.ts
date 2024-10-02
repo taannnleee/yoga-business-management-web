@@ -6,10 +6,9 @@ export const getProFile = async (token: string) => {
     const response = await fetch(`${BASE_URL}/api/user/getProfile`, {
       method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'x-token': token,
-        'Content-Type': 'application/json',
-        
+        Authorization: `Bearer ${token}`,
+        "x-token": token,
+        "Content-Type": "application/json",
       },
     });
     if (response.ok) {
@@ -17,15 +16,19 @@ export const getProFile = async (token: string) => {
       return { success: true, data: result };
     } else {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to fetch profile" };
+      return {
+        success: false,
+        error: error.message || "Failed to fetch profile",
+      };
     }
   } catch (error) {
-    return { success: false, error:  "Network error occurred" };
+    return { success: false, error: "Network error occurred" };
   }
 };
 
-export const updateProfile = async (token: string,profileData: 
-  { 
+export const updateProfile = async (
+  token: string,
+  profileData: {
     fullname: string;
     username: string;
     email: string;
@@ -33,16 +36,15 @@ export const updateProfile = async (token: string,profileData:
     city: string;
     street: string;
     state: string;
-  }
-  ) => {
+  },
+) => {
   try {
     const response = await fetch(`${BASE_URL}/api/user/updateProfile`, {
       method: "POST",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'x-token': token,
-        'Content-Type': 'application/json',
-        
+        Authorization: `Bearer ${token}`,
+        "x-token": token,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(profileData),
     });
@@ -51,9 +53,12 @@ export const updateProfile = async (token: string,profileData:
       return { success: true, data: result };
     } else {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to fetch profile" };
+      return {
+        success: false,
+        error: error.message || "Failed to fetch profile",
+      };
     }
   } catch (error) {
-    return { success: false, error:  "Network error occurred" };
+    return { success: false, error: "Network error occurred" };
   }
 };

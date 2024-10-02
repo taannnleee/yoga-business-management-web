@@ -6,20 +6,18 @@ import { icons } from "@/constants";
 
 SplashScreen.preventAutoHideAsync();
 
-const RestaurantLayout = () => {
+const ProductDetailLayout = () => {
   // Extract route parameters using useLocalSearchParams
-  const { nameRestaurant } = useLocalSearchParams<{ nameRestaurant: string }>();
-
+  const { nameProduct } = useLocalSearchParams<{ nameProduct: string }>();
+  console.log("avascd", nameProduct);
   // Use a default value if the nameRestaurant parameter is not provided
-  const restaurantName = nameRestaurant || "Default Name";
+  const productName = nameProduct || "Default Name";
 
   return (
     <Stack>
       <Stack.Screen
-        name={"[restaurant]"}
+        name={"[product]"}
         options={{
-          headerShown: true,
-          headerTitle: restaurantName, // Set header title dynamically
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Image className={"w-8 h-8 mr-10"} source={icons.backArrow} />
@@ -31,4 +29,4 @@ const RestaurantLayout = () => {
   );
 };
 
-export default RestaurantLayout;
+export default ProductDetailLayout;

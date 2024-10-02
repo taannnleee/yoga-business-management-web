@@ -17,6 +17,7 @@ export const getProducts = async (
     if (keyword) {
       url.searchParams.append("keyword", keyword); // Truyền keyword nếu có
     }
+    console.log("Called api getAllproduct line:", 20);
     // Send the API request
     const response = await fetch(url.toString(), {
       method: "GET",

@@ -60,15 +60,16 @@ public class AuthencationService {
         String refresh_token =  jwtService.generateRefreshToken(user);
 
         //save token vào db
-        tokenService.save(Token.builder()
+        Token savedToken = tokenService.save(Token.builder()
                         .username(user.getUsername())
                         .accessToken(accessToken)
                         .refreshToken(refresh_token)
                         .build());
-
+        user.setToken(savedToken);
+        userRepository.save(user);
         return TokenRespone.builder()
-                .accesstoken(accessToken)
-                .refreshtoken(refresh_token)
+                .accesstoken(user.getToken().getAccessToken())
+                .refreshtoken(user.getToken().getRefreshToken())
                 .userid(user.getId())
                 .build();
     }

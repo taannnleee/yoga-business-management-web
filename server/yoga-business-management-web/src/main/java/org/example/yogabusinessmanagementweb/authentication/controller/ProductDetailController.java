@@ -11,6 +11,7 @@ import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.sendEmail.service.EmailService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,8 @@ public class ProductDetailController {
     ProductService productService;
 
     @GetMapping("/getProduct/{id}")
-    public ResponseData<?> getProductDetail(@PathVariable String id){
+    public ResponseData<?> getProductDetail(@PathVariable String id, Authentication authentication){
+        System.out.println("Name is" + authentication.getName());
         Product product = productService.getProductById(id);
         return new ResponseData<>(HttpStatus.OK.value(), "get product detail successfully",product);
     }

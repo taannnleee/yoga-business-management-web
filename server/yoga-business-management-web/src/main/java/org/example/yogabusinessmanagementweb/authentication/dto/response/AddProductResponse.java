@@ -9,7 +9,8 @@ import org.example.yogabusinessmanagementweb.authentication.dto.ProductDetailDTO
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class AddProductResponse {
     Long id;
-    String status;
+    Long subCategoryId;
+    Double averageRating;
     ProductDetailDTO productDetail;
-    Long categoryId;
+
 }

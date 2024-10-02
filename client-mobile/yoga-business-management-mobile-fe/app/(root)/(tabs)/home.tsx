@@ -81,7 +81,7 @@ const Home = () => {
             onPress={() => {
               router.push(
                 // @ts-ignore
-                `/(root)/(restaurant)/${item.id}?nameRestaurant=${item.name}`,
+                `/(root)/(product)/${item.id}?nameProduct=${item.title}`,
               );
             }}
           >

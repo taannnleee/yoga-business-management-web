@@ -32,7 +32,6 @@ import onWelcome1 from "@/assets/images/onWelcome1.png";
 import onWelcome2 from "@/assets/images/onWelcome2.png";
 import onWelcome3 from "@/assets/images/onWelcome3.png";
 import signUpFood from "@/assets/images/signup-food.png";
-import restaurant from "@/assets/icons/restaurant.png";
 import add from "@/assets/icons/add.png";
 
 export const images = {
@@ -72,7 +71,6 @@ export const icons = {
   star,
   target,
   to,
-  restaurant,
 };
 
 export const onWelcome = [

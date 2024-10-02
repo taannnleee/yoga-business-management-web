@@ -44,7 +44,7 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @OneToOne()
     Wishlist wishlist;
 
-    @OneToOne()
+    @OneToOne
     Token token;
 
     @OneToMany()

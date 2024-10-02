@@ -15,6 +15,7 @@ import org.example.yogabusinessmanagementweb.common.entities.CartItem;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,13 +60,18 @@ public class CartServiceImpl implements CartService {
         if (existingItem != null) {
             // Nếu sản phẩm đã tồn tại, tăng số lượng
             existingItem.setQuantity(existingItem.getQuantity() + 1);
-//            existingItem.setTotalPrice(existingItem.getProduct().getProductDetail().getPrice() * existingItem.getQuantity());
+
+            BigDecimal price = existingItem.getProduct().getProductDetail().getPrice(); // Giá sản phẩm
+            int quantity = existingItem.getQuantity();
+
+            BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
+            existingItem.setTotalPrice(totalPrice);
         } else {
             // Nếu sản phẩm chưa tồn tại, tạo CartItem mới
             CartItem newItem = new CartItem();
             newItem.setProduct(productService.getProductById(cartCreationRequest.getProductId())); // Tìm sản phẩm
             newItem.setQuantity(1);
-//            newItem.setTotalPrice(newItem.getProduct().getPrice() * newItem.getQuantity());
+            newItem.setTotalPrice(newItem.getProduct().getProductDetail().getPrice());
 
             // Thêm CartItem vào cart
             cart.getCartItems().add(newItem);
@@ -73,7 +79,12 @@ public class CartServiceImpl implements CartService {
 
         // Cập nhật tổng số mặt hàng và tổng giá
         cart.setTotalItem(cart.getCartItems().size());
-//        cart.setTotalPrice(cart.getCartItems().stream().mapToLong(CartItem::getTotalPrice).sum());
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (CartItem item : cart.getCartItems()) {
+            totalPrice = totalPrice.add(item.getTotalPrice());
+        }
+        cart.setTotalPrice(totalPrice);
 
         // Lưu lại cart
         cartRepository.save(cart);

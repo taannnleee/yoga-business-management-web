@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "CartItem")
 @NoArgsConstructor
@@ -17,5 +19,5 @@ public class CartItem extends AbstractEntity<Long>{
     @JoinColumn(name = "product_id")
     Product product;
     int quantity;
-    Long totalPrice;
+    BigDecimal totalPrice;
 }

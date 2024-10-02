@@ -18,20 +18,20 @@ public enum ErrorCode {
     SYLLABUS_NOT_FOUND(1007,"Syllabus not found"),
     ADDRESS_NOT_FOUND(1008, "Address not found"),
     USER_NOT_FOUND(1009, "User not found"),
-    TOKEN_INVALID(10010, "Token is invalid"),
-    PASS_WORD_NOT_MATCHED(10011, "Password word not matched"),
-    TOKEN_EMPTY(10012, "Token is empty"),
-    USER_NOT_ACTIVE(10013, "User is not active"),
-    TOKEN_NOT_FOUND(10014, "Token not found"),
-    OTP_INVALID(10015, "OTP is invalid"),
-    PRODUCT_NOT_FOUND(10016, "Product not found"),
-    USERNAME_ALREADY_EXISTS(10017, "Username already exists"),
-    PHONE_ALREADY_EXISTS(10018, "Phone already exists"),
-    EMAIL_ALREADY_EXISTS(10019, "Email already exists"),
+    TOKEN_INVALID(1010, "Token is invalid"),
+    PASS_WORD_NOT_MATCHED(1011, "Password word not matched"),
+    TOKEN_EMPTY(1012, "Token is empty"),
+    USER_NOT_ACTIVE(1013, "User is not active"),
+    TOKEN_NOT_FOUND(1014, "Token not found"),
+    OTP_INVALID(1015, "OTP is invalid"),
+    PRODUCT_NOT_FOUND(1016, "Product not found"),
+    USERNAME_ALREADY_EXISTS(1017, "Username already exists"),
+    PHONE_ALREADY_EXISTS(1018, "Phone already exists"),
+    EMAIL_ALREADY_EXISTS(1019, "Email already exists"),
 
-  
 
-    INVALID_CREDENTIALS(10020,"Invalid credentials" ),;
+
+    INVALID_CREDENTIALS(1020,"Invalid credentials" ),;
 
     // MODULE ERROR
 

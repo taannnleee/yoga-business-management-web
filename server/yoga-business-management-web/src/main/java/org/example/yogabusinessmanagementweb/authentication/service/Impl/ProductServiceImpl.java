@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.AddProductRequest;
+import org.example.yogabusinessmanagementweb.authentication.dto.response.AddProductResponse;
 import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
 import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.repositories.*;
@@ -45,26 +46,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public AddProductResponse addProduct(AddProductRequest addProductRequest)  {
-        Product product =  Mappers.convertToEntity(addProductRequest, Product.class);
-
+        Product product = new Product();
+        product =  Mappers.convertToEntity(addProductRequest, Product.class);
+        System.out.println(product.getId());
         // Xử lý ProductDetail
         ProductDetail productDetail= Mappers.convertToEntity(addProductRequest.getProductDetail(), ProductDetail.class);
         product.setProductDetail(productDetail);
 
         //xử lý Category
-        SubCategory subCategory = subCategoryRepository.findById(addProductRequest.getCategoryId())
+        SubCategory subCategory = subCategoryRepository.findById(addProductRequest.getSubCategoryId())
                 .orElseGet(() -> {
                     SubCategory newSubCategory = new SubCategory();
-                    newSubCategory.setId(addProductRequest.getCategoryId());
+                    newSubCategory.setId(addProductRequest.getSubCategoryId());
                     newSubCategory.setName("Default Category");
                     newSubCategory.setStatus("active");
                     return subCategoryRepository.save(newSubCategory);
                 });
         product.setSubCategory(subCategory);
 
+        productRepository.save(product);
         AddProductResponse addProductResponse = Mappers.convertToDto(product, AddProductResponse.class);
         //Lưu product
-        productRepository.save(product);
 
         return addProductResponse;
     }

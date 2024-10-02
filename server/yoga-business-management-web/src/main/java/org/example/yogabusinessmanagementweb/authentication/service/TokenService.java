@@ -4,7 +4,7 @@ import org.example.yogabusinessmanagementweb.common.entities.Token;
 
 public interface TokenService {
 
-    Long save(Token token);
+    Token save(Token token);
     String delete(Token token);
     Token getTokenByUsername(String username);
 }

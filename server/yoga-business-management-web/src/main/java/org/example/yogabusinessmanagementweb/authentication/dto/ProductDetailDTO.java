@@ -13,14 +13,13 @@ import java.math.BigDecimal;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProductDetailDTO {
-    Long  id;
     String name;
     String imagePath;
     String description;
     BigDecimal price;
-    String material;
-    String dimensions;
-    String thickness;
-    String weight;
     String color;
+    String size;
+    String code;
+    String brand;
+
 }

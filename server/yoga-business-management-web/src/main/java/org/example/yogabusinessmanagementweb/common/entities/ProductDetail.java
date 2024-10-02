@@ -34,11 +34,11 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
     String code;
     @Column(name = "brand")
     String brand;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     String description;
 
     @OneToOne()
-//    @JsonIgnore
+    @JsonIgnore
     Product product;
 
 

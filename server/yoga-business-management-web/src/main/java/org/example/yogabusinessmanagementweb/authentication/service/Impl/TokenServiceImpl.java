@@ -2,9 +2,13 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
+import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.authentication.repositories.TokenRepository;
+import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.TokenService;
 import org.example.yogabusinessmanagementweb.common.entities.Token;
+import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,27 +19,30 @@ import java.util.Optional;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class TokenServiceImpl implements TokenService {
     TokenRepository tokenRepository;
+    UserRepository userRepository;
 
     @Override
-    public Long save(Token token) {
+    public Token save(Token token) {
         Optional<Token> optional =  tokenRepository.findByUsername(token.getUsername());
         if(optional.isEmpty()) {
-            tokenRepository.save(token);
-            return token.getId();
+            return tokenRepository.save(token);
         }else{
             Token currentToken = optional.get();
             currentToken.setAccessToken(token.getAccessToken());
             currentToken.setRefreshToken(token.getRefreshToken());
-            tokenRepository.save(currentToken);
-            return currentToken.getId();
+            return tokenRepository.save(currentToken);
         }
 
     }
 
     @Override
     public String delete(Token token) {
+
+        User user = userRepository.findByToken(token).orElseThrow(() -> new AppException(ErrorCode.TOKEN_NOT_FOUND));;
+        user.setToken(null);
+        userRepository.save(user);
         tokenRepository.delete(token);
-        return  "delete!!!";
+        return  "Delete token success";
     }
 
     @Override

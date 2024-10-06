@@ -5,5 +5,4 @@ import org.example.yogabusinessmanagementweb.common.entities.Address;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 
 public interface AddressService {
-    Address findAddressByUser(User user);
 }

@@ -57,6 +57,7 @@ public class PreFilter extends OncePerRequestFilter {
                 securityContext.setAuthentication(authentication);
 
                 SecurityContextHolder.setContext(securityContext);
+
             }
 
         }

@@ -17,7 +17,4 @@ public class Address extends AbstractEntity<Long> {
     String street;
     String district ;
     String city;
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
-    User user;
 }

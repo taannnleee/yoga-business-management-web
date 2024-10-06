@@ -7,6 +7,7 @@ import org.example.yogabusinessmanagementweb.authentication.dto.request.Registra
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.ProfileResponse;
 import org.example.yogabusinessmanagementweb.authentication.dto.response.RegistrationResponse;
+import org.example.yogabusinessmanagementweb.common.entities.Address;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -19,6 +20,7 @@ public interface UserService {
     User findByUserName(String username);
     boolean checkUserNotExist(RegistrationRequest registrationRequest);
     RegistrationResponse registerUser(RegistrationRequest registrationRequest);
+    List<Address> getUserAddresses(Long userId);
     User findByPhone(String phoneNumber);
     UserDetailsService userDetailsService();
     User findByEmail(String email);

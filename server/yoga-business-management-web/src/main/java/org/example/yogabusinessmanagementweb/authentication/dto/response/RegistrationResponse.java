@@ -3,8 +3,10 @@ package org.example.yogabusinessmanagementweb.authentication.dto.response;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
@@ -14,4 +16,5 @@ public class RegistrationResponse {
     String username;
     String email;
     String status;
+    String roles;
 }

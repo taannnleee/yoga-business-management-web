@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.authentication.service.Impl;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 
@@ -75,6 +78,12 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails){
+        List<String> scopes = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        claims.put("scope", scopes); // Đặt scopes vào claims
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())

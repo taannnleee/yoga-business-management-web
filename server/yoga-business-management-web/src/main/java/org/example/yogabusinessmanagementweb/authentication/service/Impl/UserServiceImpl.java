@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.authentication.service.Impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.authentication.dto.request.UpdateProfileRequest;
@@ -9,10 +10,12 @@ import org.example.yogabusinessmanagementweb.authentication.dto.response.Profile
 import org.example.yogabusinessmanagementweb.authentication.dto.response.RegistrationResponse;
 import org.example.yogabusinessmanagementweb.authentication.exception.AppException;
 import org.example.yogabusinessmanagementweb.authentication.exception.ErrorCode;
+import org.example.yogabusinessmanagementweb.authentication.repositories.AddressRepository;
 import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.AddressService;
 import org.example.yogabusinessmanagementweb.authentication.service.JwtService;
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.example.yogabusinessmanagementweb.common.entities.Address;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
@@ -21,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +38,7 @@ import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.ACCES
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -52,6 +58,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtService jwtService;;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public List<User> getAllUser() {
@@ -81,8 +90,8 @@ public class UserServiceImpl implements UserService {
         User user = Mappers.convertToEntity(registrationRequest, User.class);
         user.setPassword(encodedPassword);
         user.setStatus(false);
+        user.setRoles(ERole.USER.name() );
 
-        address.setUser(user);
         user.setAddresses(arrayList);
         userRepository.save(user);
         authencationService.sendOTP(registrationRequest.getEmail());
@@ -120,13 +129,23 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCode.TOKEN_INVALID);
         }
 
-        Address address =  addressService.findAddressByUser(user);
+        List<Address> list_address = getUserAddresses(user.getId());
 
         ProfileResponse profileResponse = Mappers.convertToDto(user, ProfileResponse.class);
-        profileResponse.setCity(address.getCity());
-        profileResponse.setStreet(address.getStreet());
-        profileResponse.setState(address.getDistrict());
+        profileResponse.setCity(list_address.get(0).getCity());
+        profileResponse.setStreet(list_address.get(0).getStreet());
+        profileResponse.setState(list_address.get(0).getDistrict());
         return profileResponse;
+    }
+
+    @Override
+    public List<Address> getUserAddresses(Long userId) {
+        // Lấy User theo userId
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        // Trả về danh sách Address
+        return user.getAddresses();
     }
 
     @Override
@@ -153,10 +172,11 @@ public class UserServiceImpl implements UserService {
         user.setPhone(updateProfileRequest.getPhone());
 
         // Cập nhật địa chỉ
-        Address address = addressService.findAddressByUser(user);
-        address.setCity(updateProfileRequest.getCity());
-        address.setStreet(updateProfileRequest.getStreet());
-        address.setDistrict(updateProfileRequest.getState());
+        List<Address> addresses = getUserAddresses(user.getId());
+
+        addresses.get(0).setCity(updateProfileRequest.getCity());
+        addresses.get(0).setStreet(updateProfileRequest.getStreet());
+        addresses.get(0).setDistrict(updateProfileRequest.getState());
 
         // Lưu lại thông tin đã được cập nhật
         userRepository.save(user);

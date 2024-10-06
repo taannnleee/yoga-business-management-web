@@ -3,8 +3,12 @@ package org.example.yogabusinessmanagementweb.common.config.cors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.authentication.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
+import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +36,20 @@ public class AppConfig {
     UserService userService;
     PreFilter preFilter;
 
+    @Bean
+    ApplicationRunner applicationRunner(UserRepository userRepository) {
+      return args -> {
+          if(userRepository.findByUsername("admin").isEmpty()){
+              User user = User.builder()
+                      .username("admin")
+                      .password(getPasswordEncoder().encode("admin"))
+                      .roles(ERole.ADMIN.name())
+                      .build();
+              userRepository.save(user);
+          }
+      };
+    }
+
     private String[] WHITE_LIST = {"/api/auth/**"};
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};
 
@@ -58,7 +76,9 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain configure(@NonNull HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ADMIN")   
+                        .requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(provider()).addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

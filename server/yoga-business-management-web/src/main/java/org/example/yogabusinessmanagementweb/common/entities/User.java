@@ -4,9 +4,11 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import javax.print.attribute.standard.Media;
 import java.io.Serializable;
 import java.util.Collection;
@@ -28,18 +30,19 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     String phone;
     String gender;
     String email;
-
     String fullname;
-
     Date dateOfBirth;
     String imagePath;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    String roles;
+    boolean status;
+
+    // User quản lý Address, một chiều
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")  // Sử dụng khóa ngoại trong Address để ánh xạ
     List<Address> addresses;
 
     @OneToMany(mappedBy = "user")
     List<GroupHasUser> groupHasUsers;
-    int kind;
-    boolean status;
 
     @OneToOne()
     Wishlist wishlist;

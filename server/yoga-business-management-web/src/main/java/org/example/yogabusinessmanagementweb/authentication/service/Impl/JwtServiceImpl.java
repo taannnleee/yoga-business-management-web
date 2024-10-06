@@ -75,6 +75,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails){
+//        claims.put("scope", userDetails.getRoles());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())

@@ -9,6 +9,8 @@ import org.example.yogabusinessmanagementweb.authentication.service.Impl.Authenc
 import org.example.yogabusinessmanagementweb.authentication.service.UserService;
 import org.example.yogabusinessmanagementweb.sendEmail.service.EmailService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,20 @@ public class AdminUserController {
 
     @GetMapping("/getAllUser")
     public ResponseData<?> getAllUser() {
+        log.info("Request to get all users received");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null) {
+            log.info("Authenticated user: {}", authentication.getName());
+            log.info("User scopes: ");
+            authentication.getAuthorities().forEach(grantedAuthority -> {
+                log.info(" - {}", grantedAuthority.getAuthority());
+            });
+        } else {
+            log.warn("No authenticated user found");
+        }
+
         return new ResponseData<>(HttpStatus.OK.value(), "Get all user success", userService.getAllUser());
     }
 

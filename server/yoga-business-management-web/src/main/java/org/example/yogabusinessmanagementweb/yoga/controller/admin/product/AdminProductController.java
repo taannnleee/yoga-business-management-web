@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.yoga.controller.admin;
+package org.example.yogabusinessmanagementweb.yoga.controller.admin.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

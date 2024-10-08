@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.yoga.controller;
+package org.example.yogabusinessmanagementweb.yoga.controller.user.cart;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.yoga.controller;
+package org.example.yogabusinessmanagementweb.yoga.controller.user.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/home")
 @Slf4j
-public class HomeController {
+public class ProductController {
     UserService userService;
     UserRepository userRepository;
     EmailService emailService;

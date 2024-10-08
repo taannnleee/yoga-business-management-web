@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.yoga.dto.response.category;
+package org.example.yogabusinessmanagementweb.yoga.dto.response.subcategory;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,5 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SubCategoryResponse {
-    Long id;
-    String name;
+
 }

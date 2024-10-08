@@ -34,6 +34,8 @@ public enum ErrorCode {
     PRODUCT_NOT_EXISTS(1021, "Product not exists"),
     SUBCATEGORY_NOT_FOUND(1022, "Subcategory not found"),
 
+    CATEGORY_EXISTS(1023, "Category already exists"),
+    CATEGORY_NOT_FOUND(1024, "Category not found"),
 
 
     INVALID_CREDENTIALS(1022,"Invalid credentials" ),;

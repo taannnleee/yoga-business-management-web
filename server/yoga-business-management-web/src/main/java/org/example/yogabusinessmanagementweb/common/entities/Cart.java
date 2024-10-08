@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "Cart")
 @NoArgsConstructor
+
 @AllArgsConstructor
 @Builder
 @Getter

@@ -9,14 +9,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import org.example.yogabusinessmanagementweb.authentication.service.JwtService;
-import org.example.yogabusinessmanagementweb.authentication.service.UserService;
+import org.example.yogabusinessmanagementweb.yoga.service.JwtService;
+import org.example.yogabusinessmanagementweb.yoga.service.UserService;
 import org.example.yogabusinessmanagementweb.common.Enum.ETokenType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

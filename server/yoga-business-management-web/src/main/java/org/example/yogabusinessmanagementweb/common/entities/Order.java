@@ -21,20 +21,28 @@ import java.util.List;
 public class Order extends AbstractEntity<Long> implements Serializable {
     @Column(name = "deliveryDate")
     Date deliveryDate;
+
     @Column(name = "total_price")
     BigDecimal totalPrice;
+
     @Column(name = "total_item")
     int totalItem;
+
     @OneToOne()
     Payment payment;
+
     @Column(name = "order_date")
     Date orderDate;
+
     @ManyToOne()
     @JoinColumn(name = "user_id")
     User user;
+
     @OneToOne()
     @JoinColumn(name = "address_id")
     Address address;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
     List<OrderItem> orderItems;
 }

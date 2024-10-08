@@ -19,5 +19,6 @@ import java.util.List;
 public class Wishlist  extends AbstractEntity<Long> implements Serializable {
 
     @OneToMany()
+    @JoinColumn(name = "wish_list_id")
     List<Product> lovedProducts;
 }

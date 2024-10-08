@@ -41,7 +41,7 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     // User quản lý Address, một chiều
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")  // Sử dụng khóa ngoại trong Address để ánh xạ
-            List<Address> addresses;
+    List<Address> addresses;
 
     @OneToMany(mappedBy = "user")
     List<GroupHasUser> groupHasUsers;

@@ -26,15 +26,21 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     ProductDetail productDetail;
 
     String status;
+
     @Column(name = "price")
     BigDecimal price;
+
     @Column(name = "title")
     String title;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "subCategory_id")
     SubCategory subCategory;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
     List<Rating> ratings;
+
     @Column(name = "average_rating")
     Double averageRating = (double) 0;
 }

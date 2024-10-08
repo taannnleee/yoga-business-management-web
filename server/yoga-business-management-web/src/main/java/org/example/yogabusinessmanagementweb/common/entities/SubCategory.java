@@ -22,9 +22,11 @@ public class SubCategory extends AbstractEntity<Long> implements Serializable  {
 
     @Column(name = "name")
     String name;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     Category Category;
+
     @Column(name = "status")
     String status;
 

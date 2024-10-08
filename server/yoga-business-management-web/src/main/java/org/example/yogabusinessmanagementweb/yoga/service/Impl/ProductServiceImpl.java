@@ -48,7 +48,6 @@ public class ProductServiceImpl implements ProductService {
     public AddProductResponse addProduct(AddProductRequest addProductRequest)  {
         Product product = new Product();
         product =  Mappers.convertToEntity(addProductRequest, Product.class);
-        System.out.println(product.getId());
         // Xử lý ProductDetail
         ProductDetail productDetail= Mappers.convertToEntity(addProductRequest.getProductDetail(), ProductDetail.class);
         product.setProductDetail(productDetail);

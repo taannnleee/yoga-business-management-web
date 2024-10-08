@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.yoga.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.yoga.dto.request.category.CategoryCreationRequest;
@@ -24,16 +25,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse addCategory(CategoryCreationRequest categoryCreationRequest) {
+        Category category = Mappers.convertToEntity(categoryCreationRequest, Category.class);
+
+        // Gán giá trị mặc định cho status nếu nó là null
+        if (category.getStatus() == null) {
+            category.setStatus(EStatus.ACTIVE);
+        }
         // Kiểm tra nếu tên đã tồn tại và status là true
-        Optional<Category> existingCategory = categoryRepository.findByNameAndStatus(categoryCreationRequest.getName(), categoryCreationRequest.getStatus());
+        Optional<Category> existingCategory = categoryRepository.findByNameAndStatus(category.getName(), category.getStatus());
 
         if (existingCategory.isPresent()) {
-            // Nếu đã tồn tại và status là true, không cho phép lưu
             throw new AppException(ErrorCode.CATEGORY_EXISTS);
         }
 
-        // Nếu không tồn tại, tiếp tục lưu Category
-        Category category = Mappers.convertToEntity(categoryCreationRequest, Category.class);
         category = categoryRepository.save(category);
 
         CategoryResponse categoryResponse = Mappers.convertToDto(category, CategoryResponse.class);
@@ -41,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category findByIdAndStatus(Long id, String status) {
+    public Category findByIdAndStatus(Long id, EStatus status) {
         // Tìm kiếm danh mục theo tên và trạng thái
         return categoryRepository.findByIdAndStatus(id, status)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));

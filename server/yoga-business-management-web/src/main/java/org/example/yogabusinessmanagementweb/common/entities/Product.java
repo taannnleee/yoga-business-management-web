@@ -22,7 +22,6 @@ public class Product extends AbstractEntity<Long> implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_detail_id")
-    @JsonIgnore
     ProductDetail productDetail;
 
     String status;

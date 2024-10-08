@@ -3,7 +3,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 
 import java.io.Serializable;
 
@@ -21,12 +21,15 @@ public class OrderItem extends AbstractEntity<Long> implements Serializable {
 
     @Column(name = "quantity")
     int quantity;
+
     @OneToOne()
     @JoinColumn(name = "rating_id")
     Rating rating;
+
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING) // Store enum as a string in the database
-    EStatus orderStatus;
+    EStatusOrder orderStatus;
+
     @Column(name = "total_price")
     Long totalPrice;
 

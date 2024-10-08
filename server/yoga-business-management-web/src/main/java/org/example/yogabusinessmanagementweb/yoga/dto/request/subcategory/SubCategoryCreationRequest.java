@@ -7,8 +7,6 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SubCategoryCreationRequest {
-    Long id;
     String name;
-    String status;
     Long categoryId;
 }

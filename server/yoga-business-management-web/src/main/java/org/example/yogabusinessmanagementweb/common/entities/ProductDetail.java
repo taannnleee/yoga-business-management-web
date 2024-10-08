@@ -36,10 +36,4 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
     String brand;
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
-
-    @OneToOne()
-    @JsonIgnore
-    Product product;
-
-
 }

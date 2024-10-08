@@ -3,7 +3,6 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

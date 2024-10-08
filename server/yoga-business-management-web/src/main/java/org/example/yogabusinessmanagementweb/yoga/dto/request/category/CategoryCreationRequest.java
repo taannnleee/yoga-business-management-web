@@ -9,5 +9,4 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CategoryCreationRequest {
     String name;
-    String status;
 }

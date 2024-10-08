@@ -3,15 +3,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EHealthyGoal;
-import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.print.attribute.standard.Media;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "HealthyInformation")

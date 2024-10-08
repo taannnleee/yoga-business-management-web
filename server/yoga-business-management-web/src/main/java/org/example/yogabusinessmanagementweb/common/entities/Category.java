@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,12 +24,10 @@ public class Category extends AbstractEntity<Long> implements Serializable  {
     String urlImage;
 
     @Column(name = "status")
-    String status;
+    @Enumerated(EnumType.STRING)
+    EStatus status = EStatus.ACTIVE;
 
     @Column(name = "category_name")
     String name;
-
-
-
 }
 

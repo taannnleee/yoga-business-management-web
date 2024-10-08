@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,7 +29,8 @@ public class SubCategory extends AbstractEntity<Long> implements Serializable  {
     Category Category;
 
     @Column(name = "status")
-    String status;
+    @Enumerated(EnumType.STRING)
+    EStatus status = EStatus.ACTIVE;
 
 }
 

@@ -3,13 +3,17 @@ package org.example.yogabusinessmanagementweb.common.config.cors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.yoga.repositories.UserRepository;
-import org.example.yogabusinessmanagementweb.yoga.service.UserService;
+import org.example.yogabusinessmanagementweb.common.config.component.AuditorAwareImpl;
+import org.example.yogabusinessmanagementweb.exception.CustomAccessDeniedHandler;
+import org.example.yogabusinessmanagementweb.exception.JwtAuthenticationEntryPoint;
+import org.example.yogabusinessmanagementweb.repositories.UserRepository;
+import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -29,11 +33,16 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class AppConfig {
 
     UserService userService;
     PreFilter preFilter;
-
+    CustomAccessDeniedHandler accessDeniedHandler;
+    @Bean
+    public AuditorAwareImpl auditorProvider() {
+        return new AuditorAwareImpl();
+    }
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
       return args -> {
@@ -42,8 +51,9 @@ public class AppConfig {
                       .username("admin")
                       .password(getPasswordEncoder().encode("admin"))
                       .roles(ERole.ADMIN.name())
+                      .status(true)
                       .build();
-              userRepository.save(user);
+              userRepository.   save(user);
           }
       };
     }
@@ -77,6 +87,9 @@ public class AppConfig {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                        .accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(provider()).addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

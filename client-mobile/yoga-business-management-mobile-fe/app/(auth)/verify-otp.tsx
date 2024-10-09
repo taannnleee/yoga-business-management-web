@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  Image,
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
+  Text,
+  View,
 } from "react-native";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { useRouter, useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import { verifyOtp } from "@/api/verify-otp";
 import { icons, images } from "@/constants";
 import { ReactNativeModal } from "react-native-modal";
 import { changePassword } from "@/api/change-pasword";
-import { saveJwtToken } from "@/jwt/set-jwt";
 
 const VerifyOtp = gestureHandlerRootHOC(() => {
   const params = useLocalSearchParams();

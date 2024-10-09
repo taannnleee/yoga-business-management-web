@@ -9,7 +9,6 @@ SplashScreen.preventAutoHideAsync();
 const ProductDetailLayout = () => {
   // Extract route parameters using useLocalSearchParams
   const { nameProduct } = useLocalSearchParams<{ nameProduct: string }>();
-  console.log("avascd", nameProduct);
   // Use a default value if the nameRestaurant parameter is not provided
   const productName = nameProduct || "Default Name";
 

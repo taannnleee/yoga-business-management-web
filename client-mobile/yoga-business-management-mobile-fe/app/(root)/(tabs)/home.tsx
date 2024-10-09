@@ -1,12 +1,12 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  FlatList,
-  Text,
-  View,
-  Image,
   ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import ProductCard from "@/components/ProductCard";
 import TextInputSearch from "@/components/TextInputSearch";
@@ -15,6 +15,7 @@ import { getProducts } from "@/api/get-product";
 import { getJwt } from "@/jwt/get-jwt";
 import { router } from "expo-router";
 import { ProductProps } from "@/types/type";
+import { SliderBestProduct } from "@/components/Slider/SliderBestProduct";
 
 const Home = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
@@ -23,6 +24,7 @@ const Home = () => {
   const [page, setPage] = useState(1); // Start from page 1
   const [isLoadingMore, setIsLoadingMore] = useState(false); // For tracking lazy loading state
   const [hasMore, setHasMore] = useState(true); // For tracking if more products are available
+
   // Fetch products using getProducts function
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,7 +36,6 @@ const Home = () => {
         if (Array.isArray(data)) {
           if (data.length > 0) {
             // Append new products to the list
-            // @ts-ignore
             setProducts((prevProducts) => [...prevProducts, ...data]);
           } else {
             // If no more data is returned, stop loading more
@@ -58,26 +59,24 @@ const Home = () => {
   const loadMoreProducts = () => {
     if (!isLoadingMore && hasMore) {
       setIsLoadingMore(true);
-
-      // Giả lập việc tải chậm bằng cách thêm thời gian chờ trước khi bắt đầu tải dữ liệu
       setTimeout(() => {
-        setPage((prevPage) => prevPage + 1); // Tăng số trang để tải thêm
-      }, 1000); // Đặt thời gian chờ 1 giây (1000ms)
+        setPage((prevPage) => prevPage + 1); // Increase page number to load more products
+      }, 1000); // Set a timeout to simulate loading
     }
   };
 
   const handleSearchPress = () => {
-    // Handle search functionality
+    // You may implement specific search functionality here if needed
   };
 
-  // @ts-ignore
-  // @ts-ignore
   return (
     <SafeAreaView className="bg-general-500">
       <FlatList
         data={products}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
+            className={"flex w-1/2 px-2"}
             onPress={() => {
               router.push(
                 // @ts-ignore
@@ -88,6 +87,7 @@ const Home = () => {
             <ProductCard product={item} />
           </TouchableOpacity>
         )}
+        numColumns={2}
         className="px-5"
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ paddingBottom: 100 }}
@@ -114,7 +114,6 @@ const Home = () => {
               <Text className="text-2xl font-JakartaSemiBold">Chào bạn 👋</Text>
             </View>
             <TextInputSearch
-              // @ts-ignore
               keyword={keyword}
               setKeyword={setKeyword}
               icon={icons.search}
@@ -122,7 +121,11 @@ const Home = () => {
               handlePress={handleSearchPress}
               setPage={setPage}
               setProducts={setProducts}
+              setHasMore={setHasMore} // Add this prop to reset hasMore
             />
+            <View className="flex flex-row items-center justify-between">
+              <SliderBestProduct />
+            </View>
           </>
         )}
         ListFooterComponent={() => {

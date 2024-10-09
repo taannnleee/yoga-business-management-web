@@ -23,7 +23,8 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_detail_id")
     ProductDetail productDetail;
-
+    @Column(name = "image_url")
+    String imagePath;
     String status;
 
     @Column(name = "price")
@@ -35,10 +36,6 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "subCategory_id")
     SubCategory subCategory;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    List<Rating> ratings;
 
     @Column(name = "average_rating")
     Double averageRating = (double) 0;

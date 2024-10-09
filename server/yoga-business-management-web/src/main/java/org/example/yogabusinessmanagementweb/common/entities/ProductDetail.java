@@ -20,20 +20,18 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProductDetail extends AbstractEntity<Long> implements Serializable {
 
-    @Column(name = "name")
-    String name;
-    @Column(name = "image_url")
-    String imagePath;
+
     @Column(name = "color")
     String color;
     @Column(name = "size")
     String size;
-    @Column(name = "price")
-    BigDecimal price;
     @Column(name = "code")
     String code;
     @Column(name = "brand")
     String brand;
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    List<Rating> ratings;
 }

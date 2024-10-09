@@ -7,7 +7,7 @@ export const getProducts = async (
   page: number,
   size: number,
   token: string | null,
-  keyword: string,
+  keyword?: string,
 ): Promise<ProductProps[] | string> => {
   try {
     // Construct the API URL
@@ -17,7 +17,6 @@ export const getProducts = async (
     if (keyword) {
       url.searchParams.append("keyword", keyword); // Truyền keyword nếu có
     }
-    console.log("Called api getAllproduct line:", 20);
     // Send the API request
     const response = await fetch(url.toString(), {
       method: "GET",
@@ -33,7 +32,6 @@ export const getProducts = async (
 
     // Parse the response as JSON
     const responseData = await response.json();
-    console.log("responseData", responseData.data.content);
     // Extract the products from the response (assuming they are in 'content')
     return responseData.data.content;
   } catch (error) {

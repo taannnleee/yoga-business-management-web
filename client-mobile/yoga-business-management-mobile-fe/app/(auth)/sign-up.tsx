@@ -1,11 +1,10 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
-  Text,
-  ScrollView,
-  View,
-  Image,
-  Alert,
   ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  View,
 } from "react-native";
 import React, { useState } from "react";
 import { icons, images } from "@/constants";
@@ -14,7 +13,6 @@ import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import Oauth from "@/components/Oauth";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { BASE_URL } from "@/api/config";
 import { signUp } from "@/api/sign-up";
 
 const SignUp = gestureHandlerRootHOC(() => {

@@ -1,5 +1,4 @@
 import { BASE_URL } from "@/api/config";
-import { Alert } from "react-native";
 
 export const getProFile = async (token: string) => {
   try {

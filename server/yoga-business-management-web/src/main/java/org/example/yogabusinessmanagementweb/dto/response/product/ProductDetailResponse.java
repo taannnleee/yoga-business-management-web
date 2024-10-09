@@ -12,10 +12,8 @@ import java.math.BigDecimal;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProductDetailResponse {
-    String name;
-    String imagePath;
+
     String description;
-    BigDecimal price;
     String color;
     String size;
     String code;

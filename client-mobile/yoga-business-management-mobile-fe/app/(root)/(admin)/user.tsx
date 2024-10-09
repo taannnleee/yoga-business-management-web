@@ -1,12 +1,8 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { Text } from "react-native";
 
 const MyComponent = () => {
-    return (
-
-        <Text>User</Text>
-
-    );
+  return <Text>User</Text>;
 };
 
 export default MyComponent;

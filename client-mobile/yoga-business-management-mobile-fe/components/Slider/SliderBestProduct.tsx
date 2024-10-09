@@ -1,16 +1,16 @@
 import {
-  Text,
-  View,
-  Image,
-  FlatList,
-  TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getProducts } from "@/api/get-product";
 import { ProductProps } from "@/types/type";
 import { getJwt } from "@/jwt/get-jwt";
-import { Dimensions } from "react-native";
 import { router } from "expo-router";
 
 interface SliderBestProductProps {

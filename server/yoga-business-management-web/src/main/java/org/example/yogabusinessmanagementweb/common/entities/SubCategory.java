@@ -20,11 +20,11 @@ import java.util.List;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class SubCategory extends AbstractEntity<Long> implements Serializable  {
-    //SubCategoryId đã extend
+
     @Column(name = "name")
     String name;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     Category Category;
 

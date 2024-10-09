@@ -1,5 +1,4 @@
 import * as SecureStore from "expo-secure-store";
-import { BASE_URL } from "@/api/config";
 
 export const deleteJwt = async (): Promise<void> => {
   try {
@@ -30,8 +29,6 @@ export const deleteJwt = async (): Promise<void> => {
     // Xóa token khỏi SecureStore sau khi gọi API thành công
     await SecureStore.deleteItemAsync("accessToken");
     await SecureStore.deleteItemAsync("freshToken");
-
-    console.log("JWT token deleted successfully.");
   } catch (e) {
     console.error("Failed to delete JWT token", e);
   }

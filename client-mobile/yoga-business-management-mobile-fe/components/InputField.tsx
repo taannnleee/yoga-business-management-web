@@ -1,11 +1,11 @@
 import {
-  KeyboardAvoidingView,
-  View,
-  Text,
   Image,
-  TextInput,
-  Platform,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import React from "react";

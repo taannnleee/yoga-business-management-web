@@ -1,7 +1,7 @@
 import React from "react";
 import * as SplashScreen from "expo-splash-screen";
 
-import { Navigator, Stack } from "expo-router";
+import { Stack } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
 

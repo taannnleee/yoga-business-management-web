@@ -17,13 +17,8 @@ export const verifyOtp = async (email: string | string[], otp: string) => {
     // Parse the response JSON
     const responseData = await response.json();
 
-    // Debugging: log the entire response object as a string
-    console.log("Full Response Object:", JSON.stringify(responseData, null, 2));
-    console.log("Status", responseData.status);
-
     // Check if the status is 200
     if (responseData.status === 200) {
-      console.log("Hahaa");
       return {
         success: true,
         data: responseData.message, // Assuming message contains the desired information

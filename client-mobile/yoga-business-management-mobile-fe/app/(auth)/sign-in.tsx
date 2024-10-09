@@ -1,4 +1,3 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ActivityIndicator,
   Alert,
@@ -9,13 +8,11 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { BASE_URL } from "@/api/config";
 import { icons, images } from "@/constants";
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import Oauth from "@/components/Oauth";
 import { Link, router } from "expo-router";
-import { signUp } from "@/api/sign-up";
 import { signIn } from "@/api/sign-in";
 import { saveJwtToken } from "@/jwt/set-jwt";
 

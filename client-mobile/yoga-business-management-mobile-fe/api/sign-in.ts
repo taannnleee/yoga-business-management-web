@@ -3,8 +3,6 @@ import { BASE_URL } from "@/api/config";
 // Sign-up API function
 export const signIn = async (form: { username: string; password: string }) => {
   try {
-    console.log("line", 6);
-    console.log(BASE_URL);
     const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: {
@@ -12,7 +10,6 @@ export const signIn = async (form: { username: string; password: string }) => {
       },
       body: JSON.stringify(form),
     });
-    console.log("line", 14);
     // Check if the response is ok (status code in the range 200-299)
     if (response.ok) {
       const result = await response.json();

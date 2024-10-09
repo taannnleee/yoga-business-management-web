@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
   Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { getProFile } from "@/api/profile";
-import { updateProfile } from "@/api/profile";
+import { getProFile, updateProfile } from "@/api/profile";
 import { getJwt } from "@/jwt/get-jwt";
 
 const Profile = () => {

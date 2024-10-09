@@ -75,7 +75,7 @@ public class CartServiceImpl implements CartService {
             // Nếu sản phẩm đã tồn tại, tăng số lượng
             existingItem.setQuantity(existingItem.getQuantity() + 1);
 
-            BigDecimal price = existingItem.getProduct().getProductDetail().getPrice(); // Giá sản phẩm
+            BigDecimal price = existingItem.getProduct().getPrice(); // Giá sản phẩm
             int quantity = existingItem.getQuantity();
 
             BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
@@ -85,7 +85,7 @@ public class CartServiceImpl implements CartService {
             CartItem newItem = new CartItem();
             newItem.setProduct(productService.getProductById(cartCreationRequest.getProductId())); // Tìm sản phẩm
             newItem.setQuantity(1);
-            newItem.setTotalPrice(newItem.getProduct().getProductDetail().getPrice());
+            newItem.setTotalPrice(newItem.getProduct().getPrice());
 
             // Thêm CartItem vào cart
             cart.getCartItems().add(newItem);

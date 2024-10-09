@@ -1,17 +1,15 @@
 import {
+  Image,
   SafeAreaView,
   ScrollView,
-  View,
   Text,
-  Image,
   TouchableOpacity,
-  Alert,
+  View,
 } from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { Button } from "react-native-elements";
-import CustomButton from "@/components/CustomButton"; // For stars icon
 
 const Product = () => {
   const { product } = useLocalSearchParams<{

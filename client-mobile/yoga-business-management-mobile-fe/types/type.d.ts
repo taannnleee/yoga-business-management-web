@@ -51,15 +51,14 @@ declare interface FoodProps {
 }
 
 declare interface ProductProps {
+  imagePath: string | undefined;
   id: string;
   title: string;
+  price: string;
   averageRating: string;
   productDetail: {
-    name: string;
-    imagePath: string;
     color: string;
     size: string;
-    price: string;
     code: string;
     brand: string;
     description: string;
@@ -114,6 +113,7 @@ declare interface GoogleInputProps {
   setKeyword: (value: string) => void;
   setPage: (value: number) => void;
   setProducts: (products: any[]) => void;
+  setHasMore: (value: boolean) => void;
 }
 
 declare interface InputFieldProps extends TextInputProps {

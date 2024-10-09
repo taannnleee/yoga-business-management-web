@@ -12,13 +12,8 @@ import java.math.BigDecimal;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProductDetailCreationRequest {
-    @NotNull(message = "Name is required")
-    String name;
-    String imagePath;
     @NotNull(message = "Description is required")
     String description;
-    @NotNull(message = "Price is required")
-    BigDecimal price;
     String color;
     String size;
     String code;

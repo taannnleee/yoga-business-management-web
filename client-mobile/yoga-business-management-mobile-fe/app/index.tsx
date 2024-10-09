@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { Redirect } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { getJwt } from "@/jwt/get-jwt";
 
 const Home = () => {

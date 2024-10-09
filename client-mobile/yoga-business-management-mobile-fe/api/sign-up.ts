@@ -19,12 +19,9 @@ export const signUp = async (form: {
     });
     const responseData = await response.json();
     // Check if the response is ok (status code in the range 200-299)
-    console.log("response", responseData.status);
     if (responseData.status === 200) {
-      console.log("haha");
       return { success: true, data: responseData.message };
     } else {
-      console.log("haha");
       return {
         success: false,
         error: responseData.message || "Sign-up failed",

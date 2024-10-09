@@ -32,6 +32,6 @@ public class ProductDetail extends AbstractEntity<Long> implements Serializable 
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "rating_id")
     List<Rating> ratings;
 }

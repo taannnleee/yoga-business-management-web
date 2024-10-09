@@ -12,5 +12,4 @@ public class AddProductResponse {
     Long subCategoryId;
     Double averageRating;
     ProductDetailResponse productDetail;
-
 }

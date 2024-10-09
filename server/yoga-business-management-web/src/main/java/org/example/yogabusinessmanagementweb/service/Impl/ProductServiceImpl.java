@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.mapper.ProductMapper;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
@@ -15,6 +16,7 @@ import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.ProductDetail;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class ProductServiceImpl implements ProductService {
     SubCategoryRepository subCategoryRepository;
     ProductDetailRepository productDetailRepository;
     TempRepository tempRepository;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
@@ -49,10 +54,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public AddProductResponse addProduct(ProductCreationRequest productCreationRequest)  {
-        Product product = new Product();
-        product =  Mappers.convertToEntity(productCreationRequest, Product.class);
+//        product =  Mappers.convertToEntity(productCreationRequest, Product.class);
+        Product product = productMapper.toProduct(productCreationRequest);
         // Xử lý ProductDetail
         ProductDetail productDetail= Mappers.convertToEntity(productCreationRequest.getProductDetail(), ProductDetail.class);
+
         product.setProductDetail(productDetail);
 
         //xử lý SubCategory

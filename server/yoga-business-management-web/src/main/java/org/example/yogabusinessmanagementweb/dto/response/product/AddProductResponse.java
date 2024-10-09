@@ -17,5 +17,4 @@ public class AddProductResponse {
     Double averageRating;
     BigDecimal price;
     ProductDetailResponse productDetail;
-
 }

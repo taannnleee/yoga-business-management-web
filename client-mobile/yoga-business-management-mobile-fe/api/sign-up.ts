@@ -3,13 +3,14 @@ import { BASE_URL } from "@/api/config";
 // Sign-up API function
 export const signUp = async (form: {
   username: string;
-  fullname: string;
+  fullName: string;
   email: string;
   phone: string;
   password: string;
-  confirmpassword: string;
+  confirmPassword: string;
 }) => {
   try {
+    console.log("form: ", form);
     const response = await fetch(`${BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: {

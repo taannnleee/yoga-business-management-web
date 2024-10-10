@@ -107,25 +107,6 @@ const Product = () => {
             </Text>
           </View>
 
-          {/* Shop Details */}
-          <View className="mt-6">
-            <View className="flex-row items-center mt-2">
-              {/* Shop Image */}
-              <Image
-                source={{ uri: productData.shopImage }}
-                className="w-12 h-12 rounded-full"
-              />
-
-              {/* Shop Name and Address */}
-              <View className="ml-3">
-                <Text className="text-lg font-bold">
-                  {productData.shopName}
-                </Text>
-                <Text className="text-gray-500">{productData.shopAddress}</Text>
-              </View>
-            </View>
-          </View>
-
           {/* Product Description */}
           <View className="mt-6">
             <Text numberOfLines={showFullDescription ? undefined : 5}>

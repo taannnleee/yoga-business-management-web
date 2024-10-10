@@ -32,7 +32,7 @@ import noResult from "@/assets/images/no-result.png";
 import onWelcome1 from "@/assets/images/onWelcome1.png";
 import onWelcome2 from "@/assets/images/onWelcome2.png";
 import onWelcome3 from "@/assets/images/onWelcome3.png";
-import signUpFood from "@/assets/images/signup-food.png";
+import signUpYoga from "@/assets/images/signup-yoga.png";
 import add from "@/assets/icons/add.png";
 
 export const images = {
@@ -40,7 +40,7 @@ export const images = {
   onWelcome2,
   onWelcome3,
   getStarted,
-  signUpFood,
+  signUpYoga,
   check,
   noResult,
   message,
@@ -78,22 +78,23 @@ export const icons = {
 export const onWelcome = [
   {
     id: 1,
-    title: "Food gate xin chào bạn",
-    description: "Nơi đây có tất cả dịch vụ bạn cần",
+    title: "Chào mừng đến với Yoga Haven",
+    description:
+      "Nơi bạn tìm thấy mọi sản phẩm và dụng cụ tập yoga chất lượng nhất",
     image: images.onWelcome1,
   },
   {
     id: 2,
-    title: "Món ngon giao tận cửa!",
+    title: "Sản phẩm tốt nhất cho việc tập luyện",
     description:
-      "Triệu món ăn nóng hổi trên Food gate đã sẵn sàng, chỉ chờ bạn đặt",
+      "Từ thảm yoga, quần áo đến dụng cụ, mọi thứ đã sẵn sàng cho buổi tập của bạn",
     image: images.onWelcome2,
   },
   {
     id: 3,
-    title: "Ở nhà khoẻ re!",
+    title: "Tập yoga ngay tại nhà!",
     description:
-      "Ở nhà đã có Food gate. Bạn chỉ cần đặt, chúng tôi sẽ giao tận cửa",
+      "Không cần phải ra ngoài, hãy để chúng tôi giao sản phẩm yoga tận nhà cho bạn",
     image: images.onWelcome3,
   },
 ];

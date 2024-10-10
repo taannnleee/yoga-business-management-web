@@ -44,7 +44,7 @@ const SignIn = gestureHandlerRootHOC(() => {
       <View className={"flex-1 bg-white"}>
         <View>
           <Image
-            source={images.signUpFood}
+            source={images.signUpYoga}
             className={"z-0 w-full h-[250px] "}
           />
           <Text

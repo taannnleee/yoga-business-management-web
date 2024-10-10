@@ -76,7 +76,7 @@ const VerifyOtp = gestureHandlerRootHOC(() => {
       <View style={{ flex: 1 }}>
         <View>
           <Image
-            source={images.signUpFood}
+            source={images.signUpYoga}
             className={"z-0 w-full h-[250px] "}
           />
           <Text

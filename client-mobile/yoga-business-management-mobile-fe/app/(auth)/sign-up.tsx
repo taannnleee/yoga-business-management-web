@@ -19,11 +19,11 @@ const SignUp = gestureHandlerRootHOC(() => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     username: "",
-    fullname: "",
+    fullName: "",
     email: "",
     phone: "",
     password: "",
-    confirmpassword: "",
+    confirmPassword: "",
   });
 
   const onSignUpPress = async () => {
@@ -52,7 +52,7 @@ const SignUp = gestureHandlerRootHOC(() => {
       <View className={"flex-1 bg-white"}>
         <View>
           <Image
-            source={images.signUpFood}
+            source={images.signUpYoga}
             className={"z-0 w-full h-[250px] "}
           />
           <Text
@@ -76,8 +76,8 @@ const SignUp = gestureHandlerRootHOC(() => {
             label={"Tên"}
             placeholder={"Nhập tên đầy đủ của bạn"}
             icon={icons.person}
-            value={form.fullname}
-            onChangeText={(value) => setForm({ ...form, fullname: value })}
+            value={form.fullName}
+            onChangeText={(value) => setForm({ ...form, fullName: value })}
           />
           <InputField
             label={"Email"}
@@ -106,9 +106,9 @@ const SignUp = gestureHandlerRootHOC(() => {
             placeholder={"Nhập xác nhận mật khẩu của bạn"}
             icon={icons.lock}
             secureTextEntry={true}
-            value={form.confirmpassword}
+            value={form.confirmPassword}
             onChangeText={(value) =>
-              setForm({ ...form, confirmpassword: value })
+              setForm({ ...form, confirmPassword: value })
             }
           />
           {loading ? (

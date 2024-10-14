@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  Image,
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
+  Text,
+  View,
 } from "react-native";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import { verifyOtp } from "@/api/verify-otp";
@@ -34,8 +34,7 @@ const VerifyOtp = gestureHandlerRootHOC(() => {
     try {
       // Verify the OTP
       const verifyResponse = await verifyOtp(email, form.otp);
-
-      if (verifyResponse.success) {
+      if (verifyResponse.success && password != null) {
         // OTP verification successful, proceed to change password
         const changePasswordResponse = await changePassword(email, password);
 
@@ -45,20 +44,25 @@ const VerifyOtp = gestureHandlerRootHOC(() => {
         } else {
           // Handle change password failure
           Alert.alert(
-            "Đổi mật khẩu thất bại",
-            changePasswordResponse.error || "Không thể đổi mật khẩu",
+            "Xác nhận thất bại",
+            changePasswordResponse.error || "Không thể xác nhận OTP",
           );
         }
+      } else if (verifyResponse.success) {
+        // Handle OTP verification failure
+        Alert.alert("Xác nhận thành công", verifyResponse.data);
+        // @ts-ignore
+        router.replace("/sign-in");
       } else {
         // Handle OTP verification failure
         Alert.alert(
-          "Đổi mật khẩu thất bại",
-          verifyResponse.error || "Sai OTP hoặc OTP hết hạn",
+          "Xác nhận thất bại",
+          verifyResponse.error + " hãy kiểm tra OTP",
         );
       }
     } catch (error) {
-      Alert.alert("Đổi mật khẩu thất bại", "Đã xảy ra lỗi không mong muốn");
-      console.error("Error during password change process:", error);
+      // @ts-ignore
+      Alert.alert("Xác nhận thất bại", "Đã xảy ra lỗi không mong muốn");
     } finally {
       setLoading(false); // Stop loading
     }
@@ -72,7 +76,7 @@ const VerifyOtp = gestureHandlerRootHOC(() => {
       <View style={{ flex: 1 }}>
         <View>
           <Image
-            source={images.signUpFood}
+            source={images.signUpYoga}
             className={"z-0 w-full h-[250px] "}
           />
           <Text

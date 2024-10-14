@@ -2,14 +2,9 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.example.yogabusinessmanagementweb.common.Enum.EHealthyGoal;
 
-import javax.print.attribute.standard.Media;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "HealthyInformation")
@@ -20,9 +15,12 @@ import java.util.List;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class HealthyInformation extends AbstractEntity<Long>  implements Serializable {
+
+    @Column(name = "healthy_goal")
+    @Enumerated(EnumType.STRING) // Store enum as a string in the database
+    EHealthyGoal healthyGoal;
     @Column(name = "age")
     int age;
-
     @Column(name = "bmi")
     Double bmi;
 
@@ -42,7 +40,7 @@ public class HealthyInformation extends AbstractEntity<Long>  implements Seriali
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToOne(mappedBy = "healthyInformation")
+    @OneToOne()
     WeighPlan weighPlan;
 
 }

@@ -4,17 +4,23 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import javax.print.attribute.standard.Media;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "User")
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,45 +29,33 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class User extends AbstractEntity<Long>  implements UserDetails, Serializable {
     String username;
-    String fullname;
-    String phone;
-    String email;
     String password;
+    String phone;
+    String gender;
+    String email;
+    String fullname;
     Date dateOfBirth;
-    int gender;
-    boolean status;
-    int kind;
     String imagePath;
+    String roles;
+    boolean status;
+
+    // User quản lý Address, một chiều
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    List<Address> addresses;
 
     @OneToMany(mappedBy = "user")
     List<GroupHasUser> groupHasUsers;
 
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Address> addresses ;
-
-    @OneToOne(mappedBy = "user")
-    Cart cart;
-
-    @OneToOne(mappedBy = "user")
+    @OneToOne()
     Wishlist wishlist;
 
-    @OneToMany(mappedBy = "user")
-    List<Order> order;
-
-    @OneToOne(mappedBy = "user")
+    @OneToOne
     Token token;
 
-    @OneToOne(mappedBy = "user")
-    HealthyInformation healthyinformation;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany()
     List<UserHasYogaWorkout> yogaWorkouts;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -81,5 +75,11 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // Phương thức getAuthorities duy nhất
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(roles)); // Chuyển đổi Role thành GrantedAuthority
     }
 }

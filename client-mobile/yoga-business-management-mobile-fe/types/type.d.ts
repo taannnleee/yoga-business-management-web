@@ -32,6 +32,7 @@ declare interface MapProps {
   selectedDriver?: number | null;
   onMapReady?: () => void;
 }
+
 declare interface FoodProps {
   id: string;
   name: string;
@@ -48,29 +49,20 @@ declare interface FoodProps {
   seasonal: string; // Assuming this is a string representation of a boolean
   vegetarian: string; // Assuming this is a string representation of a boolean
 }
-declare interface RestaurantProps {
+
+declare interface ProductProps {
+  imagePath: string | undefined;
   id: string;
-  name: string;
-  description: string;
-  cuisineType: string;
-  address: {
-    id: number;
-    streetAddress: string;
-    city: string;
-    stateProvince: string;
-    postalCode: string;
-    country: string;
+  title: string;
+  price: string;
+  averageRating: string;
+  productDetail: {
+    color: string;
+    size: string;
+    code: string;
+    brand: string;
+    description: string;
   };
-  contactInformation: {
-    email: string;
-    mobile: string;
-    twitter?: string; // Optional properties
-    instagram?: string; // Optional properties
-  };
-  openingHours: string;
-  images: string[]; // Array of image URLs
-  registrationDate: string; // ISO Date string
-  open: boolean; // Boolean to indicate if the restaurant is open
 }
 
 declare interface Ride {
@@ -117,6 +109,11 @@ declare interface GoogleInputProps {
     longitude: number;
     address: string;
   }) => void;
+  keyword: string;
+  setKeyword: (value: string) => void;
+  setPage: (value: number) => void;
+  setProducts: (products: any[]) => void;
+  setHasMore: (value: boolean) => void;
 }
 
 declare interface InputFieldProps extends TextInputProps {

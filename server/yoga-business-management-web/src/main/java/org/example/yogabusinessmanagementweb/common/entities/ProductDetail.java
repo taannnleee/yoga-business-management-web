@@ -20,37 +20,18 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProductDetail extends AbstractEntity<Long> implements Serializable {
 
-    @Column(name = "name")
-    String name;
-
-    @Column(name = "image_url")
-    String imagePath;
-
-    @Column(name = "description")
-    String description;
-
-    @Column(name = "price")
-    BigDecimal price;
-
-    @Column(name = "material")
-    String material;
-
-    @Column(name = "dimensions")
-    String dimensions;
-
-    @Column(name = "thickness")
-    String thickness;
-
-    @Column(name = "weight")
-    String weight;
 
     @Column(name = "color")
     String color;
-
-
-    @OneToOne(mappedBy = "productDetail")
-//    @JsonIgnore
-    Product product;
-
-
+    @Column(name = "size")
+    String size;
+    @Column(name = "code")
+    String code;
+    @Column(name = "brand")
+    String brand;
+    @Column(name = "description", columnDefinition = "TEXT")
+    String description;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "rating_id")
+    List<Rating> ratings;
 }

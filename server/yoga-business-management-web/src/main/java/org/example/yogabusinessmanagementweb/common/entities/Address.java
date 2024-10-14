@@ -13,15 +13,8 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Address extends AbstractEntity<Long> {
-    String name;
+    String houseNumber;
     String street;
+    String district ;
     String city;
-    String state;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;
-
-    @OneToOne(mappedBy = "address")
-    Order order;
 }

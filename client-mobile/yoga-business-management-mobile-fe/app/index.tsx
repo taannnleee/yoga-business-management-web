@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { Redirect } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { getJwt } from "@/jwt/get-jwt";
 
 const Home = () => {
@@ -11,6 +10,8 @@ const Home = () => {
   useEffect(() => {
     const checkJwt = async () => {
       const isAuth = await getJwt();
+      console.log("isAuth", isAuth);
+      // @ts-ignore
       setIsAuthenticated(isAuth);
       setLoading(false);
     };
@@ -31,7 +32,9 @@ const Home = () => {
   return isAuthenticated ? (
     <Redirect href="/(root)/(tabs)/home" />
   ) : (
+    // <Redirect href="/(root)/(admin)/dashboard" />
     <Redirect href="/(auth)/welcome" />
+    // <Redirect href="/(root)/(admin)/dashboard" />
   );
 };
 

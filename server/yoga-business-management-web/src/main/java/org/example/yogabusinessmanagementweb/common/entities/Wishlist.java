@@ -17,11 +17,8 @@ import java.util.List;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Wishlist  extends AbstractEntity<Long> implements Serializable {
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    User user;
 
-
-    @OneToMany(mappedBy = "wishlist")
-    List<Product> productList;
+    @OneToMany()
+    @JoinColumn(name = "wish_list_id")
+    List<Product> lovedProducts;
 }

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  View,
   Image,
   ImageSourcePropType,
   Keyboard,
   Platform,
+  View,
 } from "react-native";
 import { Tabs } from "expo-router";
 import { icons } from "@/constants";

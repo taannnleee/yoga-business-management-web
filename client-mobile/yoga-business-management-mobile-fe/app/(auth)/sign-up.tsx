@@ -1,5 +1,11 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, ScrollView, View, Image, Alert } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { icons, images } from "@/constants";
 import InputField from "@/components/InputField";
@@ -7,22 +13,32 @@ import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import Oauth from "@/components/Oauth";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { BASE_URL } from "@/api/config";
 import { signUp } from "@/api/sign-up";
 
 const SignUp = gestureHandlerRootHOC(() => {
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
+    username: "",
     fullName: "",
     email: "",
+    phone: "",
     password: "",
-    role: "ROLE_RESTAURANT_OWNER",
+    confirmPassword: "",
   });
 
   const onSignUpPress = async () => {
+    setLoading(true);
     const response = await signUp(form); // Use the API function
-
+    setLoading(false);
     if (response.success) {
-      Alert.alert("Đăng ký thành công!", "Tài khoản của bạn đã được tạo.");
+      Alert.alert(
+        "Đăng ký thành công!",
+        "Tài khoản của bạn đã được tạo.Xin hãy xác nhận OTP để kích hoạt tài khoản",
+      );
+      router.push({
+        pathname: "/verify-otp",
+        params: { email: form.email, password: null },
+      });
     } else {
       Alert.alert(
         "Đăng ký thất bại",
@@ -36,7 +52,7 @@ const SignUp = gestureHandlerRootHOC(() => {
       <View className={"flex-1 bg-white"}>
         <View>
           <Image
-            source={images.signUpFood}
+            source={images.signUpYoga}
             className={"z-0 w-full h-[250px] "}
           />
           <Text
@@ -48,10 +64,17 @@ const SignUp = gestureHandlerRootHOC(() => {
             Tạo tài khoản của bạn
           </Text>
         </View>
-        <View className={"p-5"}>
+        <View className={"p-2"}>
           <InputField
             label={"Tên"}
-            placeholder={"Nhập tên của bạn"}
+            placeholder={"Nhập tên đăng nhập của bạn"}
+            icon={icons.person}
+            value={form.username}
+            onChangeText={(value) => setForm({ ...form, username: value })}
+          />
+          <InputField
+            label={"Tên"}
+            placeholder={"Nhập tên đầy đủ của bạn"}
             icon={icons.person}
             value={form.fullName}
             onChangeText={(value) => setForm({ ...form, fullName: value })}
@@ -64,6 +87,13 @@ const SignUp = gestureHandlerRootHOC(() => {
             onChangeText={(value) => setForm({ ...form, email: value })}
           />
           <InputField
+            label={"Number"}
+            placeholder={"Nhập số điện thoại của bạn"}
+            icon={icons.person}
+            value={form.phone}
+            onChangeText={(value) => setForm({ ...form, phone: value })}
+          />
+          <InputField
             label={"Mật khẩu"}
             placeholder={"Nhập mật khẩu của bạn"}
             icon={icons.lock}
@@ -71,12 +101,25 @@ const SignUp = gestureHandlerRootHOC(() => {
             value={form.password}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
-          <CustomButton
-            onPress={onSignUpPress}
-            title={"Đăng ký"}
-            className={"my-6"}
+          <InputField
+            label={"Mật khẩu"}
+            placeholder={"Nhập xác nhận mật khẩu của bạn"}
+            icon={icons.lock}
+            secureTextEntry={true}
+            value={form.confirmPassword}
+            onChangeText={(value) =>
+              setForm({ ...form, confirmPassword: value })
+            }
           />
-
+          {loading ? (
+            <ActivityIndicator size={"large"} color={"#0000ff"} />
+          ) : (
+            <CustomButton
+              onPress={onSignUpPress}
+              title={"Đăng ký"}
+              className={"my-6"}
+            />
+          )}
           <Oauth />
 
           <Link

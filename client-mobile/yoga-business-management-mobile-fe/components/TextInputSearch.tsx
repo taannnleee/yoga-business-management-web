@@ -1,31 +1,32 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Image, TextInput } from "react-native";
+import { Image, TextInput, TouchableOpacity, View } from "react-native";
 import { GoogleInputProps } from "@/types/type";
 import { icons } from "@/constants"; // Assuming icons is an object with SVGs or image references
 
 const TextInputSearch = ({
-  // @ts-ignore
   keyword,
-  // @ts-ignore
-  setKeyword,
+  setPage,
   icon,
-  initialLocation,
+  setKeyword,
+  setProducts,
+  setHasMore, // Add this prop
   containerStyle,
-  textInputBackgroundColor,
-  handlePress,
 }: GoogleInputProps) => {
   const [inputValue, setInputValue] = useState(keyword);
 
   // Function to handle the "Done" button press
   const handleSubmitEditing = () => {
-    // Save or process the inputValue here
-    setKeyword(inputValue); // Example of a callback or state update
-    // Example of a callback or state update
+    setPage(1); // Reset the page to 1
+    setProducts([]); // Clear the products list
+    setHasMore(true); // Reset hasMore to true for new search
+    setKeyword(inputValue); // Set the new keyword
   };
 
   const handleClear = () => {
-    setInputValue("");
+    setPage(1); // Reset the page to 1
     setKeyword("");
+    setProducts([]);
+    setHasMore(true); // Reset hasMore
   };
 
   return (
@@ -34,8 +35,8 @@ const TextInputSearch = ({
     >
       <TextInput
         textAlign={"left"}
-        className={`w-full py-2 mx-5 ${textInputBackgroundColor || ""}`}
-        placeholder={"Bạn muốn ăn gì"}
+        className={`w-full py-2 mx-5`}
+        placeholder={"Bạn muốn mua gì"}
         clearButtonMode={"always"}
         value={inputValue}
         onChangeText={(text) => {

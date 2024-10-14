@@ -1,4 +1,3 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ActivityIndicator,
   Alert,
@@ -9,20 +8,18 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { BASE_URL } from "@/api/config";
 import { icons, images } from "@/constants";
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import Oauth from "@/components/Oauth";
 import { Link, router } from "expo-router";
-import { signUp } from "@/api/sign-up";
 import { signIn } from "@/api/sign-in";
 import { saveJwtToken } from "@/jwt/set-jwt";
 
 const SignIn = gestureHandlerRootHOC(() => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -31,8 +28,9 @@ const SignIn = gestureHandlerRootHOC(() => {
     const response = await signIn(form); // Use the API function
     setLoading(false);
     if (response.success) {
+      const tokens = response.data.data;
       // Save JWT token to SecureStore
-      await saveJwtToken(response.data.jwt);
+      await saveJwtToken(tokens.accesstoken, tokens.refreshtoken);
       Alert.alert("Đăng nhập thành công!");
       // @ts-ignore
       router.replace("/(root)/(tabs)/home");
@@ -46,7 +44,7 @@ const SignIn = gestureHandlerRootHOC(() => {
       <View className={"flex-1 bg-white"}>
         <View>
           <Image
-            source={images.signUpFood}
+            source={images.signUpYoga}
             className={"z-0 w-full h-[250px] "}
           />
           <Text
@@ -63,8 +61,8 @@ const SignIn = gestureHandlerRootHOC(() => {
             label={"Email"}
             placeholder={"Nhập email của bạn"}
             icon={icons.email}
-            value={form.email}
-            onChangeText={(value) => setForm({ ...form, email: value })}
+            value={form.username}
+            onChangeText={(value) => setForm({ ...form, username: value })}
           />
           <InputField
             label={"Mật khẩu"}

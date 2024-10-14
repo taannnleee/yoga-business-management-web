@@ -1,10 +1,12 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -21,22 +23,20 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_detail_id")
     ProductDetail productDetail;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    Category category;
-
-    @Column(name = "status")
+    @Column(name = "image_url")
+    String imagePath;
     String status;
 
-    @OneToOne(mappedBy = "product")
-    CartItem cartItem;
+    @Column(name = "price")
+    BigDecimal price;
 
-    @ManyToOne()
-    @JoinColumn(name = "wishlist_id")
-    Wishlist wishlist;
+    @Column(name = "title")
+    String title;
 
-    @OneToOne
-    @JoinColumn(name = "promotion_id")
-    Promotion promotion;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "subCategory_id")
+    SubCategory subCategory;
+
+    @Column(name = "average_rating")
+    Double averageRating = (double) 0;
 }

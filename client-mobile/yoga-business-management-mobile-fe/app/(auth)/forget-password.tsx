@@ -1,11 +1,10 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   ScrollView,
   Text,
   View,
-  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";

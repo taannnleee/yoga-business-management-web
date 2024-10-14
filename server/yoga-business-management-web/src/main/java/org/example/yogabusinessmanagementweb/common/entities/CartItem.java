@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "CartItem")
 @NoArgsConstructor
@@ -13,15 +15,9 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CartItem extends AbstractEntity<Long>{
-    int totalItem;
-    Long totalPrice;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    Cart cart;
-
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     Product product;
-
+    int quantity;
+    BigDecimal totalPrice;
 }

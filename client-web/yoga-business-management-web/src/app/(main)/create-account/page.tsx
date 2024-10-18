@@ -54,7 +54,6 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
         toast.sendToast("Error", data?.message, "error");
       }
     } catch (error: any) {
-      console.log("current error is", error);
       setLoading(false);
       toast.sendToast(
         "Error",

@@ -4,11 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+import org.example.yogabusinessmanagementweb.common.entities.Cart;
 import org.example.yogabusinessmanagementweb.dto.request.user.LoginRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.ResetPasswordRequest;
 import org.example.yogabusinessmanagementweb.dto.response.token.TokenRespone;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
+import org.example.yogabusinessmanagementweb.repositories.CartRepository;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.JwtService;
 import org.example.yogabusinessmanagementweb.service.TokenService;
@@ -25,12 +27,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthencationService {
+    CartRepository cartRepository;
     AuthenticationManager authenticationManager;
     UserRepository userRepository;
     JwtService jwtService;
@@ -184,8 +189,15 @@ public class AuthencationService {
             throw new AppException(ErrorCode.OTP_INVALID);
         }
 
+        //Cập nhật lại trang thái
         user.setStatus(true);
-        userService.saveUser(user);
+//        userService.saveUser(user);
+
+        // Sau khi verify account thì tạo ra cart cho account đó
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cart.setCartItems(new ArrayList<>());
+        cartRepository.save(cart);
 
     }
 

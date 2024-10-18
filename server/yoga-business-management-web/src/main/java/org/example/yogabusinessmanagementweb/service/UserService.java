@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface UserService {
     User findUserById(String id);
+    User findUserByUserName(String userName);
     List<User> getAllUser();
     User findByUserName(String username);
     boolean checkUserNotExist(RegistrationRequest registrationRequest);

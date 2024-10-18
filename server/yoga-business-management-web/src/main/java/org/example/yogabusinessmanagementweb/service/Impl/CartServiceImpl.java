@@ -40,26 +40,14 @@ public class CartServiceImpl implements CartService {
     public CartResponse addToCart(CartCreationRequest cartCreationRequest, HttpServletRequest request) {
 
         String authorizationHeader = request.getHeader("Authorization");
-        String token = authorizationHeader.substring(7); // Bỏ từ "Bearer "
+        String token = authorizationHeader.substring(7);
 
         // Giải mã token để lấy userId
-        String userId = jwtService.extractUsername(token, ETokenType.ACCESSTOKEN);
+        String userName = jwtService.extractUsername(token, ETokenType.ACCESSTOKEN);
 
-        User user = userService.findUserById(userId);
+        User user = userService.findUserByUserName(userName);
         Optional<Cart> cartResponse = cartRepository.findCartByUser(user);
-
-        // Kiểm tra xem cart có tồn tại không
-        Cart cart;
-        if (cartResponse.isEmpty()) {
-            // Tạo mới nếu không có cart
-            cart = new Cart();
-            cart.setUser(user);
-            cart.setCartItems(new ArrayList<>());
-            cartRepository.save(cart);
-        } else {
-            // Sử dụng cart đã tồn tại
-            cart = cartResponse.get();
-        }
+        Cart cart = cartResponse.get();
 
         // Kiểm tra xem sản phẩm đã có trong cart chưa
         CartItem existingItem = null;
@@ -111,12 +99,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse showCart(String cartId) {
-        // Chuyển đổi cartId từ String sang Long
-        Long id = Long.parseLong(cartId);
+    public CartResponse showCart(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        String token = authorizationHeader.substring(7);
 
-        // Tìm giỏ hàng theo cartId
-        Optional<Cart> cartOptional = cartRepository.findById(id);
+        // Giải mã token để lấy userId
+        String userName = jwtService.extractUsername(token, ETokenType.ACCESSTOKEN);
+
+        User user = userService.findUserByUserName(userName);
+        Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
+
 
         // Nếu không tìm thấy giỏ hàng, có thể trả về null hoặc một thông điệp lỗi tùy theo yêu cầu
         if (cartOptional.isEmpty()) {

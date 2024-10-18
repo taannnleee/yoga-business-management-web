@@ -7,7 +7,7 @@ import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
 public interface CartService {
     CartResponse addToCart(CartCreationRequest cartCreationRequest, HttpServletRequest request);
 
-    CartResponse showCart(String cartId);
+    CartResponse showCart(HttpServletRequest request);
 
     CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest);
 

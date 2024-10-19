@@ -13,7 +13,7 @@ import Logo from "@/components/atom/Logo";
 import FulfillmentMangement from "../FulfillmentMangement";
 import useDebounce from "@/hooks/useDebounce";
 
-interface IHeaderV2Props {}
+interface IHeaderV2Props { }
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const router = useRouter();
@@ -104,7 +104,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
                   setOpenSearchDropdown(false);
                 }
               }}
-              onCategoryChange={() => {}}
+              onCategoryChange={() => { }}
               category=""
             />
 
@@ -182,7 +182,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
               <FulfillmentMangement />
               <button
                 className=" rounded-xl px-4 py-2 text-center text-gray-600  text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
-                onClick={() => router.replace("/login")}
+                onClick={() => router.replace("/cart")}
               >
                 <ShoppingCartIcon className="w-8 h-8 text-gray-600" />
               </button>
@@ -192,8 +192,8 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
         <div className="flex laptop:hidden px-2">
           <SearchBar
             placeholder="Search for anything, any words"
-            onChange={() => {}}
-            onCategoryChange={() => {}}
+            onChange={() => { }}
+            onCategoryChange={() => { }}
             category=""
           />
         </div>

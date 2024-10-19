@@ -48,9 +48,9 @@ public class CartController {
         return new ApiResponse<>(HttpStatus.OK.value(), "remove from cart success",cartResponse);
     }
 
-    @GetMapping("/show-cart/{cartId}")
-    public ApiResponse<?> showCart(@PathVariable String cartId) {
-        CartResponse cartResponse = cartService.showCart(cartId);
+    @GetMapping("/show-cart")
+    public ApiResponse<?> showCart(HttpServletRequest request) {
+        CartResponse cartResponse = cartService.showCart(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "show cart success",cartResponse);
     }
 }

@@ -1,41 +1,28 @@
-import React, { useEffect, useState } from "react";
-import * as yup from "yup";
-import { Formik } from "formik";
-import LoginBackground from "../../../assets/images/LoginBackground.png";
+import React, { useState } from 'react';
+import * as yup from 'yup';
+import { Formik } from 'formik';
+import LoginBackground from '../../../assets/images/LoginBackground.png';
 
-//components
-import InputPassword from "../../../designs/InputPassword";
-import InputEmail from "../../../designs/InputEmail";
-import { useAuth } from "../../../hooks/useAuth";
-import { useAppSelector } from "../../../hooks/useRedux";
-import { IRootState } from "../../../redux";
-import BaseInput from "../../../components/BaseInput";
-import Spinner from "../../../components/Spinner";
-import { CircularProgress } from "@mui/material";
-// import { useAppSelector } from "../../../hooks/useRedux";
-// import { IRootState } from "../../../redux";
-// import { useRouter } from "next/router";
-
-interface ILoginPageProps {}
+// components
+import { useAuth } from '../../../hooks/useAuth';
+import BaseInput from '../../../components/BaseInput';
+import { CircularProgress } from '@mui/material';
 
 interface IFormValue {
   phoneNumber: string;
   password: string;
 }
 
-const validationSchema = yup.object().shape<{ [k in keyof IFormValue]: any }>({
-  phoneNumber: yup.string().required("Vui lòng nhập email của bạn"),
-  password: yup
-    .string()
-    .min(6, "Mật khẩu phải lớn hơn 6 kí tự")
-    .required("Vui lòng nhập mật khẩu của bạn"),
+const validationSchema = yup.object().shape({
+  phoneNumber: yup.string().required('Vui lòng nhập username của bạn'),
+  password: yup.string().required('Vui lòng nhập mật khẩu của bạn'),
 });
-const LoginPage: React.FC<ILoginPageProps> = () => {
-  const { googleLogin, login, loginLoading, loginError } = useAuth();
-  const { user } = useAppSelector((state: IRootState) => state.auth);
-  const [initialValues, setInitialValues] = useState<IFormValue>({
-    phoneNumber: "",
-    password: "",
+
+const LoginPage: React.FC = () => {
+  const { login, loginLoading, loginError } = useAuth();
+  const [initialValues] = useState<IFormValue>({
+    phoneNumber: '',
+    password: '',
   });
 
   const handleSubmit = (values: IFormValue) => {
@@ -48,15 +35,10 @@ const LoginPage: React.FC<ILoginPageProps> = () => {
         <title>Sneakry - Đăng nhập</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <div className="flex h-screen items-center laptop:px-36 px-10 bg-gray-100">
-        <div className="w-screen bg-white flex flex-col laptop:flex laptop:flex-row justify-center items-center px-2 phone:px-8 h-[450px] tablet:h-[500px] laptop:h-[600px] shadow-2xl drop-shadow-sm border-gray-100 border rounded-2xl">
-          <div className="hidden laptop:flex h-screen items-center">
-            <img
-              src={LoginBackground}
-              width={600}
-              height={600}
-              className="my-auto"
-            />
+      <div className="flex h-screen items-center bg-gray-100 px-10 laptop:px-36">
+        <div className="flex h-[450px] w-screen flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white px-2 shadow-2xl drop-shadow-sm phone:px-8 tablet:h-[500px] laptop:flex laptop:h-[600px] laptop:flex-row">
+          <div className="hidden h-screen items-center laptop:flex">
+            <img src={LoginBackground} width={600} height={600} className="my-auto" />
           </div>
           <div className="flex justify-center">
             <Formik
@@ -65,58 +47,48 @@ const LoginPage: React.FC<ILoginPageProps> = () => {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ handleSubmit, submitForm, errors }) => {
-                return (
-                  <div className="space-y-7">
-                    <div className="space-x-1">
-                      <h1 className="text-center text-gray-600 text-4xl font-bold">
-                        Market Floor
-                      </h1>
-                      <p className="text-sm text-center text-gray-600 mt-2">
-                        Trang dành cho quản trị viên và nhân viên cửa hàng
-                      </p>
-                    </div>
-                    <div className="space-y-5">
-                      {loginError && (
-                        <p className="text-gray-500">Something wrong happens</p>
-                      )}
-                      <BaseInput
-                        mode="phoneNumber"
-                        name="phoneNumber"
-                        label="Phone number"
-                        required
-                        type="phoneNumber"
-                        className="w-[250px] phone:w-[300px] tablet:w-[400px]"
-                      />
-                      <BaseInput
-                        name="password"
-                        label="Mật khẩu"
-                        required
-                        mode="password"
-                        className="w-[250px] phone:w-[300px] tablet:w-[400px]"
-                      />
-
-                      <div className="flex justify-between mb-[80px] mt-[-10px]">
-                        <div></div>
-                        <button className="text-gray-600 text-sm font-semibold">
-                          Quên mật khẩu
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      type="submit"
-                      onClick={submitForm}
-                      className="bg-gray-500 font-bold text-white  rounded-lg w-[250px] phone:w-[300px] laptop:w-[400px] h-[50px]"
-                    >
-                      {loginLoading ? (
-                        <CircularProgress color="inherit" size={25} />
-                      ) : (
-                        "Đăng nhập"
-                      )}
-                    </button>
+              {({ handleSubmit, submitForm }) => (
+                <div className="space-y-7">
+                  <div className="space-x-1">
+                    <h1 className="text-center text-4xl font-bold text-gray-600">Market Floor</h1>
+                    <p className="mt-2 text-center text-sm text-gray-600">
+                      Trang dành cho quản trị viên và nhân viên cửa hàng
+                    </p>
                   </div>
-                );
-              }}
+                  <div className="space-y-5">
+                    {loginError && (
+                      <p className="text-red-500">Đăng nhập thất bại. Vui lòng thử lại!</p>
+                    )}
+                    <BaseInput
+                      mode="name"
+                      name="phoneNumber"
+                      label="Username"
+                      required
+                      type="text"
+                      className="w-[250px] phone:w-[300px] tablet:w-[400px]"
+                    />
+                    <BaseInput
+                      name="password"
+                      label="Mật khẩu"
+                      required
+                      mode="password"
+                      className="w-[250px] phone:w-[300px] tablet:w-[400px]"
+                    />
+
+                    <div className="mb-[80px] mt-[-10px] flex justify-between">
+                      <div></div>
+                      <button className="text-sm font-semibold text-gray-600">Quên mật khẩu</button>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    onClick={submitForm}
+                    className="h-[50px] w-[250px] rounded-lg bg-gray-500 font-bold text-white phone:w-[300px] laptop:w-[400px]"
+                  >
+                    {loginLoading ? <CircularProgress color="inherit" size={25} /> : 'Đăng nhập'}
+                  </button>
+                </div>
+              )}
             </Formik>
           </div>
         </div>

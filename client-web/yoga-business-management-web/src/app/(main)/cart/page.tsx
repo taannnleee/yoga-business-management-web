@@ -9,17 +9,17 @@ interface IProduct {
     title: string;
     quantity: number;
     price: number;
+    subCategory: string;
 }
 
 interface IShoppingCartPageProps {
-    onQuantityChange: (id: string, quantity: number) => void; // Hàm để cập nhật số lượng
-    onRemove: (id: string) => void; // Hàm để xóa sản phẩm
 }
 
-const ShoppingCartPage: React.FC<IShoppingCartPageProps> = ({ onQuantityChange, onRemove }) => {
+const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const [products, setProducts] = useState<IProduct[]>([]); // State để lưu sản phẩm
     const [loading, setLoading] = useState(true); // State để theo dõi trạng thái đang tải
     const [error, setError] = useState<string | null>(null); // State để lưu lỗi nếu có
+
 
     // Gọi API lấy giỏ hàng
     useEffect(() => {
@@ -41,9 +41,10 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = ({ onQuantityChange, 
                 const data = await response.json();
                 const cartItems = data.data.cartItem.map((item: any) => ({
                     id: item.product.id,
-                    title: item.product.title, // Đổi name thành title để khớp với API
+                    title: item.product.title,
                     quantity: item.quantity,
-                    price: item.product.price, // Dùng product.price thay vì totalPrice để hiển thị giá
+                    price: item.product.price,
+                    subCategory: item.product.subCategory.name,
                 }));
 
                 setProducts(cartItems);
@@ -76,10 +77,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = ({ onQuantityChange, 
                                     <Grid item xs={12} key={product.id}>
                                         <ShoppingCartItem
                                             product={product}
-                                            onQuantityChange={(quantity) =>
-                                                onQuantityChange(product.id, quantity)
-                                            }
-                                            onRemove={() => onRemove(product.id)}
+                                            
                                         />
                                     </Grid>
                                 ))

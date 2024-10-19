@@ -1,12 +1,8 @@
-"use client";
 import React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { Typography, Box, Grid, IconButton } from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove"; // Thêm icon xóa sản phẩm
-import AddIcon from "@mui/icons-material/Add"; // Thêm icon thêm số lượng
+import { Card, CardActions, CardContent, CardMedia, Typography, Box, Grid, IconButton, Divider } from "@mui/material";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface IProduct {
     id: string;
@@ -17,8 +13,8 @@ interface IProduct {
 
 interface IInputProps {
     product: IProduct;
-    onQuantityChange: (quantity: number) => void; // Hàm để cập nhật số lượng
-    onRemove: () => void; // Hàm để xóa sản phẩm khỏi giỏ hàng
+    onQuantityChange: (quantity: number) => void;
+    onRemove: () => void;
 }
 
 const ShoppingCartItem: React.FC<IInputProps> = ({ product, onQuantityChange, onRemove }) => {
@@ -33,44 +29,62 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ product, onQuantityChange, on
     };
 
     return (
-        <Card sx={{ display: 'flex', margin: '20px' }}>
-            <CardMedia
-                sx={{ width: 150 }}
-                image="https://source.unsplash.com/random" // Bạn có thể thay đổi hình ảnh sản phẩm
-                title={product.title}
-            />
-            <CardContent sx={{ flex: '1 0 auto' }}>
-                <Typography sx={{ fontWeight: 'bold' }} color="textSecondary" gutterBottom>
-                    {product.title}
-                </Typography>
-                <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                        <Typography variant="body1">Quantity: {product.quantity}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                            Price: €{product.price.toFixed(2)}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="flex" alignItems="center">
-                            <IconButton onClick={handleDecrease}>
-                                <RemoveIcon />
-                            </IconButton>
-                            <Typography variant="body1">{product.quantity}</Typography>
-                            <IconButton onClick={handleIncrease}>
-                                <AddIcon />
-                            </IconButton>
-                        </Box>
-                    </Grid>
+        <Box sx={{ padding: '10px 0', width: '1200px' }}>
+            <Grid container alignItems="center" spacing={2}>
+                {/* Hình ảnh sản phẩm */}
+                <Grid item xs={2}>
+                    <CardMedia
+                        component="img"
+                        sx={{ width: 100 }}
+                        image="https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720"
+                        title={product.title}
+                    />
                 </Grid>
-            </CardContent>
-            <CardActions>
-                <IconButton onClick={onRemove} color="secondary">
-                    Remove
-                </IconButton>
-            </CardActions>
-        </Card>
+
+                {/* Tiêu đề sản phẩm */}
+                <Grid item xs={2}>
+                    <Typography sx={{ fontWeight: 'bold' }}>{product.title}</Typography>
+                    <Typography variant="body2" color="textSecondary">5.4-inch display</Typography>
+                </Grid>
+
+                {/* Giá sản phẩm */}
+                <Grid item xs={2}>
+                    {/* <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                        €{product.price.toFixed(2)}
+                    </Typography> */}
+                    <>SubCategory</>
+                </Grid>
+
+                {/* Số lượng và nút tăng giảm */}
+                <Grid item xs={2}>
+                    <Box display="flex" alignItems="center">
+                        <IconButton onClick={handleDecrease}>
+                            <RemoveIcon />
+                        </IconButton>
+                        <Typography variant="body1">{product.quantity}</Typography>
+                        <IconButton onClick={handleIncrease}>
+                            <AddIcon />
+                        </IconButton>
+                    </Box>
+                </Grid>
+
+                {/* Tổng tiền */}
+                <Grid item xs={2}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                        €{product.price.toFixed(2)}
+                    </Typography>
+                </Grid>
+
+                {/* Nút xóa */}
+                <Grid item xs={1}>
+                    <IconButton onClick={onRemove} color="error">
+                        <DeleteIcon />
+                    </IconButton>
+                </Grid>
+            </Grid>
+            <Divider sx={{ marginTop: '10px' }} /> {/* Đường kẻ chia sản phẩm */}
+        </Box>
     );
 };
+
 export default ShoppingCartItem;

@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Typography, Box, Container, Grid, CssBaseline } from "@mui/material";
+import { Typography, Container, Grid, CssBaseline } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 
 interface IProduct {
     id: string;
-    name: string;
-    size: string;
+    title: string;
     quantity: number;
     price: number;
 }
@@ -42,9 +41,9 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = ({ onQuantityChange, 
                 const data = await response.json();
                 const cartItems = data.data.cartItem.map((item: any) => ({
                     id: item.product.id,
-                    title: item.product.title,
+                    title: item.product.title, // Đổi name thành title để khớp với API
                     quantity: item.quantity,
-                    price: item.totalPrice,
+                    price: item.product.price, // Dùng product.price thay vì totalPrice để hiển thị giá
                 }));
 
                 setProducts(cartItems);
@@ -75,18 +74,13 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = ({ onQuantityChange, 
                             ) : products.length > 0 ? (
                                 products.map((product) => (
                                     <Grid item xs={12} key={product.id}>
-                                        {/* <ShoppingCartItem
-                                            product={{
-                                                id: product.id,
-                                                title: product.cartItem.product.title,
-                                                quantity: product.cartItem.quantity,
-                                                price: product.cartItem.product.price,
-                                            }}
+                                        <ShoppingCartItem
+                                            product={product}
                                             onQuantityChange={(quantity) =>
                                                 onQuantityChange(product.id, quantity)
                                             }
                                             onRemove={() => onRemove(product.id)}
-                                        /> */}
+                                        />
                                     </Grid>
                                 ))
                             ) : (
@@ -102,4 +96,5 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = ({ onQuantityChange, 
         </React.Fragment>
     );
 };
+
 export default ShoppingCartPage;

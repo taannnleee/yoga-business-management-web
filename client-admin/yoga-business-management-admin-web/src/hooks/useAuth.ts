@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import { auth } from "../common/config/firebase";
-import { IRootState } from "../redux";
-import { setAccessToken, setUser } from "../redux/slices/auth";
-import { useAppSelector } from "./useRedux";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
-import { apiURL } from "../config/constanst";
+import { useEffect, useState } from 'react';
+import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { auth } from '../common/config/firebase';
+import { IRootState } from '../redux';
+import { setAccessToken, setUser } from '../redux/slices/auth';
+import { useAppSelector } from './useRedux';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import { apiURL } from '../config/constanst';
 
 export const useAuth = () => {
   const [loginWithGoogle] = useSignInWithGoogle(auth);
@@ -23,27 +23,38 @@ export const useAuth = () => {
 
   const dispatch = useDispatch();
 
-  const login = async (phoneNumber: string, password: string) => {
+  const login = async (username: string, password: string) => {
+    console.log('Username, password', username);
     try {
       setLoginLoading(true);
-      const response = await axios.post(`${apiURL}/tenant/signin`, {
-        phoneNumber,
-        password,
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
       });
-      if (response?.data?.success) {
-        toast.success("Login successfully", {
-          position: "top-right",
+      const result = await response.json();
+      if (response) {
+        toast.success('Login successfully', {
+          position: 'top-right',
           autoClose: 0,
-          theme: "colored",
+          theme: 'colored',
           hideProgressBar: true,
         });
-        history.push("/home");
-        dispatch(setUser(response?.data?.data as any));
-        dispatch(setAccessToken(response?.data?.data?.accessToken));
+        history.push('/home');
+        console.log('response: ', result.data.accesstoken);
+        localStorage.setItem('accessToken', result.data.accesstoken);
+        localStorage.setItem('refreshToken', result.data.accesstoken);
+        // dispatch(setUser(response?.data?.data as any));
+        // dispatch(setAccessToken(response?.data?.data?.accessToken));
       } else {
-        toast.error("Phone number or password in incorrect", {
-          position: "top-right",
-          theme: "colored",
+        toast.error('Phone number or password in incorrect', {
+          position: 'top-right',
+          theme: 'colored',
           hideProgressBar: true,
         });
       }

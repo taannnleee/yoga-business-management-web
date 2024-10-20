@@ -7,7 +7,7 @@ const Logo: React.FC = () => {
   const route = useRouter();
   return (
     <Box
-      onClick={() => route.replace("/home")}
+      onClick={() => route.replace("/home-page")}
       sx={{
         display: "flex",
         columnGap: "12px",

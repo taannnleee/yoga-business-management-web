@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
 
         if (existingItem != null) {
             // Nếu sản phẩm đã tồn tại, tăng số lượng
-            existingItem.setQuantity(existingItem.getQuantity() + 1);
+            existingItem.setQuantity(existingItem.getQuantity() + cartCreationRequest.getQuantity());
 
             BigDecimal price = existingItem.getProduct().getPrice(); // Giá sản phẩm
             int quantity = existingItem.getQuantity();
@@ -124,75 +124,73 @@ public class CartServiceImpl implements CartService {
         return response;
     }
 
-    @Override
-    public CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest) {
-        return null;
-    }
 
     @Override
     public CartResponse removeFromCart(CartCreationRequest cartCreationRequest) {
         return null;
     }
 
-//    @Override
-//    public CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest) {
-//
-//
-//        User user = userService.findUserById(cartCreationRequest.getUserId());
-//        Optional<Cart> cartResponse = cartRepository.findCartByUser(user);
-//
-//        // Kiểm tra xem cart có tồn tại không
-//        Cart cart;
-//        if (cartResponse.isEmpty()) {
-//            // Tạo mới nếu không có cart
-//            cart = new Cart();
-//            cart.setUser(user);
-//            cart.setCartItems(new ArrayList<>());
-//            cartRepository.save(cart);
-//        } else {
-//            // Sử dụng cart đã tồn tại
-//            cart = cartResponse.get();
-//        }
-//
-//        // Kiểm tra xem sản phẩm đã có trong cart chưa
-//        CartItem existingItem = null;
-//
-//        for (CartItem item : cart.getCartItems()) {
-//            if (item.getProduct().getId().equals(Long.parseLong(cartCreationRequest.getProductId()))) {
-//                existingItem = item;
-//                break;
-//            }
-//        }
-//
-//        if (existingItem != null) {
-//            // Nếu sản phẩm đã tồn tại, giảm số lượng
-//            existingItem.setQuantity(existingItem.getQuantity() - 1);
-//
-//            BigDecimal price = existingItem.getProduct().getProductDetail().getPrice(); // Giá sản phẩm
-//            int quantity = existingItem.getQuantity();
-//
-//            BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
-//            existingItem.setTotalPrice(totalPrice);
-//        }
-//
-//        // Cập nhật tổng số mặt hàng và tổng giá
-//        cart.setTotalItem(cart.getCartItems().size());
-//
-//        BigDecimal totalPrice = BigDecimal.ZERO;
-//        for (CartItem item : cart.getCartItems()) {
-//            totalPrice = totalPrice.add(item.getTotalPrice());
-//        }
-//        cart.setTotalPrice(totalPrice);
-//
-//        // Lưu lại cart
-//        cartRepository.save(cart);
-//        // Trả về response
-//        List<CartItemDTO> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemDTO.class);
-//
-//        CartResponse response  = Mappers.convertToDto(cart, CartResponse.class);
-//        response.setCartItem(itemDTOS);
-//        return response;
-//    }
+    @Override
+    public CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest,HttpServletRequest request) {
+
+        String authorizationHeader = request.getHeader("Authorization");
+        String token = authorizationHeader.substring(7);
+
+        // Giải mã token để lấy userId
+        String userName = jwtService.extractUsername(token, ETokenType.ACCESSTOKEN);
+
+        User user = userService.findUserByUserName(userName);
+        Optional<Cart> cartResponse = cartRepository.findCartByUser(user);
+        Cart cart = cartResponse.get();
+
+        // Kiểm tra xem sản phẩm đã có trong cart chưa
+        CartItem existingItem = null;
+
+        for (CartItem item : cart.getCartItems()) {
+            if (item.getProduct().getId().equals(Long.parseLong(cartCreationRequest.getProductId()))) {
+                existingItem = item;
+                break;
+            }
+        }
+
+        if (existingItem != null) {
+            // Nếu sản phẩm đã tồn tại, tăng số lượng
+            existingItem.setQuantity(cartCreationRequest.getQuantity());
+
+            BigDecimal price = existingItem.getProduct().getPrice(); // Giá sản phẩm
+            int quantity = existingItem.getQuantity();
+
+            BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
+            existingItem.setTotalPrice(totalPrice);
+        } else {
+            // Nếu sản phẩm chưa tồn tại, tạo CartItem mới
+            CartItem newItem = new CartItem();
+            newItem.setProduct(productService.getProductById(cartCreationRequest.getProductId())); // Tìm sản phẩm
+            newItem.setQuantity(1);
+            newItem.setTotalPrice(newItem.getProduct().getPrice());
+
+            // Thêm CartItem vào cart
+            cart.getCartItems().add(newItem);
+        }
+
+        // Cập nhật tổng số mặt hàng và tổng giá
+        cart.setTotalItem(cart.getCartItems().size());
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (CartItem item : cart.getCartItems()) {
+            totalPrice = totalPrice.add(item.getTotalPrice());
+        }
+        cart.setTotalPrice(totalPrice);
+
+        // Lưu lại cart
+        cartRepository.save(cart);
+        // Trả về response
+        List<CartItemResponse> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemResponse.class);
+
+        CartResponse response  = Mappers.convertToDto(cart, CartResponse.class);
+        response.setCartItem(itemDTOS);
+        return response;
+    }
 //
 //    @Override
 //    public CartResponse removeFromCart(CartCreationRequest cartCreationRequest) {

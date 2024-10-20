@@ -11,4 +11,8 @@ import lombok.experimental.FieldDefaults;
 public class CartCreationRequest {
     @NotNull(message = "Product id is required")
     String productId;
+
+    @NotNull(message = "Quantity id is required")
+    int quantity;
+
 }

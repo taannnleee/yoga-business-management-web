@@ -37,8 +37,8 @@ public class CartController {
     }
 
     @PostMapping("/subtract-from-cart-item")
-    public ApiResponse<?> subtractFromCartItem(@Valid @RequestBody CartCreationRequest cartCreationRequest) {
-        CartResponse cartResponse =  cartService.subtractFromCartItem(cartCreationRequest);
+    public ApiResponse<?> subtractFromCartItem(@Valid @RequestBody CartCreationRequest cartCreationRequest,HttpServletRequest request) {
+        CartResponse cartResponse =  cartService.subtractFromCartItem(cartCreationRequest, request);
         return new ApiResponse<>(HttpStatus.OK.value(), "subtract from cart success",cartResponse);
     }
 

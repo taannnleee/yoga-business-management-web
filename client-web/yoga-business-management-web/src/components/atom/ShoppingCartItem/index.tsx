@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Card, CardActions, CardContent, CardMedia, Typography, Box, Grid, IconButton, Divider } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { CardMedia, Typography, Box, Grid, IconButton, Divider } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import useDebounce from "../../../hooks/useDebounce"; // Hook debounce
 
 interface IProduct {
     id: string;
@@ -19,43 +20,58 @@ interface IInputProps {
 const ShoppingCartItem: React.FC<IInputProps> = ({ product }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [quantity, setQuantity] = useState(product.quantity); // Tổng số lượng hiện tại
+    const [changedQuantity, setChangedQuantity] = useState(0); // Số lượng thay đổi
+    const debouncedChangedQuantity = useDebounce(changedQuantity, 1000); // Debounce số lượng thay đổi
 
-    const handleIncrease = async () => {
-        console.log('Đã tăng số lượng sản phẩm:', product.id);
-        setLoading(true);
-        setError(null); // Reset error before making the request
+    useEffect(() => {
+        const updateCart = async () => {
+            if (debouncedChangedQuantity !== 0) { // Chỉ gọi API khi số lượng thay đổi
+                console.log('Cập nhật số lượng sản phẩm:', product.id, debouncedChangedQuantity);
+                setLoading(true);
+                setError(null);
 
-        try {
-            const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    productId: product.id, // Thay đổi theo yêu cầu của bạn
-                    quantity: product.quantity + 1,
-                }),
-            });
+                try {
+                    const token = localStorage.getItem("accessToken");
+                    const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            productId: product.id,
+                            quantity: debouncedChangedQuantity, // Gửi số lượng đã thay đổi
+                        }),
+                    });
 
-            if (!response.ok) {
-                throw new Error("Failed to add product to cart");
+                    if (!response.ok) {
+                        throw new Error("Failed to update product quantity");
+                    }
+
+                    const data = await response.json();
+                    console.log(data);
+                } catch (err: any) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                    setChangedQuantity(0); // Reset số lượng thay đổi sau khi cập nhật
+                }
             }
+        };
 
-            const data = await response.json();
-            console.log(data); // Thực hiện hành động gì đó với phản hồi nếu cần
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
+        updateCart(); // Gọi hàm cập nhật khi debouncedChangedQuantity thay đổi
+    }, [debouncedChangedQuantity, product.id]);
+
+    const handleIncrease = () => {
+        setQuantity((prevQuantity) => prevQuantity + 1); // Tăng tổng số lượng
+        setChangedQuantity((prevChanged) => prevChanged + 1); // Tăng số lượng thay đổi
     };
 
     const handleDecrease = () => {
-        if (product.quantity > 1) {
-            console.log('Đã giảm số lượng sản phẩm:', product.id);
-            // Gọi API tương tự như handleIncrease nếu cần
+        if (quantity > 1) {
+            setQuantity((prevQuantity) => prevQuantity - 1); // Giảm tổng số lượng
+            setChangedQuantity((prevChanged) => prevChanged - 1); // Giảm số lượng thay đổi
         }
     };
 
@@ -80,9 +96,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ product }) => {
 
                 {/* Giá sản phẩm */}
                 <Grid item xs={2}>
-                    <Typography>
-                        {product.subCategory}
-                    </Typography>
+                    <Typography>{product.subCategory}</Typography>
                 </Grid>
 
                 {/* Số lượng và nút tăng giảm */}
@@ -91,7 +105,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ product }) => {
                         <IconButton onClick={handleDecrease}>
                             <RemoveIcon />
                         </IconButton>
-                        <Typography variant="body1">{product.quantity}</Typography>
+                        <Typography variant="body1">{quantity}</Typography>
                         <IconButton onClick={handleIncrease} disabled={loading}>
                             <AddIcon />
                         </IconButton>
@@ -103,7 +117,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ product }) => {
                 {/* Tổng tiền */}
                 <Grid item xs={2}>
                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        €{product.price.toFixed(2)}
+                        €{(quantity * product.price).toFixed(2)} {/* Cập nhật tổng tiền */}
                     </Typography>
                 </Grid>
 

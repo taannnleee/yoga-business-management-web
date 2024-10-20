@@ -9,7 +9,7 @@ public interface CartService {
 
     CartResponse showCart(HttpServletRequest request);
 
-    CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest);
+    CartResponse subtractFromCartItem(CartCreationRequest cartCreationRequest,HttpServletRequest request);
 
     CartResponse removeFromCart(CartCreationRequest cartCreationRequest);
 }

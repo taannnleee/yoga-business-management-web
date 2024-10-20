@@ -43,7 +43,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         toast.sendToast("Success", "Login successfully");
 
         // Redirect to home page
-        router.replace("/home-page");
+        router.replace("/home");
       } else {
         setLoading(false);
         toast.sendToast("Error", "Login failed", result.message);

@@ -6,6 +6,7 @@ import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.service.JwtService;
 import org.example.yogabusinessmanagementweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,7 @@ public class JwtUtil {
     private JwtService jwtService;
 
     @Autowired
+    @Lazy
     private UserService userService;
 
     public User getUserFromRequest(HttpServletRequest request) {

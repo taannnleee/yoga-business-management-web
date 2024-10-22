@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
 
 @Entity
 @Table(name = "Address")
@@ -17,4 +18,6 @@ public class Address extends AbstractEntity<Long> {
     String street;
     String district ;
     String city;
+    @Enumerated(EnumType.STRING)
+    EAddress status;
 }

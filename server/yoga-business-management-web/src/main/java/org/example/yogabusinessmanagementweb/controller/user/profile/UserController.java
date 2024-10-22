@@ -26,12 +26,12 @@ public class UserController {
     EmailService emailService;
     AuthencationService authencationService;
 
-    @GetMapping("/getProfile")
+    @GetMapping("/get-profile")
     public ApiResponse<?> getProfile(HttpServletRequest request){
         ProfileResponse profileResponse =  userService.getProfile(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
     }
-    @PostMapping("/updateProfile")
+    @PostMapping("/update-profile")
     public ApiResponse<?> updateProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest, HttpServletRequest request){
         userService.updateProfile(updateProfileRequest, request);
         return new ApiResponse<>(HttpStatus.OK.value(), "update profile successfully");

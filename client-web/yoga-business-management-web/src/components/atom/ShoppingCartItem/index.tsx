@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CardMedia, Typography, Box, Grid, IconButton, Divider } from "@mui/material";
+import { CardMedia, Typography, Box, Grid, IconButton, Divider, Button } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,9 +16,10 @@ interface IProduct {
 interface IInputProps {
     product: IProduct;
     onRemove: (productId: string) => void;
+    fetchCart: () => void;
 }
 
-const ShoppingCartItem: React.FC<IInputProps> = ({ product, onRemove }) => {
+const ShoppingCartItem: React.FC<IInputProps> = ({ product, onRemove, fetchCart }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(product.quantity); // Tổng số lượng hiện tại
@@ -57,6 +58,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ product, onRemove }) => {
                 } finally {
                     setLoading(false);
                     setChangedQuantity(0); // Reset số lượng thay đổi sau khi cập nhật
+                    fetchCart();
                 }
             } else if (debouncedChangedQuantity < 0) { // Chỉ gọi API khi số lượng giảm
                 console.log('Giảm số lượng sản phẩm:', product.id, debouncedChangedQuantity);
@@ -88,6 +90,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ product, onRemove }) => {
                 } finally {
                     setLoading(false);
                     setChangedQuantity(0); // Reset số lượng thay đổi sau khi cập nhật
+                    fetchCart()
                 }
             }
         };

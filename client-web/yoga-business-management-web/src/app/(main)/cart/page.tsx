@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Container, Grid, CssBaseline, Button } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
+import { useRouter } from 'next/navigation';
 
 interface IProduct {
     id: string;
@@ -19,6 +20,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const [loading, setLoading] = useState(true); // State để theo dõi trạng thái đang tải
     const [error, setError] = useState<string | null>(null); // State để lưu lỗi nếu có
     const [totalPrice, setTotalPrice] = useState(0);
+    const router = useRouter();
 
     // Hàm gọi API để lấy giỏ hàng
     const fetchCart = async () => {
@@ -104,7 +106,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                                     </Typography>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="contained" color="primary" style={{ marginLeft: 16 }}>
+                                    <Button variant="contained" color="primary" style={{ marginLeft: 16 }} onClick={() => router.replace("/checkout")}>
                                         Tiến hành thanh toán
                                     </Button>
                                 </Grid>

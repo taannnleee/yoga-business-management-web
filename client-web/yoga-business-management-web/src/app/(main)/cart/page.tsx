@@ -58,6 +58,12 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
         fetchCart();
     }, []);
 
+    const handleRemoveProduct = (productId: string) => {
+        setProducts((prevProducts) =>
+            prevProducts.filter((product) => product.id !== productId)
+        );
+    };
+
     return (
         <React.Fragment>
             <CssBaseline />
@@ -77,7 +83,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                                     <Grid item xs={12} key={product.id}>
                                         <ShoppingCartItem
                                             product={product}
-                                            
+                                            onRemove={handleRemoveProduct}
                                         />
                                     </Grid>
                                 ))

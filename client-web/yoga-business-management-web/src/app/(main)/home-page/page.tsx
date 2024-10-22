@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import HomePageCard from "../../../components/atom/HomePageCard";
+import HomePageCard from "../../../components/molecules/HomePageCard/index";
 import { Grid } from "@mui/material";
 interface IHomePageProps { }
 
@@ -52,7 +52,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
 
     return (
         <>
-            
+
             <Grid container spacing={2}>
                 {fetchingProducts ? (
                     <Grid item xs={12}>

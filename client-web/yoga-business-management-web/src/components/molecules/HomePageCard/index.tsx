@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardMedia, Typography, Button, CardActions } from "@mui/material";
-
+import { useRouter } from "next/navigation";
 // Định nghĩa interface cho product
 interface Product {
     id: string;
@@ -8,10 +8,6 @@ interface Product {
     price: number;
     imagePath: string;
     averageRating: number;
-    description: string;
-    color: string;
-    size: string;
-    brand: string;
 }
 
 interface HomePageCardProps {
@@ -21,6 +17,7 @@ interface HomePageCardProps {
 const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
     const [loading, setLoading] = useState(false); // Trạng thái loading khi gọi API
     const [error, setError] = useState<string | null>(null); // Trạng thái lỗi
+    const router = useRouter();
 
     const addToCart = async () => {
         setLoading(true);
@@ -49,6 +46,7 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
             setError(err.message); // Xử lý lỗi nếu có
         } finally {
             setLoading(false); // Dừng trạng thái loading
+            router.replace("/cart")
         }
     };
 
@@ -64,8 +62,8 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
                 <Typography gutterBottom variant="h5" component="div">
                     {product.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    €{product.price} {/* Thêm ký hiệu tiền tệ */}
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    {(product.price).toLocaleString('vi-VN')} đ
                 </Typography>
             </CardContent>
             <CardActions>

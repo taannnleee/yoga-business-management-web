@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.mapper.ProductMapper;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResponse;
+import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.ProductDetailRepository;
@@ -18,10 +19,13 @@ import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,13 +48,25 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findProductById(Long.valueOf(id))
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
     }
-    public Page<Product> searchProducts(String keyword, Pageable pageable) {
+
+    @Override
+    public Page<ProductResponse> searchProducts(String keyword, Pageable pageable) {
+        Page<Product> productPage;
+
         if (keyword == null || keyword.isEmpty()) {
-            return productRepository.findAll(pageable); // Nếu không có keyword, trả về tất cả sản phẩm
+            productPage = productRepository.findAll(pageable); // Lấy tất cả sản phẩm
         } else {
-            return productRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+            productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable); // Tìm kiếm theo từ khóa
         }
+
+        // Chuyển đổi từ Page<Product> sang Page<ProductResponse>
+        List<ProductResponse> productResponses = productPage.getContent().stream()
+                .map(product -> new ProductResponse(product.getId(), product.getTitle(), product.getPrice(), product.getAverageRating(),product.getImagePath(),product.getStatus()))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
     }
+
 
     @Override
     public AddProductResponse addProduct(ProductCreationRequest productCreationRequest)  {

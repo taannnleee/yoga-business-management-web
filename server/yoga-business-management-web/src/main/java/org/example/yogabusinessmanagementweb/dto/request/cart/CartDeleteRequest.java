@@ -8,11 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class CartCreationRequest {
+public class CartDeleteRequest {
     @NotNull(message = "Product id is required")
     String productId;
-
-    @NotNull(message = "Quantity id is required")
-    int quantity;
-
 }

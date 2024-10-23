@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
@@ -197,6 +198,7 @@ public class AuthencationService {
         Cart cart = new Cart();
         cart.setUser(user);
         cart.setCartItems(new ArrayList<>());
+        cart.setTotalPrice(BigDecimal.valueOf(0));
         cartRepository.save(cart);
 
     }

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.dto.request.user.UpdateProfileRequest;
+import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
+import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
@@ -26,18 +28,23 @@ public class UserController {
     EmailService emailService;
     AuthencationService authencationService;
 
-    @GetMapping("/getProfile")
+    // get address với trạng thái default
+    @GetMapping("/get-user-address-default")
+    public ApiResponse<?> getUserAddressDefault(HttpServletRequest request) {
+        UserAddressDefaultResponse addressResponse =  userService.getUserAddressDefault(request);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Get user address default success",addressResponse);
+    }
+
+    @GetMapping("/get-profile")
     public ApiResponse<?> getProfile(HttpServletRequest request){
         ProfileResponse profileResponse =  userService.getProfile(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "getProfile successfully",profileResponse);
     }
-    @PostMapping("/updateProfile")
+    @PostMapping("/update-profile")
     public ApiResponse<?> updateProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest, HttpServletRequest request){
         userService.updateProfile(updateProfileRequest, request);
         return new ApiResponse<>(HttpStatus.OK.value(), "update profile successfully");
 
     }
-
-
 
 }

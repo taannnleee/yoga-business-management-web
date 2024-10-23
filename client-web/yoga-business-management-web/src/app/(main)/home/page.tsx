@@ -142,10 +142,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                                         price: product.price,
                                         imagePath: product.imagePath,
                                         averageRating: product.averageRating,
-                                        description: product.productDetail.description,
-                                        color: product.productDetail.color,
-                                        size: product.productDetail.size,
-                                        brand: product.productDetail.brand,
+            
                                     }}
                                 />
                             </div>

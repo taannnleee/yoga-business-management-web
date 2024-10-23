@@ -4,6 +4,8 @@ package org.example.yogabusinessmanagementweb.service;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.UpdateProfileRequest;
+import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
+import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.RegistrationResponse;
 import org.example.yogabusinessmanagementweb.common.entities.Address;
@@ -28,4 +30,6 @@ public interface UserService {
     ProfileResponse getProfile(HttpServletRequest request);
 
     void updateProfile(UpdateProfileRequest updateProfileRequest, HttpServletRequest request);
+
+    UserAddressDefaultResponse getUserAddressDefault(HttpServletRequest request);
 }

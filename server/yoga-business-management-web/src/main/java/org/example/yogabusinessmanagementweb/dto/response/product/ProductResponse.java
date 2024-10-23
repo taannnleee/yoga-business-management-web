@@ -14,9 +14,17 @@ import java.math.BigDecimal;
 public class ProductResponse {
     Long id;
     String title;
-    Double averageRating;
     BigDecimal price;
+    Double averageRating;
     String imagePath;
     String status;
     SubCategoryResponse subCategory;
+    public ProductResponse(Long id, String title, BigDecimal price,Double averageRating,String imagePath,String status ) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+        this.averageRating = averageRating;
+        this.imagePath = imagePath;
+        this.status = status;
+    }
 }

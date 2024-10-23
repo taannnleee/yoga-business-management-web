@@ -50,6 +50,11 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
         }
     };
 
+    const handleProductClick = (productId: string) => {
+        // Navigate to the product detail page with the given productId
+        router.push(`/product-detail/${productId}`);
+    };
+
     return (
         <Card sx={{ maxWidth: 300, margin: "20px auto" }}>
             <CardMedia
@@ -67,7 +72,7 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button
+                <Button onClick={() => handleProductClick(product.id)}
                     size="small"
                     sx={{
                         "&:hover": {

@@ -13,7 +13,7 @@ import HomePageCard from "../../../components/molecules/HomePageCard";
 import { Grid } from "@mui/material";
 import SaleoffCard from "@/components/organisms/SaleOffCard";
 
-interface IHomePageProps {}
+interface IHomePageProps { }
 
 const imageUrls = [
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720",
@@ -71,10 +71,6 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
         fetchProducts();
     }, []);
 
-    const handleProductClick = (productId: number) => {
-        // Navigate to the product detail page with the given productId
-        router.push(`/product-detail/${productId}`);
-    };
 
     return (
         <>
@@ -120,7 +116,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                     ))}
                 </Box>
             </Box>
-            <SaleoffCard/>
+            <SaleoffCard />
             <Grid container spacing={2}>
                 {fetchingProducts ? (
                     <Grid item xs={12}>
@@ -133,7 +129,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                 ) : Array.isArray(products) && products.length > 0 ? (
                     products.map((product) => (
                         <Grid item xs={12} sm={6} md={3} key={product.id}>
-                            <div onClick={() => handleProductClick(product.id)}> {/* Click event to navigate */}
+                            <div > {/* Click event to navigate */}
 
                                 <HomePageCard
                                     product={{
@@ -142,7 +138,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                                         price: product.price,
                                         imagePath: product.imagePath,
                                         averageRating: product.averageRating,
-            
+
                                     }}
                                 />
                             </div>

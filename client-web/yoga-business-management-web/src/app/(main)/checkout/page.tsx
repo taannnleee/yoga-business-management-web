@@ -1,6 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid, TextField, Button, Paper, Divider, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import {
+    Box,
+    Typography,
+    Grid,
+    TextField,
+    Button,
+    Paper,
+    Divider,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
+} from "@mui/material";
 
 interface IProduct {
     id: string;
@@ -12,10 +23,13 @@ interface IProduct {
 const Checkout: React.FC = () => {
     const [shippingInfo, setShippingInfo] = useState({
         fullName: "",
-        address: "",
+        address: {
+            houseNumber: "",
+            street: "",
+            district: "",
+            city: "",
+        },
         phone: "",
-        city: "",
-        zipCode: "",
     });
 
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
@@ -25,10 +39,21 @@ const Checkout: React.FC = () => {
     const [error, setError] = useState<string | null>(null); // State error
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setShippingInfo({
-            ...shippingInfo,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+        if (name === "fullName" || name === "phone") {
+            setShippingInfo({
+                ...shippingInfo,
+                [name]: value,
+            });
+        } else {
+            setShippingInfo({
+                ...shippingInfo,
+                address: {
+                    ...shippingInfo.address,
+                    [name]: value,
+                },
+            });
+        }
     };
 
     const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +65,41 @@ const Checkout: React.FC = () => {
         console.log("Shipping Info: ", shippingInfo);
         console.log("Payment Method: ", paymentMethod);
         // Gửi thông tin đơn hàng tới backend hoặc xử lý thanh toán tại đây
+    };
+
+    // Hàm gọi API để lấy địa chỉ mặc định
+    const fetchDefaultAddress = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const response = await fetch("http://localhost:8080/api/user/get-user-address-default", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch default address");
+            }
+
+            const data = await response.json();
+            const addressData = data.data; // Đảm bảo API trả về theo cấu trúc của bạn
+            setShippingInfo({
+                fullName: addressData.fullname,
+                phone: addressData.phone,
+                address: {
+                    houseNumber: addressData.address.houseNumber,
+                    street: addressData.address.street,
+                    district: addressData.address.district,
+                    city: addressData.address.city,
+                },
+            });
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Hàm gọi API để lấy giỏ hàng
@@ -75,8 +135,9 @@ const Checkout: React.FC = () => {
         }
     };
 
-    // Gọi fetchCart khi component được mount
+    // Gọi API lấy địa chỉ và giỏ hàng khi component được mount
     useEffect(() => {
+        fetchDefaultAddress();
         fetchCart();
     }, []);
 
@@ -105,10 +166,40 @@ const Checkout: React.FC = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label="Địa chỉ"
-                                    name="address"
+                                    label="Số nhà"
+                                    name="houseNumber"
                                     fullWidth
-                                    value={shippingInfo.address}
+                                    value={shippingInfo.address.houseNumber}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Đường"
+                                    name="street"
+                                    fullWidth
+                                    value={shippingInfo.address.street}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Quận/Huyện"
+                                    name="district"
+                                    fullWidth
+                                    value={shippingInfo.address.district}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Thành phố"
+                                    name="city"
+                                    fullWidth
+                                    value={shippingInfo.address.city}
                                     onChange={handleInputChange}
                                     required
                                 />
@@ -119,26 +210,6 @@ const Checkout: React.FC = () => {
                                     name="phone"
                                     fullWidth
                                     value={shippingInfo.phone}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <TextField
-                                    label="Thành phố"
-                                    name="city"
-                                    fullWidth
-                                    value={shippingInfo.city}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={2}>
-                                <TextField
-                                    label="Mã Zip"
-                                    name="zipCode"
-                                    fullWidth
-                                    value={shippingInfo.zipCode}
                                     onChange={handleInputChange}
                                     required
                                 />

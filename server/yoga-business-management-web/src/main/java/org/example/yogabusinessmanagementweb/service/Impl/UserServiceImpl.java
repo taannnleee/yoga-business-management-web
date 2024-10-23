@@ -4,9 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
+import org.example.yogabusinessmanagementweb.common.mapper.AddressMapper;
+import org.example.yogabusinessmanagementweb.common.mapper.UserMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.user.RegistrationRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.UpdateProfileRequest;
+import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
+import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.RegistrationResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
@@ -40,6 +45,12 @@ import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.ACCES
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    @Autowired
+    AddressMapper addressMapper;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Autowired
     private final JwtUtil jwtUtil;
@@ -92,6 +103,11 @@ public class UserServiceImpl implements UserService {
     public RegistrationResponse registerUser(RegistrationRequest registrationRequest) {
         ArrayList arrayList = new ArrayList();
         Address address = new Address();
+        address.setStatus(EAddress.DEFAULT);
+        address.setCity("");
+        address.setDistrict("");
+        address.setStreet("");
+
         arrayList.add(address);
 
         String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
@@ -211,6 +227,22 @@ public class UserServiceImpl implements UserService {
         }
 
         return true;
+    }
+
+    @Override
+    public UserAddressDefaultResponse getUserAddressDefault(HttpServletRequest request) {
+        User user =  jwtUtil.getUserFromRequest(request);
+
+        List<Address> addresses = user.getAddresses();
+
+
+        for(Address address : addresses) {
+            if(address.getStatus() == EAddress.DEFAULT) {
+                return userMapper.toUserAddressDefaultResponse(user, address);
+            }
+        }
+
+        throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
     }
 
 }

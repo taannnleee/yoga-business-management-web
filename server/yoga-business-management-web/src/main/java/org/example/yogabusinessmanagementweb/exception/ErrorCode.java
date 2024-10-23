@@ -36,6 +36,8 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(1024, "Category not found",HttpStatus.NOT_FOUND),
 
 
+    ADDRESS_NOT_FOUND(1025, "Address not found",HttpStatus.NOT_FOUND),
+
     INVALID_CREDENTIALS(1022,"Invalid credentials",HttpStatus.BAD_REQUEST ),;
 
     // MODULE ERROR

@@ -103,7 +103,7 @@ const SaleoffCard: React.FC = () => {
     };
 
     return (
-        <Box mt={4} p={4}>
+        <Box mt={2} p={2} ml={4} mr={4}>
             <Box display="flex" alignItems="center" mb={2}>
                 <Box
                     sx={{
@@ -171,12 +171,22 @@ const SaleoffCard: React.FC = () => {
                                     component="a"
                                     href="#"
                                     className="no-underline cursor-pointer"
-                                    style={{ color: 'black', transition: 'color 0.3s' }}
+                                    style={{
+                                        color: 'black',
+                                        transition: 'color 0.3s',
+                                        maxWidth: '192px', // Giới hạn chiều rộng là 192px
+                                        display: '-webkit-box', // Hiển thị dưới dạng hộp để có thể sử dụng line-clamp
+                                        WebkitLineClamp: 2, // Giới hạn tối đa 2 dòng
+                                        WebkitBoxOrient: 'vertical', // Định hướng hộp là vertical
+                                        overflow: 'hidden', // Ẩn phần tràn
+                                        textOverflow: 'ellipsis', // Thêm dấu "..." ở cuối nếu tràn
+                                    }}
                                     onMouseEnter={(e) => (e.currentTarget.style.color = 'red')}
                                     onMouseLeave={(e) => (e.currentTarget.style.color = 'black')}
                                 >
                                     {product.title}
                                 </Typography>
+
 
                                 <Box mt={1}>
                                     {renderStars(product.rating)}

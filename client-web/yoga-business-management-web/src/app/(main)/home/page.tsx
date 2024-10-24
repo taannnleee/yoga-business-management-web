@@ -9,8 +9,10 @@ import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation"; // Make sure you're importing from 'next/navigation'
 import Link from "next/link";
-import HomePageCard from "../../../components/atom/HomePageCard";
+import HomePageCard from "../../../components/molecules/HomePageCard";
 import { Grid } from "@mui/material";
+import SaleoffCard from "@/components/organisms/SaleOffCard";
+import ProductByCategoryCard from "@/components/organisms/ProductByCategoryCard";
 
 interface IHomePageProps {}
 
@@ -77,6 +79,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
 
     return (
         <>
+
             <Box sx={{
                 position: "relative",
                 height: "482px",
@@ -118,7 +121,8 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                     ))}
                 </Box>
             </Box>
-
+            <SaleoffCard/>
+            <ProductByCategoryCard/>
             <Grid container spacing={2}>
                 {fetchingProducts ? (
                     <Grid item xs={12}>
@@ -132,6 +136,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                     products.map((product) => (
                         <Grid item xs={12} sm={6} md={3} key={product.id}>
                             <div onClick={() => handleProductClick(product.id)}> {/* Click event to navigate */}
+
                                 <HomePageCard
                                     product={{
                                         id: product.id,

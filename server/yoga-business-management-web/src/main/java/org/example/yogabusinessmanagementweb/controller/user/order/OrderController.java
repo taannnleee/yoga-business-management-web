@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.controller.user.order;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,6 +15,7 @@ import org.example.yogabusinessmanagementweb.service.OrderService;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.service.EmailService;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,8 +37,14 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping("/create-order")
-    public ApiResponse<?> createOrder(@Valid  @RequestBody OrderCreationRequest orderCreationRequest) {
-        OrderCreationResponse orderCreationResponse =  orderService.createOrder(orderCreationRequest);
+    public ApiResponse<?> createOrder(HttpServletRequest request,@RequestBody OrderCreationRequest orderRequest) {
+        System.out.println("Shipping Info: " + orderRequest.getShippingInfo());
+        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
+        System.out.println("Products: " + orderRequest.getProducts());
+        System.out.println("Total Price: " + orderRequest.getTotalPrice());
+
+
+        OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
     }
 }

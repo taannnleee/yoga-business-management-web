@@ -15,9 +15,11 @@ import java.math.BigDecimal;
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CartItem extends AbstractEntity<Long>{
-    @OneToOne(fetch = FetchType.EAGER)
+    int quantity;
+
+    BigDecimal totalPrice;
+
+    @ManyToOne()
     @JoinColumn(name = "product_id")
     Product product;
-    int quantity;
-    BigDecimal totalPrice;
 }

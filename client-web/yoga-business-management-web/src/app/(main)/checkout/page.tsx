@@ -11,6 +11,10 @@ import {
     FormControlLabel,
     Radio,
     RadioGroup,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
 } from "@mui/material";
 
 interface IProduct {
@@ -22,7 +26,7 @@ interface IProduct {
 
 const Checkout: React.FC = () => {
     const [shippingInfo, setShippingInfo] = useState({
-        fullName: "",
+        fullname: "",
         address: {
             houseNumber: "",
             street: "",
@@ -33,10 +37,11 @@ const Checkout: React.FC = () => {
     });
 
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
-    const [products, setProducts] = useState<IProduct[]>([]); // State để lưu sản phẩm trong giỏ hàng
-    const [totalPrice, setTotalPrice] = useState(0); // State để lưu tổng tiền
-    const [loading, setLoading] = useState(true); // State loading
-    const [error, setError] = useState<string | null>(null); // State error
+    const [products, setProducts] = useState<IProduct[]>([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false); // State cho hộp thoại xác nhận
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -60,14 +65,45 @@ const Checkout: React.FC = () => {
         setPaymentMethod(e.target.value);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Shipping Info: ", shippingInfo);
-        console.log("Payment Method: ", paymentMethod);
-        // Gửi thông tin đơn hàng tới backend hoặc xử lý thanh toán tại đây
+
+        const token = localStorage.getItem("accessToken");
+
+        try {
+            const response = await fetch("http://localhost:8080/api/order/create-order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`, // Assuming user is authenticated and token is stored
+                },
+                body: JSON.stringify({
+                    shippingInfo,
+                    paymentMethod,
+                    products,
+                    totalPrice,
+                }),
+            });
+
+            console.log("hihi");
+            console.log(shippingInfo)
+            console.log(paymentMethod)
+            console.log(products)
+            console.log(totalPrice)
+
+            if (!response.ok) {
+                throw new Error("Failed to create order");
+            }
+
+            const data = await response.json();
+            console.log("Order created successfully:", data);
+            // Handle successful order creation, e.g., navigate to order confirmation page
+        } catch (error: any) {
+            console.error("Error creating order:", error.message);
+            setError(error.message); // Display error to the user
+        }
     };
 
-    // Hàm gọi API để lấy địa chỉ mặc định
     const fetchDefaultAddress = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -84,9 +120,9 @@ const Checkout: React.FC = () => {
             }
 
             const data = await response.json();
-            const addressData = data.data; // Đảm bảo API trả về theo cấu trúc của bạn
+            const addressData = data.data;
             setShippingInfo({
-                fullName: addressData.fullname,
+                fullname: addressData.fullname,
                 phone: addressData.phone,
                 address: {
                     houseNumber: addressData.address.houseNumber,
@@ -102,7 +138,6 @@ const Checkout: React.FC = () => {
         }
     };
 
-    // Hàm gọi API để lấy giỏ hàng
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -135,11 +170,23 @@ const Checkout: React.FC = () => {
         }
     };
 
-    // Gọi API lấy địa chỉ và giỏ hàng khi component được mount
     useEffect(() => {
         fetchDefaultAddress();
         fetchCart();
     }, []);
+
+    const handleOpenConfirmDialog = () => {
+        setOpenConfirmDialog(true); // Mở hộp thoại xác nhận
+    };
+
+    const handleCloseConfirmDialog = () => {
+        setOpenConfirmDialog(false); // Đóng hộp thoại xác nhận
+    };
+
+    const handleConfirmOrder = async () => {
+        await handleSubmit(new Event('submit')); // Chờ submit hoàn tất
+        handleCloseConfirmDialog(); // Đóng hộp thoại
+    };
 
     return (
         <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
@@ -147,7 +194,6 @@ const Checkout: React.FC = () => {
                 Checkout
             </Typography>
             <Grid container spacing={3}>
-                {/* Thông tin giao hàng */}
                 <Grid item xs={12} md={8}>
                     <Paper sx={{ padding: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
@@ -159,7 +205,7 @@ const Checkout: React.FC = () => {
                                     label="Họ và tên"
                                     name="fullName"
                                     fullWidth
-                                    value={shippingInfo.fullName}
+                                    value={shippingInfo.fullname}
                                     onChange={handleInputChange}
                                     required
                                 />
@@ -217,7 +263,6 @@ const Checkout: React.FC = () => {
                         </Grid>
                     </Paper>
 
-                    {/* Phương thức thanh toán */}
                     <Paper sx={{ padding: "20px", marginTop: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
                             Phương thức thanh toán
@@ -230,7 +275,6 @@ const Checkout: React.FC = () => {
                     </Paper>
                 </Grid>
 
-                {/* Tổng kết đơn hàng */}
                 <Grid item xs={12} md={4}>
                     <Paper sx={{ padding: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
@@ -246,30 +290,38 @@ const Checkout: React.FC = () => {
                                 {products.map((product) => (
                                     <Box display="flex" justifyContent="space-between" key={product.id} sx={{ marginBottom: "10px" }}>
                                         <Typography>{product.title} (x{product.quantity})</Typography>
-                                        <Typography>{(product.price * product.quantity).toLocaleString()} đ</Typography>
+                                        <Typography>{(product.price * product.quantity).toLocaleString()} VND</Typography>
                                     </Box>
                                 ))}
                                 <Divider sx={{ marginBottom: "10px" }} />
-                                <Box display="flex" justifyContent="space-between" sx={{ fontWeight: "bold", marginBottom: "10px" }}>
-                                    <Typography>Tổng cộng</Typography>
-                                    <Typography>{totalPrice.toLocaleString()} đ</Typography>
-                                </Box>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    fullWidth
-                                    sx={{ padding: "10px", fontWeight: "bold" }}
-                                    onClick={handleSubmit}
-                                >
-                                    Đặt hàng
-                                </Button>
+                                <Typography variant="h6">Tổng cộng: {totalPrice.toLocaleString()} VND</Typography>
                             </>
                         ) : (
-                            <Typography>Giỏ hàng trống.</Typography>
+                            <Typography>Giỏ hàng trống</Typography>
                         )}
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ marginTop: "20px" }}
+                            onClick={handleOpenConfirmDialog}
+                        >
+                            Đặt hàng
+                        </Button>
                     </Paper>
                 </Grid>
             </Grid>
+
+            {/* Dialog Confirm */}
+            <Dialog open={openConfirmDialog} onClose={handleCloseConfirmDialog}>
+                <DialogContent>
+                    <DialogContentText>Bạn có chắc chắn muốn đặt hàng không?</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirmDialog} color="primary">Hủy</Button>
+                    <Button onClick={handleConfirmOrder} color="primary" autoFocus>Đặt hàng</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

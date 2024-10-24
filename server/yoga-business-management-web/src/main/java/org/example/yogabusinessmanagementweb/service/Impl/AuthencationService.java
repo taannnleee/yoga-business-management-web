@@ -199,6 +199,7 @@ public class AuthencationService {
         cart.setUser(user);
         cart.setCartItems(new ArrayList<>());
         cart.setTotalPrice(BigDecimal.valueOf(0));
+        cart.setTotalItem(0);
         cartRepository.save(cart);
 
     }

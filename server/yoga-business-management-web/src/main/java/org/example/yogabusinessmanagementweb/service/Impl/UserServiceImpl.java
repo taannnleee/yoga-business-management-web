@@ -107,6 +107,7 @@ public class UserServiceImpl implements UserService {
         address.setCity("");
         address.setDistrict("");
         address.setStreet("");
+        address.setHouseNumber("");
 
         arrayList.add(address);
 

@@ -1,5 +1,9 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
@@ -17,8 +21,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class OrderServiceImpl implements OrderService {
+    JwtUtil jwtUtil;
     UserService userService;
     ProductService productService;
     CartRepository cartRepository;
@@ -26,13 +33,17 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
 
     @Override
-    public OrderCreationResponse createOrder(OrderCreationRequest orderCreationRequest) {
-        User user = userService.findUserById(orderCreationRequest.getUserId());
+    public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
+
+        User user = jwtUtil.getUserFromRequest(request);
 
         Optional<Cart> cartResponse = cartRepository.findCartByUser(user);
 
-        if (!cartResponse.isPresent() || cartResponse.get().getCartItems().isEmpty()) {
+        if (!cartResponse.isPresent() ) {
             throw new AppException(ErrorCode.CART_NOT_FOUND);
+        }
+        if(cartResponse.get().getCartItems().isEmpty()){
+            throw new AppException(ErrorCode.CART_ITEM_EMPTY);
         }
         Cart cart = cartResponse.get();
 
@@ -60,11 +71,14 @@ public class OrderServiceImpl implements OrderService {
 
         // Cập nhật giỏ hàng
         cart.setTotalItem(0);
-        cart.setTotalPrice(BigDecimal.valueOf(0.0));
-        cartRepository.save(cart);
+        cart.setTotalPrice(BigDecimal.valueOf(0));
 
-        // Xóa các item trong cart (nếu cần)
-        cartItemRepository.deleteAll(cart.getCartItems());
+
+        // Xóa các item trong cart
+        cart.getCartItems().clear();
+
+        //lưu cart và cart item sẽ tự lưu
+        cartRepository.save(cart);
 
         OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
         return orderCreationResponse;

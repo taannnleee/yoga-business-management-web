@@ -69,11 +69,12 @@ public class CartServiceImpl implements CartService {
             // Nếu sản phẩm chưa tồn tại, tạo CartItem mới
             CartItem newItem = new CartItem();
             newItem.setProduct(productService.getProductById(cartCreationRequest.getProductId())); // Tìm sản phẩm
-            newItem.setQuantity(1);
+            newItem.setQuantity(cartCreationRequest.getQuantity());
             newItem.setTotalPrice(newItem.getProduct().getPrice());
 
             // Thêm CartItem vào cart
             cart.getCartItems().add(newItem);
+
         }
 
         // Cập nhật tổng số mặt hàng và tổng giá
@@ -81,6 +82,7 @@ public class CartServiceImpl implements CartService {
 
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (CartItem item : cart.getCartItems()) {
+
             totalPrice = totalPrice.add(item.getTotalPrice());
         }
         cart.setTotalPrice(totalPrice);

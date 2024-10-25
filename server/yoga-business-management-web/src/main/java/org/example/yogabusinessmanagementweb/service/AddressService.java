@@ -18,5 +18,5 @@ public interface AddressService {
     AddressResponse deleteAddress(String id, HttpServletRequest request);
 
     AddressResponse setDefault(String id, HttpServletRequest request);
-
+    Address getAddressByid(String id);
 }

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useToast } from "@/hooks/useToast";
 import {
     Box,
     Typography,
@@ -28,6 +29,7 @@ const Checkout: React.FC = () => {
     const [shippingInfo, setShippingInfo] = useState({
         fullname: "",
         address: {
+            id: "",
             houseNumber: "",
             street: "",
             district: "",
@@ -42,6 +44,7 @@ const Checkout: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false); // State cho hộp thoại xác nhận
+    const toast = useToast();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -79,29 +82,25 @@ const Checkout: React.FC = () => {
                 },
                 body: JSON.stringify({
                     shippingInfo,
-                    paymentMethod,
-                    products,
-                    totalPrice,
+                    // paymentMethod,
+                    // products,
+                    // totalPrice,
                 }),
             });
-
-            console.log("hihi");
-            console.log(shippingInfo)
-            console.log(paymentMethod)
-            console.log(products)
-            console.log(totalPrice)
-
             if (!response.ok) {
                 throw new Error("Failed to create order");
             }
 
             const data = await response.json();
             console.log("Order created successfully:", data);
+            toast.sendToast("Success", "Mua sản phẩm thành công");
             // Handle successful order creation, e.g., navigate to order confirmation page
         } catch (error: any) {
             console.error("Error creating order:", error.message);
-            setError(error.message); // Display error to the user
+            setError(error.message);
+            toast.sendToast("Error", "Mua sản phẩm thành công");
         }
+
     };
 
     const fetchDefaultAddress = async () => {
@@ -125,6 +124,7 @@ const Checkout: React.FC = () => {
                 fullname: addressData.fullname,
                 phone: addressData.phone,
                 address: {
+                    id: addressData.address.id,
                     houseNumber: addressData.address.houseNumber,
                     street: addressData.address.street,
                     district: addressData.address.district,

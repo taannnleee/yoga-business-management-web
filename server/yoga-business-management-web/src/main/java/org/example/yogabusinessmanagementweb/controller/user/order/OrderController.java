@@ -7,7 +7,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.CartService;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
@@ -17,10 +19,7 @@ import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.service.EmailService;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,13 +37,19 @@ public class OrderController {
 
     @PostMapping("/create-order")
     public ApiResponse<?> createOrder(HttpServletRequest request,@RequestBody OrderCreationRequest orderRequest) {
-        System.out.println("Shipping Info: " + orderRequest.getShippingInfo());
-        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
-        System.out.println("Products: " + orderRequest.getProducts());
-        System.out.println("Total Price: " + orderRequest.getTotalPrice());
+//        System.out.println("Shipping Info: " + orderRequest.getShippingInfo());
+//        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
+//        System.out.println("Products: " + orderRequest.getProducts());
+//        System.out.println("Total Price: " + orderRequest.getTotalPrice());
 
 
         OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
+    }
+
+    @GetMapping("/create-order")
+    public ApiResponse<?> getOrder(HttpServletRequest request) {
+        OrderResponse orderResponse = orderService.showOrder(request);
+        return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
     }
 }

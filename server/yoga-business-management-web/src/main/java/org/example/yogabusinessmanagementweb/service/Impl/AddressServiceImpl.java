@@ -32,6 +32,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<Address> getAddressOfUser(HttpServletRequest request) {
         User user = jwtUtil.getUserFromRequest(request);
+        if(user.getAddresses()==null || user.getAddresses().isEmpty()){
+            throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
+        }
         return user.getAddresses();
     }
 
@@ -58,7 +61,12 @@ public class AddressServiceImpl implements AddressService {
     public AddressResponse createAddress(HttpServletRequest request, AddressRequest addressRequest) {
         User user =  jwtUtil.getUserFromRequest(request);
         Address addressSave =  addressMapper.toAddress(addressRequest);
-        addressSave.setStatus(EAddress.NOTDEFAULT);
+        if (user.getAddresses() == null || user.getAddresses().isEmpty()) {
+            addressSave.setStatus(EAddress.DEFAULT);
+        } else {
+            addressSave.setStatus(EAddress.NOTDEFAULT);
+        }
+
         user.getAddresses().add(addressSave);
         userRepository.save(user);
         return addressMapper.toAddressResponse(addressSave);
@@ -104,6 +112,7 @@ public class AddressServiceImpl implements AddressService {
         throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
     }
 
+    @Override
     public Address getAddressByid(String id) {
         return addressRepository.findById(Long.valueOf(id)).orElseThrow(()-> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
     }

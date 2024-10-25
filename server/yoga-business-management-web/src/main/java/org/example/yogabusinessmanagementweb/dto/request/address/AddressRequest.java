@@ -15,4 +15,6 @@ public class AddressRequest {
     String district ;
     String city;
 //    EAddress status;
+    String nameDelivery;
+    String phoneNumberDelivery;
 }

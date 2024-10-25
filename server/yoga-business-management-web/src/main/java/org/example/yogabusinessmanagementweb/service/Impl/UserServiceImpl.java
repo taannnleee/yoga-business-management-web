@@ -108,6 +108,8 @@ public class UserServiceImpl implements UserService {
         address.setDistrict("");
         address.setStreet("");
         address.setHouseNumber("");
+        address.setNameDelivery(registrationRequest.getFullName());
+        address.setPhoneNumberDelivery(registrationRequest.getPhone());
 
         arrayList.add(address);
 

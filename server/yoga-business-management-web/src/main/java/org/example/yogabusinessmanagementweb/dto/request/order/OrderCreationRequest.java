@@ -16,6 +16,6 @@ import java.util.List;
 public class OrderCreationRequest {
     UserAddressDefaultResponse shippingInfo;
     String paymentMethod;
-    List<Product> products;
-    BigDecimal totalPrice;
+//    List<Product> products;
+//    BigDecimal totalPrice;
 }

@@ -3,14 +3,20 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.cart.CartItemResponse;
+import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
+import org.example.yogabusinessmanagementweb.repositories.AddressRepository;
 import org.example.yogabusinessmanagementweb.repositories.CartItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.CartRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderRepository;
+import org.example.yogabusinessmanagementweb.service.AddressService;
 import org.example.yogabusinessmanagementweb.service.OrderService;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.service.UserService;
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -31,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     CartRepository cartRepository;
     CartItemRepository cartItemRepository;
     OrderRepository orderRepository;
+    AddressService addressService;
 
     @Override
     public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
@@ -65,7 +73,13 @@ public class OrderServiceImpl implements OrderService {
 
         order.setTotalItem(cart.getTotalItem());
         order.setTotalPrice(cart.getTotalPrice());
+        order.setAddress(addressService.getAddressByid(String.valueOf(orderRequest.getShippingInfo().getAddress().getId())));
 
+        Payment payment = new Payment();
+        payment.setNameMethod(orderRequest.getPaymentMethod());
+        List<Payment> payments = new ArrayList<>();
+        payments.add(payment);
+        order.setPayment(payments);
         // Lưu Order và OrderItem vào cơ sở dữ liệu
         orderRepository.save(order);
 
@@ -82,5 +96,27 @@ public class OrderServiceImpl implements OrderService {
 
         OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
         return orderCreationResponse;
+    }
+
+    @Override
+    public OrderResponse showOrder(HttpServletRequest request) {
+        User user = jwtUtil.getUserFromRequest(request);
+        Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
+
+
+        // Nếu không tìm thấy giỏ hàng, có thể trả về null hoặc một thông điệp lỗi tùy theo yêu cầu
+        if (cartOptional.isEmpty()) {
+            throw new AppException(ErrorCode.CART_NOT_FOUND);
+        }
+
+        Cart cart = cartOptional.get();
+
+        List<CartItemResponse> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemResponse.class);
+
+        CartResponse response  = Mappers.convertToDto(cart, CartResponse.class);
+        response.setCartItem(itemDTOS);
+//        return response;
+        OrderResponse cartResponse = new OrderResponse();
+        return  cartResponse;
     }
 }

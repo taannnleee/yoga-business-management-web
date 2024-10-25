@@ -20,4 +20,7 @@ public class Address extends AbstractEntity<Long> {
     String city;
     @Enumerated(EnumType.STRING)
     EAddress status;
+
+    String nameDelivery;
+    String phoneNumberDelivery;
 }

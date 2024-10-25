@@ -60,10 +60,10 @@ const OrderPage = () => {
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                         <CardContent>
                             <Typography component="div" variant="h6">
-                                Lương khô đũ vị mini Fucuco
+                                Đồ tập yoga
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary" component="div">
-                                Phân loại hàng: SOCOLA Fucuco
+                                Phân loại hàng: Quần áo
                             </Typography>
                             <Typography variant="body1" component="div">
                                 x1

@@ -27,8 +27,9 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @Column(name = "total_item")
     int totalItem;
 
-    @OneToOne()
-    Payment payment;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    List<Payment> payment;
 
     @Column(name = "order_date")
     Date orderDate;

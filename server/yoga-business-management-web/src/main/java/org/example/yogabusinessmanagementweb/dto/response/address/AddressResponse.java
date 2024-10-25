@@ -10,9 +10,12 @@ import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class AddressResponse {
+    Long id;
     String houseNumber;
     String street;
     String district ;
     String city;
     EAddress status;
+    String nameDelivery;
+    String phoneNumberDelivery;
 }

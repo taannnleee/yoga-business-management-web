@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.example.yogabusinessmanagementweb.dto.request.address.AddressRequest;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
@@ -37,7 +36,7 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping("/create-order")
-    public ApiResponse<?> createOrder(HttpServletRequest request,@RequestBody AddressRequest orderRequest) {
+    public ApiResponse<?> createOrder(HttpServletRequest request,@RequestBody OrderCreationRequest orderRequest) {
 //        System.out.println("Shipping Info: " + orderRequest.getShippingInfo());
 //        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
 //        System.out.println("Products: " + orderRequest.getProducts());

@@ -1,5 +1,5 @@
 import React from "react";
-import { TruckIcon } from "@heroicons/react/24/solid";
+import {MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 import { Divider, Popover } from "@mui/material";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 
@@ -23,10 +23,8 @@ const FulfillmentMangement: React.FC<IFulfillmentMangementProps> = (props) => {
     <>
       <button
         onClick={handleClick}
-        className="p-2 text-black-500 rounded-full bg-transparent justify-center items-center flex border border-gray-100"
       >
-        <TruckIcon className="w-8 h-8 text-gray-600 mr-1" />
-        Store 7
+        <MagnifyingGlassCircleIcon className="w-10 h-10 text-gray-600 mr-1" />
       </button>
 
       <Popover

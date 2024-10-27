@@ -58,7 +58,7 @@ public class AppConfig {
       };
     }
 
-    private String[] WHITE_LIST = {"/api/auth/**"};
+    private String[] WHITE_LIST = {"/api/auth/**","/test"};
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};
 
     @Bean

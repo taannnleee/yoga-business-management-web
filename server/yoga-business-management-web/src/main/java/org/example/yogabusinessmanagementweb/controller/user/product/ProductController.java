@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
 import org.example.yogabusinessmanagementweb.service.ProductService;
@@ -40,7 +41,7 @@ public class ProductController {
             Pageable pageable = PageRequest.of(page - 1, size);
 
             // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
-            Page<Product> productPage = productService.searchProducts(keyword, pageable);
+            Page<ProductResponse> productPage = productService.searchProducts(keyword, pageable);
 
             return new ApiResponse<>(HttpStatus.OK.value(), "Get all products successfully", productPage);
         } catch (RuntimeException e) {

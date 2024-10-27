@@ -33,7 +33,7 @@ public class OrderItem extends AbstractEntity<Long> implements Serializable {
     @Column(name = "total_price")
     Long totalPrice;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     Product product;
 

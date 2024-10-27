@@ -7,7 +7,7 @@ const Logo: React.FC = () => {
   const route = useRouter();
   return (
     <Box
-      onClick={() => route.replace("/")}
+      onClick={() => route.replace("/home")}
       sx={{
         display: "flex",
         columnGap: "12px",
@@ -33,7 +33,7 @@ const Logo: React.FC = () => {
         variant="h4"
         gutterBottom
       >
-        Market
+        The Yoga
       </Typography>
     </Box>
   );

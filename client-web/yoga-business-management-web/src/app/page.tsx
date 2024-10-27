@@ -1,13 +1,30 @@
+"use client"
 import HeroSection from "@/components/organisms/Hero";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-export default function Home() {
-  return (
-    <div className="w-full flex justify-center flex-wrap">
-      <div className="w-[30%]"></div>
+import { redirect } from "next/navigation";
 
-      <div className="w-[70%]"></div>
-    </div>
-  );
+import {useEffect, useLayoutEffect} from "react";
+import { useRouter } from "next/navigation";
+
+export default function Home() {
+    const router = useRouter();
+
+    useLayoutEffect(() => {
+        // Kiểm tra nếu accessToken tồn tại trong localStorage
+        const accessToken = localStorage.getItem("accessToken");
+
+        if (accessToken) {
+            // Nếu tồn tại, redirect đến "/home"
+            router.push("/home");
+        } else {
+            // Nếu không, redirect đến "/login"
+            router.push("/login");
+        }
+    }, [router]);
+
+    return null; // Không render gì cả vì sẽ redirect
 }
+
+

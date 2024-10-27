@@ -13,6 +13,9 @@ import SearchBar from "../../molecules/SearchBar";
 import Logo from "@/components/atom/Logo";
 import FulfillmentMangement from "../FulfillmentMangement";
 import useDebounce from "@/hooks/useDebounce";
+import Image from "next/image";
+import LogoCourse from "../../atom/ButtonCourse";
+import ButtonCourse from "../../atom/ButtonCourse";
 interface IHeaderV2Props {}
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
@@ -173,6 +176,8 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
                   </ul>
                 </div>
               </div>
+
+              <ButtonCourse className={"mt-[-12px]"}/>
             </nav>
 
             <div className="flex w-1/3 laptop:hidden laptop:w-0 flex-row-reverse">

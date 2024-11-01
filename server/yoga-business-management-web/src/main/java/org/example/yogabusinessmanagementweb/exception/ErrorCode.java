@@ -40,7 +40,12 @@ public enum ErrorCode {
     ADDRESS_NOT_FOUND(1025, "Address not found",HttpStatus.NOT_FOUND),
 
     INVALID_CREDENTIALS(1026,"Invalid credentials",HttpStatus.BAD_REQUEST ),
-    CART_ITEM_EMPTY(1027, "Cart item is empty",HttpStatus.NOT_FOUND);
+    CART_ITEM_EMPTY(1027, "Cart item is empty",HttpStatus.NOT_FOUND),
+
+    TEACHER_NOT_FOUND(1028, "Teacher not found",HttpStatus.NOT_FOUND),
+    TOPIC_NOT_FOUND(1029, "Topic not found",HttpStatus.NOT_FOUND),
+    COURSE_NOT_FOUND(1030, "Course not found",HttpStatus.NOT_FOUND),
+    SECTION_NOT_FOUND(1031, "section not found",HttpStatus.NOT_FOUND);
 
     // MODULE ERROR
 

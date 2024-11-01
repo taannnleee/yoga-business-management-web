@@ -14,43 +14,24 @@ import {
 import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { CheckCircleIcon } from "@heroicons/react/16/solid";
+import { useRouter } from "next/navigation"; // Import useRouter
+interface Course {
+    id: number;
+    title: string;
+    image: string;
+    author: string;
+    rating: number;
+}
 
-const CourseCard: React.FC = () => {
-    const courses = [
-        {
-            id: 1,
-            title: "Yogalates nền tảng",
-            image: "https://yoga.vn/data/sites/5b602d4d6803faee0faded36/files/thumbnail/untitled1.jpg",
-            author: "Giáo viên A",
-            rating: 4.5,
-        },
-        {
-            id: 2,
-            title: "Khóa học Yoga nâng cao",
-            image: "https://yoga.vn/data/sites/5b602d4d6803faee0faded36/files/thumbnail/untitled1.jpg",
-            author: "Giáo viên B",
-            rating: 4.0,
-        },
-        {
-            id: 3,
-            title: "Khóa học Yoga cho phụ nữ mang thai",
-            image: "https://yoga.vn/data/sites/5b602d4d6803faee0faded36/files/thumbnail/untitled1.jpg",
-            author: "Giáo viên C",
-            rating: 4.7,
-        },
-        {
-            id: 4,
-            title: "Khóa học Yoga giảm cân",
-            image: "https://yoga.vn/data/sites/5b602d4d6803faee0faded36/files/thumbnail/untitled1.jpg",
-            author: "Giáo viên D",
-            rating: 3.8,
-        },
-    ];
+interface CourseCardProps {
+    courses: Course[];
+}
 
+const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
-    const [selectedCourse, setSelectedCourse] = useState<any>(null); // or a more specific type
-
+    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+    const router = useRouter(); // Initialize router
     const itemsPerPage = 5;
 
     const handleNext = () => {
@@ -77,7 +58,7 @@ const CourseCard: React.FC = () => {
         return stars;
     };
 
-    const handleOpenModal = (course: any) => {
+    const handleOpenModal = (course: Course) => {
         setSelectedCourse(course);
         setOpen(true);
     };
@@ -86,7 +67,9 @@ const CourseCard: React.FC = () => {
         setOpen(false);
         setSelectedCourse(null);
     };
-
+    const navigateToDetail = (id: number) => {
+        router.push(`/course/detail/${id}`);
+    };
     return (
         <Box mt={2} p={2} ml={4} mr={4}>
             <Box display="flex" alignItems="center" overflow="hidden">
@@ -120,6 +103,7 @@ const CourseCard: React.FC = () => {
 
                             <Box textAlign="center" mt={1}>
                                 <Typography
+                                    onClick={() => navigateToDetail(course.id)}
                                     variant="subtitle1"
                                     component="a"
                                     href="#"
@@ -140,9 +124,9 @@ const CourseCard: React.FC = () => {
                                     {course.title}
                                 </Typography>
 
-                                <Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>
-                                    {course.author}
-                                </Typography>
+                                {/*<Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>*/}
+                                {/*    {course.author}*/}
+                                {/*</Typography>*/}
 
                                 <Box mt={1}>
                                     {renderStars(course.rating)}
@@ -172,7 +156,9 @@ const CourseCard: React.FC = () => {
                                 height={390}
                                 layout="fixed"
                             />
-                            <Typography variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft:"120px",color: "red" }}>
+                            <Typography
+                                onClick={() => navigateToDetail(selectedCourse?.id || 0)}
+                                variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft:"120px",color: "red" }}>
                                 Xem chi tiết
                             </Typography>
                             <Button variant="contained" color="primary" style={{ marginTop: "42px", marginLeft:"120px" }}>
@@ -198,7 +184,6 @@ const CourseCard: React.FC = () => {
                                     <ListItemText className={"font-thin font-mono"} primary="Nắm vững các kiến thức nền tảng trong luyện tập Yoga" />
                                 </ListItem>
                                 {/* Repeat the ListItem for the other benefits as per your requirement */}
-                                {/* Add more items as necessary */}
                                 <ListItem>
                                     <ListItemIcon>
                                         <CheckCircleIcon style={{ color: 'green', width: "16px" }} />
@@ -230,9 +215,6 @@ const CourseCard: React.FC = () => {
                                     <ListItemText className={"font-thin font-mono"} primary="Giảm căng thẳng và lo âu" />
                                 </ListItem>
                             </List>
-
-
-
                         </Box>
                     </Box>
                 </DialogContent>

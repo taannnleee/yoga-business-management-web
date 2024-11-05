@@ -7,6 +7,10 @@ import { useAppSelector } from '../hooks/useRedux';
 import { IRootState } from '../redux';
 import CategoryMangement from '../pages/CategoryManagement';
 import StoreMangement from '../pages/StoreManagement';
+import TeacherManagement from '../pages/TeacherManagement';
+import TopicManagement from '../pages/TopicManagement';
+import CourseManagement from '../pages/CourseManagement';
+import CourseDetailPage from '../pages/CourseDetail';
 
 export default function RootApp() {
   const { accessToken } = useAppSelector((state: IRootState) => state.auth);
@@ -16,7 +20,7 @@ export default function RootApp() {
       <Route
         path="/"
         render={() => {
-          return !accessToken ? <Redirect to="/login" /> : <Redirect to="/user-management" />;
+          return !accessToken ? <Redirect to="/login" /> : <Redirect to="/home" />;
         }}
       ></Route>
       <Route path="/home">
@@ -37,6 +41,20 @@ export default function RootApp() {
       <Route path="/login">
         <LoginPage />
       </Route>
+
+      <Route path="/teacher-management">
+        <TeacherManagement />
+      </Route>
+
+      <Route path="/topic-management">
+        <TopicManagement />
+      </Route>
+
+      <Route path="/course-management">
+        <CourseManagement />
+      </Route>
+
+      <Route path="/course-detail/:id" component={CourseDetailPage} />
     </div>
   );
 }

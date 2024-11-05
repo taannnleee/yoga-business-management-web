@@ -1,351 +1,419 @@
+import React, { useState, useEffect } from "react";
 import {
     Box,
+    Typography,
     Button,
-    VStack,
-    Accordion,
-    AccordionItem,
-    AccordionButton,
-    AccordionPanel,
-    List,
-    ListItem,
-    ListIcon,
-    HStack,
-    Text,
-    Icon,
-    Input,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    SimpleGrid,
-    useDisclosure,
-  } from "@chakra-ui/react";
-  import { AddIcon } from "@chakra-ui/icons";
-  import {
-    FiFileText,
-    FiVideo,
-    FiMic,
-    FiHelpCircle,
-  } from "react-icons/fi";
-  import {
-    RxTriangleDown,
-    RxTriangleUp,
-    RxDragHandleDots2,
-  } from "react-icons/rx";
-  import { RiDeleteBinFill } from "react-icons/ri";
-  import { PiPencilSimpleFill } from "react-icons/pi";
-  import { useState } from "react";
-  
-  const Curriculum = () => {
-    const [sections, setSections] = useState([
-      {
-        id: 1,
-        title: "Section 1: Lectures",
-        lessons: [
-          { id: 1, icon: FiFileText, color: "green.500", text: "Part 1 - Your First Ride" },
-          { id: 2, icon: FiMic, color: "purple.500", text: "Part 2 - A Closer Introduction" },
-          { id: 3, icon: FiHelpCircle, color: "orange.500", text: "Part 3 - Structure Your Training" },
-        ],
-      },
-      {
-        id: 2,
-        title: "Section 2: Necessary",
-        lessons: [
-          { id: 1, icon: FiFileText, color: "green.500", text: "Part 4 - Finding New Training" },
-          { id: 2, icon: FiVideo, color: "blue.500", text: "Part 5 - Zoom Conference" },
-          { id: 3, icon: FiHelpCircle, color: "yellow.500", text: "Final Quiz" },
-        ],
-      },
-    ]);
-  
-    const [editingSectionId, setEditingSectionId] = useState(null);
-    const [showIcons, setShowIcons] = useState(null);
-    const [isAddingNewSection, setIsAddingNewSection] = useState(false);
-    const [newSectionTitle, setNewSectionTitle] = useState("");
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedLessonType, setSelectedLessonType] = useState(null);
-  
-    const handleDeleteSection = (id) => {
-      setSections(sections.filter((section) => section.id !== id));
+    TextField,
+    Grid,
+    IconButton,
+    Divider,
+    Collapse,
+    InputAdornment,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    FormControlLabel,
+    Checkbox
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { apiURL } from '../../config/constanst';
+import { useParams } from "react-router-dom";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import ArticleIcon from "@mui/icons-material/Article";
+import QuizIcon from "@mui/icons-material/Quiz";
+import SlideshowIcon from "@mui/icons-material/Slideshow";
+import MovieCreationIcon from "@mui/icons-material/MovieCreation";
+import LiveTvIcon from "@mui/icons-material/LiveTv";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+
+interface Params {
+    id: string;
+}
+
+interface LectureResponse {
+    id: number;
+    title: string;
+    content: string;
+    video_url: string;
+}
+
+interface SectionResponse {
+    id: number;
+    title: string;
+    lectures: LectureResponse[];
+}
+
+
+function CourseEditor() {
+    const [isChapterOpen, setChapterOpen] = useState<{ [key: string]: boolean }>({});
+    const [showChapterInfo, setShowChapterInfo] = useState(false);
+    const [inputValue, setInputValue] = useState("Tên chương mới");
+    const [sections, setSections] = useState<SectionResponse[]>([]);
+    const [showNewChapterField, setShowNewChapterField] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [showVideoForm, setShowVideoForm] = useState(false); // State for showing video form
+
+    const [currentSection, setCurrentSection] = useState({ title: "", id: 0 });
+
+
+
+    //lecture
+    const [newLecture, setNewLecture] = useState({ title: "", content: "", video_url: "" }); // State for new lecture data
+
+    const { id } = useParams<Params>();
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
     };
-  
-    const handleAddNewSection = () => {
-      if (newSectionTitle.trim() !== "") {
-        const newSection = {
-          id: sections.length + 1,
-          title: newSectionTitle,
-          lessons: [],
-        };
-        setSections([...sections, newSection]);
-        setNewSectionTitle("");
-        setIsAddingNewSection(false);
-      }
+
+    const handleNewLectureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setNewLecture((prev) => ({ ...prev, [name]: value }));
     };
-  
-    const handleLessonTypeClick = (lessonType) => {
-      setSelectedLessonType(lessonType);
-      onClose();
+
+    const handleChapterToggle = (sectionId: string) => {
+        setChapterOpen((prev) => ({ ...prev, [sectionId]: !prev[sectionId] }));
     };
-  
+
+    const handleAddLectureClick = (section: SectionResponse) => {
+        setCurrentSection({ title: section.title, id: section.id });
+        setOpenModal(true);
+    };
+
+    const handleAddChapter = () => {
+        setShowChapterInfo(true);
+        setShowNewChapterField(true);
+    };
+
+    const fetchSections = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await fetch(`${apiURL}/api/admin/get-all-section-by-id-course/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                setSections(result.data);
+                console.log('Dữ liệu sections:', result.data);
+            } else {
+                console.error('Lỗi khi lấy danh sách sections:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Lỗi khi gọi API:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchSections();
+    }, [id]);
+
+    const saveChapter = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await fetch(`${apiURL}/api/admin/add-section`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idCourse: id,
+                    title: inputValue,
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Thêm chương thành công:', result);
+
+                setSections((prevSections) => [
+                    ...prevSections,
+                    { id: result.data.id, title: inputValue, lectures: [] },
+                ]);
+                setShowNewChapterField(false);
+                setShowChapterInfo(false);
+                setInputValue("Tên chương mới");
+            } else {
+                console.error('Lỗi khi thêm chương:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Lỗi khi gọi API:', error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    const handleVideoButtonClick = () => {
+        setShowVideoForm(true);
+        setOpenModal(false);
+    };
+
+
+    const saveLecture = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await fetch(`${apiURL}/api/admin/add-lecture`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idSection: currentSection.id,
+                    ...newLecture,
+                }),
+
+            });
+
+            console.log(response);
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Thêm bài giảng thành công:', result);
+
+                // Update the sections state with the new lecture
+                setSections((prevSections) =>
+                    prevSections.map((section) =>
+                        section.id === currentSection.id
+                            ? { ...section, lectures: [...section.lectures, result.data] }
+                            : section
+                    )
+                );
+
+                setOpenModal(false);
+                setShowVideoForm(false);
+                setNewLecture({ title: "", content: "", video_url: "" }); // Reset the lecture form
+            } else {
+                console.error('Lỗi khi thêm bài giảng:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Lỗi khi gọi API:', error);
+        }
+    };
     return (
-      <HStack spacing={5} align="start" h="full">
-        {/* Sidebar Section */}
-        <Box w="30%" bg="gray.100" p={5} rounded="md">
-          <Text fontSize="2xl" fontWeight="bold" mb={4}>
-            Curriculum
-          </Text>
-  
-          {/* Accordion for Sections */}
-          <Accordion allowMultiple>
-            {sections.map((section) => (
-              <AccordionItem key={section.id}>
-                {({ isExpanded }) => (
-                  <>
-                    <h2>
-                      <AccordionButton
-                        _hover={{ bg: "gray.200" }}
-                        onMouseEnter={() => setShowIcons(section.id)}
-                        onMouseLeave={() => setShowIcons(null)}
-                      >
-                        <Icon as={RxDragHandleDots2} color="gray.500" marginRight="10px" />
-  
-                        <Box flex="1" textAlign="left" fontWeight="bold" display="flex" alignItems="center">
-                          {editingSectionId === section.id ? (
-                            <Input
-                              value={section.title}
-                              onChange={(e) =>
-                                setSections((prevState) =>
-                                  prevState.map((s) =>
-                                    s.id === section.id ? { ...s, title: e.target.value } : s
-                                  )
-                                )
-                              }
-                              onBlur={() => setEditingSectionId(null)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  setEditingSectionId(null);
-                                }
-                              }}
-                              autoFocus
-                              size="sm"
-                              width="auto"
+        <Box padding={4} bgcolor="#f5f6fa">
+            {/* Header */}
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+                <Typography variant="h6">Khóa học đặc biệt</Typography>
+                <Button variant="contained" color="primary">Xem trước</Button>
+            </Box>
+
+            {/* Tabs */}
+            <Box display="flex" gap={4} mb={3}>
+                <Button color="primary">Bài giảng</Button>
+                <Button color="inherit">Thông tin</Button>
+                <Button color="inherit">Giá bán</Button>
+                <Button color="inherit">Affiliate</Button>
+                <Button color="inherit">Xuất bản</Button>
+            </Box>
+
+            <Divider />
+
+            {/* Content */}
+            <Box display="flex" gap={4} mt={3} alignItems="flex-start">
+                {/* Left Side - Lesson Structure */}
+                <Box width="30%" position="relative" minHeight="400px" bgcolor="#fff" p={2} borderRadius={2} boxShadow={1}>
+                    {sections.map((section) => (
+                        <Box key={section.id} mb={2}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                value={section.title}
+                                InputProps={{
+                                    readOnly: true,
+                                    endAdornment: (
+                                        <InputAdornment position="end" sx={{ cursor: 'pointer' }} onClick={() => handleChapterToggle(section.id.toString())}>
+                                            <span>
+                                                {isChapterOpen[section.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                            </span>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
-                          ) : (
-                            section.title
-                          )}
-  
-                          {showIcons === section.id && (
-                            <Icon
-                              as={PiPencilSimpleFill}
-                              color="gray.500"
-                              marginLeft="10px"
-                              onClick={() => setEditingSectionId(section.id)}
-                              cursor="pointer"
-                            />
-                          )}
+                            {/* Collapse for Chapter Details */}
+                            <Collapse in={isChapterOpen[section.id]} timeout="auto" unmountOnExit>
+                                {/* Display lectures for the chapter */}
+                                {section.lectures.length > 0 ? (
+                                    section.lectures.map((lecture) => (
+                                        <Box key={lecture.id} sx={{ pl: 2 }}>
+                                            <Typography variant="subtitle2">{lecture.title}</Typography>
+
+                                        </Box>
+                                    ))
+                                ) : (
+                                    <Typography variant="body2" sx={{ pl: 2 }}>Chưa có bài giảng nào.</Typography>
+                                )}
+                                {/* Button to Add Lecture */}
+                                <Button variant="contained" color="primary" fullWidth onClick={() => handleAddLectureClick(section)}>
+                                    Thêm bài giảng
+                                </Button>
+                            </Collapse>
                         </Box>
-  
-                        {showIcons === section.id && (
-                          <Box marginRight="10px">
-                            <Icon
-                              as={RiDeleteBinFill}
-                              color="gray.500"
-                              cursor="pointer"
-                              onClick={() => handleDeleteSection(section.id)}
+                    ))}
+
+                    {showNewChapterField && (
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Tên chương mới"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            sx={{ mt: 2 }}
+                        />
+                    )}
+                </Box>
+
+                {/* Right Side - Chapter Information */}
+                {showChapterInfo && (
+                    <Box flex={1} padding={2} bgcolor="#fff" borderRadius={2} boxShadow={1}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                            <Typography variant="h6">Tiêu đề: Tên chương mới</Typography>
+                            <IconButton>
+                                <MoreVertIcon />
+                            </IconButton>
+                        </Box>
+                        <Box width="45%">
+                            <Typography variant="subtitle1" mb={1}>Giá trị chỉnh sửa</Typography>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                placeholder="Tên chương mới"
+                                value={inputValue}
+                                onChange={handleInputChange}
                             />
-                          </Box>
-                        )}
-  
-                        {isExpanded ? <RxTriangleUp /> : <RxTriangleDown />}
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                      <List spacing={3}>
-                        {section.lessons.map((lesson) => (
-                          <ListItem key={lesson.id}>
-                            <ListIcon as={RxDragHandleDots2} color="gray.500" />
-                            <ListIcon as={lesson.icon} color={lesson.color} />
-                            {lesson.text}
-                          </ListItem>
-                        ))}
-                      </List>
-                      <Button leftIcon={<AddIcon />} colorScheme="blue" mt={4} onClick={onOpen}>
-                        Add a lesson
-                      </Button>
-                    </AccordionPanel>
-                  </>
+                        </Box>
+                        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={saveChapter}>
+                            Cập nhật
+                        </Button>
+                    </Box>
                 )}
-              </AccordionItem>
-            ))}
-          </Accordion>
-  
-          {/* New Section Input */}
-          {isAddingNewSection ? (
-            <VStack mt={4} spacing={3}>
-              <Input
-                placeholder="Enter new section title"
-                value={newSectionTitle}
-                onChange={(e) => setNewSectionTitle(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddNewSection();
-                  }
-                }}
-                autoFocus
-              />
-              <HStack>
-                <Button colorScheme="blue" onClick={handleAddNewSection}>
-                  Add Section
-                </Button>
+
+                {/* Video Form */}
+                {showVideoForm && (
+                    <Box flex={1} padding={2} bgcolor="#fff" borderRadius={2} boxShadow={1} mt={3}>
+                        <Typography variant="h6">Bài giảng Video</Typography>
+                        <Box flex={1} padding={2} bgcolor="#fff" borderRadius={2} boxShadow={1}>
+                            <Typography variant="h6">Chương hiện tại: {currentSection.title}</Typography>
+                        </Box>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="title"
+                            label="Tiêu đề"
+                            type="text"
+                            fullWidth
+                            value={newLecture.title}
+                            onChange={handleNewLectureChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="content"
+                            label="Nội dung"
+                            type="text"
+                            fullWidth
+                            value={newLecture.content}
+                            onChange={handleNewLectureChange}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="video_url"
+                            label="URL Video"
+                            type="text"
+                            fullWidth
+                            value={newLecture.video_url}
+                            onChange={handleNewLectureChange}
+                        />
+
+
+                        <FormControlLabel
+                            control={<Checkbox name="draft" />}
+                            label="Nháp"
+                        />
+                        <Button onClick={saveLecture} variant="contained" color="primary" sx={{ mt: 2 }}>
+                            Lưu Bài Giảng
+                        </Button>
+                    </Box>
+                )}
+            </Box>
+
+            {/* Button at the Bottom Left */}
+            <Box display="flex" justifyContent="flex-start" mt={3}>
                 <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsAddingNewSection(false);
-                    setNewSectionTitle("");
-                  }}
+                    variant="contained"
+                    color="primary"
+                    sx={{ fontWeight: "bold", fontSize: 16 }}
+                    onClick={handleAddChapter}
                 >
-                  Cancel
+                    + Thêm chương
                 </Button>
-              </HStack>
-            </VStack>
-          ) : (
-            <Button leftIcon={<AddIcon />} colorScheme="green" mt={4} onClick={() => setIsAddingNewSection(true)}>
-              New Section
-            </Button>
-          )}
+            </Box>
+
+            {/* Modal for Adding Lecture */}
+            <Dialog open={openModal} onClose={handleCloseModal}>
+                <DialogTitle>Chọn loại bài giảng</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2}>
+                        <Grid item xs={4}>
+                            <Button startIcon={<VideoLibraryIcon />} fullWidth onClick={handleVideoButtonClick}>
+                                Video
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<ArticleIcon />} fullWidth>
+                                Tài liệu
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<QuizIcon />} fullWidth>
+                                Quiz
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<SlideshowIcon />} fullWidth>
+                                Slideshow
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<MovieCreationIcon />} fullWidth>
+                                Video Thực tế
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<LiveTvIcon />} fullWidth>
+                                Live
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<PictureAsPdfIcon />} fullWidth>
+                                PDF
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<GetAppIcon />} fullWidth>
+                                Downloadable
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button startIcon={<FitnessCenterIcon />} fullWidth>
+                                Exercise
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
         </Box>
-  
-        {/* Main Content */}
-        <Box w="70%" p={10} textAlign="center">
-          <Box>
-            <Text fontSize="2xl" fontWeight="bold" mb={4}>
-              {selectedLessonType ? selectedLessonType : "Let's build your course!"}
-            </Text>
-            <Text fontSize="md" color="gray.500">
-              {selectedLessonType
-                ? `You have selected a ${selectedLessonType}.`
-                : "Get started by creating the lessons from scratch in the column on the left or import your Educational content."}
-            </Text>
-          </Box>
-        </Box>
-  
-  <Modal isOpen={isOpen} onClose={onClose}>
-    <ModalOverlay />
-    <ModalContent maxW="700px" height="500px" p={5}>
-      <ModalHeader fontSize="lg" fontWeight="bold">
-        Select lesson type
-      </ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <Box mb={4}>
-          <Text fontWeight="bold" mb={2}>
-            Learning Content
-          </Text>
-          <SimpleGrid columns={4} spacing={4}>
-            <Button 
-              variant="outline" 
-              onClick={() => handleLessonTypeClick("Text lesson")}
-              size="lg"
-              minW="130px" 
-              minH="130px" 
-              borderRadius="md" 
-              display="flex" 
-              flexDirection="column" 
-              alignItems="center" 
-              justifyContent="center" 
-            >
-              <Icon as={FiFileText} w={8} h={8} color="blue.500" />
-              <Text mt={2} fontSize="sm">
-                Text lesson
-              </Text>
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => handleLessonTypeClick("Video lesson")}
-              size="lg"
-              minW="130px"
-              minH="130px" 
-              borderRadius="md" 
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon as={FiVideo} w={8} h={8} color="blue.500" />
-              <Text mt={2} fontSize="sm">
-                Video lesson
-              </Text>
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => handleLessonTypeClick("Audio lesson")}
-              size="lg"
-              minW="130px"
-              minH="130px"
-              borderRadius="md"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon as={FiMic} w={8} h={8} color="blue.500" />
-              <Text mt={2} fontSize="sm">
-                Audio lesson
-              </Text>
-            </Button>
-          </SimpleGrid>
-        </Box>
-  
-        <Box>
-          <Text fontWeight="bold" mb={2}>
-            Exam Students
-          </Text>
-          <SimpleGrid columns={4} spacing={4}>
-            <Button 
-              variant="outline" 
-              onClick={() => handleLessonTypeClick("Quiz")}
-              size="lg"
-              minW="130px"
-              minH="130px"
-              borderRadius="md"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon as={FiHelpCircle} w={8} h={8} color="blue.500" />
-              <Text mt={2} fontSize="sm">
-                Quiz
-              </Text>
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => handleLessonTypeClick("Assignment")}
-              size="lg"
-              minW="130px"
-              minH="130px"
-              borderRadius="md"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon as={FiFileText} w={8} h={8} color="blue.500" />
-              <Text mt={2} fontSize="sm">
-                Assignment
-              </Text>
-            </Button>
-          </SimpleGrid>
-        </Box>
-      </ModalBody>
-    </ModalContent>
-  </Modal>
-  
-  
-      </HStack>
     );
-  };
-  
-  export default Curriculum;
+}
+
+export default CourseEditor;

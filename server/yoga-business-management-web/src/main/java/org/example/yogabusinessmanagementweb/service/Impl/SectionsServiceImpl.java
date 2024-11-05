@@ -30,14 +30,26 @@ public class SectionsServiceImpl implements SectionsService {
     @Override
     public SectionResponse addSection(SectionCreationRequest sectionCreationRequest) {
         Sections sections = sectionMapper.toSection(sectionCreationRequest);
-        List<Sections> sectionsList = new ArrayList<>();
-        sectionsList.add(sections);
+
         //tìm course
         Courses courses = coursesService.getCourseByid(String.valueOf(sectionCreationRequest.getIdCourse()));
-        courses.setSections(sectionsList);
+        courses.getSections().add(sections);
 
         // luu course va section
         coursesRepository.save(courses);
+        return sectionMapper.toSectionResponse(sections);
+    }
+
+    @Override
+    public List<SectionResponse> getAllSectionByIdCourse(String id) {
+        Courses courses =  coursesService.getCourseByid(id);
+        List<Sections> sectionsList = courses.getSections();
+        return (sectionMapper.toSectionResponseList(sectionsList));
+    }
+
+    @Override
+    public SectionResponse getSection(String id) {
+        Sections sections  =  getSectionsByid(id);
         return sectionMapper.toSectionResponse(sections);
     }
 

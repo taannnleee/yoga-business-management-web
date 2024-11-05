@@ -9,9 +9,13 @@ import org.example.yogabusinessmanagementweb.dto.response.section.SectionRespons
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface SectionMapper {
     SectionResponse toSectionResponse(Sections section);
     Sections toSection(SectionCreationRequest sectionCreationRequest);
     void updateSection(@MappingTarget Sections sections, SectionCreationRequest sectionCreationRequest );
+
+    List<SectionResponse> toSectionResponseList(List<Sections> sections);
 }

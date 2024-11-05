@@ -8,13 +8,13 @@ import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureCreation
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
 import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureResponse;
+import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
 import org.example.yogabusinessmanagementweb.service.CoursesService;
 import org.example.yogabusinessmanagementweb.service.LecturesService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +25,14 @@ public class AdminLectureController {
     LecturesService lecturesService;
 
     @PostMapping("/add-lecture")
-    public ApiResponse<?> createCourse(@RequestBody LectureCreationRequest lectureCreationRequest) {
+    public ApiResponse<?> createLecture(@RequestBody LectureCreationRequest lectureCreationRequest) {
         LectureResponse lectureResponse = lecturesService.addLecture(lectureCreationRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "create lecture successfully",lectureResponse);
+    }
+
+    @GetMapping("/get-all-lecture-by-id-section/{id}")
+    public ApiResponse<?> getAllLectureByIdSection(@PathVariable String id) {
+        List<LectureResponse> lectureResponse = lecturesService.getAllLectureByIdSection(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get lecture by id section successfully",lectureResponse);
     }
 }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { Link, useRouteMatch } from 'react-router-dom';
 import {
     Box,
     Button,
@@ -156,7 +157,7 @@ const CourseManagement = () => {
                                             </Typography>
                                         </CardContent>
                                         <Box display="flex" alignItems="center" gap={1}>
-                                            <IconButton color="primary">
+                                            <IconButton color="primary" component={Link} to={`/course-detail/${course.id}`}>
                                                 <EditIcon />
                                             </IconButton>
                                             <IconButton>
@@ -184,6 +185,14 @@ const FormDialog = () => {
 
     // State để lưu các giá trị từ form
     const [courseName, setCourseName] = useState<string>('');
+    const [instruction, setInstruction] = useState('');
+    const [description, setDescription] = useState('');
+    const [duration, setDuration] = useState(''); // Giá trị mặc định là 0
+    const [imagePath, setImagePath] = useState('');
+    const [level, setLevel] = useState(''); // Có thể đặt cấp độ mặc định là 1
+    const [videoPath, setVideoPath] = useState('');
+    const [price, setPrice] = useState('');
+
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
     const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
 
@@ -261,7 +270,7 @@ const FormDialog = () => {
         try {
             setLoading(true);
             const accessToken = localStorage.getItem('accessToken');
-            const response = await fetch(`${apiURL}/api/admin/create-course`, {
+            const response = await fetch(`${apiURL}/api/admin/add-course`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -269,6 +278,13 @@ const FormDialog = () => {
                 },
                 body: JSON.stringify({
                     name: courseName,
+                    instruction: instruction,
+                    description: description,
+                    duration: duration,
+                    imagePath: imagePath,
+                    level: level,
+                    videoPath: videoPath,
+                    price: price,
                     teacherId: selectedTeacher,
                     topicId: selectedTopic,
                 }),
@@ -310,7 +326,7 @@ const FormDialog = () => {
                                 {topics.map((topic) => (
                                     <FormControlLabel
                                         key={topic.id}
-                                        value={topic.name}
+                                        value={topic.id}
                                         control={<Radio />}
                                         label={topic.name}
                                     />
@@ -352,6 +368,72 @@ const FormDialog = () => {
                         value={courseName}
                         onChange={(e) => setCourseName(e.target.value)}
                     />
+
+                    <TextField
+                        margin="dense"
+                        label="Hướng dẫn"
+                        type="text"
+                        fullWidth
+                        value={instruction}
+                        onChange={(e) => setInstruction(e.target.value)}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        label="Mô tả"
+                        type="text"
+                        fullWidth
+                        multiline // Cho phép nhập nhiều dòng
+                        rows={4} // Số dòng hiển thị
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        label="Thời gian (phút)"
+                        type="number" // Kiểu số
+                        fullWidth
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        label="Đường dẫn hình ảnh"
+                        type="text"
+                        fullWidth
+                        value={imagePath}
+                        onChange={(e) => setImagePath(e.target.value)}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        label="Cấp độ"
+                        type="number" // Kiểu số
+                        fullWidth
+                        value={level}
+                        onChange={(e) => setLevel(e.target.value)}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        label="Đường dẫn video"
+                        type="text"
+                        fullWidth
+                        value={videoPath}
+                        onChange={(e) => setVideoPath(e.target.value)}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        label="Giá"
+                        type="number" // Kiểu số
+                        fullWidth
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                    />
+
 
                 </DialogContent>
                 <DialogActions>

@@ -1,74 +1,72 @@
-import React from "react";
+import React from 'react';
 
 interface IFooterSectionProps {}
 
 const FooterSection: React.FC<IFooterSectionProps> = (props) => {
   return (
-    <div className="py-10 px-8 laptop:px-28 bg-gray-50 h-fit mt-40 laptop:mt-20">
+    <div className="mt-40 h-fit bg-gray-50 px-8 py-10 laptop:mt-20 laptop:px-28">
       <div className="space-y-5">
         <div>
-          <h2 className="text-gray-500 font-bold text-3xl text-left">
-            Market Floor Adin
-          </h2>
-          <p className="text-lg text-gray-500 font-normal text-left">
-            2022 - Designed and Developed by HKMN Group - All rights reserve
+          <h2 className="text-left text-3xl font-bold text-gray-500">Yoga Admin</h2>
+          <p className="text-left text-lg font-normal text-gray-500">
+            2024 - Designed and Developed by QT Group - All rights reserve
           </p>
         </div>
-        <div className="grid grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-6 gap-x-10 gap-y-10">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-10 tablet:grid-cols-2 laptop:grid-cols-6">
           <div className="space-y-2">
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Điều khoản
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Chính sách bảo mật
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Trần Quốc Siêu
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Võ Huỳnh anh Nhật
             </p>
           </div>
           <div className="space-y-2">
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Điều khoản
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Chính sách bảo mật
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
-              Trần Quốc Siêu
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
+              Nguyễn Minh Quang
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Võ Huỳnh anh Nhật
             </p>
           </div>
           <div className="space-y-2">
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Điều khoản
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Chính sách bảo mật
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
-              Trần Quốc Siêu
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
+              Nguyễn Minh Quang
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
-              Võ Huỳnh anh Nhật
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
+              Lê Tân
             </p>
           </div>
           <div className="space-y-2">
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Điều khoản
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
               Chính sách bảo mật
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
-              Trần Quốc Siêu
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
+              Nguyễn Minh Quang
             </p>
-            <p className="text-sm text-gray-400 font-normal text-left hover:text-gray-700 cursor-pointer">
-              Võ Huỳnh anh Nhật
+            <p className="cursor-pointer text-left text-sm font-normal text-gray-400 hover:text-gray-700">
+              Lê Tân
             </p>
           </div>
         </div>

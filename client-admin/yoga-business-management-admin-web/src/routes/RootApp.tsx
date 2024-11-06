@@ -54,7 +54,9 @@ export default function RootApp() {
         <CourseManagement />
       </Route>
 
-      <Route path="/course-detail/:id" component={CourseDetailPage} />
+      <Route path="/course-detail/:id">
+        <CourseDetailPage />
+      </Route>
     </div>
   );
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class CloudinaryServiceImpl implements CloudinaryService {
-//    @Autowired
+    @Autowired
     private Cloudinary cloudinary;
 
     @Transactional
@@ -27,7 +27,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         try {
             //tải tệp lên cloudinary
             final Map result = cloudinary.uploader().upload(
-                    file.getBytes(), Map.of("public_id", "sportcenter/" + fileName));
+                    file.getBytes(), Map.of("public_id", "yoga/" + fileName));
 
             final String url = (String) result.get("secure_url");
             final String publicId = (String) result.get("public_id");
@@ -73,7 +73,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         String fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf('.')); // ví dụ: logo.png_20241020191959
 
         // xác định public_id
-        String publicId = "sportcenter/" + fileNameWithoutExtension; // publicId: sportcenter/logo.png_20241020191959
+        String publicId = "yoga/" + fileNameWithoutExtension; // publicId: sportcenter/logo.png_20241020191959
 
         log.info("Deleting image with publicId: " + publicId); // Kiểm tra lại publicId ở đây
 

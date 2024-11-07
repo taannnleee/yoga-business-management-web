@@ -56,27 +56,4 @@ public class UserController {
 
     }
 
-    @PostMapping("/image/upload")
-    public ApiResponse<?> uploadImage(@RequestParam(name = "file", required = true)
-                                                    MultipartFile file) {
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
-        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
-        final CloudinaryResponse response = cloudinaryService.uploadFile(file, fileName);
-        return new ApiResponse<>(HttpStatus.OK.value(), "Tải ảnh lên Coudinary thành công.",response);
-    }
-
-
-    @DeleteMapping("/image/delete")
-    public ApiResponse<?> deleteImage(@RequestParam("url") String url) throws IOException {
-        try {
-            cloudinaryService.deleteByUrl(url);
-            return new ApiResponse<>(HttpStatus.OK.value(), "Xóa ảnh thành công.",null);
-//        } catch (CustomException e) {
-//            return ResponseEntity.status(e.getStatusCode()).body(new BaseResponse(e.getMessage(), e.getStatusCode(), null));
-        } catch (IOException e) {
-            return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lỗi hệ thống. Vui lòng thử lại.",null);
-
-        }
-    }
-
 }

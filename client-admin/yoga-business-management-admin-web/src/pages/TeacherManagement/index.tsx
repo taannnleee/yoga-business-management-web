@@ -11,63 +11,93 @@ import FooterSection from '../../components/FooterSection';
 import axios from 'axios';
 import { apiURL } from '../../config/constanst';
 
-interface TeacherData {
+interface FormData {
     fullName: string;
     email: string;
     phoneNumber: string;
-    experienceYears: number | string;
+    experienceYears: number;
     profilePicture: File | null;
 }
 
 const TeacherManagement: React.FC = () => {
-    const [formData, setFormData] = useState<TeacherData>({
+    const [formData, setFormData] = useState<FormData>({
         fullName: '',
         email: '',
         phoneNumber: '',
-        experienceYears: '',
-        profilePicture: null
+        experienceYears: 0,
+        profilePicture: null,
     });
-
     const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value, files } = e.target;
+        const { name, value, type, files } = e.target;
 
-        if (name === 'profilePicture' && files) {
+        if (type === "file" && files) {
             const file = files[0];
-            setFormData({
-                ...formData,
-                profilePicture: file,
-            });
-            setPreviewImage(URL.createObjectURL(file));
+            setFormData(prevData => ({ ...prevData, profilePicture: file }));
+            setPreviewImage(URL.createObjectURL(file));  // Preview uploaded image
         } else {
-            setFormData({
-                ...formData,
-                [name]: name === 'experienceYears' ? Number(value) : value,
-            });
+            setFormData(prevData => ({ ...prevData, [name]: value }));
         }
     };
 
-    const handleSubmit = async () => {
-        const formDataToSend = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null) {
-                formDataToSend.append(key, value);
-            }
-        });
+    const handleImageUpload = async (): Promise<string | null> => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (formData.profilePicture) {
+            const formDataObj = new FormData();
+            formDataObj.append('file', formData.profilePicture);
 
-        try {
-            const response = await axios.post(`${apiURL}/api/auth/login`, formDataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            if (response.status === 200) {
-                alert('Giáo viên đã được tạo thành công');
+            try {
+                const response = await axios.post<{ data: { url: string } }>(
+                    `${apiURL}/api/image/upload`,
+                    formDataObj,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `Bearer ${accessToken}`, // Add token to headers
+                        },
+                    }
+                );
+                return response.data.data.url;  // Assuming the API returns the image URL in `data.url`
+            } catch (error) {
+                console.error("Image upload failed", error);
+                return null;
             }
-        } catch (error) {
-            console.error('Lỗi khi tạo giáo viên:', error);
-            alert('Lỗi khi tạo giáo viên');
+        }
+        return null;
+    };
+
+    const handleSubmit = async () => {
+        const accessToken = localStorage.getItem('accessToken');
+        const imageUrl = await handleImageUpload();
+
+        if (imageUrl) {
+            const teacherData = {
+                fullName: formData.fullName,
+                email: formData.email,
+                phoneNumber: formData.phoneNumber,
+                experienceYears: formData.experienceYears,
+                profilePicture: imageUrl,
+            };
+
+            try {
+                const response = await axios.post(
+                    `${apiURL}/api/admin/add-teacher`,
+                    teacherData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`, // Add token to headers
+                        },
+                    }
+                );
+                console.log("Teacher created successfully:", response.data);
+                alert("Tạo Giáo Viên thành công!");
+            } catch (error) {
+                console.error("Teacher creation failed", error);
+                alert("Đã có lỗi xảy ra khi tạo giáo viên.");
+            }
+        } else {
+            alert("Vui lòng tải ảnh đại diện.");
         }
     };
 

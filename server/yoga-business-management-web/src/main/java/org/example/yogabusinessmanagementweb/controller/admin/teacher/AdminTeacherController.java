@@ -21,7 +21,7 @@ public class AdminTeacherController {
     TeacherService teacherService;
 
     @PostMapping("/add-teacher")
-    public ApiResponse<?> getUserById(@RequestBody TeacherCreationRequest teacherCreationRequest) {
+    public ApiResponse<?> addTeacher(@RequestBody TeacherCreationRequest teacherCreationRequest) {
         TeacherResponse teacherResponse = teacherService.create(teacherCreationRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "create teacher success",teacherResponse );
     }

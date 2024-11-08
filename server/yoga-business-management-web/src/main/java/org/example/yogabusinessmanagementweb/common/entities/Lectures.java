@@ -16,5 +16,5 @@ import lombok.experimental.FieldDefaults;
 public class Lectures  extends AbstractEntity<Long>{
     String title;
     String content;
-    String video_url;
+    String videoPath;
 }

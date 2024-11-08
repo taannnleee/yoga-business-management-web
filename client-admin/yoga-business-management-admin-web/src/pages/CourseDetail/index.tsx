@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import UploadWidget from '../../designs/UploadWidget';
+import UploadVideoWidget from '../../designs/UploadVideoWidget';
 import {
   Box,
   Typography,
@@ -40,7 +42,7 @@ interface LectureResponse {
   id: number;
   title: string;
   content: string;
-  video_url: string;
+  videoPath: string;
 }
 
 interface SectionResponse {
@@ -58,10 +60,12 @@ function CourseEditor() {
   const [openModal, setOpenModal] = useState(false);
   const [showVideoForm, setShowVideoForm] = useState(false); // State for showing video form
 
+  const [videoPath, setVideoPath] = useState('');
+
   const [currentSection, setCurrentSection] = useState({ title: '', id: 0 });
 
   //lecture
-  const [newLecture, setNewLecture] = useState({ title: '', content: '', video_url: '' }); // State for new lecture data
+  const [newLecture, setNewLecture] = useState({ title: '', content: '', videoPath: '' }); // State for new lecture data
 
   const { id } = useParams<Params>();
 
@@ -172,8 +176,9 @@ function CourseEditor() {
           ...newLecture,
         }),
       });
+      console.log("kkk");
+      console.log(newLecture)
 
-      console.log(response);
 
       if (response.ok) {
         const result = await response.json();
@@ -190,7 +195,7 @@ function CourseEditor() {
 
         setOpenModal(false);
         setShowVideoForm(false);
-        setNewLecture({ title: '', content: '', video_url: '' }); // Reset the lecture form
+        setNewLecture({ title: '', content: '', videoPath: '' }); // Reset the lecture form
       } else {
         console.error('Lỗi khi thêm bài giảng:', response.statusText);
       }
@@ -346,14 +351,10 @@ function CourseEditor() {
                 value={newLecture.content}
                 onChange={handleNewLectureChange}
               />
-              <TextField
-                margin="dense"
-                name="video_url"
-                label="URL Video"
-                type="text"
-                fullWidth
-                value={newLecture.video_url}
-                onChange={handleNewLectureChange}
+
+              <UploadVideoWidget
+                setThumbnailUploaded={(image: string) => setVideoPath(image)}  // Cập nhật đường dẫn video
+                thumbnailUploaded={videoPath} // Giá trị video đã tải lên
               />
 
               <FormControlLabel control={<Checkbox name="draft" />} label="Nháp" />

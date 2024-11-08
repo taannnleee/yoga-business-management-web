@@ -11,9 +11,11 @@ import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.TopicRepository;
 import org.example.yogabusinessmanagementweb.service.TopicService;
+import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -34,6 +36,30 @@ public class TopicServiceImpl implements TopicService {
         List<Topic> topics = topicRepository.findAll();
         List<TopicResponse> list =  topicMapper.toTopicResponseList(topics);
         return list;
+    }
+
+    @Override
+    public void deleteTopic(String id) {
+       Optional<Topic> topic = topicRepository.findById(Long.valueOf(id));
+       if (topic.isPresent()) {
+           topicRepository.delete(topic.get());
+       }
+       else {
+           throw new AppException(ErrorCode.TOPIC_NOT_FOUND);
+       }
+    }
+
+    @Override
+    public TopicResponse updateTopic(String id, TopicCreationRequest topicCreationRequest) {
+        Optional<Topic> topicOptional = topicRepository.findById(Long.valueOf(id));
+        if(topicOptional.isEmpty()){
+            throw new AppException(ErrorCode.TOPIC_NOT_FOUND);
+        }
+        Topic topic = topicOptional.get();
+
+        topicMapper.updateTopic(topic, topicCreationRequest);
+        topicRepository.save(topic);
+        return topicMapper.toTopicResponse(topic);
     }
 
     @Override

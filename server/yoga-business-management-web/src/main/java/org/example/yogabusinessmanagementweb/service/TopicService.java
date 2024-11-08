@@ -11,4 +11,8 @@ public interface TopicService {
     TopicResponse create(TopicCreationRequest topicCreationRequest);
 
     List<TopicResponse> getAllTopic();
+
+    void deleteTopic(String id);
+
+    TopicResponse updateTopic(String id, TopicCreationRequest topicCreationRequest);
 }

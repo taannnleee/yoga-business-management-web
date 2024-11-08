@@ -32,4 +32,16 @@ public class AdminTopicController {
         List<TopicResponse> list = topicService.getAllTopic();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all topic success",list );
     }
+
+    @DeleteMapping("/delete-topic/{id}")
+    public ApiResponse<?> deleteTopic(@PathVariable String id) {
+        topicService.deleteTopic(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "delete topic success" );
+    }
+
+    @PutMapping("/update-topic/{id}")
+    public ApiResponse<?> updateTopic(@PathVariable String id,@RequestBody TopicCreationRequest topicCreationRequest) {
+        TopicResponse topicResponse =  topicService.updateTopic(id,topicCreationRequest);
+        return new ApiResponse<>(HttpStatus.OK.value(), "update topic success",topicResponse );
+    }
 }

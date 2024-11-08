@@ -11,4 +11,8 @@ public interface TeacherService {
     TeacherResponse create(TeacherCreationRequest teacherCreationRequest);
 
     List<TeacherResponse> getAllTeacher();
+
+    void deleteTeacher(String id);
+
+    TeacherResponse updateTeacher(String id, TeacherCreationRequest teacherCreationRequest);
 }

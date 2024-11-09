@@ -4,7 +4,6 @@ import { useRouter, useParams } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CourseContent from "@/components/organisms/CourseContent";
-import { title } from "process";
 
 interface Section {
     id: number;
@@ -93,11 +92,7 @@ const CourseDetailPage: React.FC = () => {
         }
     }, [courseId]);
 
-
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-    if (!course) return <div>Không có khóa học nào</div>;
+    if (!course) return <div>Loading...</div>;
 
     return (
         <div className="w-screen">
@@ -127,25 +122,26 @@ const CourseDetailPage: React.FC = () => {
                         <p className="mb-4">{course.instruction}</p>
                     </div>
                     <div className="lg:w-1/2 flex flex-col items-center">
-                        <div
-                            className="ytp-cued-thumbnail-overlay relative w-full h-[312px] bg-cover bg-center cursor-pointer"
-                            style={{ backgroundImage: `url(${course.imagePath})` }}
-                            onClick={() => window.open("https://www.youtube.com/watch?v=xGMXPky1wUc", "_blank")}
+                        <div className="ytp-cued-thumbnail-overlay relative w-full h-[312px] bg-cover bg-center cursor-pointer"
+                             style={{ backgroundImage: `url("https://i.ytimg.com/vi_webp/xGMXPky1wUc/maxresdefault.webp")` }}
+                             onClick={() => window.open("https://www.youtube.com/watch?v=xGMXPky1wUc", "_blank")}
                         >
-                            <button
-                                className="absolute mx-auto my-auto inset-0 flex items-center justify-center ytp-large-play-button ytp-button w-[68px] h-[48px]"
-                                aria-label="Phát"
-                                title="Phát"
-                            >
+                            {/* Play Button Overlay */}
+                            <button className="absolute mx-auto my-auto inset-0 flex items-center justify-center ytp-large-play-button ytp-button w-[68px] h-[48px]" aria-label="Phát" title="Phát">
                                 <svg height="100%" width="100%" viewBox="0 0 68 48">
-                                    <path
-                                        className="ytp-large-play-button-bg"
-                                        d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"
-                                        fill="#f00"
-                                    ></path>
+                                    <path className="ytp-large-play-button-bg" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path>
                                     <path d="M 45,24 27,14 27,34" fill="#fff"></path>
                                 </svg>
                             </button>
+                        </div>
+
+                        {/* Channel Information */}
+                        <div className="flex items-center mt-4">
+                            <div className="w-12 h-12 rounded-full bg-cover bg-center" style={{ backgroundImage: `url("https://yt3.ggpht.com/ytc/AIdro_mCxSAtsHLQq8az5EiKyVQMziAocER_Z2xrPHqNuyIGYg=s88-c-k-c0x00ffffff-no-rj")` }}></div>
+                            <div className="ml-3">
+                                <a href="https://www.youtube.com/channel/UCUnicaChannel" target="_blank" className="text-lg font-semibold text-blue-600">Unica</a>
+                                <p className="text-sm text-gray-600">33.7K người đăng ký</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -193,7 +189,9 @@ const CourseDetailPage: React.FC = () => {
                 </div>
             </div>
 
-            <CourseContent sections={course.sections} />
+            {/* Content Section */}
+            <CourseContent  sections = {course.sections}/>
+             
         </div>
     );
 };

@@ -60,7 +60,9 @@ function CourseEditor() {
   const [openModal, setOpenModal] = useState(false);
   const [showVideoForm, setShowVideoForm] = useState(false); // State for showing video form
 
+
   const [videoPath, setVideoPath] = useState('');
+  const [videoDuration, setVideoDuration] = useState<string>('');
 
   const [currentSection, setCurrentSection] = useState({ title: '', id: 0 });
 
@@ -178,7 +180,9 @@ function CourseEditor() {
           idSection: currentSection.id,
           title: newLecture.title,
           content: newLecture.content,
-          videoPath: videoPath,  // Truyền videoPath vào đây
+          videoPath: videoPath,  
+          duration: videoDuration,
+
         }),
       });
       console.log("kkk");
@@ -208,6 +212,10 @@ function CourseEditor() {
     } catch (error) {
       console.error('Lỗi khi gọi API:', error);
     }
+  };
+
+  const handleSetVideoDuration = (duration: string) => {
+    setVideoDuration(duration);
   };
   return (
     <>
@@ -376,6 +384,7 @@ function CourseEditor() {
               <UploadVideoWidget
                 setThumbnailUploaded={(image: string) => setVideoPath(image)}  // Cập nhật đường dẫn video
                 thumbnailUploaded={videoPath} // Giá trị video đã tải lên
+                setVideoDuration={handleSetVideoDuration}
               />
 
               <FormControlLabel control={<Checkbox name="draft" />} label="Nháp" />

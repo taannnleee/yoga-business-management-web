@@ -261,10 +261,10 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
         />
 
         {/* Upload Video */}
-        <UploadVideoWidget
+        {/* <UploadVideoWidget
           setThumbnailUploaded={(image: string) => setVideoPath(image)}
           thumbnailUploaded={videoPath}
-        />
+        /> */}
         <TextField
           margin="dense"
           label="Giá"

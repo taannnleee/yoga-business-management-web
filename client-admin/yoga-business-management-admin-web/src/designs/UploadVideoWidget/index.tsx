@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 interface IUploadWidgetProps {
   thumbnailUploaded: string;
   setThumbnailUploaded: (image: string) => void;
+  setVideoDuration: (duration: string) => void;
 }
 
 const UploadVideoWidget: React.FC<IUploadWidgetProps> = (props) => {
@@ -18,11 +19,18 @@ const UploadVideoWidget: React.FC<IUploadWidgetProps> = (props) => {
         uploadPreset: 'ml_default',
       },
       function (error: any, result: any) {
-        if (result.event == 'success') {
+        if (result.event === 'success') {
           props.setThumbnailUploaded(result?.info?.secure_url);
-          //   toast.success("Đăng thumbnail thành công");
-        } else {
-          //   toast.error("Đăng thumbnail thất bại");
+
+          // Lấy duration từ kết quả và chuyển đổi sang phút
+          const durationSeconds = result?.info?.duration;
+          const durationMinutes = (durationSeconds / 60).toFixed(2);
+          props.setVideoDuration(durationMinutes);
+
+          // Hiển thị thời lượng video
+          toast.success(`Video uploaded successfully! Duration: ${durationMinutes} minutes`);
+        } else if (error) {
+          toast.error('Failed to upload video');
         }
       },
     );

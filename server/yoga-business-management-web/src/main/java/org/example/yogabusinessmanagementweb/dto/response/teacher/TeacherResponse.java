@@ -12,6 +12,8 @@ public class TeacherResponse {
 
     String fullName;
 
+    String introduction;
+
     String email;
 
     String phoneNumber;

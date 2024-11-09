@@ -9,6 +9,8 @@ import org.example.yogabusinessmanagementweb.common.mapper.LectureMapper;
 import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureResponse;
 import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
+import org.example.yogabusinessmanagementweb.exception.AppException;
+import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.LecturesRepository;
 import org.example.yogabusinessmanagementweb.repositories.SectionsRepository;
 import org.example.yogabusinessmanagementweb.service.LecturesService;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -47,5 +50,15 @@ public class LecturesServiceImpl  implements LecturesService {
         SectionResponse sectionResponse =  sectionService.getSection(id);
         List<LectureResponse> sectionsList = sectionResponse.getLectures();
         return sectionsList;
+    }
+
+    @Override
+    public LectureResponse getLectureById(String id) {
+        Optional<Lectures> lecturesOptional = lecturesRepository.findById(Long.valueOf(id));
+        if(lecturesOptional.isEmpty()) {
+            throw new AppException(ErrorCode.LECTURE_NOT_FOUND);
+        }
+        Lectures lectures = lecturesOptional.get();
+        return lectureMapper.toLectureResponse(lectures);
     }
 }

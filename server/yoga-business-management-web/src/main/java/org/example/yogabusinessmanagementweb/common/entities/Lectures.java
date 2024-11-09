@@ -17,4 +17,6 @@ public class Lectures  extends AbstractEntity<Long>{
     String title;
     String content;
     String videoPath;
+    String duration;//phút
+    String image;
 }

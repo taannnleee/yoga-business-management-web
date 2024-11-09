@@ -20,11 +20,10 @@ public class Courses extends AbstractEntity<Long>{
     String name;
     String instruction;
     String description;
-    int duration;
+    String duration;
     String imagePath;
     int level;
     String videoPath;
-
     BigDecimal price;
 
     @ManyToOne(cascade = CascadeType.ALL)

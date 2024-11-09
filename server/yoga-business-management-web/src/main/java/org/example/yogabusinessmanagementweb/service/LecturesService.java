@@ -9,4 +9,6 @@ public interface LecturesService {
     LectureResponse addLecture(LectureCreationRequest lectureCreationRequest);
 
     List<LectureResponse> getAllLectureByIdSection(String id);
+
+    LectureResponse getLectureById(String id);
 }

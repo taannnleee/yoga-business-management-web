@@ -4,8 +4,6 @@ import { useRouter, useParams } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CourseContent from "@/components/organisms/CourseContent";
-import { title } from "process";
-import Video from "next-video";
 
 interface Section {
     id: number;
@@ -18,6 +16,7 @@ interface Lecture {
     title: string;
     content: string;
     videoPath: string;
+    duration: string;
 }
 
 interface Teacher {
@@ -53,10 +52,10 @@ const CourseDetailPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const handleStartProgram = () => {
-        // const firstLesson = course?.sections[0]?.lectures[0];
-        // if (firstLesson) {
-        //     router.push(`/course/lession/${firstLesson.id}`);
-        // }
+        const firstLesson = course?.sections[0]?.lectures[0];
+        if (firstLesson) {
+            router.push(`/course/lession/${course.id}/${firstLesson.id}`);
+        }
     };
 
     useEffect(() => {
@@ -94,55 +93,7 @@ const CourseDetailPage: React.FC = () => {
         }
     }, [courseId]);
 
-    // Fetch sections after course data is fetched
-    useEffect(() => {
-        if (courseId && course) {
-            const fetchSections = async () => {
-                try {
-                    const token = localStorage.getItem("accessToken");
-                    const response = await fetch(
-                        `http://localhost:8080/api/course/get-all-section-by-id-course/${courseId}`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                    });
-                    const data = await response.json();
-
-                    console.log(data.message)
-
-                    if (data.status === 200) {
-                        console.log("độ dài của mảng")
-                        console.log(data.data.length)
-                        const transformedData: Section[] = data.data.map((item: any) => ({
-                            id: item.id,
-                            title: item.title,
-                        }));
-                        console.log("đã vào trong api section")
-                        console.log(transformedData)
-                        setSections(transformedData);
-
-                    } else {
-                        setError("Không thể tải dữ liệu phần học.");
-                    }
-                } catch (err) {
-                    setError("Đã xảy ra lỗi khi gọi API sections.");
-                }
-            };
-
-            fetchSections();
-        }
-    }, [course, courseId]); // This runs when the course data is fetched
-
-    useEffect(() => {
-        console.log("Dữ liệu sections đã được set:");
-        console.log(sections)
-    }, [sections]);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-    if (!course) return <div>Không có khóa học nào</div>;
+    if (!course) return <div>Loading...</div>;
 
     return (
         <div className="w-screen">
@@ -172,17 +123,26 @@ const CourseDetailPage: React.FC = () => {
                         <p className="mb-4">{course.instruction}</p>
                     </div>
                     <div className="lg:w-1/2 flex flex-col items-center">
-                        <div>
-                            <div className="w-full max-w-[750px]">
-                                {/* Top Black Line */}
-                                <div className="border-t-2 border-black-500"/>
-                                <Video src={course.videoPath} className="w-full rounded-lg shadow-lg"/>
-                                {/* Bottom Black Line */}
-                                <div className="border-b-2 border-black-500"/>
-                            </div>
+                        <div className="ytp-cued-thumbnail-overlay relative w-full h-[312px] bg-cover bg-center cursor-pointer"
+                            style={{ backgroundImage: `url("https://i.ytimg.com/vi_webp/xGMXPky1wUc/maxresdefault.webp")` }}
+                            onClick={() => window.open("https://www.youtube.com/watch?v=xGMXPky1wUc", "_blank")}
+                        >
+                            {/* Play Button Overlay */}
+                            <button className="absolute mx-auto my-auto inset-0 flex items-center justify-center ytp-large-play-button ytp-button w-[68px] h-[48px]" aria-label="Phát" title="Phát">
+                                <svg height="100%" width="100%" viewBox="0 0 68 48">
+                                    <path className="ytp-large-play-button-bg" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path>
+                                    <path d="M 45,24 27,14 27,34" fill="#fff"></path>
+                                </svg>
+                            </button>
                         </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mt-4">Video giới thiệu</h3>
+
+                        {/* Channel Information */}
+                        <div className="flex items-center mt-4">
+                            <div className="w-12 h-12 rounded-full bg-cover bg-center" style={{ backgroundImage: `url("https://yt3.ggpht.com/ytc/AIdro_mCxSAtsHLQq8az5EiKyVQMziAocER_Z2xrPHqNuyIGYg=s88-c-k-c0x00ffffff-no-rj")` }}></div>
+                            <div className="ml-3">
+                                <a href="https://www.youtube.com/channel/UCUnicaChannel" target="_blank" className="text-lg font-semibold text-blue-600">Unica</a>
+                                <p className="text-sm text-gray-600">33.7K người đăng ký</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -229,20 +189,10 @@ const CourseDetailPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div>
-                {sections && (
-                    <div className="w-full max-w-7xl mx-auto mt-[70px] flex flex-col items-center">
-                        <h2 className="text-2xl font-bold mb-4">Các Mục Học</h2>
-                        <div className="w-full">
-                            {sections.map((section) => (
-                                <div key={section.id} className="mb-4">
-                                    <h3 className="text-xl font-semibold">{section.title}</h3>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </div>
+
+            {/* Content Section */}
+            <CourseContent sections={course.sections} />
+
         </div>
     );
 };

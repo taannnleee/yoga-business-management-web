@@ -13,6 +13,7 @@ interface FormData {
     phoneNumber: string;
     experienceYears: number;
     profilePicture: File | null;
+    introduction: string;  // Thêm trường introduction
 }
 
 interface Teacher {
@@ -22,6 +23,7 @@ interface Teacher {
     phoneNumber: string;
     experienceYears: number;
     profilePicture: string;
+    introduction: string;
 }
 
 const TeacherManagement: React.FC = () => {
@@ -31,6 +33,7 @@ const TeacherManagement: React.FC = () => {
         phoneNumber: '',
         experienceYears: 0,
         profilePicture: null,
+        introduction: '',  // Khởi tạo trường introduction
     });
     const [previewImage, setPreviewImage] = useState<string>('https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_1280.png');
     const [loading, setLoading] = useState<boolean>(false);
@@ -117,6 +120,7 @@ const TeacherManagement: React.FC = () => {
                 phoneNumber: formData.phoneNumber,
                 experienceYears: formData.experienceYears,
                 profilePicture: imageUrl,
+                introduction: formData.introduction,  // Gửi phần giới thiệu
             };
 
             try {
@@ -132,6 +136,7 @@ const TeacherManagement: React.FC = () => {
                     phoneNumber: '',
                     experienceYears: 0,
                     profilePicture: null,
+                    introduction: '',  // Reset trường giới thiệu
                 });
                 setPreviewImage('https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_1280.png'); // Reset preview image
                 fetchTeachers();
@@ -172,6 +177,7 @@ const TeacherManagement: React.FC = () => {
             phoneNumber: teacher.phoneNumber,
             experienceYears: teacher.experienceYears,
             profilePicture: null,
+            introduction: teacher.introduction,  // Cập nhật phần giới thiệu
         });
         setPreviewImage(teacher.profilePicture);
         setEditDialogOpen(true);
@@ -189,6 +195,7 @@ const TeacherManagement: React.FC = () => {
                 phoneNumber: formData.phoneNumber,
                 experienceYears: formData.experienceYears,
                 profilePicture: imageUrl || selectedTeacher.profilePicture,
+                introduction: formData.introduction,  // Cập nhật phần giới thiệu
             };
 
             try {
@@ -254,6 +261,12 @@ const TeacherManagement: React.FC = () => {
             valueFormatter: (params) => `${params.value} năm`,
         },
         {
+            field: 'introduction',
+            headerName: 'Giới Thiệu',
+            width: 200,
+            valueFormatter: (params) => params.value || 'Chưa có',
+        },
+        {
             field: 'actions',
             headerName: 'Hành động',
             width: 180,
@@ -278,177 +291,167 @@ const TeacherManagement: React.FC = () => {
     return (
         <>
             <Header title="Quản lý giáo viên" />
-            <Box sx={{ p: 3 }}>
-                <Typography variant="h4" gutterBottom>
-                    Thêm Giáo Viên
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+            <Box padding={3}>
+
+                <Box marginBottom={3}>
+                    <TextField
+                        label="Họ và Tên"
+                        fullWidth
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                    />
+                </Box>
+
+                <Box marginBottom={3}>
+                    <TextField
+                        label="Email"
+                        fullWidth
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                </Box>
+
+                <Box marginBottom={3}>
+                    <TextField
+                        label="Số Điện Thoại"
+                        fullWidth
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                    />
+                </Box>
+
+                <Box marginBottom={3}>
+                    <TextField
+                        label="Kinh Nghiệm (năm)"
+                        fullWidth
+                        name="experienceYears"
+                        type="number"
+                        value={formData.experienceYears}
+                        onChange={handleChange}
+                    />
+                </Box>
+
+                <Box marginBottom={3}>
+                    <TextField
+                        label="Giới Thiệu"
+                        fullWidth
+                        name="introduction"
+                        value={formData.introduction}
+                        onChange={handleChange}
+                        multiline
+                        rows={4}  // Cho phép nhập nhiều dòng
+                    />
+                </Box>
+
+                <Box marginBottom={3}>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChange}
+                    />
+                    <img
+                        src={previewImage}
+                        alt="preview"
+                        style={{ marginTop: 10, width: 100, height: 100, borderRadius: '50%' }}
+                    />
+                </Box>
+
+                <Box marginTop={2}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        disabled={loading}
+                    >
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Giáo Viên'}
+                    </Button>
+                </Box>
+
+                {/* DataGrid */}
+                <Box marginTop={5} height={400}>
+                    <DataGrid
+                        rows={teachers}
+                        columns={columns}
+                        pageSize={rowsPerPage}
+                        rowCount={totalTeachers}
+                        paginationMode="server"
+                        onPageChange={handleChangePage}
+                        onPageSizeChange={handleChangeRowsPerPage}
+                        loading={loading}
+                    />
+                </Box>
+            </Box>
+
+            {/* Edit Teacher Dialog */}
+            <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+                <DialogTitle>Cập Nhật Giáo Viên</DialogTitle>
+                <DialogContent>
+                    <Box marginBottom={3}>
                         <TextField
-                            fullWidth
                             label="Họ và Tên"
+                            fullWidth
                             name="fullName"
                             value={formData.fullName}
                             onChange={handleChange}
+                            sx={{ width: '900px' }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
+                    </Box>
+
+                    <Box marginBottom={3}>
                         <TextField
-                            fullWidth
                             label="Email"
+                            fullWidth
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
+                    </Box>
+
+                    <Box marginBottom={3}>
                         <TextField
-                            fullWidth
                             label="Số Điện Thoại"
+                            fullWidth
                             name="phoneNumber"
                             value={formData.phoneNumber}
                             onChange={handleChange}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
+                    </Box>
+
+                    <Box marginBottom={3}>
                         <TextField
+                            label="Kinh Nghiệm (năm)"
                             fullWidth
-                            label="Số Năm Kinh Nghiệm"
                             name="experienceYears"
                             type="number"
                             value={formData.experienceYears}
                             onChange={handleChange}
                         />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: 100,
-                                height: 100,
-                                borderRadius: '50%',
-                                backgroundColor: '#f0f0f0',
-                                cursor: 'pointer',
-                                overflow: 'hidden',
-                            }}
-                            onClick={() => document.getElementById('profile-picture-input')?.click()}
-                        >
-                            <img
-                                src={previewImage || ""}
-                                alt="Ảnh Đại Diện"
-                                width="100"
-                                height="100"
-                                style={{ objectFit: 'cover' }}
-                            />
-                        </Box>
-                        <input
-                            type="file"
-                            id="profile-picture-input"
-                            name="profilePicture"
-                            hidden
-                            accept="image/*"
+                    </Box>
+
+                    <Box marginBottom={3}>
+                        <TextField
+                            label="Giới Thiệu"
+                            fullWidth
+                            name="introduction"
+                            value={formData.introduction}
                             onChange={handleChange}
+                            multiline
+                            rows={4}
                         />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>
-                            Tạo Giáo Viên
-                        </Button>
-                    </Grid>
-                </Grid>
-
-                {/* Teacher list using DataGrid */}
-                <Box sx={{ mt: 4, height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={teachers}
-                        columns={columns}
-                        pageSize={rowsPerPage}
-                        rowsPerPageOptions={[5]}
-                        getRowId={(row) => row.id.toString()}
-                        onPageChange={handleChangePage}
-                        onPageSizeChange={handleChangeRowsPerPage}
-                        pagination
-                    />
-                </Box>
-            </Box>
-
-            {/* Update Teacher Dialog */}
-            <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-                <DialogTitle>Cập Nhật Giáo Viên</DialogTitle>
-                <DialogContent>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Họ và Tên"
-                                name="fullName"
-                                value={formData.fullName}
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Số Điện Thoại"
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Kinh Nghiệm"
-                                name="experienceYears"
-                                value={formData.experienceYears}
-                                onChange={handleChange}
-                                type="number"
-                            />
-                        </Grid>
-                    </Grid>
+                    </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setEditDialogOpen(false)} color="primary">Hủy</Button>
-                    <Button
-                        onClick={handleUpdate}
-                        color="primary"
-                        disabled={loading}
-                    >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : "Cập Nhật"}
+                    <Button onClick={() => setEditDialogOpen(false)} color="primary">
+                        Hủy
+                    </Button>
+                    <Button onClick={handleUpdate} color="primary" disabled={loading}>
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Cập Nhật'}
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            {/* Full-screen spinner */}
-            {loading && (
-                <Box
-                    sx={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 9999,
-                    }}
-                >
-                    <CircularProgress size={60} color="inherit" />
-                </Box>
-            )}
 
             <FooterSection />
         </>

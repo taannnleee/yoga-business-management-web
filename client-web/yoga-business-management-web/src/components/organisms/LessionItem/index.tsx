@@ -8,14 +8,15 @@ interface LessonItemProps {
     id: number; // Lesson ID
     title: string; // Lesson Title
     thumbnail: string; // Thumbnail URL
+    courseId: string
 }
 
-const LessonItem: React.FC<LessonItemProps> = ({ isChoosen, id, title, thumbnail }) => {
+const LectureItem: React.FC<LessonItemProps> = ({ courseId, isChoosen, id, title, thumbnail }) => {
     const router = useRouter();
 
     // Function to handle click and navigate to the lesson page
     const handleClick = () => {
-        router.push(`/course/lession/${id}`);
+        router.push(`/course/lession/${courseId}/${id}`);
     };
 
     return (
@@ -40,4 +41,4 @@ const LessonItem: React.FC<LessonItemProps> = ({ isChoosen, id, title, thumbnail
     );
 };
 
-export default LessonItem;
+export default LectureItem;

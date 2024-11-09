@@ -33,7 +33,7 @@ interface FormDialogProps {
 const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
   const [courseName, setCourseName] = useState(course?.name || '');
   const [description, setDescription] = useState(course?.description || '');
-  const [duration, setDuration] = useState(course?.duration.toString() || '');
+  const [duration, setDuration] = useState<string>('');
   const [imagePath, setImagePath] = useState(course?.imagePath || '');
   const [price, setPrice] = useState(course?.price ? course.price.toString() : '');
   const [level, setLevel] = useState(course?.level ? course.level.toString() : '');
@@ -45,6 +45,8 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+
 
   const isEditMode = !!course;
 
@@ -158,6 +160,10 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
     }
   };
 
+  const handleSetVideoDuration = (duration: string) => {
+    setDuration(duration);
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{isEditMode ? 'Chỉnh sửa khóa học' : 'Tạo khóa học mới'}</DialogTitle>
@@ -236,14 +242,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <TextField
-          margin="dense"
-          label="Thời gian (phút)"
-          type="number"
-          fullWidth
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-        />
+
 
         {/* Upload Image */}
         <UploadWidget
@@ -264,6 +263,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
         <UploadVideoWidget
           setThumbnailUploaded={(image: string) => setVideoPath(image)}
           thumbnailUploaded={videoPath}
+          setVideoDuration={handleSetVideoDuration}
         />
         <TextField
           margin="dense"

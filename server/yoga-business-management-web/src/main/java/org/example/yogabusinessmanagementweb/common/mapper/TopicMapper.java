@@ -7,6 +7,7 @@ import org.example.yogabusinessmanagementweb.dto.request.teacher.TeacherCreation
 import org.example.yogabusinessmanagementweb.dto.request.topic.TopicCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
 import org.example.yogabusinessmanagementweb.dto.response.teacher.TeacherResponse;
+import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -20,4 +21,5 @@ public interface TopicMapper {
     void updateTopic(@MappingTarget Topic topic, TopicCreationRequest topicRequest );
 
     List<TopicResponse> toTopicResponseList(List<Topic> topicList);
+
 }

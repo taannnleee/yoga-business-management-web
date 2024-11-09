@@ -4,94 +4,157 @@ import { useRouter, useParams } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CourseContent from "@/components/organisms/CourseContent";
+import { title } from "process";
+import Video from "next-video";
 
-interface IHomePageProps {}
-
-interface Lesson {
+interface Section {
     id: number;
     title: string;
-    // Bạn có thể thêm các thuộc tính khác cho Lesson ở đây
+    lectures: Lecture[];
 }
 
-interface Chapter {
+interface Lecture {
     id: number;
     title: string;
-    lessons: Lesson[]; // Mảng các bài học trong chương
+    content: string;
+    videoPath: string;
+}
+
+interface Teacher {
+    id: number;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    experienceYears: number;
+    profilePicture: string;
 }
 
 interface Course {
     id: number;
-    title: string;
-    slogan: string;
-    image: string;
-    chapters: Chapter[]; // Mảng các chương trong khóa học
+    name: string;
+    instruction: string;
+    description: string;
+    duration: number;
+    imagePath: string;
+    level: number;
+    videoPath: string;
+    price: number;
+    rating: number;
+    sections: Section[];
+    teacher: Teacher;
 }
-
-const instructors = {
-    id: 2,
-    name: "Nguyễn Hiếu",
-    title: "Đại sứ Yoga Việt Nam - CEO Zenlife Yoga",
-    image: "https://yoga.vn/data/avatars/photo_5b63c7116803fa784a69e833_1533285335.jpg"
-};
 
 const CourseDetailPage: React.FC = () => {
     const router = useRouter();
     const { id: courseId } = useParams<{ id: string }>();
     const [course, setCourse] = useState<Course | null>(null);
+    const [sections, setSections] = useState<Section[] | null>(null);  // State for sections
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const handleStartProgram = () => {
-        const firstLesson = course?.chapters[0]?.lessons[0];
-        if (firstLesson) {
-            router.push(`/course/lession/${firstLesson.id}`);
-        }
+        // const firstLesson = course?.sections[0]?.lectures[0];
+        // if (firstLesson) {
+        //     router.push(`/course/lession/${firstLesson.id}`);
+        // }
     };
 
     useEffect(() => {
         if (courseId) {
-            const fetchedCourse: Course = {
-                id: Number(courseId),
-                title: "108 Tọa pháp Yoga - Bí mật trẻ mãi",
-                slogan: "Discover the secrets of timeless youth",
-                image: "https://yoga.vn/data/sites/5b602d4d6803faee0faded36/files/cover/yogacobanngaytainha.jpg",
-                chapters: [
-                    {
-                        id: 1,
-                        title: "Chương 1",
-                        lessons: [
-                            { id: 101, title: "Bài học 1" },
-                            { id: 102, title: "Bài học 2" },
-                        ],
-                    },
-                    {
-                        id: 2,
-                        title: "Chương 2",
-                        lessons: [
-                            { id: 201, title: "Bài học 1" },
-                            { id: 202, title: "Bài học 2" },
-                        ],
-                    },
-                ],
+            const fetchCourseData = async () => {
+                try {
+                    const token = localStorage.getItem("accessToken");
+                    setLoading(true);
+                    const response = await fetch(
+                        `http://localhost:8080/api/course/get-course/${courseId}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    const data = await response.json();
+
+                    if (data.status === 200) {
+                        setCourse(data.data);
+                    } else {
+                        setError("Không thể tải dữ liệu khóa học.");
+                    }
+                } catch (err) {
+                    setError("Đã xảy ra lỗi khi gọi API.");
+                } finally {
+                    setLoading(false);
+                }
             };
-            setCourse(fetchedCourse);
+
+            // Fetch course data
+            fetchCourseData();
         }
     }, [courseId]);
 
-    if (!course) return <div>Loading...</div>;
+    // Fetch sections after course data is fetched
+    useEffect(() => {
+        if (courseId && course) {
+            const fetchSections = async () => {
+                try {
+                    const token = localStorage.getItem("accessToken");
+                    const response = await fetch(
+                        `http://localhost:8080/api/course/get-all-section-by-id-course/${courseId}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+                    const data = await response.json();
+
+                    console.log(data.message)
+
+                    if (data.status === 200) {
+                        console.log("độ dài của mảng")
+                        console.log(data.data.length)
+                        const transformedData: Section[] = data.data.map((item: any) => ({
+                            id: item.id,
+                            title: item.title,
+                        }));
+                        console.log("đã vào trong api section")
+                        console.log(transformedData)
+                        setSections(transformedData);
+
+                    } else {
+                        setError("Không thể tải dữ liệu phần học.");
+                    }
+                } catch (err) {
+                    setError("Đã xảy ra lỗi khi gọi API sections.");
+                }
+            };
+
+            fetchSections();
+        }
+    }, [course, courseId]); // This runs when the course data is fetched
+
+    useEffect(() => {
+        console.log("Dữ liệu sections đã được set:");
+        console.log(sections)
+    }, [sections]);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+    if (!course) return <div>Không có khóa học nào</div>;
 
     return (
         <div className="w-screen">
             {/* Background Image Section */}
             <div
                 className="relative h-[500px] w-full bg-cover bg-center flex items-center justify-center opacity-90 bg-[#f1f1f1]"
-                style={{ backgroundImage: `url(${course.image})` }}
+                style={{ backgroundImage: `url(${course.imagePath})` }}
             >
-                {/* Overlay Layer */}
                 <div className="absolute inset-0 bg-black opacity-50"></div>
-
-                {/* Text and Button Content */}
                 <div className="relative text-center">
-                    <h3 className="text-orange-600 text-[36px] font-bold">{course.title}</h3>
-                    <p className="text-white text-[24px] my-6 font-thin">{course.slogan}</p>
+                    <h3 className="text-orange-600 text-[36px] font-bold">{course.name}</h3>
+                    <p className="text-white text-[24px] my-6 font-thin">Discover the secrets of timeless youth</p>
                     <button
                         className="mt-6 w-[300px] h-[54px] bg-[#ee4987] text-white text-[14px] font-bold rounded hover:bg-[#fced0e] hover:text-[#ec3496] transition duration-200"
                         onClick={handleStartProgram}
@@ -104,42 +167,22 @@ const CourseDetailPage: React.FC = () => {
             {/* Introduction Section */}
             <div className="container mx-auto mt-10 px-4">
                 <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Left Column - Program Introduction */}
                     <div className="lg:w-1/2 text-gray-800">
                         <h2 className="text-2xl font-semibold mb-4">Giới thiệu chương trình</h2>
-                        <p className="mb-4">
-                            Yoga – một thuật ngữ khá quen thuộc hiện nay. Có rất nhiều lý do khiến Yoga có sức hút đối với nhiều người đến vậy: Yoga giúp cải thiện cơ bắt, tăng tính linh hoạt, giúp cân bằng, thư giãn và giảm stress. Không những thế, Yoga còn làm giảm các triệu trứng của bệnh trầm cảm, lo âu và đau mãn…
-                        </p>
-                        <p className="mb-4">
-                            Thật là tuyệt vời để tham dự các lớp học Yoga tại các trung tâm thể dục thẩm mĩ chuyên nghiệp. Nhưng bạn lại đang gặp khó khăn về cả thời gian lẫn tài chính để tham gia một khóa học như thế. Không sao cả!
-                        </p>
-                        <p>
-                            Unica đã kết hợp cùng Chuyên gia Nguyễn Hiếu tạo ra khoá học Tập Yoga cơ bản ngay tại nhà cùng chuyên gia. Được hướng dẫn tận tình bởi Đại sứ Yoga Nguyễn Hiếu, bạn sẽ biết cách tập một số động tác Yoga cơ bản ngay tại nhà, hỗ trợ sức khỏe tinh thần và thể chất của bạn.
-                        </p>
+                        <p className="mb-4">{course.instruction}</p>
                     </div>
-
-                    {/* Right Column - YouTube Video Thumbnail with Channel Info */}
                     <div className="lg:w-1/2 flex flex-col items-center">
-                        <div className="ytp-cued-thumbnail-overlay relative w-full h-[312px] bg-cover bg-center cursor-pointer"
-                             style={{ backgroundImage: `url("https://i.ytimg.com/vi_webp/xGMXPky1wUc/maxresdefault.webp")` }}
-                             onClick={() => window.open("https://www.youtube.com/watch?v=xGMXPky1wUc", "_blank")}
-                        >
-                            {/* Play Button Overlay */}
-                            <button className="absolute mx-auto my-auto inset-0 flex items-center justify-center ytp-large-play-button ytp-button w-[68px] h-[48px]" aria-label="Phát" title="Phát">
-                                <svg height="100%" width="100%" viewBox="0 0 68 48">
-                                    <path className="ytp-large-play-button-bg" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path>
-                                    <path d="M 45,24 27,14 27,34" fill="#fff"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        {/* Channel Information */}
-                        <div className="flex items-center mt-4">
-                            <div className="w-12 h-12 rounded-full bg-cover bg-center" style={{ backgroundImage: `url("https://yt3.ggpht.com/ytc/AIdro_mCxSAtsHLQq8az5EiKyVQMziAocER_Z2xrPHqNuyIGYg=s88-c-k-c0x00ffffff-no-rj")` }}></div>
-                            <div className="ml-3">
-                                <a href="https://www.youtube.com/channel/UCUnicaChannel" target="_blank" className="text-lg font-semibold text-blue-600">Unica</a>
-                                <p className="text-sm text-gray-600">33.7K người đăng ký</p>
+                        <div>
+                            <div className="w-full max-w-[750px]">
+                                {/* Top Black Line */}
+                                <div className="border-t-2 border-black-500"/>
+                                <Video src={course.videoPath} className="w-full rounded-lg shadow-lg"/>
+                                {/* Bottom Black Line */}
+                                <div className="border-b-2 border-black-500"/>
                             </div>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold mt-4">Video giới thiệu</h3>
                         </div>
                     </div>
                 </div>
@@ -150,34 +193,56 @@ const CourseDetailPage: React.FC = () => {
                 <h2 className="text-2xl font-bold mb-4">Bạn sẽ học được gì</h2>
                 <div className="flex justify-start items-center w-full">
                     <ul>
-                        <li className="text-gray-600 text-lg mb-2">Cách thực hiện đúng các động tác Yoga cơ bản</li>
-                        <li className="text-gray-600 text-lg mb-2">Cách thở đúng khi tập Yoga</li>
-                        <li className="text-gray-600 text-lg mb-2">Cách tập Yoga giúp cải thiện sức khỏe</li>
-                        <li className="text-gray-600 text-lg mb-2">Cách tập Yoga giúp giảm stress</li>
+                        <li className="text-gray-600 text-lg mb-2">{course.description}</li>
                     </ul>
                 </div>
             </div>
 
-            {/* Slider Section for Instructors */}
+            {/* Sections Display */}
+            {sections && (
+                <div className="w-full max-w-7xl mx-auto mt-[70px] flex flex-col items-center">
+                    <h2 className="text-2xl font-bold mb-4">Các Mục Học</h2>
+                    <div className="w-full">
+                        {sections.map((section) => (
+                            <div key={section.id} className="mb-4">
+                                <h3 className="text-xl font-semibold">{section.title}</h3>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Teacher Info Section */}
             <div className="w-full max-w-7xl mx-auto mt-[70px] flex flex-col items-center">
                 <h2 className="text-2xl font-bold mb-4">Giảng viên</h2>
                 <div className="flex justify-center items-center w-full">
                     <div className="flex">
-                            <div key={instructors.id} className="flex flex-col items-center w-[285px] h-[313px]">
-                                <img
-                                    src={instructors.image}
-                                    alt={instructors.name}
-                                    className="rounded-full cursor-pointer transition-opacity duration-300 hover:opacity-50"
-                                />
-                                <h3 className="text-lg cursor-pointer font-semibold my-[20px]">{instructors.name}</h3>
-                                <p className="text-gray-600 cursor-pointer">{instructors.title}</p>
-                            </div>
+                        <div key={course.teacher.id} className="flex flex-col items-center w-[285px] h-[313px]">
+                            <img
+                                src={course.teacher.profilePicture}
+                                alt={course.teacher.fullName}
+                                className="rounded-full cursor-pointer transition-opacity duration-300 hover:opacity-50"
+                            />
+                            <h3 className="text-lg cursor-pointer font-semibold my-[20px]">{course.teacher.fullName}</h3>
+                            <p className="text-gray-600 cursor-pointer">{course.teacher.experienceYears} năm kinh nghiệm</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {/* Content Section */}
-            <CourseContent />
+            <div>
+                {sections && (
+                    <div className="w-full max-w-7xl mx-auto mt-[70px] flex flex-col items-center">
+                        <h2 className="text-2xl font-bold mb-4">Các Mục Học</h2>
+                        <div className="w-full">
+                            {sections.map((section) => (
+                                <div key={section.id} className="mb-4">
+                                    <h3 className="text-xl font-semibold">{section.title}</h3>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

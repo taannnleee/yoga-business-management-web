@@ -11,5 +11,5 @@ public class LectureCreationRequest {
     Long idSection; // để biết muốn lưu vài học vào chương nào
     String title;
     String content;
-    String video_url;
+    String videoPath;
 }

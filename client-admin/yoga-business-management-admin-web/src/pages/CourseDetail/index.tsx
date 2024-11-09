@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import UploadWidget from '../../designs/UploadWidget';
+import UploadVideoWidget from '../../designs/UploadVideoWidget';
 import {
   Box,
   Typography,
@@ -40,7 +42,7 @@ interface LectureResponse {
   id: number;
   title: string;
   content: string;
-  video_url: string;
+  videoPath: string;
 }
 
 interface SectionResponse {
@@ -58,10 +60,12 @@ function CourseEditor() {
   const [openModal, setOpenModal] = useState(false);
   const [showVideoForm, setShowVideoForm] = useState(false); // State for showing video form
 
+  const [videoPath, setVideoPath] = useState('');
+
   const [currentSection, setCurrentSection] = useState({ title: '', id: 0 });
 
   //lecture
-  const [newLecture, setNewLecture] = useState({ title: '', content: '', video_url: '' }); // State for new lecture data
+  const [newLecture, setNewLecture] = useState({ title: '', content: '', videoPath: '' }); // State for new lecture data
 
   const { id } = useParams<Params>();
 
@@ -81,11 +85,14 @@ function CourseEditor() {
   const handleAddLectureClick = (section: SectionResponse) => {
     setCurrentSection({ title: section.title, id: section.id });
     setOpenModal(true);
+    setShowChapterInfo(false);
   };
 
   const handleAddChapter = () => {
     setShowChapterInfo(true);
     setShowNewChapterField(true);
+    setShowVideoForm(false);
+
   };
 
   const fetchSections = async () => {
@@ -169,11 +176,14 @@ function CourseEditor() {
         },
         body: JSON.stringify({
           idSection: currentSection.id,
-          ...newLecture,
+          title: newLecture.title,
+          content: newLecture.content,
+          videoPath: videoPath,  // Truyền videoPath vào đây
         }),
       });
+      console.log("kkk");
+      console.log(newLecture)
 
-      console.log(response);
 
       if (response.ok) {
         const result = await response.json();
@@ -190,7 +200,8 @@ function CourseEditor() {
 
         setOpenModal(false);
         setShowVideoForm(false);
-        setNewLecture({ title: '', content: '', video_url: '' }); // Reset the lecture form
+        setNewLecture({ title: '', content: '', videoPath: '' }); // Reset the lecture form
+        setVideoPath("");
       } else {
         console.error('Lỗi khi thêm bài giảng:', response.statusText);
       }
@@ -259,8 +270,23 @@ function CourseEditor() {
                   {/* Display lectures for the chapter */}
                   {section.lectures.length > 0 ? (
                     section.lectures.map((lecture) => (
-                      <Box key={lecture.id} sx={{ pl: 2 }}>
-                        <Typography variant="subtitle2">{lecture.title}</Typography>
+                      <Box
+                        key={lecture.id}
+                        sx={{
+                          pl: 2,
+                          py: 1.5, // Padding top & bottom
+                          border: '1px solid #ddd', // Màu viền
+                          borderRadius: 2, // Bo góc viền
+                          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)', // Hiệu ứng đổ bóng nhẹ
+                          backgroundColor: '#f9f9f9', // Màu nền nhạt để nổi bật nội dung
+                          '&:hover': {
+                            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)', // Hiệu ứng khi hover
+                          },
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="text.primary" fontWeight="bold">
+                          {lecture.title}
+                        </Typography>
                       </Box>
                     ))
                   ) : (
@@ -346,14 +372,10 @@ function CourseEditor() {
                 value={newLecture.content}
                 onChange={handleNewLectureChange}
               />
-              <TextField
-                margin="dense"
-                name="video_url"
-                label="URL Video"
-                type="text"
-                fullWidth
-                value={newLecture.video_url}
-                onChange={handleNewLectureChange}
+
+              <UploadVideoWidget
+                setThumbnailUploaded={(image: string) => setVideoPath(image)}  // Cập nhật đường dẫn video
+                thumbnailUploaded={videoPath} // Giá trị video đã tải lên
               />
 
               <FormControlLabel control={<Checkbox name="draft" />} label="Nháp" />

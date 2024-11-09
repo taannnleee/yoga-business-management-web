@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import UploadWidget from '../../designs/UploadWidget';
-import UploadMultipleWidget from '../../designs/UploadMultipleWidget';
 import {
   Dialog,
   DialogActions,
@@ -11,15 +9,17 @@ import {
   Typography,
   FormControl,
   FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  Select,
+  MenuItem,
+  InputLabel,
+  CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import { apiURL } from '../../config/constanst';
 import { Course } from '../../types/course';
 import { Teacher } from '../../types/teacher';
 import { Topic } from '../../types/topic';
+import UploadWidget from '../../designs/UploadWidget';
 import UploadVideoWidget from '../../designs/UploadVideoWidget';
 import { toast } from 'react-toastify';
 
@@ -37,12 +37,10 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
   const [imagePath, setImagePath] = useState(course?.imagePath || '');
   const [price, setPrice] = useState(course?.price ? course.price.toString() : '');
   const [level, setLevel] = useState(course?.level ? course.level.toString() : '');
-  const [videoPath, setVideoPath] = useState(course?.videoPath ? course.videoPath.toString() : '');
-  const [instruction, setInstruction] = useState(
-    course?.instruction ? course.instruction.toString() : '',
-  );
-  const [selectedTopic, setSelectedTopic] = useState('');
-  const [selectedTeacher, setSelectedTeacher] = useState('');
+  const [videoPath, setVideoPath] = useState(course?.videoPath || '');
+  const [instruction, setInstruction] = useState(course?.instruction || '');
+  const [selectedTopic, setSelectedTopic] = useState(course?.topicId || '');
+  const [selectedTeacher, setSelectedTeacher] = useState(course?.teacherId || '');
   const [loadingTeachers, setLoadingTeachers] = useState(false);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -77,9 +75,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
       const data = await response.json();
       setTeachers(data.data || []);
     } catch (error) {
-      setError(
-        'Error fetching teachers: ' + (error instanceof Error ? error.message : 'Unknown error'),
-      );
+      setError('Error fetching teachers: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setLoadingTeachers(false);
     }
@@ -105,9 +101,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
       const data = await response.json();
       setTopics(data.data || []);
     } catch (error) {
-      setError(
-        'Error fetching topics: ' + (error instanceof Error ? error.message : 'Unknown error'),
-      );
+      setError('Error fetching topics: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setLoadingTeachers(false);
     }
@@ -171,52 +165,46 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
         {error && <Typography color="error">{error}</Typography>}
 
         {/* Select Topic */}
-        <FormControl sx={{ mr: 5, mt: 2 }}>
-          <FormLabel>Chọn chủ đề</FormLabel>
+        <FormControl fullWidth margin="dense">
+          <InputLabel>Chọn chủ đề</InputLabel>
           {loadingTeachers ? (
-            <Typography>Loading...</Typography>
+            <CircularProgress size={24} />
           ) : error ? (
             <Typography color="error">{error}</Typography>
           ) : (
-            <RadioGroup
-              name="topic-selection"
+            <Select
               value={selectedTopic}
               onChange={(e) => setSelectedTopic(e.target.value)}
+              label="Chọn chủ đề"
             >
               {topics.map((topic) => (
-                <FormControlLabel
-                  key={topic.id}
-                  value={topic.id}
-                  control={<Radio />}
-                  label={topic.name}
-                />
+                <MenuItem key={topic.id} value={topic.id}>
+                  {topic.name}
+                </MenuItem>
               ))}
-            </RadioGroup>
+            </Select>
           )}
         </FormControl>
 
         {/* Select Teacher */}
-        <FormControl sx={{ mt: 2 }}>
-          <FormLabel>Chọn giáo viên</FormLabel>
+        <FormControl fullWidth margin="dense">
+          <InputLabel>Chọn giáo viên</InputLabel>
           {loadingTeachers ? (
-            <Typography>Loading...</Typography>
+            <CircularProgress size={24} />
           ) : error ? (
             <Typography color="error">{error}</Typography>
           ) : (
-            <RadioGroup
-              name="teacher-selection"
+            <Select
               value={selectedTeacher}
               onChange={(e) => setSelectedTeacher(e.target.value)}
+              label="Chọn giáo viên"
             >
               {teachers.map((teacher) => (
-                <FormControlLabel
-                  key={teacher.id}
-                  value={teacher.id}
-                  control={<Radio />}
-                  label={teacher.fullName}
-                />
+                <MenuItem key={teacher.id} value={teacher.id}>
+                  {teacher.fullName}
+                </MenuItem>
               ))}
-            </RadioGroup>
+            </Select>
           )}
         </FormControl>
 
@@ -260,7 +248,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
         {/* Upload Image */}
         <UploadWidget
           setThumbnailUploaded={(image: string) => setImagePath(image)}
-          thumbnailUploaded={imagePath} // where imagePath is a string in the parent component's state
+          thumbnailUploaded={imagePath}
         />
 
         <TextField
@@ -271,19 +259,11 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           value={level}
           onChange={(e) => setLevel(e.target.value)}
         />
-        {/*<TextField*/}
-        {/*  margin="dense"*/}
-        {/*  label="Đường dẫn video"*/}
-        {/*  type="text"*/}
-        {/*  fullWidth*/}
-        {/*  value={videoPath}*/}
-        {/*  onChange={(e) => setVideoPath(e.target.value)}*/}
-        {/*/>*/}
 
-        {/* Upload Image */}
+        {/* Upload Video */}
         <UploadVideoWidget
           setThumbnailUploaded={(image: string) => setVideoPath(image)}
-          thumbnailUploaded={videoPath} // where imagePath is a string in the parent component's state
+          thumbnailUploaded={videoPath}
         />
         <TextField
           margin="dense"

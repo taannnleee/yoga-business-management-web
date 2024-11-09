@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class OrderCreationRequest {
-    UserAddressDefaultResponse shippingInfo;
+    String addressId;
     String paymentMethod;
 //    List<Product> products;
 //    BigDecimal totalPrice;

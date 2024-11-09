@@ -13,5 +13,5 @@ import org.example.yogabusinessmanagementweb.dto.response.address.AddressRespons
 public class UserAddressDefaultResponse {
     String fullname;
     String phone;
-    AddressResponse address;
+    String addressId;
 }

@@ -40,7 +40,7 @@ public class UserController {
     // get address với trạng thái default
     @GetMapping("/get-user-address-default")
     public ApiResponse<?> getUserAddressDefault(HttpServletRequest request) {
-        UserAddressDefaultResponse addressResponse =  userService.getUserAddressDefault(request);
+        AddressResponse addressResponse =  userService.getUserAddressDefault(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "Get user address default success",addressResponse);
     }
 

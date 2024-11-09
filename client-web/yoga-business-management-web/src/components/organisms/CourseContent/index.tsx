@@ -16,7 +16,7 @@ interface Section {
     lectures: Lecture[];
 }
 interface CourseContentProps {
-    sections: Section[]; // Sửa thành chỉ nhận mảng sections
+    sections: Section[]; 
 }
 
 const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {

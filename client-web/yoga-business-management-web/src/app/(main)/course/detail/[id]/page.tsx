@@ -54,7 +54,7 @@ const CourseDetailPage: React.FC = () => {
     const handleStartProgram = () => {
         const firstLesson = course?.sections[0]?.lectures[0];
         if (firstLesson) {
-            router.push(`/course/lession/${firstLesson.id}`);
+            router.push(`/course/lession/${course.id}/${firstLesson.id}`);
         }
     };
 
@@ -124,8 +124,8 @@ const CourseDetailPage: React.FC = () => {
                     </div>
                     <div className="lg:w-1/2 flex flex-col items-center">
                         <div className="ytp-cued-thumbnail-overlay relative w-full h-[312px] bg-cover bg-center cursor-pointer"
-                             style={{ backgroundImage: `url("https://i.ytimg.com/vi_webp/xGMXPky1wUc/maxresdefault.webp")` }}
-                             onClick={() => window.open("https://www.youtube.com/watch?v=xGMXPky1wUc", "_blank")}
+                            style={{ backgroundImage: `url("https://i.ytimg.com/vi_webp/xGMXPky1wUc/maxresdefault.webp")` }}
+                            onClick={() => window.open("https://www.youtube.com/watch?v=xGMXPky1wUc", "_blank")}
                         >
                             {/* Play Button Overlay */}
                             <button className="absolute mx-auto my-auto inset-0 flex items-center justify-center ytp-large-play-button ytp-button w-[68px] h-[48px]" aria-label="Phát" title="Phát">
@@ -191,8 +191,8 @@ const CourseDetailPage: React.FC = () => {
             </div>
 
             {/* Content Section */}
-            <CourseContent  sections = {course.sections}/>
-             
+            <CourseContent sections={course.sections} />
+
         </div>
     );
 };

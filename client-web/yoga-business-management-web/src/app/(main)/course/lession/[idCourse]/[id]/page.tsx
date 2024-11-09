@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react"; // Thêm useEffect để g�
 import CourseCard from "@/components/organisms/CourseCard";
 import { useParams, useRouter } from "next/navigation";
 import Video from "next-video";
-import video101 from '../../../../../../videos/video101.mp4';
 import Image from "next/image";
 import Button from "@/components/atom/Button";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
@@ -52,6 +51,7 @@ interface Course {
 const LessionPage: React.FC<any> = () => {
     const router = useRouter();
     const params = useParams();
+    const courseId = params?.idCourse;
     const lectureId = params?.id;
 
     // State for controlling the height of the sticky bottom bar
@@ -71,7 +71,8 @@ const LessionPage: React.FC<any> = () => {
             const token = localStorage.getItem("accessToken");
             // Thay thế URL này với API endpoint của bạn
             const response = await fetch(
-                "http://localhost:8080/api/course/get-course/1",
+                `http://localhost:8080/api/course/get-course/${courseId}`,
+
                 {
                     method: "GET",
                     headers: {
@@ -130,7 +131,7 @@ const LessionPage: React.FC<any> = () => {
             <div className="w-full max-w-[750px]">
                 {/* Top Black Line */}
                 <div className="border-t-2 border-black-500" />
-                <Video src={video101} className="w-full rounded-lg shadow-lg" />
+                <Video src={lecture?.videoPath} className="w-full rounded-lg shadow-lg" />
                 {/* Bottom Black Line */}
                 <div className="border-b-2 border-black-500" />
             </div>
@@ -149,7 +150,7 @@ const LessionPage: React.FC<any> = () => {
                             >
                                 {/* Avatar */}
                                 <Image
-                                    src={course?.teacher.profilePicture}  
+                                    src={course?.teacher.profilePicture}
                                     alt="Avatar"
                                     width={50}
                                     height={50}
@@ -228,6 +229,7 @@ const LessionPage: React.FC<any> = () => {
                                         <h2 className="text-xl font-bold">{section.title}</h2>
                                         {section.lectures.map((lecture) => (
                                             <LectureItem
+                                                courseId={course.id}
                                                 isChoosen={lecture.id === parseInt(lectureId as string)}
                                                 key={lecture.id}
                                                 id={lecture.id}

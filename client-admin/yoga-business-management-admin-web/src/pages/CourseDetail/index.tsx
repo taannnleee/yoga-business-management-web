@@ -181,7 +181,7 @@ function CourseEditor() {
           title: newLecture.title,
           content: newLecture.content,
           videoPath: videoPath,  
-          duration: videoDuration,
+          duration: videoDuration
 
         }),
       });

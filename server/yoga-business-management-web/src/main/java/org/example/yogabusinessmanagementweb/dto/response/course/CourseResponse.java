@@ -16,7 +16,7 @@ public class CourseResponse {
     String name;
     String instruction;
     String description;
-    int duration;
+    String duration;
     String imagePath;
     int level;
     String videoPath;

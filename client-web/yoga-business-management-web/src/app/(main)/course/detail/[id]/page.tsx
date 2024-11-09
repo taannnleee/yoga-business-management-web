@@ -9,6 +9,7 @@ interface Section {
     id: number;
     title: string;
     lectures: Lecture[];
+    duration: string;
 }
 
 interface Lecture {

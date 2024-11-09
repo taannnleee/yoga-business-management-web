@@ -85,11 +85,14 @@ function CourseEditor() {
   const handleAddLectureClick = (section: SectionResponse) => {
     setCurrentSection({ title: section.title, id: section.id });
     setOpenModal(true);
+    setShowChapterInfo(false);
   };
 
   const handleAddChapter = () => {
     setShowChapterInfo(true);
     setShowNewChapterField(true);
+    setShowVideoForm(false);
+
   };
 
   const fetchSections = async () => {
@@ -173,7 +176,9 @@ function CourseEditor() {
         },
         body: JSON.stringify({
           idSection: currentSection.id,
-          ...newLecture,
+          title: newLecture.title,
+          content: newLecture.content,
+          videoPath: videoPath,  // Truyền videoPath vào đây
         }),
       });
       console.log("kkk");
@@ -196,6 +201,7 @@ function CourseEditor() {
         setOpenModal(false);
         setShowVideoForm(false);
         setNewLecture({ title: '', content: '', videoPath: '' }); // Reset the lecture form
+        setVideoPath("");
       } else {
         console.error('Lỗi khi thêm bài giảng:', response.statusText);
       }
@@ -264,8 +270,23 @@ function CourseEditor() {
                   {/* Display lectures for the chapter */}
                   {section.lectures.length > 0 ? (
                     section.lectures.map((lecture) => (
-                      <Box key={lecture.id} sx={{ pl: 2 }}>
-                        <Typography variant="subtitle2">{lecture.title}</Typography>
+                      <Box
+                        key={lecture.id}
+                        sx={{
+                          pl: 2,
+                          py: 1.5, // Padding top & bottom
+                          border: '1px solid #ddd', // Màu viền
+                          borderRadius: 2, // Bo góc viền
+                          boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)', // Hiệu ứng đổ bóng nhẹ
+                          backgroundColor: '#f9f9f9', // Màu nền nhạt để nổi bật nội dung
+                          '&:hover': {
+                            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)', // Hiệu ứng khi hover
+                          },
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="text.primary" fontWeight="bold">
+                          {lecture.title}
+                        </Typography>
                       </Box>
                     ))
                   ) : (

@@ -2,21 +2,23 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.entities.Courses;
-import org.example.yogabusinessmanagementweb.common.entities.Teacher;
-import org.example.yogabusinessmanagementweb.common.entities.Topic;
+import org.example.yogabusinessmanagementweb.common.entities.*;
 import org.example.yogabusinessmanagementweb.common.mapper.CourseMapper;
 import org.example.yogabusinessmanagementweb.dto.request.course.CourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CoursesRepository;
+import org.example.yogabusinessmanagementweb.repositories.TopicRepository;
 import org.example.yogabusinessmanagementweb.service.CoursesService;
 import org.example.yogabusinessmanagementweb.service.TeacherService;
 import org.example.yogabusinessmanagementweb.service.TopicService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -26,6 +28,8 @@ public class CoursesServiceImpl implements CoursesService {
     CourseMapper courseMapper;
     TeacherService teacherService;
     TopicService topicService;
+
+    TopicRepository topicRepository;
 
     @Override
     public CourseResponse addCourse(CourseCreationRequest courseCreationRequest) {
@@ -45,6 +49,43 @@ public class CoursesServiceImpl implements CoursesService {
         List<Courses> coursesList =  coursesRepository.findAll();
         List<CourseResponse> courseResponses =  courseMapper.toCoursesResponseList(coursesList);
         return courseResponses;
+    }
+
+    @Override
+    public List<TopicCourseResponse> getAllCourseWithTopic() {
+
+        List<TopicCourseResponse> topicCourseResponses = new ArrayList<>();
+
+        List<Topic> topics = topicRepository.findAll();
+        for(Topic topic : topics){
+            TopicCourseResponse topicCourseResponse = new TopicCourseResponse();
+            topicCourseResponse.setTopicName(topic.getName());
+
+            List<Courses> topicList = coursesRepository.findAllByTopic(topic);
+
+            List<CourseResponse> courseResponses = courseMapper.toCoursesResponseList(topicList);
+            topicCourseResponse.setCourse(courseResponses);
+
+            topicCourseResponses.add(topicCourseResponse);
+        }
+
+        return topicCourseResponses;
+    }
+
+    @Override
+    public Courses getCourse(String id) {
+        Optional<Courses> coursesOptional = coursesRepository.findById(Long.valueOf(id));
+        if(coursesOptional.isEmpty()){
+            throw new AppException(ErrorCode.COURSE_NOT_FOUND);
+        }
+        Courses courses = coursesOptional.get();
+
+        List<Sections> sectionsList =  courses.getSections();
+
+        for(Sections sections : sectionsList){
+            List<Lectures> lecturesList = sections.getLectures();
+        }
+        return courses;
     }
 
     @Override

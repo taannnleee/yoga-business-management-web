@@ -21,6 +21,6 @@ public class CourseResponse {
     int level;
     String videoPath;
     BigDecimal price;
-    Teacher teacher;
-    Topic topic;
+//    Teacher teacher;
+//    Topic topic;
 }

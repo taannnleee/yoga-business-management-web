@@ -17,10 +17,15 @@ import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation"; // Import useRouter
 interface Course {
     id: number;
-    title: string;
-    image: string;
-    author: string;
-    rating: number;
+    name: string;
+    instruction: string;
+    description: string;
+    duration: number;
+    imagePath: string;
+    level: number;
+    videoPath: string;
+    price: number;
+    rating:number;
 }
 
 interface CourseCardProps {
@@ -82,8 +87,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                             className="w-56 h-72 flex flex-col items-center justify-between hover:cursor-pointer"
                         >
                             <Image
-                                src={course.image}
-                                alt={course.title}
+                                src={course.imagePath}
+                                alt={course.name}
                                 width={245} // Image width
                                 height={240} // Image height
                                 layout="responsive" // Changed to responsive
@@ -121,7 +126,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                     onMouseEnter={(e) => (e.currentTarget.style.color = "red")}
                                     onMouseLeave={(e) => (e.currentTarget.style.color = "black")}
                                 >
-                                    {course.title}
+                                    {course.name}
                                 </Typography>
 
                                 {/*<Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>*/}
@@ -131,7 +136,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 <Box mt={1}>
                                     {renderStars(course.rating)}
                                     <Typography variant="body2" color="textSecondary">
-                                        ({Math.round(course.rating * 10)}) {/* Display number of ratings */}
+                                        ({Math.round(course.rating * 10)}) 
                                     </Typography>
                                 </Box>
 
@@ -150,8 +155,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                         {/* Left - Image */}
                         <Box flex={1}>
                             <Image
-                                src={selectedCourse?.image || ""}
-                                alt={selectedCourse?.title || ""}
+                                src={selectedCourse?.imagePath || ""}
+                                alt={selectedCourse?.name || ""}
                                 width={390}
                                 height={390}
                                 layout="fixed"
@@ -168,7 +173,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                         {/* Right - Course details */}
                         <Box flex={2} ml={2}>
                             <Typography variant="h6" fontWeight="bold">
-                                {selectedCourse?.title}
+                                {selectedCourse?.name}
                             </Typography>
                             <Typography variant="body1" className={"py-2"} style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' }}>
                                 Bài học Yoga cho Người mới bắt đầu - Học các kỹ năng Yoga, mẹo luyện tập Yoga hiệu quả, các nguyên tắc cơ bản, Cách luyện tập các tư thế Yoga.

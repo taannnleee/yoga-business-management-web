@@ -5,6 +5,7 @@ import org.example.yogabusinessmanagementweb.dto.request.address.AddressRequest;
 import org.example.yogabusinessmanagementweb.dto.request.course.CourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
@@ -17,4 +18,5 @@ public interface CourseMapper {
     void updateCourses(@MappingTarget Courses courses, CourseCreationRequest courseCreationRequest );
 
     List<CourseResponse> toCoursesResponseList(List<Courses> courses);
+
 }

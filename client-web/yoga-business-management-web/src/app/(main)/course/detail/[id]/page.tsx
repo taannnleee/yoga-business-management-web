@@ -52,10 +52,10 @@ const CourseDetailPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const handleStartProgram = () => {
-        // const firstLesson = course?.sections[0]?.lectures[0];
-        // if (firstLesson) {
-        //     router.push(`/course/lession/${firstLesson.id}`);
-        // }
+        const firstLesson = course?.sections[0]?.lectures[0];
+        if (firstLesson) {
+            router.push(`/course/lession/${firstLesson.id}`);
+        }
     };
 
     useEffect(() => {
@@ -93,51 +93,7 @@ const CourseDetailPage: React.FC = () => {
         }
     }, [courseId]);
 
-    // Fetch sections after course data is fetched
-    useEffect(() => {
-        if (courseId && course) {
-            const fetchSections = async () => {
-                try {
-                    const token = localStorage.getItem("accessToken");
-                    const response = await fetch(
-                        `http://localhost:8080/api/course/get-all-section-by-id-course/${courseId}`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                    });
-                    const data = await response.json();
 
-                    console.log(data.message)
-
-                    if (data.status === 200) {
-                        console.log("độ dài của mảng")
-                        console.log(data.data.length)
-                        const transformedData: Section[] = data.data.map((item: any) => ({
-                            id: item.id,
-                            title: item.title,
-                        }));
-                        console.log("đã vào trong api section")
-                        console.log(transformedData)
-                        setSections(transformedData);
-
-                    } else {
-                        setError("Không thể tải dữ liệu phần học.");
-                    }
-                } catch (err) {
-                    setError("Đã xảy ra lỗi khi gọi API sections.");
-                }
-            };
-
-            fetchSections();
-        }
-    }, [course, courseId]); // This runs when the course data is fetched
-
-    useEffect(() => {
-        console.log("Dữ liệu sections đã được set:");
-        console.log(sections)
-    }, [sections]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -236,20 +192,8 @@ const CourseDetailPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div>
-                {sections && (
-                    <div className="w-full max-w-7xl mx-auto mt-[70px] flex flex-col items-center">
-                        <h2 className="text-2xl font-bold mb-4">Các Mục Học</h2>
-                        <div className="w-full">
-                            {sections.map((section) => (
-                                <div key={section.id} className="mb-4">
-                                    <h3 className="text-xl font-semibold">{section.title}</h3>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </div>
+
+            <CourseContent sections={course.sections} />
         </div>
     );
 };

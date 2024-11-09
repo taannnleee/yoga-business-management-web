@@ -8,20 +8,20 @@ import Image from "next/image";
 import Button from "@/components/atom/Button";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import LessionItem from "@/components/organisms/LessionItem";
-import LessonItem from "@/components/organisms/LessionItem";
+import LectureItem from "@/components/organisms/LessionItem"; // Đổi từ LessionItem thành LectureItem
 
-const chapters = [
+const sections = [
     {
         id: 1,
         title: "Phần 1: Tổng quan",
-        lessons: [
+        lectures: [
             { id: 101, title: "Giới thiệu và các lưu ý trước khi tập", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
     },
     {
         id: 2,
         title: "Phần 2: Đánh thức cơ thể",
-        lessons: [
+        lectures: [
             { id: 201, title: "Làm mềm cơ", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 202, title: "Lưu thông khí huyết", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -29,7 +29,7 @@ const chapters = [
     {
         id: 3,
         title: "Phần 3: Tăng cường thải độc",
-        lessons: [
+        lectures: [
             { id: 301, title: "Thải độc", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 302, title: "Thư giãn tinh thần", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -37,7 +37,7 @@ const chapters = [
     {
         id: 4,
         title: "Phần 4: Tiêu trừ mệt mỏi",
-        lessons: [
+        lectures: [
             { id: 401, title: "Bổ sung năng lượng", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 402, title: "Đẩy lùi mệt mỏi", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -45,7 +45,7 @@ const chapters = [
     {
         id: 5,
         title: "Phần 5: Thả lỏng dẻo dai",
-        lessons: [
+        lectures: [
             { id: 501, title: "Thả lỏng thân thể", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 502, title: "An lạc tinh thần", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -53,7 +53,7 @@ const chapters = [
     {
         id: 6,
         title: "Phần 6: Tăng cường tiêu hóa",
-        lessons: [
+        lectures: [
             { id: 601, title: "Massage nội tạng", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 602, title: "Hấp thụ tối ưu dinh dưỡng", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -61,7 +61,7 @@ const chapters = [
     {
         id: 7,
         title: "Phần 7: Mềm dẻo toàn thân",
-        lessons: [
+        lectures: [
             { id: 701, title: "Hâm nóng nội tạng", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 702, title: "Điều hòa hơi thở", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -69,7 +69,7 @@ const chapters = [
     {
         id: 8,
         title: "Phần 8: Linh hoạt cơ khớp",
-        lessons: [
+        lectures: [
             { id: 801, title: "Mềm dẻo gân cơ", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 802, title: "Trẻ hóa các khớp", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -77,7 +77,7 @@ const chapters = [
     {
         id: 9,
         title: "Phần 9: Hâm nóng cơ thể",
-        lessons: [
+        lectures: [
             { id: 901, title: "Sưởi ấm cơ và nội tạng", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 902, title: "Kích hoạt sản sinh hormone có ích", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -85,7 +85,7 @@ const chapters = [
     {
         id: 10,
         title: "Phần 10: Điều dưỡng tinh thần",
-        lessons: [
+        lectures: [
             { id: 1001, title: "Thiền thư giãn", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 1002, title: "Lắng dịu tinh thần", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -93,7 +93,7 @@ const chapters = [
     {
         id: 11,
         title: "Phần 11: Làm đẹp toàn thân",
-        lessons: [
+        lectures: [
             { id: 1101, title: "Duy trì sức khỏe", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 1102, title: "Đánh thức vẻ đẹp", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -101,7 +101,7 @@ const chapters = [
     {
         id: 12,
         title: "Phần 12: Duy trì năng lượng",
-        lessons: [
+        lectures: [
             { id: 1201, title: "Tối ưu năng lượng", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 1202, title: "Duy trì sức khỏe dồi dào", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
@@ -109,18 +109,17 @@ const chapters = [
     {
         id: 13,
         title: "Phần 13: Tăng cơ săn chắc",
-        lessons: [
+        lectures: [
             { id: 1301, title: "Tăng cơ, loại mỡ", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
             { id: 1302, title: "Giữ gìn cơ thể khỏe mạnh", thumbnail: "https://images.pexels.com/photos/29143437/pexels-photo-29143437/free-photo-of-cac-vu-cong-ballet-duyen-dang-t-i-studio-toronto.jpeg" },
         ],
     },
 ];
 
-
 const LessionPage: React.FC<any> = () => {
     const router = useRouter();
     const params = useParams();
-    const lessonId = params?.id;
+    const lectureId = params?.id;
 
     // State for controlling the height of the sticky bottom bar
     const [isExpanded, setIsExpanded] = useState(false);
@@ -223,16 +222,16 @@ const LessionPage: React.FC<any> = () => {
                         {/* Content Section */}
                         <div className="mt-4 w-full text-left overflow-y-auto max-h-[250px]">
                             <div className="text-sm md:text-base flex flex-col space-y-4">
-                                {chapters.map((chapter) => (
-                                    <div key={chapter.id} className="mb-4">
-                                        <h2 className="text-xl font-bold">{chapter.title}</h2>
-                                        {chapter.lessons.map((lesson) => (
-                                            <LessonItem
-                                                isChoosen={lesson.id === parseInt(lessonId as string)}
-                                                key={lesson.id}
-                                                id={lesson.id}
-                                                title={lesson.title}
-                                                thumbnail={lesson.thumbnail}
+                                {sections.map((section) => (
+                                    <div key={section.id} className="mb-4">
+                                        <h2 className="text-xl font-bold">{section.title}</h2>
+                                        {section.lectures.map((lecture) => (
+                                            <LectureItem
+                                                isChoosen={lecture.id === parseInt(lectureId as string)}
+                                                key={lecture.id}
+                                                id={lecture.id}
+                                                title={lecture.title}
+                                                thumbnail={lecture.thumbnail}
                                             />
                                         ))}
                                     </div>
@@ -253,8 +252,7 @@ const LessionPage: React.FC<any> = () => {
                         onClick={handleExpandCollapse}
                         className="text-white flex items-center justify-center mr-4"
                     >
-                        <ExpandCircleDownIcon className={`transition-transform ${isExpanded ? "" : "rotate-180"}`}
-                                              style={{fontSize: 20}}/>
+                        <ExpandCircleDownIcon className={`transition-transform ${isExpanded ? "" : "rotate-180"}`}/>
                     </button>
 
                     {/* Center Text */}
@@ -264,7 +262,7 @@ const LessionPage: React.FC<any> = () => {
 
                     {/* Right Side - Next Lesson Button */}
                     <Button variant="secondary"
-                            onClick={() =>router.push(`/course/lession/${parseInt(lessonId as string) + 1}`)}
+                            onClick={() => router.push(`/course/lession/${parseInt(lectureId as string) + 1}`)}
                             className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm">
                         Bài tiếp theo
                     </Button>

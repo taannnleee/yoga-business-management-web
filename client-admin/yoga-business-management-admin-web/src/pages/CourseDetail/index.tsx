@@ -16,6 +16,7 @@ import {
   DialogContent,
   FormControlLabel,
   Checkbox,
+  duration,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -43,6 +44,8 @@ interface LectureResponse {
   title: string;
   content: string;
   videoPath: string;
+  duration: String;
+  image: String;
 }
 
 interface SectionResponse {
@@ -60,6 +63,7 @@ function CourseEditor() {
   const [openModal, setOpenModal] = useState(false);
   const [showVideoForm, setShowVideoForm] = useState(false); // State for showing video form
 
+  const [imagePath, setImagePath] = useState('');
 
   const [videoPath, setVideoPath] = useState('');
   const [videoDuration, setVideoDuration] = useState<string>('');
@@ -180,9 +184,9 @@ function CourseEditor() {
           idSection: currentSection.id,
           title: newLecture.title,
           content: newLecture.content,
-          videoPath: videoPath,  
-          duration: videoDuration
-
+          videoPath: videoPath,  // Truyền videoPath vào đây
+          duration: videoDuration,
+          image: imagePath,
         }),
       });
       console.log("kkk");
@@ -379,6 +383,12 @@ function CourseEditor() {
                 fullWidth
                 value={newLecture.content}
                 onChange={handleNewLectureChange}
+              />
+
+              {/* Upload Image */}
+              <UploadWidget
+                setThumbnailUploaded={(image: string) => setImagePath(image)}
+                thumbnailUploaded={imagePath}
               />
 
               <UploadVideoWidget

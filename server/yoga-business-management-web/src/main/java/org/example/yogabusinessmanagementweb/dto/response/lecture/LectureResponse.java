@@ -11,5 +11,6 @@ public class LectureResponse {
     Long id;
     String title;
     String content;
-    String video_url;
+    String videoPath;
+    String image;
 }

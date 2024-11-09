@@ -9,7 +9,6 @@ interface Section {
     id: number;
     title: string;
     lectures: Lecture[];
-    duration: string;
 }
 
 interface Lecture {
@@ -17,6 +16,7 @@ interface Lecture {
     title: string;
     content: string;
     videoPath: string;
+    duration: string;
 }
 
 interface Teacher {

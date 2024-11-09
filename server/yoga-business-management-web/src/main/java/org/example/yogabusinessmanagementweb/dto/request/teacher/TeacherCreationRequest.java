@@ -10,6 +10,8 @@ import lombok.experimental.FieldDefaults;
 public class TeacherCreationRequest {
     String fullName;
 
+    String introduction;
+
     String email;
 
     String phoneNumber;

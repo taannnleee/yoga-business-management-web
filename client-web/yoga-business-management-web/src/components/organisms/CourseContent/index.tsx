@@ -7,6 +7,7 @@ interface Lecture {
     title: string;
     content: string;
     videoPath: string;
+    duration: string;
 }
 
 interface Section {
@@ -15,13 +16,13 @@ interface Section {
     lectures: Lecture[];
 }
 interface CourseContentProps {
-    sections: Section[]; // Sửa thành chỉ nhận mảng sections
+    sections: Section[]; 
 }
 
 const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
-    
 
-    
+
+
     const [openPanel, setOpenPanel] = useState<number | null>(null);
 
     const togglePanel = (id: number) => {
@@ -42,8 +43,14 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
                             {openPanel === section.id ? "- " : "+ "} {section.title}
                         </h3>
                         <span className="text-gray-600">
-                            {/* {sections.totalLessons} bài học - {sections.totalTime} */}
-
+                            {/* Tính tổng duration của các bài học trong section */}
+                            {section.lectures.length} bài học - {
+                                section.lectures.reduce((total, lecture) => {
+                                    // Chuyển đổi duration thành số (parseInt hoặc parseFloat nếu là số thập phân)
+                                    const duration = parseFloat(lecture.duration);
+                                    return total + (isNaN(duration) ? 0 : duration); // Nếu không phải số, tính là 0
+                                }, 0).toFixed(2)
+                            } phút
                         </span>
                     </div>
 
@@ -62,7 +69,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
                                                 <span className="text-gray-800 font-medium">{lecture.title}</span>
                                             </div>
                                             <div>
-                                                <span className="text-gray-600 mr-2">20 phút</span>
+                                                <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
 
                                                 <Button variant="contained" color="primary" sx={{ marginLeft: "auto" }}>
                                                     Học thử
@@ -72,9 +79,9 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
                                             </div>
 
                                         </li>
-                                        {/* {index < sections.lecture.length - 1 && (
+                                        {index < section.lectures.length - 1 && (
                                             <hr className="border-gray-300 my-2" />
-                                        )} */}
+                                        )}
                                     </div>
                                 ))}
                             </ul>

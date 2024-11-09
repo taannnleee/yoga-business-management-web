@@ -12,4 +12,6 @@ public class LectureCreationRequest {
     String title;
     String content;
     String videoPath;
+    String duration;
+    String image;
 }

@@ -122,7 +122,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
                 </Box>
             </Box>
             <SaleoffCard/>
-            <ProductByCategoryCard/>
+            <ProductByCategoryCard products={products}/>
             <Grid container spacing={2}>
                 {fetchingProducts ? (
                     <Grid item xs={12}>

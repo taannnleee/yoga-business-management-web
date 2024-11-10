@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
@@ -58,6 +59,7 @@ public class OrderServiceImpl implements OrderService {
         // Tạo đối tượng Order
         Order order = new Order();
         order.setUser(user);
+        order.setEStatusOrder(EStatusOrder.PROCESSING);
         order.setOrderItems(new ArrayList<>());
 
         // Chuyển đổi CartItem sang OrderItem
@@ -99,24 +101,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse showOrder(HttpServletRequest request) {
+    public List<Order> showOrder(HttpServletRequest request) {
         User user = jwtUtil.getUserFromRequest(request);
-        Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
-
-
-        // Nếu không tìm thấy giỏ hàng, có thể trả về null hoặc một thông điệp lỗi tùy theo yêu cầu
-        if (cartOptional.isEmpty()) {
-            throw new AppException(ErrorCode.CART_NOT_FOUND);
-        }
-
-        Cart cart = cartOptional.get();
-
-        List<CartItemResponse> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemResponse.class);
-
-        CartResponse response  = Mappers.convertToDto(cart, CartResponse.class);
-        response.setCartItem(itemDTOS);
-//        return response;
-        OrderResponse cartResponse = new OrderResponse();
-        return  cartResponse;
+        List<Order> list = orderRepository.findAllByUser(user);
+        return list;
     }
 }

@@ -47,7 +47,9 @@ public enum ErrorCode {
     COURSE_NOT_FOUND(1030, "Course not found",HttpStatus.NOT_FOUND),
     SECTION_NOT_FOUND(1031, "section not found",HttpStatus.NOT_FOUND),
 
-    LECTURE_NOT_FOUND(1032, "lecture not found",HttpStatus.NOT_FOUND);
+    LECTURE_NOT_FOUND(1032, "lecture not found",HttpStatus.NOT_FOUND),
+
+    ORDER_NOT_FOUND(1032, "order not found",HttpStatus.NOT_FOUND);
 
     // MODULE ERROR
 

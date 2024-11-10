@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.example.yogabusinessmanagementweb.common.entities.Order;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
@@ -20,6 +21,8 @@ import org.example.yogabusinessmanagementweb.service.EmailService;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,9 +50,9 @@ public class OrderController {
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
     }
 
-    @GetMapping("/create-order")
-    public ApiResponse<?> getOrder(HttpServletRequest request) {
-        OrderResponse orderResponse = orderService.showOrder(request);
+    @GetMapping("/get-all-order")
+    public ApiResponse<?> getAllOrder(HttpServletRequest request) {
+        List<Order> orderResponse = orderService.showOrder(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
     }
 }

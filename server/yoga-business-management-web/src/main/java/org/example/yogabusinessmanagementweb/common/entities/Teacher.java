@@ -20,6 +20,8 @@ public class Teacher extends AbstractEntity<Long> {
 
     String introduction;
 
+    String description;
+
     String email;
 
     String phoneNumber;

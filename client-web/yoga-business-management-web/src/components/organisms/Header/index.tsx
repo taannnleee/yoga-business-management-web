@@ -16,12 +16,11 @@ import useDebounce from "@/hooks/useDebounce";
 import Image from "next/image";
 import LogoCourse from "../../atom/ButtonCourse";
 import ButtonCourse from "../../atom/ButtonCourse";
+import {useToast} from "@/hooks/useToast";
 interface IHeaderV2Props {}
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const router = useRouter();
-
-  //state
   const [openLogin, setOpenLogin] = useState<boolean>(false);
   const [isGettingProductCategory, setIsGettingProductCategory] =
       useState<boolean>(false);
@@ -33,6 +32,38 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [openSearchDropDown, setOpenSearchDropdown] = useState<boolean>(false);
   const clickInsideDropdown = useRef(false);
+  // Handle the hover modal visibility
+  const [isHovered, setIsHovered] = useState(false);
+  // Check if the access token exists
+  const accessToken = localStorage.getItem("accessToken");
+  const modalContent = accessToken ? (
+      <div className="space-y-2 w-24">
+        <p className="cursor-pointer" onClick={() => router.push("/address")}>Địa chỉ</p>
+        <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
+        <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
+        <p
+            className="cursor-pointer"
+            onClick={() => {
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              router.replace("/home");
+            }}
+        >
+          Đăng xuất
+        </p>
+      </div>
+  ) : (
+      <div className="space-y-2">
+        <p className="cursor-pointer" onClick={() => router.replace("/login")}>
+          Đăng nhập
+        </p>
+        <p className="cursor-pointer" onClick={() => router.replace("/register")}>
+          Tạo tài khoản
+        </p>
+        <p className="cursor-pointer">Facebook</p>
+        <p className="cursor-pointer">Google</p>
+      </div>
+  );
 
   const searchingByKeyword = async (keyword: string) => {
     try {
@@ -192,12 +223,24 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
               <div className="hidden laptop:flex flex-end space-x-1 items-center justify-between w-64">
 
                 <FulfillmentMangement/>
-                <button
-                    className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
-                    onClick={() => router.replace("/login")}
+                <div
+                    className="relative"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
                 >
-                  <UserIcon className="w-8 h-8 text-gray-600"/>
-                </button>
+                  <button
+                      className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
+                  >
+                    <UserIcon className="w-8 h-8 text-gray-600"/>
+                  </button>
+
+                  {/* Hover modal */}
+                  {isHovered && (
+                      <div className="absolute left-0 top-full mt-2 bg-white p-4 shadow-lg z-50">
+                        {modalContent}
+                      </div>
+                  )}
+                </div>
                 <button
                     className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
                     onClick={() => router.replace("/cart")}

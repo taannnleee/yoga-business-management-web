@@ -72,11 +72,6 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
         fetchProducts();
     }, []);
 
-    const handleProductClick = (productId: number) => {
-        // Navigate to the product detail page with the given productId
-        router.push(`/product-detail/${productId}`);
-    };
-
     return (
         <>
 
@@ -123,39 +118,6 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
             </Box>
             <SaleoffCard/>
             <ProductByCategoryCard products={products}/>
-            <Grid container spacing={2}>
-                {fetchingProducts ? (
-                    <Grid item xs={12}>
-                        <Typography variant="h6">Đang tải sản phẩm...</Typography>
-                    </Grid>
-                ) : error ? (
-                    <Grid item xs={12}>
-                        <Typography variant="h6">Lỗi: {error}</Typography>
-                    </Grid>
-                ) : Array.isArray(products) && products.length > 0 ? (
-                    products.map((product) => (
-                        <Grid item xs={12} sm={6} md={3} key={product.id}>
-                            <div onClick={() => handleProductClick(product.id)}> {/* Click event to navigate */}
-
-                                <HomePageCard
-                                    product={{
-                                        id: product.id,
-                                        title: product.title,
-                                        price: product.price,
-                                        imagePath: product.imagePath,
-                                        averageRating: product.averageRating,
-                                       
-                                    }}
-                                />
-                            </div>
-                        </Grid>
-                    ))
-                ) : (
-                    <Grid item xs={12}>
-                        <Typography variant="h6">Không có sản phẩm nào.</Typography>
-                    </Grid>
-                )}
-            </Grid>
         </>
     );
 };

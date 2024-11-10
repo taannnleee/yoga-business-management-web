@@ -146,7 +146,7 @@ const LessionPage: React.FC<any> = () => {
                                 <span className="ml-5 text-sm text-gray-500">{lecture.duration}</span>
                             </div>
                             <div className="flex flex-row items-center space-x-3 cursor-pointer"
-                                onClick={() => router.push('http://localhost:3000/course/teacher/1')}
+                                onClick={() => router.push(`/course/teacher/${course?.teacher.id}`)}
                             >
                                 {/* Avatar */}
                                 <Image

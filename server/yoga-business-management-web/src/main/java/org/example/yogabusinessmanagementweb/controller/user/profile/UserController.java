@@ -5,17 +5,25 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.example.yogabusinessmanagementweb.dto.CloudinaryResponse;
 import org.example.yogabusinessmanagementweb.dto.request.user.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
 import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
+import org.example.yogabusinessmanagementweb.service.CloudinaryService;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
 import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.service.EmailService;
+import org.example.yogabusinessmanagementweb.utils.FileUploadUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @Slf4j
 public class UserController {
+    CloudinaryService cloudinaryService;
     UserService userService;
     UserRepository userRepository;
     EmailService emailService;
@@ -31,7 +40,7 @@ public class UserController {
     // get address với trạng thái default
     @GetMapping("/get-user-address-default")
     public ApiResponse<?> getUserAddressDefault(HttpServletRequest request) {
-        UserAddressDefaultResponse addressResponse =  userService.getUserAddressDefault(request);
+        AddressResponse addressResponse =  userService.getUserAddressDefault(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "Get user address default success",addressResponse);
     }
 

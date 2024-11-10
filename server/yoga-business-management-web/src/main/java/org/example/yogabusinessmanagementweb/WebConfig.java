@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.config;
+package org.example.yogabusinessmanagementweb;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserAddressDefaultResponse getUserAddressDefault(HttpServletRequest request) {
+    public AddressResponse getUserAddressDefault(HttpServletRequest request) {
         User user =  jwtUtil.getUserFromRequest(request);
 
         List<Address> addresses = user.getAddresses();
@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
 
         for(Address address : addresses) {
             if(address.getStatus() == EAddress.DEFAULT) {
-                return userMapper.toUserAddressDefaultResponse(user, address);
+                return addressMapper.toAddressResponse(address);
             }
         }
 

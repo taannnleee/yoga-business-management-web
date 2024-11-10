@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(source = "user.phone", target = "phone")
-    @Mapping(source = "user.fullname", target = "fullname")
-    @Mapping(source = "address", target = "address")  // Sử dụng AddressMapper để map Address sang AddressResponse
+    @Mapping(source = "user.fullname", target = "fullname")// Sử dụng AddressMapper để map Address sang AddressResponse
     UserAddressDefaultResponse toUserAddressDefaultResponse(User user, Address address);
 }

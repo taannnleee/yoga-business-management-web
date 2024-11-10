@@ -73,13 +73,13 @@ public class OrderServiceImpl implements OrderService {
 
         order.setTotalItem(cart.getTotalItem());
         order.setTotalPrice(cart.getTotalPrice());
-        order.setAddress(addressService.getAddressByid(String.valueOf(orderRequest.getShippingInfo().getAddress().getId())));
+        Address address = addressService.getAddressByid(String.valueOf(orderRequest.getAddressId()));
+
+        order.setAddress(address);
 
         Payment payment = new Payment();
         payment.setNameMethod(orderRequest.getPaymentMethod());
-        List<Payment> payments = new ArrayList<>();
-        payments.add(payment);
-        order.setPayment(payments);
+        order.setPayment(payment);
         // Lưu Order và OrderItem vào cơ sở dữ liệu
         orderRepository.save(order);
 

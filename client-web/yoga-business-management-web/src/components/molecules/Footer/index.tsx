@@ -7,7 +7,7 @@ interface IFooterSectionProps {}
 
 const FooterSection: React.FC<IFooterSectionProps> = () => {
   return (
-    <div className="w-full flex flex-col items-center px-3 md:px-10 bg-gray-100 py-14 text-[13px]">
+    <div className="w-full flex flex-col items-center px-3 md:px-10 bg-gray-100 py-4 text-[13px]">
       <div className="w-full flex-shrink-0 max-w-[1570px] flex flex-col md:flex-row">
         <div className="w-full md:w-1/3">
           <Logo />

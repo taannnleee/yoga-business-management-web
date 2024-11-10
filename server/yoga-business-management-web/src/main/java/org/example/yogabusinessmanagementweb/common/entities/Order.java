@@ -27,9 +27,9 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @Column(name = "total_item")
     int totalItem;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
-    List<Payment> payment;
+    private Payment payment;
 
     @Column(name = "order_date")
     Date orderDate;
@@ -38,9 +38,9 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToOne()
+    @ManyToOne
     @JoinColumn(name = "address_id")
-    Address address;
+    private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")

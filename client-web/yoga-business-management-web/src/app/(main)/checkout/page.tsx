@@ -1,22 +1,24 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import {
     Box,
     Typography,
     Grid,
-    TextField,
-    Button,
     Paper,
     Divider,
     FormControlLabel,
     Radio,
     RadioGroup,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
+    CircularProgress,  // Import CircularProgress
 } from "@mui/material";
+import AddressSelection from "@/app/(main)/checkout/AddressSelection";
+import {useRouter} from "next/navigation"; // Đảm bảo AddressSelection chấp nhận chỉ id
 
 interface IProduct {
     id: string;
@@ -26,142 +28,71 @@ interface IProduct {
 }
 
 const Checkout: React.FC = () => {
-    const [shippingInfo, setShippingInfo] = useState({
-        fullname: "",
-        address: {
-            id: "",
-            houseNumber: "",
-            street: "",
-            district: "",
-            city: "",
-        },
-        phone: "",
-    });
-
+    const router = useRouter();
+    const [addressId, setAddressId] = useState<string>("");  // Lưu id địa chỉ
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
     const [products, setProducts] = useState<IProduct[]>([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [openConfirmDialog, setOpenConfirmDialog] = useState(false); // State cho hộp thoại xác nhận
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [orderLoading, setOrderLoading] = useState(false); // Trạng thái loading khi đặt hàng
     const toast = useToast();
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        if (name === "fullName" || name === "phone") {
-            setShippingInfo({
-                ...shippingInfo,
-                [name]: value,
-            });
-        } else {
-            setShippingInfo({
-                ...shippingInfo,
-                address: {
-                    ...shippingInfo.address,
-                    [name]: value,
-                },
-            });
-        }
-    };
-
+    // Handle payment method change
     const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPaymentMethod(e.target.value);
     };
 
+    // Handle order submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const token = localStorage.getItem("accessToken");
-
+        setOrderLoading(true); // Bắt đầu loading khi đặt hàng
         try {
             const response = await fetch("http://localhost:8080/api/order/create-order", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Assuming user is authenticated and token is stored
+                    "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    shippingInfo,
-                    // paymentMethod,
-                    // products,
-                    // totalPrice,
-                }),
+                body: JSON.stringify({ addressId, paymentMethod }),
             });
-            if (!response.ok) {
-                throw new Error("Failed to create order");
-            }
+
+            if (!response.ok) throw new Error("Failed to create order");
 
             const data = await response.json();
             console.log("Order created successfully:", data);
-            toast.sendToast("Success", "Mua sản phẩm thành công");
-            // Handle successful order creation, e.g., navigate to order confirmation page
+            toast.sendToast("Success", "Đặt hàng thành công");
+            router.replace("/status-order");
         } catch (error: any) {
             console.error("Error creating order:", error.message);
             setError(error.message);
-            toast.sendToast("Error", "Mua sản phẩm thành công");
-        }
-
-    };
-
-    const fetchDefaultAddress = async () => {
-        try {
-            const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/user/get-user-address-default", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch default address");
-            }
-
-            const data = await response.json();
-            const addressData = data.data;
-            setShippingInfo({
-                fullname: addressData.fullname,
-                phone: addressData.phone,
-                address: {
-                    id: addressData.address.id,
-                    houseNumber: addressData.address.houseNumber,
-                    street: addressData.address.street,
-                    district: addressData.address.district,
-                    city: addressData.address.city,
-                },
-            });
-        } catch (err: any) {
-            setError(err.message);
+            toast.sendToast("Error", "Error creating order");
         } finally {
-            setLoading(false);
+            setOrderLoading(false); // Dừng loading khi hoàn thành
         }
     };
 
+    // Fetch cart items
     const fetchCart = async () => {
+        const token = localStorage.getItem("accessToken");
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await fetch("http://localhost:8080/api/cart/show-cart", {
                 method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch cart");
-            }
+            if (!response.ok) throw new Error("Failed to fetch cart");
 
             const data = await response.json();
-            const cartItems = data.data.cartItem.map((item: any) => ({
+            setProducts(data.data.cartItem.map((item: any) => ({
                 id: item.product.id,
                 title: item.product.title,
                 quantity: item.quantity,
                 price: item.product.price,
-            }));
-
-            setProducts(cartItems);
+            })));
             setTotalPrice(data.data.totalPrice);
         } catch (err: any) {
             setError(err.message);
@@ -171,21 +102,16 @@ const Checkout: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchDefaultAddress();
         fetchCart();
     }, []);
 
-    const handleOpenConfirmDialog = () => {
-        setOpenConfirmDialog(true); // Mở hộp thoại xác nhận
-    };
-
-    const handleCloseConfirmDialog = () => {
-        setOpenConfirmDialog(false); // Đóng hộp thoại xác nhận
-    };
+    // Handle order confirmation dialog open/close
+    const handleOpenConfirmDialog = () => setOpenConfirmDialog(true);
+    const handleCloseConfirmDialog = () => setOpenConfirmDialog(false);
 
     const handleConfirmOrder = async () => {
-        await handleSubmit(new Event('submit')); // Chờ submit hoàn tất
-        handleCloseConfirmDialog(); // Đóng hộp thoại
+        await handleSubmit(new Event("submit"));
+        handleCloseConfirmDialog();
     };
 
     return (
@@ -195,82 +121,17 @@ const Checkout: React.FC = () => {
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8}>
-                    <Paper sx={{ padding: "20px" }}>
-                        <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
-                            Thông tin giao hàng
-                        </Typography>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Họ và tên"
-                                    name="fullName"
-                                    fullWidth
-                                    value={shippingInfo.fullname}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Số nhà"
-                                    name="houseNumber"
-                                    fullWidth
-                                    value={shippingInfo.address.houseNumber}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Đường"
-                                    name="street"
-                                    fullWidth
-                                    value={shippingInfo.address.street}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Quận/Huyện"
-                                    name="district"
-                                    fullWidth
-                                    value={shippingInfo.address.district}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    label="Thành phố"
-                                    name="city"
-                                    fullWidth
-                                    value={shippingInfo.address.city}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    label="Số điện thoại"
-                                    name="phone"
-                                    fullWidth
-                                    value={shippingInfo.phone}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                    {/* AddressSelection nhận id và cập nhật addressId */}
+                    <AddressSelection selectedAddressId={addressId} setSelectedAddressId={setAddressId} />
 
                     <Paper sx={{ padding: "20px", marginTop: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
-                            Phương thức thanh toán
+                            Payment Method
                         </Typography>
                         <RadioGroup value={paymentMethod} onChange={handlePaymentChange}>
-                            <FormControlLabel value="creditCard" control={<Radio />} label="Thẻ tín dụng / Thẻ ghi nợ" />
+                            <FormControlLabel value="creditCard" control={<Radio />} label="Credit/Debit Card" />
                             <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
-                            <FormControlLabel value="cash" control={<Radio />} label="Thanh toán khi nhận hàng (COD)" />
+                            <FormControlLabel value="cash" control={<Radio />} label="Cash on Delivery (COD)" />
                         </RadioGroup>
                     </Paper>
                 </Grid>
@@ -278,7 +139,7 @@ const Checkout: React.FC = () => {
                 <Grid item xs={12} md={4}>
                     <Paper sx={{ padding: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
-                            Tổng kết đơn hàng
+                            Order Summary
                         </Typography>
                         <Divider sx={{ marginBottom: "10px" }} />
                         {loading ? (
@@ -294,10 +155,10 @@ const Checkout: React.FC = () => {
                                     </Box>
                                 ))}
                                 <Divider sx={{ marginBottom: "10px" }} />
-                                <Typography variant="h6">Tổng cộng: {totalPrice.toLocaleString()} VND</Typography>
+                                <Typography variant="h6">Total: {totalPrice.toLocaleString()} VND</Typography>
                             </>
                         ) : (
-                            <Typography>Giỏ hàng trống</Typography>
+                            <Typography>Cart is empty</Typography>
                         )}
                         <Button
                             variant="contained"
@@ -306,20 +167,24 @@ const Checkout: React.FC = () => {
                             sx={{ marginTop: "20px" }}
                             onClick={handleOpenConfirmDialog}
                         >
-                            Đặt hàng
+                            {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"} {/* Hiển thị spinner khi loading */}
                         </Button>
                     </Paper>
                 </Grid>
             </Grid>
 
-            {/* Dialog Confirm */}
+            {/* Confirmation Dialog */}
             <Dialog open={openConfirmDialog} onClose={handleCloseConfirmDialog}>
                 <DialogContent>
-                    <DialogContentText>Bạn có chắc chắn muốn đặt hàng không?</DialogContentText>
+                    <DialogContentText>Are you sure you want to place this order?</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseConfirmDialog} color="primary">Hủy</Button>
-                    <Button onClick={handleConfirmOrder} color="primary" autoFocus>Đặt hàng</Button>
+                    <Button onClick={handleCloseConfirmDialog} color="primary">
+                        Huỷ
+                    </Button>
+                    <Button onClick={handleConfirmOrder} color="primary" autoFocus>
+                        {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"} {/* Hiển thị spinner khi loading */}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </Box>

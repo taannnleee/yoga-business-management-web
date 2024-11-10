@@ -18,6 +18,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { useState } from 'react';
+import Collapse from '@mui/material/Collapse';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   BuildingStorefrontIcon,
   ChartBarSquareIcon,
@@ -113,18 +117,23 @@ interface ISideBarProps {
 export default function MainLayout(props: ISideBarProps) {
   const theme = useTheme();
   const { path } = useRouteMatch();
-
   const { content, title } = props;
   const { openSideBar: open } = useAppSelector((state: IRootState) => state.auth);
 
   const dispatch = useDispatch();
 
-  const handleDrawerOpen = () => {
-    dispatch(setOpenSideBar(true));
+
+
+  // Tạo state riêng biệt cho mỗi mục
+  const [openOverview, setOpenOverview] = useState(false);
+  const [openCourseManagement, setOpenCourseManagement] = useState(false);
+
+  const handleOverviewClick = () => {
+    setOpenOverview(!openOverview);
   };
 
-  const handleDrawerClose = () => {
-    dispatch(setOpenSideBar(false));
+  const handleCourseManagementClick = () => {
+    setOpenCourseManagement(!openCourseManagement);
   };
 
   const icons = [
@@ -178,40 +187,63 @@ export default function MainLayout(props: ISideBarProps) {
         </DrawerHeader>
         <Divider />
         <List>
-          {[
-            'Tổng quan',
-            'Quản lý người dùng',
-            'Quản lý danh mục',
-            'Quản lý sản phẩm',
-            // 'Quản lý cửa hàng',
-          ].map((text, index) => (
-            <Link to={to[index]}>
-              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    mb: 2,
-                    justifyContent: 'initial',
-                    px: 4,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: 3,
-                      color: path == to[index] ? 'primary' : 'black',
-                    }}
-                    color={path == to[index] ? 'blue' : 'black'}
+          {/* Mục Tổng quan */}
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton onClick={handleOverviewClick} sx={{ justifyContent: 'initial', px: 4 }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: 3 }}>
+                {openOverview ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItemIcon>
+              <ListItemText primary="Tổng quan" />
+            </ListItemButton>
+            <Collapse in={openOverview} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {['Báo cáo doanh thu', 'Phân tích khách hàng', 'Dự đoán xu hướng'].map((text) => (
+                  <ListItemButton
+                    key={text}
+                    sx={{ pl: 8 }}
+                    component={Link}
+                    to={`${to[0]}/${text.replace(/\s+/g, '-').toLowerCase()}`}
                   >
-                    {path == to[index] ? activeIcons[index] : icons[index]}
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Collapse>
+          </ListItem>
+
+          {/* Mục Quản lý khóa học */}
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton onClick={handleCourseManagementClick} sx={{ justifyContent: 'initial', px: 4 }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: 3 }}>
+                {openCourseManagement ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItemIcon>
+              <ListItemText primary="Quản lý khóa học" />
+            </ListItemButton>
+            <Collapse in={openCourseManagement} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 8 }} component={Link} to={'/course-management'}>
+                  <ListItemText primary="Khóa học" />
+                </ListItemButton>
+
+                <ListItemButton sx={{ pl: 8 }} component={Link} to={'/teacher-management'}>
+                  <ListItemText primary="Giảng viên" />
+                </ListItemButton>
+
+                <ListItemButton sx={{ pl: 8 }} component={Link} to={'/topic-management'}>
+                  <ListItemText primary="Chủ đề" />
+                </ListItemButton>
+              </List>
+            </Collapse>
+          </ListItem>
+
+          {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm'].map((text, index) => (
+            <Link to={to[index + 1]} key={text}>
+              <ListItem disablePadding>
+                <ListItemButton sx={{ justifyContent: 'initial', px: 4 }}>
+                  <ListItemIcon sx={{ minWidth: 0, mr: 3 }}>
+                    {path === to[index + 1] ? activeIcons[index + 1] : icons[index + 1]}
                   </ListItemIcon>
-                  <p
-                    className={`text-sm ${
-                      path == to[index] ? 'font-semibold text-gray-500' : 'text-gray-500'
-                    }`}
-                  >
-                    {text}
-                  </p>
+                  <ListItemText primary={text} />
                 </ListItemButton>
               </ListItem>
             </Link>

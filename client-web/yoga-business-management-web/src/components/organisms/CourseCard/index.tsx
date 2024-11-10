@@ -25,7 +25,7 @@ interface Course {
     level: number;
     videoPath: string;
     price: number;
-    rating:number;
+    rating: number;
 }
 
 interface CourseCardProps {
@@ -136,7 +136,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 <Box mt={1}>
                                     {renderStars(course.rating)}
                                     <Typography variant="body2" color="textSecondary">
-                                        ({Math.round(course.rating * 10)}) 
+                                        ({Math.round(course.rating * 10)})
                                     </Typography>
                                 </Box>
 
@@ -163,10 +163,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                             />
                             <Typography
                                 onClick={() => navigateToDetail(selectedCourse?.id || 0)}
-                                variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft:"120px",color: "red" }}>
+                                variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft: "120px", color: "red" }}>
                                 Xem chi tiết
                             </Typography>
-                            <Button variant="contained" color="primary" style={{ marginTop: "42px", marginLeft:"120px" }}>
+                            <Button variant="contained" color="primary" style={{ marginTop: "42px", marginLeft: "120px" }}>
                                 Tham gia
                             </Button>
                         </Box>

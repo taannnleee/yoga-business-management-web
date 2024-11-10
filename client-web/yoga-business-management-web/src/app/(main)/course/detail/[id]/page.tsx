@@ -22,6 +22,7 @@ interface Lecture {
 interface Teacher {
     id: number;
     fullName: string;
+    introduction: string;
     email: string;
     phoneNumber: string;
     experienceYears: number;

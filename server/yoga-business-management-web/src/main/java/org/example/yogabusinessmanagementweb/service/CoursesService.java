@@ -16,4 +16,8 @@ public interface CoursesService {
     List<TopicCourseResponse> getAllCourseWithTopic();
 
     Courses getCourse(String id);
+
+    List<CourseResponse> allTeacherCourses(String id);
+
+    List<CourseResponse> getOutstandingCourses();
 }

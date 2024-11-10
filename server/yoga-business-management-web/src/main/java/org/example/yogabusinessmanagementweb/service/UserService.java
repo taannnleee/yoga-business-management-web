@@ -31,5 +31,5 @@ public interface UserService {
 
     void updateProfile(UpdateProfileRequest updateProfileRequest, HttpServletRequest request);
 
-    UserAddressDefaultResponse getUserAddressDefault(HttpServletRequest request);
+    AddressResponse getUserAddressDefault(HttpServletRequest request);
 }

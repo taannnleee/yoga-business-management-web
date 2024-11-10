@@ -22,6 +22,7 @@ interface Teacher {
     phoneNumber: string;
     experienceYears: number;
     profilePicture: string;
+    description: string;
 }
 
 interface Course {
@@ -47,7 +48,7 @@ const TeacherDetailPage: React.FC = () => {
     const [isLoadingCourses, setIsLoadingCourses] = useState(true);
     const [courses, setCourses] = useState<Course[]>([]);
     const [error, setError] = useState<string | null>(null);
-    
+
 
     // Fetch teacher info from API
     useEffect(() => {
@@ -152,17 +153,7 @@ const TeacherDetailPage: React.FC = () => {
                         Phone: {teacherInfo.phoneNumber} <br />
                         Kinh nghiệm: {teacherInfo.experienceYears} năm
                     </p>
-                    <p className="mt-4 text-sm">Đại sứ Yoga Việt Nam - CEO Zenlife Yoga
-
-                        Chuyên gia Yoga Nguyễn Hiếu đã có hơn 12 năm nghiên cứu và giảng dạy Yoga tại các trung tâm và đã huấn luyện cho hàng nghìn học viên khắp Việt Nam và thế giới.
-
-                        Chị là Đại sứ Yoga Việt Nam do Trung tâm Unesco Phát triển Văn hóa và Thể thao phong tặng.
-
-                        Chị đã thiết kế rất nhiều chương trình Yoga trực tuyến, sở hữu kênh  đào tạo Yoga online lớn nhất Việt Nam.
-
-                        Hiện tại, chị là tổng giám đốc công ty Zenlife Yoga Việt Nam và là huấn luyện viên trưởng cho chương trình đào tạo giáo viên Yoga.
-
-                        Hiện nay, dù đã gần 40 tuổi và có 2 con lớn, Chuyên gia Yoga Nguyễn Hiếu vẫn sở hữu một cơ thể cân đối trẻ trung, khỏe mạnh và dẻo dai như ở tuổi đôi mươi, với vòng eo 60 cm là niềm ao ước của mọi phụ nữ ở độ tuổi này.</p>
+                    <p className="mt-4 text-sm">{teacherInfo.description}</p>
                 </div>
             </div>
 

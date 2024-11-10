@@ -13,7 +13,8 @@ interface FormData {
     phoneNumber: string;
     experienceYears: number;
     profilePicture: File | null;
-    introduction: string;  // Thêm trường introduction
+    introduction: string;
+    description: string;
 }
 
 interface Teacher {
@@ -24,6 +25,7 @@ interface Teacher {
     experienceYears: number;
     profilePicture: string;
     introduction: string;
+    description: string;
 }
 
 const TeacherManagement: React.FC = () => {
@@ -33,7 +35,8 @@ const TeacherManagement: React.FC = () => {
         phoneNumber: '',
         experienceYears: 0,
         profilePicture: null,
-        introduction: '',  // Khởi tạo trường introduction
+        introduction: '',
+        description: '',
     });
     const [previewImage, setPreviewImage] = useState<string>('https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_1280.png');
     const [loading, setLoading] = useState<boolean>(false);
@@ -120,7 +123,8 @@ const TeacherManagement: React.FC = () => {
                 phoneNumber: formData.phoneNumber,
                 experienceYears: formData.experienceYears,
                 profilePicture: imageUrl,
-                introduction: formData.introduction,  // Gửi phần giới thiệu
+                introduction: formData.introduction,
+                description: formData.description,
             };
 
             try {
@@ -136,7 +140,8 @@ const TeacherManagement: React.FC = () => {
                     phoneNumber: '',
                     experienceYears: 0,
                     profilePicture: null,
-                    introduction: '',  // Reset trường giới thiệu
+                    introduction: '',
+                    description: '',
                 });
                 setPreviewImage('https://cdn.pixabay.com/photo/2017/11/10/05/46/group-2935521_1280.png'); // Reset preview image
                 fetchTeachers();
@@ -177,7 +182,8 @@ const TeacherManagement: React.FC = () => {
             phoneNumber: teacher.phoneNumber,
             experienceYears: teacher.experienceYears,
             profilePicture: null,
-            introduction: teacher.introduction,  // Cập nhật phần giới thiệu
+            introduction: teacher.introduction,
+            description: teacher.description,
         });
         setPreviewImage(teacher.profilePicture);
         setEditDialogOpen(true);
@@ -195,7 +201,8 @@ const TeacherManagement: React.FC = () => {
                 phoneNumber: formData.phoneNumber,
                 experienceYears: formData.experienceYears,
                 profilePicture: imageUrl || selectedTeacher.profilePicture,
-                introduction: formData.introduction,  // Cập nhật phần giới thiệu
+                introduction: formData.introduction,
+                description: formData.description,
             };
 
             try {
@@ -336,10 +343,22 @@ const TeacherManagement: React.FC = () => {
 
                 <Box marginBottom={3}>
                     <TextField
-                        label="Giới Thiệu"
+                        label="Giới Thiệu Ngắn"
                         fullWidth
                         name="introduction"
                         value={formData.introduction}
+                        onChange={handleChange}
+                        multiline
+                        rows={4}  // Cho phép nhập nhiều dòng
+                    />
+                </Box>
+
+                <Box marginBottom={3}>
+                    <TextField
+                        label="Mô tả"
+                        fullWidth
+                        name="description"
+                        value={formData.description}
                         onChange={handleChange}
                         multiline
                         rows={4}  // Cho phép nhập nhiều dòng
@@ -366,7 +385,7 @@ const TeacherManagement: React.FC = () => {
                         onClick={handleSubmit}
                         disabled={loading}
                     >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Giáo Viên'}
+                        Tạo Giáo Viên
                     </Button>
                 </Box>
 
@@ -437,6 +456,18 @@ const TeacherManagement: React.FC = () => {
                             fullWidth
                             name="introduction"
                             value={formData.introduction}
+                            onChange={handleChange}
+                            multiline
+                            rows={4}
+                        />
+                    </Box>
+
+                    <Box marginBottom={3}>
+                        <TextField
+                            label="Mô tả"
+                            fullWidth
+                            name="description"
+                            value={formData.description}
                             onChange={handleChange}
                             multiline
                             rows={4}

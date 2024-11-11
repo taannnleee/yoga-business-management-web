@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResponse;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
@@ -30,7 +29,7 @@ public class AdminProductController {
 
     @PostMapping("/add-product")
     public ApiResponse<?> creatProduct(@Valid  @RequestBody ProductCreationRequest productCreationRequest) {
-        Product addProductResponse = productService.addProduct(productCreationRequest);
+        AddProductResponse addProductResponse = productService.addProduct(productCreationRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "create product  successfully",addProductResponse);
     }
 

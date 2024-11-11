@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product addProduct(ProductCreationRequest productCreationRequest)  {
+    public AddProductResponse addProduct(ProductCreationRequest productCreationRequest)  {
 //        product =  Mappers.convertToEntity(productCreationRequest, Product.class);
         Product product = productMapper.toProduct(productCreationRequest);
         product.setVariantListAsJson(productCreationRequest.getVariantList());
@@ -77,10 +77,9 @@ public class ProductServiceImpl implements ProductService {
         product.setSubCategory(subCategory);
         //Lưu product
         productRepository.save(product);
-//        AddProductResponse addProductResponse = Mappers.convertToDto(product, AddProductResponse.class);
-//
-//        return addProductResponse;
-        return  product;
+        AddProductResponse addProductResponse = Mappers.convertToDto(product, AddProductResponse.class);
+
+        return addProductResponse;
     }
 
     @Override

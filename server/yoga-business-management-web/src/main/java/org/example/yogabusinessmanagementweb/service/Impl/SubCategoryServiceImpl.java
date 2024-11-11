@@ -9,11 +9,17 @@ import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.common.mapper.SubCategoryMapper;
 import org.example.yogabusinessmanagementweb.dto.request.subcategory.SubCategoryCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.subcategory.SubCategoryResponse;
+import org.example.yogabusinessmanagementweb.exception.AppException;
+import org.example.yogabusinessmanagementweb.exception.ErrorCode;
+import org.example.yogabusinessmanagementweb.repositories.CategoryRepository;
 import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
 import org.example.yogabusinessmanagementweb.service.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -22,8 +28,12 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     SubCategoryRepository subCategoryRepository;
     CategoryService categoryService;
 
+    CategoryRepository categoryRepository;
+
     @Autowired
     private SubCategoryMapper subCategoryMapper;
+
+
 
     @Override
     public SubCategoryResponse addSubCategory(SubCategoryCreationRequest subCategoryCreationRequest) {
@@ -42,4 +52,17 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         // Chuyển đổi từ Entity sang DTO
         return Mappers.convertToDto(subCategory,SubCategoryResponse.class);
     }
+
+    @Override
+    public List<SubCategoryResponse> getSubCategoryOfCategory(String id) {
+        Optional<Category> categoryOptional = categoryRepository.findById(Long.valueOf(id));
+        if(categoryOptional.isEmpty()) {
+            throw  new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+        Category category = categoryOptional.get();
+        List<SubCategory> list = subCategoryRepository.findAllByCategory(category);
+
+        return Mappers.mapperEntityToDto(list,SubCategoryResponse.class);
+    }
+
 }

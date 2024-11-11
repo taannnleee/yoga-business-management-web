@@ -26,7 +26,7 @@ public class SubCategory extends AbstractEntity<Long> implements Serializable  {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    Category Category;
+    Category category;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

@@ -8,13 +8,11 @@ import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResp
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
-import org.example.yogabusinessmanagementweb.repositories.ProductDetailRepository;
 import org.example.yogabusinessmanagementweb.repositories.ProductRepository;
 import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
 import org.example.yogabusinessmanagementweb.repositories.TempRepository;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
-import org.example.yogabusinessmanagementweb.common.entities.ProductDetail;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,6 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
-    ProductDetailRepository productDetailRepository;
     TempRepository tempRepository;
 
     @Autowired
@@ -69,14 +66,10 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public AddProductResponse addProduct(ProductCreationRequest productCreationRequest)  {
+    public Product addProduct(ProductCreationRequest productCreationRequest)  {
 //        product =  Mappers.convertToEntity(productCreationRequest, Product.class);
         Product product = productMapper.toProduct(productCreationRequest);
-        // Xử lý ProductDetail
-        ProductDetail productDetail= Mappers.convertToEntity(productCreationRequest.getProductDetail(), ProductDetail.class);
-
-        product.setProductDetail(productDetail);
-
+        product.setVariantListAsJson(productCreationRequest.getVariantList());
         //xử lý SubCategory
         SubCategory subCategory = subCategoryRepository.findById(productCreationRequest.getSubCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.SUBCATEGORY_NOT_FOUND));
@@ -84,9 +77,10 @@ public class ProductServiceImpl implements ProductService {
         product.setSubCategory(subCategory);
         //Lưu product
         productRepository.save(product);
-        AddProductResponse addProductResponse = Mappers.convertToDto(product, AddProductResponse.class);
-
-        return addProductResponse;
+//        AddProductResponse addProductResponse = Mappers.convertToDto(product, AddProductResponse.class);
+//
+//        return addProductResponse;
+        return  product;
     }
 
     @Override

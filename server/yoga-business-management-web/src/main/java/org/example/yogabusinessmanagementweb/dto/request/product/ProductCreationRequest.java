@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.entities.models.ProductVariants;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductDetailResponse;
 
 import java.math.BigDecimal;
@@ -20,6 +21,10 @@ public class ProductCreationRequest {
     @NotNull(message = "Price in Product is required")
     BigDecimal price;
     Double averageRating = 0.0;
-    @NotNull(message = "Product Detail is required")
-    ProductDetailCreationRequest productDetail;
+
+    String code;
+    String brand;
+    String description;
+
+    private ProductVariants variantList;
 }

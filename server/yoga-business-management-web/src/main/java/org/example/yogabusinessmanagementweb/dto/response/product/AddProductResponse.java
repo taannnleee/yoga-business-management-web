@@ -1,8 +1,10 @@
 package org.example.yogabusinessmanagementweb.dto.response.product;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.entities.models.ProductVariants;
 
 import java.math.BigDecimal;
 
@@ -16,5 +18,9 @@ public class AddProductResponse {
     Long subCategoryId;
     Double averageRating;
     BigDecimal price;
-    ProductDetailResponse productDetail;
+    String code;
+    String brand;
+    String description;
+
+    private ProductVariants variantList;
 }

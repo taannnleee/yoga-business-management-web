@@ -56,25 +56,4 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @Lob
     @Column(name = "variant_list")
     String variantList;
-
-    // Phương thức để chuyển đổi từ List sang JSON
-    public void setVariantListAsJson(ProductVariants variants) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            this.variantList = objectMapper.writeValueAsString(variants);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Phương thức để chuyển đổi từ JSON sang List
-    public ProductVariants getVariantListAsObject() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(this.variantList, ProductVariants.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

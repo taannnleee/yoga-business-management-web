@@ -3,6 +3,10 @@ package org.example.yogabusinessmanagementweb.service;
 import org.example.yogabusinessmanagementweb.dto.request.subcategory.SubCategoryCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.subcategory.SubCategoryResponse;
 
+import java.util.List;
+
 public interface SubCategoryService {
     SubCategoryResponse addSubCategory(SubCategoryCreationRequest subCategoryCreationRequest);
+
+    List<SubCategoryResponse> getSubCategoryOfCategory(String id);
 }

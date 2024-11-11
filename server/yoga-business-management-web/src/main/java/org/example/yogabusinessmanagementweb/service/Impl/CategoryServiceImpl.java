@@ -13,6 +13,7 @@ import org.example.yogabusinessmanagementweb.repositories.CategoryRepository;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -48,6 +49,13 @@ public class CategoryServiceImpl implements CategoryService {
         // Tìm kiếm danh mục theo tên và trạng thái
         return categoryRepository.findByIdAndStatus(id, status)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
+
+    @Override
+    public List<CategoryResponse> getAllCategory() {
+        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryResponse> list = Mappers.mapperEntityToDto (categoryList, CategoryResponse.class);
+        return list;
     }
 }
 

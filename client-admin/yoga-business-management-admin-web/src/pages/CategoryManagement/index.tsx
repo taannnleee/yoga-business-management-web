@@ -1,321 +1,146 @@
-import * as React from "react";
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-  GridSelectionModel,
-} from "@mui/x-data-grid";
-import MainLayout from "../../components/SIdeBar";
-import axios from "axios";
-import { useAppSelector } from "../../hooks/useRedux";
-import { IRootState } from "../../redux";
-import Spinner from "../../components/Spinner";
-import { apiURL } from "../../config/constanst";
-import LoadingSkeleton from "../../components/LoadingSkeleton";
-import ActionMenu from "../../components/ActionMenu";
-import { toast } from "react-toastify";
-import PropertiesDialog from "./PropertiesDialog";
-import CustomFieldDialog from "./CustomFieldsDialog";
-import { PlusIcon } from "@heroicons/react/20/solid";
-import { useHistory } from "react-router-dom";
-import CreateCategoryDialog from "./CreateCategoryDialog";
-import { useDispatch } from "react-redux";
-import { setListCategory } from "../../redux/slices/category";
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { Box, Button, TextField, CircularProgress } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import axios from 'axios';
+import { apiURL } from '../../config/constanst';
+import { toast } from 'react-toastify';
+import Header from '../../components/Header';
+import FooterSection from '../../components/FooterSection';
 
-const CategoryManagement = () => {
-  const [deleteDisable, setDeleteDisable] = React.useState<boolean>(false);
-  const [selectionModel, setSelectionModel] =
-    React.useState<GridSelectionModel>([]);
-  const [categories, setCategories] = React.useState<IProductCategory[]>([]);
-  const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [actionLoading, setActionLoading] = React.useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = React.useState<string | number>("");
-  const [openCreateDialog, setOpenCreateDialog] =
-    React.useState<boolean>(false);
+interface Category {
+  id: number;
+  name: string;
+  status: string;
+}
 
-  const dispatch = useDispatch();
-  const { user, accessToken } = useAppSelector(
-    (state: IRootState) => state.auth
-  );
-  const history = useHistory();
+const CategoryManagement: React.FC = () => {
+  const [formData, setFormData] = useState<{ name: string }>({ name: '' });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [totalCategories, setTotalCategories] = useState<number>(0);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 
   const fetchCategories = async () => {
+    setLoading(true);
+    const accessToken = localStorage.getItem('accessToken');
     try {
-      setLoading(true);
-      const response = await axios.get(`${apiURL}/category`, {
+      const response = await axios.get(`${apiURL}/api/admin/get-all-category`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      });
-      if (response?.data?.success) {
-        setCategories(response?.data?.data?.data);
-        dispatch(setListCategory(response?.data?.data?.data));
-      }
-    } catch (error) {
-      console.error("GET PRODUCT CATEGORY ERROR", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateCurrentCategory = async (
-    item: IProductCategory,
-    onSuccess: () => void
-  ) => {
-
-    console.log('item', item);
-    if (item.id !== null) {
-      try {
-        const response = await axios.put(
-          `${apiURL}/category/${item.id}`,
-          item,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (response?.data?.success) {
-          onSuccess();
-          toast.success("Cập nhật danh mục thành công");
-        } else {
-          onSuccess();
-          toast.error("Cập nhật danh mục thất bại");
-          console.error("Update current category error");
-        }
-      } catch (error) {
-        console.error("Errors is", error);
-      }
-    }
-  };
-
-  const createNewCategory = async (
-    item: Omit<IProductCategory, "id">,
-    onSuccess: () => void
-  ) => {
-    try {
-      const response = await axios.post(`${apiURL}/category/`, item, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+        params: {
+          page,
+          limit: rowsPerPage,
         },
       });
-      if (response?.data?.success) {
-        onSuccess();
-        fetchCategories();
-        toast.success("Tạo danh mục mới thành công");
-      } else {
-        onSuccess();
-        fetchCategories();
-        toast.error("Tạo danh mục mới thất bại");
-      }
+      setCategories(response.data.data);
+      setTotalCategories(response.data.data.length);
     } catch (error) {
-      console.error("Errors is", error);
+      console.error('Failed to fetch categories', error);
+      toast.error('Không thể tải danh mục.');
     }
+    setLoading(false);
   };
 
-  const removeCategory = async (id: string | number) => {
-    try {
-      setActionLoading(true);
-      setSelectedRow(id);
-      const response = await axios.delete(`${apiURL}/category/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response?.data?.success) {
-        fetchCategories();
-        toast.success("Xóa danh mục thành công");
-      } else {
-        console.error("Error", response?.data?.data, response?.data?.error);
-      }
-    } catch (error) {
-      console.error("Client Error", error);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [page, rowsPerPage]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const accessToken = localStorage.getItem('accessToken');
+    try {
+      await axios.post(
+        `${apiURL}/api/admin/add-category`,
+        { name: formData.name },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      toast.success('Tạo danh mục thành công!');
+      setFormData({ name: '' });
+      fetchCategories();
+    } catch (error) {
+      console.error('Failed to create category', error);
+      toast.error('Đã có lỗi xảy ra khi tạo danh mục.');
+    }
+    setLoading(false);
+  };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 70 },
+    { field: 'id', headerName: 'ID', width: 100 },
+    { field: 'name', headerName: 'Tên Danh Mục', width: 200 },
+    { field: 'status', headerName: 'Trạng Thái', width: 150 },
     {
-      field: "name",
-      headerName: "Tên danh mục",
-      width: 460,
-      renderCell: (params) => (
-        <div className="w-[100px]">
-          <ViewHistoryCell
-            category={params.row}
-            onUpdateItem={(returnedParams, actionSuccess) => {
-              updateCurrentCategory(returnedParams, () => {
-                actionSuccess();
-                fetchCategories();
-              });
-            }}
-            onClose={() => fetchCategories()}
-          />
-        </div>
+      field: 'actions',
+      headerName: 'Hành động',
+      width: 180,
+      renderCell: () => (
+        <>
+          <Button variant="outlined" color="primary">
+            Cập Nhật
+          </Button>
+          <Button variant="outlined" color="error" sx={{ ml: 1 }}>
+            Xóa
+          </Button>
+        </>
       ),
-    },
-    {
-      field: "properties",
-      headerName: "Các trường",
-      renderCell: (params: GridRenderCellParams<string>) => (
-        <div className="w-[100px]">
-          <p>
-            {!!params?.row?.properties[0]?.name
-              ? `${params?.row?.properties[0]?.name}...`
-              : "Chưa có"}
-          </p>
-        </div>
-      ),
-      width: 200,
-    },
-    {
-      field: "actions",
-      headerName: "Hành động",
-      type: "string",
-      width: 300,
-      headerAlign: "left",
-      align: "left",
-      renderCell: (params: GridRenderCellParams<any>) => {
-        const options = [
-          {
-            id: "delete",
-            title: "Xóa danh mục",
-            onPress: () => removeCategory(params.row?.id),
-            onActionSuccess: () => fetchCategories(),
-          },
-        ];
-        return actionLoading && selectedRow === params.row?.id ? (
-          <Spinner size={20} />
-        ) : (
-          <ActionMenu options={options} />
-        );
-      },
     },
   ];
 
   return (
     <>
-      <MainLayout
-        title="Danh sách các danh mục"
-        content={
-          isLoading ? (
-            <div className="w-full h-full px-8 mt-20">
-              <LoadingSkeleton />
-            </div>
-          ) : (
-            <div className="flex flex-col gap-y-5 bg-white shadow-xl rounded-2xl">
-              <div className="flex justify-between">
-                <div></div>
-                <button
-                  onClick={() => setOpenCreateDialog(true)}
-                  className="bg-gray-500 text-white w-fit h-[40px] px-3 py-1 font-bold rounded-lg flex items-center hover:opacity-80"
-                >
-                  <PlusIcon className="w-[20px] h-[20px] text-white font-bold" />
-                  <p>Thêm danh mục</p>
-                </button>
-              </div>
-              <div className="h-[700px] w-full">
-                <DataGrid
-                  rows={categories}
-                  columns={columns}
-                  pageSize={10}
-                  disableSelectionOnClick
-                  rowsPerPageOptions={[10]}
-                  onSelectionModelChange={(newSelectionModel) => {
-                    setDeleteDisable(!deleteDisable);
-                    setSelectionModel(newSelectionModel);
-                  }}
-                  selectionModel={selectionModel}
-                  checkboxSelection={false}
-                />
-              </div>
-            </div>
-          )
-        }
-      />
+      <Header title="Quản lý danh mục" />
+      <Box padding={3}>
+        <Box marginBottom={3}>
+          <TextField
+            label="Tên Danh Mục"
+            fullWidth
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+        </Box>
+        <Box marginTop={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            disabled={loading || !formData.name}
+          >
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Danh Mục'}
+          </Button>
+        </Box>
 
-      {openCreateDialog && (
-        <CreateCategoryDialog
-          onClose={() => setOpenCreateDialog(false)}
-          onOpenCustomFields={() => {}}
-          onCreateCategory={(params, actionSuccess) =>
-            createNewCategory(params, actionSuccess)
-          }
-          open={openCreateDialog}
-        />
-      )}
+        {/* DataGrid */}
+        <Box marginTop={5} height={400}>
+          <DataGrid
+            rows={categories}
+            columns={columns}
+            pageSize={rowsPerPage}
+            rowCount={totalCategories}
+            paginationMode="server"
+            onPageChange={(newPage) => setPage(newPage)}
+            onPageSizeChange={(newRowsPerPage) => {
+              setRowsPerPage(newRowsPerPage);
+              setPage(0);
+            }}
+            loading={loading}
+          />
+        </Box>
+      </Box>
+
+      <FooterSection />
     </>
   );
 };
 
 export default CategoryManagement;
-
-interface IViewCustomFieldCellProps {
-  category: IProductCategory;
-  onUpdateItem: (item: IProductCategory, actionSuccess: () => void) => void;
-  onClose: () => void;
-}
-
-const ViewHistoryCell: React.FC<IViewCustomFieldCellProps> = (props) => {
-  const [openPropertyDialog, setOpenPropertyDialog] =
-    React.useState<boolean>(false);
-  const [openCustomField, setOpenCustomField] = React.useState<boolean>(false);
-  const [currentItem, setCurrentItem] =
-    React.useState<IProductCategoryProperty | null>(null);
-  const { user } = useAppSelector((state: IRootState) => state.auth);
-
-  const { category, onUpdateItem } = props;
-
-  const handleOpenCustomField = (item: any) => {
-    setOpenCustomField(true);
-    setCurrentItem(item);
-  };
-
-  return (
-    <div className="">
-      <button
-        className="w-[120px] flex-start"
-        onClick={() => setOpenPropertyDialog(true)}
-      >
-        <p className="text-left mr-10">{props.category?.name}</p>
-      </button>
-      {openPropertyDialog && (
-        <PropertiesDialog
-          category={category}
-          open={openPropertyDialog}
-          onClose={() => setOpenPropertyDialog(false)}
-          onOpenCustomFields={handleOpenCustomField}
-          onUpdateFields={(fields, actionSuccess) => {
-            props.onUpdateItem(fields, actionSuccess);
-          }}
-        />
-      )}
-
-      <CustomFieldDialog
-        open={openCustomField}
-        onClose={() => setOpenCustomField(false)}
-        onUpdateOptions={(value, actionSuccess) => {
-          let cloned = category?.properties;
-          category?.properties?.forEach((property, propertyIndex) => {
-            if (property?.name === currentItem?.name) {
-              cloned[propertyIndex].options = value;
-            }
-          });
-
-          props.onUpdateItem(
-            { ...category, properties: [...cloned] },
-            actionSuccess
-          );
-          setOpenCustomField(false);
-        }}
-        options={currentItem?.options}
-      />
-    </div>
-  );
-};

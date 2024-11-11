@@ -12,7 +12,7 @@ public interface ProductService {
 
     Product getProductById(String id);
 
-    AddProductResponse addProduct(ProductCreationRequest productCreationRequest);
+    Product addProduct(ProductCreationRequest productCreationRequest);
 
     boolean delete(String productId);
     Page<ProductResponse> searchProducts(String keyword, Pageable pageable);

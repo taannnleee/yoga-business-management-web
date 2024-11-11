@@ -144,7 +144,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
 
                                                         ) : (
                                                             <div
-                                                                className={`flex items-center justify-center w-11 h-11 border border-gray-300 rounded-md cursor-pointer ${value === currentVariant[variantType]?.value ? 'border-2 border-blue-500' : ''}`}
+                                                                className={`flex items-center justify-center w-11 h-11 border border-gray-300 rounded-md cursor-pointer ${value === currentVariant[variantType]?.value ? 'border-2 border-blue-800' : ''}`}
                                                             >
                                                                 <Typography className="text-center">{value}</Typography>
                                                             </div>

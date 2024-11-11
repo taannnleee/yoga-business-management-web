@@ -15,15 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/api/home")
+@RequestMapping("/api/product")
 @Slf4j
 public class ProductController {
     UserService userService;
@@ -32,7 +29,7 @@ public class ProductController {
     AuthencationService authencationService;
     ProductService productService;
 
-    @GetMapping("/getAllProduct")
+    @GetMapping("/all")
     public ApiResponse<?> getAllProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -47,5 +44,10 @@ public class ProductController {
         } catch (RuntimeException e) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
+    }
+    @GetMapping("/{id}")
+    public ApiResponse<?> getById(@PathVariable String id){
+        ProductResponse productResponse = productService.getById(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get product detail successfully",productResponse);
     }
 }

@@ -32,9 +32,7 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
     TempRepository tempRepository;
-
-    @Autowired
-    private ProductMapper productMapper;
+    ProductMapper productMapper;
 
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
@@ -45,7 +43,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findProductById(Long.valueOf(id))
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
     }
-
+    @Override
+    public ProductResponse getById(String id) {
+        return productMapper.productToProductResponse((getProductById(id)));
+    }
     @Override
     public Page<ProductResponse> searchProducts(String keyword, Pageable pageable) {
         Page<Product> productPage;
@@ -56,31 +57,24 @@ public class ProductServiceImpl implements ProductService {
             productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable); // Tìm kiếm theo từ khóa
         }
 
-        // Chuyển đổi từ Page<Product> sang Page<ProductResponse>
-        List<ProductResponse> productResponses = productPage.getContent().stream()
-                .map(product -> new ProductResponse(product.getId(), product.getTitle(), product.getPrice(), product.getAverageRating(),product.getImagePath(),product.getStatus()))
-                .collect(Collectors.toList());
+        // Chuyển từ Page<Product> sang Page<ProductResponse>
+        List<ProductResponse> productResponses =productMapper.productsToProductResponses(productPage.getContent());
 
         return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
     }
 
 
+
     @Override
     public Product addProduct(ProductCreationRequest productCreationRequest)  {
-//        product =  Mappers.convertToEntity(productCreationRequest, Product.class);
         Product product = productMapper.toProduct(productCreationRequest);
-        product.setVariantListAsJson(productCreationRequest.getVariantList());
         //xử lý SubCategory
         SubCategory subCategory = subCategoryRepository.findById(productCreationRequest.getSubCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.SUBCATEGORY_NOT_FOUND));
 
         product.setSubCategory(subCategory);
         //Lưu product
-        productRepository.save(product);
-//        AddProductResponse addProductResponse = Mappers.convertToDto(product, AddProductResponse.class);
-//
-//        return addProductResponse;
-        return  product;
+        return productRepository.save(product);
     }
 
     @Override

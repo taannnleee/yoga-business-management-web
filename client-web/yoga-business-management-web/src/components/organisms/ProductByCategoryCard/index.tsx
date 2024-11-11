@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, IconButton, Divider, Dialog, DialogContent, Skeleton } from "@mui/material";
+import {
+    Box,
+    Typography,
+    Button,
+    IconButton,
+    Divider,
+    Dialog,
+    DialogContent,
+    Skeleton,
+    CircularProgress
+} from "@mui/material";
 import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import {toast} from "react-toastify";
-import {useToast} from "@/hooks/useToast"; // Import axios
+import {useToast} from "@/hooks/useToast";
+import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
 
 interface ProductByCategoryCardProps {
     products: any[];
@@ -19,28 +30,12 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
-    const [loading, setLoading] = useState(true); // Add loading state
-    const handleQuantityChange = (e) => {
+    const [loading, setLoading] = useState(false); // Add loading state
+    const handleQuantityChange = (e: { target: { value: React.SetStateAction<number>; }; }) => {
         setQuantity(e.target.value); // Cập nhật giá trị khi người dùng thay đổi
     };
     const itemsPerPage = 8;
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                // Fetch products or any data if necessary
-                setLoading(true);
-                // Simulate API delay
-                setTimeout(() => {
-                    setLoading(false); // Set loading false once data is loaded
-                }, 4000); // Adjust this time as necessary
-            } catch (error) {
-                console.error("Error fetching product data:", error);
-            }
-        };
-
-        fetchProducts();
-    }, []);
 
     const handleAddToCart = async () => {
         try {
@@ -70,22 +65,22 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
         }
     };
     const handleOpenModal = async (product: any) => {
+        setLoading(true); // Bắt đầu loading khi click vào icon
         try {
-            const token = localStorage.getItem("accessToken"); // Get accessToken from localStorage
+            const token = localStorage.getItem("accessToken"); // Lấy accessToken từ localStorage
             if (!token) {
-                // Handle case if there's no token
                 console.error("Access token is missing.");
+                setLoading(false); // Dừng loading nếu không có token
                 return;
             }
 
-            const response = await axios.get(`http://localhost:8080/api/product-detail/getProduct/${product.id}`, {
+            const response = await axios.get(`http://localhost:8080/api/product/${product.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
             if (response.status === 200) {
-                // Update the modal with the fetched product details
                 setSelectedProduct(response.data.data);
                 setOpen(true);
             } else {
@@ -93,6 +88,8 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
             }
         } catch (error) {
             console.error("Error fetching product details:", error);
+        } finally {
+            setLoading(false); // Dừng loading sau khi hoàn tất hoặc gặp lỗi
         }
     };
 
@@ -167,18 +164,7 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
 
                         {/* Skeleton loading */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-lg">
-                            {loading ? (
-                                [...Array(itemsPerPage)].map((_, index) => (
-                                    <div key={index} className="relative flex flex-col items-center cursor-pointer overflow-hidden rounded-md shadow-lg">
-                                        <Skeleton variant="rectangular" width={218} height={218} />
-                                        <div className="text-center mt-2 px-4">
-                                            <Skeleton variant="text" width="70%" />
-                                            <Skeleton variant="text" width="50%" />
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                products.slice(currentIndex, currentIndex + itemsPerPage).map((product) => (
+                            {products.slice(currentIndex, currentIndex + itemsPerPage).map((product) => (
                                     <div
                                         key={product.id}
                                         className="relative flex flex-col items-center cursor-pointer overflow-hidden rounded-md shadow-lg hover:shadow-xl"
@@ -210,8 +196,21 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                                                         },
                                                     },
                                                 }}
+                                                disabled={loading}
                                             >
-                                                <SearchIcon fontSize="large" />
+                                                {loading ? (
+                                                    <CircularProgress
+                                                        size={40} // Kích thước spinner
+                                                        sx={{
+                                                            border: '3px solid #ff3048', // Thêm viền đỏ cho spinner
+                                                            backgroundColor: 'rgba(0, 0, 0, 0.1)', // Nền mờ phía sau spinner
+                                                            padding: '6px', // Padding để làm tăng kích thước spinner một chút
+                                                            boxSizing: 'border-box', // Đảm bảo các đường viền không làm thay đổi kích thước
+                                                        }}
+                                                    />// Hiển thị spinner khi đang loading
+                                                ) : (
+                                                    <SearchIcon fontSize="large" />
+                                                )}
                                             </IconButton>
                                             <Button
                                                 sx={{
@@ -223,6 +222,7 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                                                         backgroundColor: '#a22622',
                                                     },
                                                 }}
+
                                                 onClick={() => router.push(`/product-detail/${product.id}`)}
                                             >
                                                 Xem chi tiết
@@ -251,76 +251,18 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                                             </Typography>
                                         </div>
                                     </div>
-                                ))
-                            )}
+                                ))}
                         </div>
                     </div>
 
                     {/* Modal for Product Details */}
-                    <Dialog open={open} onClose={handleCloseModal} maxWidth="md">
-                        <DialogContent>
-                            <div className="flex items-center space-x-8">
-                                <div className="flex-1">
-                                    <Image
-                                        src={selectedProduct?.imagePath || ""}
-                                        alt={selectedProduct?.title || ""}
-                                        width={390}
-                                        height={390}
-                                        className="rounded-md"
-                                    />
-                                </div>
-                                <div className="flex-2 space-y-4">
-                                    <Typography
-                                        variant="h6"
-                                        className="font-bold text-ellipsis text-black"
-                                        style={{
-                                            whiteSpace: "normal",  // Cho phép xuống dòng
-                                            wordWrap: "break-word",  // Tự động bẻ từ nếu dài
-                                            overflow: "visible",  // Không ẩn văn bản
-                                            display: "block",  // Đảm bảo tiêu đề hiển thị trên một dòng
-                                        }}
-                                    >
-                                        {selectedProduct?.title}
-                                    </Typography>
-
-                                    <Typography variant="subtitle1" className="text-gray-600">
-                                        Thương hiệu: <span className="text-red-500">beYoga</span>
-                                    </Typography>
-                                    <Typography variant="h5" className="text-red-500">
-                                        {selectedProduct?.price?.toLocaleString()}₫
-                                    </Typography>
-                                    <Typography variant="body2" className="text-black max-w-xl overflow-hidden">
-                                        {selectedProduct?.productDetail?.description || "Thông tin sản phẩm đang cập nhật."}
-                                    </Typography>
-                                    <span
-                                        className={"text-red-600 hover:cursor-pointer"}
-                                        onClick={() => router.push(`/product-detail/${selectedProduct.id}`)}>
-                                        Xem chi tiết
-                                    </span>
-                                    <div className="flex items-center space-x-4">
-                                        <CustomNumberInput
-                                            aria-label="Quantity"
-                                            placeholder="Nhập số lượng…"
-                                            value={quantity} // Liên kết giá trị state với ô nhập
-                                            onChange={(event, val) => setQuantity(val)} // Cập nhật giá trị state khi thay đổi
-                                        />
-                                        <Button
-                                            sx={{
-                                                backgroundColor: '#f44336',
-                                                color: 'white',
-                                                padding: '8px 16px',
-                                                '&:hover': {
-                                                    backgroundColor: '#a22622',
-                                                },
-                                            }}
-                                            onClick={handleAddToCart}
-                                        >
-                                            Thêm vào giỏ
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </DialogContent>
+                    <Dialog open={open} onClose={handleCloseModal} maxWidth={"lg"} >
+                        <ProductDetailModal
+                            selectedProduct={selectedProduct}
+                            quantity={quantity}
+                            setQuantity={setQuantity}
+                            handleAddToCart={handleAddToCart}
+                        />
                     </Dialog>
                 </Box>
             </div>

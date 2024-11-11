@@ -48,7 +48,7 @@ const HomePage: React.FC<IHomePageProps> = (props) => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch("http://localhost:8080/api/home/getAllProduct?page=1&size=10", {
+                const response = await fetch("http://localhost:8080/api/product/all?page=1&size=10", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

@@ -11,7 +11,7 @@ public interface ProductService {
     Page<Product>getAllProduct(Pageable pageable);
 
     Product getProductById(String id);
-
+    ProductResponse getById(String id);
     Product addProduct(ProductCreationRequest productCreationRequest);
 
     boolean delete(String productId);

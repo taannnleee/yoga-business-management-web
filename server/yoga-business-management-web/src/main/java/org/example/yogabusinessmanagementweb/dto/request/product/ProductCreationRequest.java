@@ -8,6 +8,7 @@ import org.example.yogabusinessmanagementweb.common.entities.models.ProductVaria
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductDetailResponse;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
@@ -25,6 +26,6 @@ public class ProductCreationRequest {
     String code;
     String brand;
     String description;
+    Map<String, Map<String, String>> variants;
 
-    private ProductVariants variantList;
 }

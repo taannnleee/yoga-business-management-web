@@ -15,6 +15,7 @@ import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
+import org.example.yogabusinessmanagementweb.service.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     SubCategoryRepository subCategoryRepository;
     TempRepository tempRepository;
     ProductMapper productMapper;
+    SubCategoryService subCategoryService;
 
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
@@ -63,6 +65,22 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
     }
 
+    @Override
+    public Page<ProductResponse> getAllProductBySubcategory(String id,String keyword, Pageable pageable) {
+        SubCategory subCategory =  subCategoryService.getSubCategoryById(id);
+        Page<Product> productPage;
+
+        if (keyword == null || keyword.isEmpty()) {
+            productPage = productRepository.findBySubCategory(subCategory,pageable); // Lấy tất cả sản phẩm
+        } else {
+            productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable); // Tìm kiếm theo từ khóa
+        }
+
+        // Chuyển từ Page<Product> sang Page<ProductResponse>
+        List<ProductResponse> productResponses =productMapper.productsToProductResponses(productPage.getContent());
+
+        return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
+    }
 
 
     @Override

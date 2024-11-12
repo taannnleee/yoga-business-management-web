@@ -24,103 +24,90 @@ interface IStoreManagementProps {
 const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
   const [deleteDisable, setDeleteDisable] = React.useState<boolean>(false);
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
-  const { user, accessToken } = useAppSelector((state: IRootState) => state.auth);
-  const [products, setProducts] = React.useState<any[]>([]);
+
+  const [products, setProducts] = React.useState<any[]>([]);  // Lưu trữ danh sách sản phẩm
   const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [page, setPage] = React.useState<number>(1);
-  const [totalPage, setTotalPage] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);  // Quản lý trang
+  const [totalPages, setTotalPages] = React.useState<number>(0);  // Tổng số trang
   const [actionLoading, setActionLoading] = React.useState<boolean>(false);
   const [selectedRow, setSelectedRow] = React.useState<string | number>('');
   const [selectedItem, setSelectedItem] = React.useState<IProduct | null>(null);
   const [openImportProductModal, setOpenImportProductModal] = React.useState<boolean>(false);
-  const [currentStore, setCurrentStore] = React.useState<IStore | null>(null);
+  const [currentSubCategory, setCurrentSubCategory] = React.useState<IStore | null>(null);
   const [listStore, setListStore] = React.useState<IStore[]>([]);
+  const [subcategories, setSubcategories] = React.useState<any[]>([]);  // State để lưu danh sách subcategories
   const [openUpdateModal, setOpenUpdateModal] = React.useState<boolean>(false);
   const [storeLoading, setStoreLoading] = React.useState<boolean>(false);
+  const accessToken = localStorage.getItem('accessToken');
 
+  // Hàm lấy tất cả sản phẩm
   const getAllProducts = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${apiURL}/products/by-store?storeId=${currentStore?.id}&page=${page}&pageSize=10`,
+        `${apiURL}/api/admin/get-all-product?page=${page}&size=10`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
-
-      if (response) {
-        console.log('GET PRODUCT RESPONSE', response);
-      }
-
-      if (response?.data?.success) {
-        setProducts(response?.data?.data?.results);
-        setTotalPage(response?.data?.data?.totalPage);
+      if (response?.data?.status === 200) {
+        setProducts(response.data.data.content);  // Dữ liệu sản phẩm nằm trong content
+        setTotalPages(response.data.data.totalPages);  // Tổng số trang
       } else {
-        setProducts([]);
+        setProducts([]);  // Nếu không có dữ liệu, reset mảng sản phẩm
       }
     } catch (error) {
-      console.log('GET PRODUCT RESPONSE', error);
+      console.log('Lỗi khi lấy sản phẩm:', error);
+      toast.error('Không thể tải sản phẩm.');
     } finally {
       setLoading(false);
     }
   };
 
-  const getAllStores = async () => {
+  // Hàm lấy tất cả subcategories
+  const getAllSubCategories = async () => {
     try {
-      setStoreLoading(true);
-      const response = await axios.get(`${apiURL}/store`, {
+      const response = await axios.get(`${apiURL}/api/admin/get-all-subcategory`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (response?.data?.success) {
-        setStoreLoading(false);
-        if (user.role == 'admin') {
-          setListStore([
-            ...response?.data?.data?.results,
-            {
-              id: 'all',
-              name: 'Tất cả cửa hàng',
-            },
-          ]);
-        } else {
-          setListStore(response?.data?.data?.results);
-          setStoreLoading(false);
-        }
-        setCurrentStore(response?.data?.data?.results?.[0]);
+      if (response?.data?.status === 200) {
+        setSubcategories(response.data.data);  // Lưu danh sách subcategories vào state
       } else {
-        setStoreLoading(false);
+        setSubcategories([]);
       }
     } catch (error) {
-      setStoreLoading(false);
-      console.log('GET STORE ERROR', error);
+      console.log('Lỗi khi lấy danh sách loại sản phẩm:', error);
+      toast.error('Không thể tải loại sản phẩm.');
     }
   };
 
+  React.useEffect(() => {
+    getAllProducts();  // Lấy danh sách sản phẩm
+    getAllSubCategories();  // Lấy danh sách loại sản phẩm (subcategories)
+  }, [page]);
+
+  // Cột trong DataGrid
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
-      field: 'product.upc',
+      field: 'upc',
       headerName: 'Mã sản phẩm',
       width: 200,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="">{params.row.product?.upc}</div>;
+        return <div>{params.row.code}</div>;  // Mã sản phẩm từ API
       },
     },
     {
-      field: 'product.name',
+      field: 'name',
       headerName: 'Tên sản phẩm',
       width: 250,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="">{params.row.product?.name}</div>;
+        return <div>{params.row.title}</div>;  // Tên sản phẩm từ API
       },
-    },
-    {
-      field: 'inventory',
-      headerName: 'Còn trong kho',
-      width: 150,
     },
     {
       field: 'price',
@@ -128,24 +115,26 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       width: 200,
       renderCell: (params: GridRenderCellParams<any>) => {
         return (
-          <div className="text-sm font-semibold text-green-800">{params.value?.displayPrice}</div>
+          <div className="text-sm font-semibold text-green-800">
+            {params.row.price.toLocaleString()} VND
+          </div>
         );
       },
     },
     {
-      field: 'product.reatedAt',
+      field: 'createdAt',
       headerName: 'Ngày tạo',
       width: 150,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="">{(params.row.product?.createdAt as string).prettyDate()}</div>;
+        return <div>{new Date(params.row.createdAt).toLocaleDateString()}</div>;  // Ngày tạo
       },
     },
     {
-      field: 'product.updatedAt',
+      field: 'updatedAt',
       headerName: 'Ngày cập nhật',
       width: 150,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="">{(params.row.product?.updatedAt as string).prettyDate()}</div>;
+        return <div>{new Date(params.row.updatedAt).toLocaleDateString()}</div>;  // Ngày cập nhật
       },
     },
     {
@@ -161,13 +150,13 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             id: 'update',
             title: 'Cập nhật sản phẩm',
             onPress: () => {
-              setSelectedItem(params.row as IProduct);
+              setSelectedItem(params.row);
               setOpenUpdateModal(true);
             },
             onActionSuccess: () => getAllProducts(),
           },
         ];
-        return actionLoading && selectedRow == params.row?.id ? (
+        return actionLoading && selectedRow === params.row?.id ? (
           <Spinner size={20} />
         ) : (
           <ActionMenu options={options} />
@@ -176,60 +165,27 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
     },
   ];
 
-  const updateProduct = async (id: string | number, values: Omit<IProduct, 'id'>) => {
-    try {
-      setActionLoading(true);
-      setSelectedRow(id);
-      const response = await axios.put(`${apiURL}/products/${id}/`, values, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (response?.data?.success) {
-        setActionLoading(false);
-        getAllProducts();
-        toast.success('Cập nhật sản phẩm thành công');
-        setOpenImportProductModal(false);
-      } else {
-        toast.error(response?.data?.data || response?.data?.error || 'Cập nhật sản phẩm thất bại');
-      }
-    } catch (error) {
-      setActionLoading(false);
-      console.log('Client Error', error);
-    }
-  };
-
-  React.useEffect(() => {
-    if (!!currentStore) {
-      getAllProducts();
-    }
-  }, [page, currentStore]);
-
-  React.useEffect(() => {
-    getAllStores();
-  }, []);
-
   return (
     <>
       <MainLayout
-        title="Danh sách sản phẩm "
+        title="Danh sách sản phẩm"
         content={
           <>
             <div className="mb-6 flex w-full items-center justify-between gap-y-2">
               <div className="flex items-center">
                 <SelectComponent
-                  optionSelected={currentStore}
-                  options={listStore}
-                  name="currentStore"
-                  label="Chọn loại sản phẩm "
-                  onSelect={(store) => {
-                    if (store.id === 'all') {
+                  optionSelected={currentSubCategory}
+                  options={subcategories}
+                  name="currentSubCategory"
+                  label="Chọn loại sản phẩm"
+                  onSelect={(sub) => {
+                    if (sub.id === 'all') {
                       props.onChangeViewMode('tenant');
                     } else {
-                      setCurrentStore(store);
+                      setCurrentSubCategory(sub);
                     }
                   }}
-                  placeholder="Chọn cửa hàng"
+                  placeholder="Chọn loại sản phẩm"
                 />
               </div>
               <button
@@ -251,7 +207,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
                   rows={products}
                   paginationMode="server"
                   page={page}
-                  rowCount={totalPage}
+                  rowCount={totalPages * 10}
                   pageSize={10}
                   columns={columns}
                   hideFooterPagination
@@ -266,7 +222,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
                 <div className="mt-4 flex flex-row-reverse gap-x-2">
                   <Pagination
                     onChange={(event, changedPage) => setPage(changedPage)}
-                    count={totalPage}
+                    count={totalPages}
                     defaultPage={1}
                     page={page}
                   />
@@ -277,17 +233,17 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
         }
       />
 
+      {/* Modal Import Product */}
       {openImportProductModal ? (
         <CustomDialog
-          title={'Nhập sản phẩm'}
+          title="Nhập sản phẩm"
           maxWidth="lg"
           open={openImportProductModal}
           onClose={() => setOpenImportProductModal(false)}
           children={
             <ImportProductForm
               onImportSuccess={() => getAllProducts()}
-              storeId={currentStore?.id as number}
-              currentStoreProduct={products}
+              subId={currentSubCategory?.id as number}
               open={openImportProductModal}
               onClose={() => setOpenImportProductModal(false)}
             />
@@ -295,6 +251,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
         />
       ) : null}
 
+      {/* Modal Update Product */}
       {openUpdateModal && (
         <CustomDialog
           title="Chỉnh sửa sản phẩm"
@@ -307,8 +264,8 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
               loading={actionLoading}
               currentProduct={selectedItem}
               onConfirm={(productValue) => {
-                if (!!selectedItem) {
-                  updateProduct(selectedItem?.id, productValue);
+                if (selectedItem) {
+                  // Gọi API cập nhật sản phẩm tại đây
                 }
               }}
             />

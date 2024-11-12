@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { Box, Button, TextField, CircularProgress } from '@mui/material';
+import { Box, Button, TextField, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import axios from 'axios';
 import { apiURL } from '../../config/constanst';
@@ -15,11 +15,17 @@ interface Category {
 
 const CategoryManagement: React.FC = () => {
   const [formData, setFormData] = useState<{ name: string }>({ name: '' });
+  const [subcategoryName, setSubcategoryName] = useState<string>(''); // State cho subcategory
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [totalCategories, setTotalCategories] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+
+  // Dialog State
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -71,6 +77,51 @@ const CategoryManagement: React.FC = () => {
     } catch (error) {
       console.error('Failed to create category', error);
       toast.error('Đã có lỗi xảy ra khi tạo danh mục.');
+    }
+    setLoading(false);
+  };
+
+  const handleRowClick = (params: any) => {
+    // Lưu cả id và name của category đã chọn
+    setSelectedCategoryId(params.row.id);
+    setSelectedCategoryName(params.row.name);  // Lưu tên của danh mục vào state
+    setOpenDialog(true);  // Mở dialog
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedCategoryId(null);  // Reset lại id khi đóng dialog
+    setSelectedCategoryName('');  // Reset lại name khi đóng dialog
+    setSubcategoryName('');  // Reset lại subcategory name
+  };
+
+  const handleSubmitSubcategory = async () => {
+    if (!selectedCategoryId || !subcategoryName) {
+      toast.error('Vui lòng nhập tên category phụ.');
+      return;
+    }
+    setLoading(true);
+    const accessToken = localStorage.getItem('accessToken');
+    try {
+      await axios.post(
+        `http://localhost:8080/api/admin/add-subcategory`,
+        {
+          name: subcategoryName,
+          categoryId: selectedCategoryId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      toast.success('Tạo category phụ thành công!');
+      setSubcategoryName('');  // Reset lại subcategory name sau khi thành công
+      setOpenDialog(false);  // Đóng dialog sau khi tạo thành công
+      fetchCategories();  // Tải lại danh mục
+    } catch (error) {
+      console.error('Failed to create subcategory', error);
+      toast.error('Đã có lỗi xảy ra khi tạo category phụ.');
     }
     setLoading(false);
   };
@@ -134,9 +185,43 @@ const CategoryManagement: React.FC = () => {
               setPage(0);
             }}
             loading={loading}
+            onRowClick={handleRowClick}  // Thêm sự kiện row click
           />
         </Box>
       </Box>
+
+      {/* Dialog */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Chi tiết Danh Mục</DialogTitle>
+        <DialogContent>
+          <Box>
+            <p>ID: {selectedCategoryId}</p>
+            <p>Tên Danh Mục: {selectedCategoryName}</p>
+
+            {/* TextField cho category phụ */}
+            <TextField
+              label="Tên Category Phụ"
+              fullWidth
+              name="subcategoryName"
+              value={subcategoryName}
+              onChange={(e) => setSubcategoryName(e.target.value)}
+              margin="normal"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Đóng
+          </Button>
+          <Button
+            onClick={handleSubmitSubcategory}
+            color="primary"
+            disabled={loading || !subcategoryName}
+          >
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Category Phụ'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <FooterSection />
     </>

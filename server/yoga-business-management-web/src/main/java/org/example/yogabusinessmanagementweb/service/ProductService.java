@@ -16,4 +16,6 @@ public interface ProductService {
 
     boolean delete(String productId);
     Page<ProductResponse> searchProducts(String keyword, Pageable pageable);
+
+    Page<ProductResponse> getAllProductBySubcategory(String id,String keyword, Pageable pageable);
 }

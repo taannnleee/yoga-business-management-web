@@ -33,4 +33,9 @@ public class AdminSubcategoryController {
         List<SubCategoryResponse> list = subCategoryService.getSubCategoryOfCategory(id);
         return new ApiResponse<>(HttpStatus.OK.value(), "get all subcategory of category  successfully",list);
     }
+    @GetMapping("/get-all-subcategory")
+    public ApiResponse<?> getSubCategoryOfCategory() {
+        List<SubCategoryResponse> list = subCategoryService.getAllSub();
+        return new ApiResponse<>(HttpStatus.OK.value(), "get all subcategory successfully",list);
+    }
 }

@@ -65,4 +65,19 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         return Mappers.mapperEntityToDto(list,SubCategoryResponse.class);
     }
 
+    @Override
+    public List<SubCategoryResponse> getAllSub() {
+        List<SubCategory> list = subCategoryRepository.findAll();
+        return Mappers.mapperEntityToDto(list,SubCategoryResponse.class);
+    }
+
+    @Override
+    public SubCategory getSubCategoryById(String id) {
+        Optional<SubCategory> subCategoryOptional = subCategoryRepository.findById(Long.valueOf(id));
+        if(subCategoryOptional.isEmpty()) {
+            throw  new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+        return subCategoryOptional.get();
+    }
+
 }

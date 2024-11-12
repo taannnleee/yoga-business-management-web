@@ -49,8 +49,10 @@ public enum ErrorCode {
 
     LECTURE_NOT_FOUND(1032, "lecture not found",HttpStatus.NOT_FOUND),
 
-    ORDER_NOT_FOUND(1032, "order not found",HttpStatus.NOT_FOUND);
+    ORDER_NOT_FOUND(1032, "order not found",HttpStatus.NOT_FOUND),
 
+
+    CART_ITEM_NOT_FOUND(1033, "Cart item not found",HttpStatus.NOT_FOUND);
     // MODULE ERROR
 
     // CLASS ERROR

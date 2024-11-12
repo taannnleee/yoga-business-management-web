@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { DialogContent, Typography, Button } from '@mui/material';
 import Image from 'next/image';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
@@ -9,25 +9,35 @@ interface Props {
     quantity: number;
     setQuantity: (quantity: React.SetStateAction<any> | null) => void;
     handleAddToCart: () => void;
+    handleVariantChange: (variant: any) => void;
 }
 
-const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddToCart }: Props) => {
+const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddToCart, handleVariantChange }: Props) => {
     const router = useRouter();
 
     const [selectedImageLeft, setSelectedImageLeft] = useState(selectedProduct?.imagePath || "");
     const [selectedImageRight, setSelectedImageRight] = useState("");
     const [selectedImage, setSelectedImage] = useState(selectedImageLeft || selectedImageRight);
-    const [currentVariant, setCurrentVariant] = useState<any>({}); // Flexible variant state
+    const [currentVariant, setCurrentVariant] = useState<any>({});
+
+    console.log("kkkk");
     console.log("currentVariant", currentVariant);
+
     const handleVariantSelect = (variantType: string, value: string, image: string) => {
-        setCurrentVariant(prevState => ({
-            ...prevState,
+        const updatedVariant = {
+            ...currentVariant,
             [variantType]: { value, image },
-        }));
+        };
+        setCurrentVariant(updatedVariant); // Cập nhật state local currentVariant
+
+        // Gọi hàm handleVariantChange để gửi data về component cha
+        handleVariantChange(updatedVariant); // Truyền updated variant về component cha
+
         if (variantType === 'color') {
             handleImageRightClick(image);
         }
     };
+
     useEffect(() => {
         // Chọn variant đầu tiên tự động khi Modal được hiển thị
         const defaultVariants: any = {};
@@ -47,6 +57,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
             });
         }
         setCurrentVariant(defaultVariants);
+        handleVariantChange(defaultVariants);
     }, [selectedProduct]);
     const handleImageLeftClick = (image: unknown) => {
         setSelectedImageLeft(image);

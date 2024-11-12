@@ -28,21 +28,24 @@ import TenantProductManagement from "./TenantProductManagement";
 import StoreProductManagement from "./StoreProductManagement";
 
 const ProductManagement = () => {
-  const { user, accessToken } = useAppSelector(
-    (state: IRootState) => state.auth
-  );
   const [viewMode, setViewMode] = React.useState<"tenant" | "store">("store");
-
   return (
     <>
       {viewMode == "store" ? (
+
         <StoreProductManagement
+
+
           onChangeViewMode={(mode) => setViewMode(mode)}
         />
+
+
       ) : (
+
         <TenantProductManagement
           onChangeViewMode={(mode) => setViewMode(mode)}
         />
+
       )}
     </>
   );

@@ -15,8 +15,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
-import {toast} from "react-toastify";
-import {useToast} from "@/hooks/useToast";
+import { toast } from "react-toastify";
+import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
 
 interface ProductByCategoryCardProps {
@@ -26,6 +26,7 @@ interface ProductByCategoryCardProps {
 const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products }) => {
     const toast = useToast();
     const [quantity, setQuantity] = useState(1);
+    const [currentVariant, setCurrentVariant] = useState<any>({});
     const router = useRouter();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
@@ -36,6 +37,12 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
     };
     const itemsPerPage = 8;
 
+
+    const handleVariantChange = (variant: any) => {
+        setCurrentVariant(variant); // Cập nhật variant hiện tại
+        console.log("hehehe");
+        console.log("Current Variant:", variant);
+    };
 
     const handleAddToCart = async () => {
         try {
@@ -48,7 +55,8 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                 },
                 body: JSON.stringify({
                     productId: selectedProduct.id, // Truyền product.id vào API
-                    quantity: quantity, // Sử dụng giá trị quantity từ state
+                    quantity: quantity, 
+                    currentVariant : currentVariant
                 }),
             });
 
@@ -82,6 +90,7 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
 
             if (response.status === 200) {
                 setSelectedProduct(response.data.data);
+
                 setOpen(true);
             } else {
                 console.error("Failed to fetch product details");
@@ -165,93 +174,93 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                         {/* Skeleton loading */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-lg">
                             {products.slice(currentIndex, currentIndex + itemsPerPage).map((product) => (
-                                    <div
-                                        key={product.id}
-                                        className="relative flex flex-col items-center cursor-pointer overflow-hidden rounded-md shadow-lg hover:shadow-xl"
-                                    >
-                                        <Image
-                                            src={product.imagePath}
-                                            alt={product.title}
-                                            width={218}
-                                            height={218}
-                                            className="rounded-md"
-                                        />
-                                        <div className="product-hover absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                            <IconButton
-                                                className="absolute right-0"
-                                                color="secondary"
-                                                onClick={() => handleOpenModal(product)}
-                                                sx={{
-                                                    backgroundColor: 'white',
-                                                    borderRadius: '50%',
-                                                    padding: '8px',
-                                                    '& svg': {
-                                                        color: 'black',
-                                                    },
-                                                    top: '-50px',
-                                                    '&:hover': {
-                                                        backgroundColor: '#ff3048',
-                                                        '& svg': {
-                                                            color: 'white',
-                                                        },
-                                                    },
-                                                }}
-                                                disabled={loading}
-                                            >
-                                                {loading ? (
-                                                    <CircularProgress
-                                                        size={40} // Kích thước spinner
-                                                        sx={{
-                                                            border: '3px solid #ff3048', // Thêm viền đỏ cho spinner
-                                                            backgroundColor: 'rgba(0, 0, 0, 0.1)', // Nền mờ phía sau spinner
-                                                            padding: '6px', // Padding để làm tăng kích thước spinner một chút
-                                                            boxSizing: 'border-box', // Đảm bảo các đường viền không làm thay đổi kích thước
-                                                        }}
-                                                    />// Hiển thị spinner khi đang loading
-                                                ) : (
-                                                    <SearchIcon fontSize="large" />
-                                                )}
-                                            </IconButton>
-                                            <Button
-                                                sx={{
-                                                    backgroundColor: '#f44336',
-                                                    color: 'white',
-                                                    padding: '8px 16px',
-                                                    width: '100%',
-                                                    '&:hover': {
-                                                        backgroundColor: '#a22622',
-                                                    },
-                                                }}
-
-                                                onClick={() => router.push(`/product-detail/${product.id}`)}
-                                            >
-                                                Xem chi tiết
-                                            </Button>
-                                        </div>
-                                        <div className="text-center mt-2 px-4">
-                                            <Typography
-                                                variant="subtitle1"
-                                                style={{
+                                <div
+                                    key={product.id}
+                                    className="relative flex flex-col items-center cursor-pointer overflow-hidden rounded-md shadow-lg hover:shadow-xl"
+                                >
+                                    <Image
+                                        src={product.imagePath}
+                                        alt={product.title}
+                                        width={218}
+                                        height={218}
+                                        className="rounded-md"
+                                    />
+                                    <div className="product-hover absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                        <IconButton
+                                            className="absolute right-0"
+                                            color="secondary"
+                                            onClick={() => handleOpenModal(product)}
+                                            sx={{
+                                                backgroundColor: 'white',
+                                                borderRadius: '50%',
+                                                padding: '8px',
+                                                '& svg': {
                                                     color: 'black',
-                                                    transition: 'color 0.3s',
-                                                    maxWidth: '192px',
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                }}
-                                                className="hover:text-red-500"
-                                            >
-                                                {product.title}
-                                            </Typography>
-                                            <div className="mt-1">{renderStars(product.averageRating)}</div>
-                                            <Typography variant="body2" className="text-gray-500 mt-1">
-                                                {product.price.toLocaleString()}₫
-                                            </Typography>
-                                        </div>
+                                                },
+                                                top: '-50px',
+                                                '&:hover': {
+                                                    backgroundColor: '#ff3048',
+                                                    '& svg': {
+                                                        color: 'white',
+                                                    },
+                                                },
+                                            }}
+                                            disabled={loading}
+                                        >
+                                            {loading ? (
+                                                <CircularProgress
+                                                    size={40} // Kích thước spinner
+                                                    sx={{
+                                                        border: '3px solid #ff3048', // Thêm viền đỏ cho spinner
+                                                        backgroundColor: 'rgba(0, 0, 0, 0.1)', // Nền mờ phía sau spinner
+                                                        padding: '6px', // Padding để làm tăng kích thước spinner một chút
+                                                        boxSizing: 'border-box', // Đảm bảo các đường viền không làm thay đổi kích thước
+                                                    }}
+                                                />// Hiển thị spinner khi đang loading
+                                            ) : (
+                                                <SearchIcon fontSize="large" />
+                                            )}
+                                        </IconButton>
+                                        <Button
+                                            sx={{
+                                                backgroundColor: '#f44336',
+                                                color: 'white',
+                                                padding: '8px 16px',
+                                                width: '100%',
+                                                '&:hover': {
+                                                    backgroundColor: '#a22622',
+                                                },
+                                            }}
+
+                                            onClick={() => router.push(`/product-detail/${product.id}`)}
+                                        >
+                                            Xem chi tiết
+                                        </Button>
                                     </div>
-                                ))}
+                                    <div className="text-center mt-2 px-4">
+                                        <Typography
+                                            variant="subtitle1"
+                                            style={{
+                                                color: 'black',
+                                                transition: 'color 0.3s',
+                                                maxWidth: '192px',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                            }}
+                                            className="hover:text-red-500"
+                                        >
+                                            {product.title}
+                                        </Typography>
+                                        <div className="mt-1">{renderStars(product.averageRating)}</div>
+                                        <Typography variant="body2" className="text-gray-500 mt-1">
+                                            {product.price.toLocaleString()}₫
+                                        </Typography>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
@@ -262,6 +271,7 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                             quantity={quantity}
                             setQuantity={setQuantity}
                             handleAddToCart={handleAddToCart}
+                            handleVariantChange={handleVariantChange}
                         />
                     </Dialog>
                 </Box>

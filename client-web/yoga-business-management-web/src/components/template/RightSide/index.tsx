@@ -6,12 +6,10 @@ interface IRightSideProps {
     product: {
         title: string;
         price: number;
-        productDetail: {
-            description: string;
-            brand: string;
-            color: string;
-            size: string;
-        };
+
+        description: string;
+        brand: string;
+        color: string;
         averageRating: number;
     };
 }
@@ -28,15 +26,15 @@ const RightSide: React.FC<IRightSideProps> = ({ product }) => {
                 </div>
                 <div className="flex items-center">
                     <h3 className="text-gray-400 text-lg">Màu sắc: </h3>
-                    <h3 className="text-gray-500 ml-2 text-lg cursor-pointer">{product.productDetail.color}</h3>
+                    <h3 className="text-gray-500 ml-2 text-lg cursor-pointer">{product.color}</h3>
                 </div>
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                     <h3 className="text-gray-400 text-lg">Kích thước: </h3>
-                    <h3 className="text-gray-500 ml-2 text-lg cursor-pointer">{product.productDetail.size}</h3>
-                </div>
+                    <h3 className="text-gray-500 ml-2 text-lg cursor-pointer">{product.size}</h3>
+                </div> */}
                 <div className="flex items-center">
                     <h3 className="text-gray-400 text-lg">Thương hiệu: </h3>
-                    <h3 className="text-gray-500 ml-2 text-lg cursor-pointer">{product.productDetail.brand}</h3>
+                    <h3 className="text-gray-500 ml-2 text-lg cursor-pointer">{product.brand}</h3>
                 </div>
             </div>
 
@@ -48,7 +46,7 @@ const RightSide: React.FC<IRightSideProps> = ({ product }) => {
 
             <div className="flex flex-col gap-y-2">
                 <h1 className="text-gray-600 font-bold text-lg">Mô tả về sản phẩm</h1>
-                <p className="text-gray-400 text-sm">{product.productDetail.description}</p>
+                <p className="text-gray-400 text-sm">{product.description}</p>
             </div>
         </div>
     );

@@ -9,8 +9,8 @@ import {
 import React, { useState } from "react";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { icons, images } from "@/constants";
-import InputField from "@/components/InputField";
-import CustomButton from "@/components/CustomButton";
+import InputField from "@/components/atoms/InputField";
+import CustomButton from "@/components/atoms/CustomButton";
 import { router } from "expo-router";
 import { regenerateOtp } from "@/api/regenerate-otp";
 

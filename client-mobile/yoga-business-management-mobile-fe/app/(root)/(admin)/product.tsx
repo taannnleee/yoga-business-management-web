@@ -27,7 +27,7 @@ const AddProduct = () => {
 
     // const response = await addProduct(token, productData);
     // if (response.success) {
-    //     Alert.alert("Success", "Product added successfully");
+    //     Alert.alert("Success", "Id added successfully");
 
     //     setProductData({ title: "", description: "", price: "", image: "" });
     // } else {

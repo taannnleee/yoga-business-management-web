@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import InputField from "@/components/InputField";
-import CustomButton from "@/components/CustomButton";
+import InputField from "@/components/atoms/InputField";
+import CustomButton from "@/components/atoms/CustomButton";
 import { verifyOtp } from "@/api/verify-otp";
 import { icons, images } from "@/constants";
 import { ReactNativeModal } from "react-native-modal";

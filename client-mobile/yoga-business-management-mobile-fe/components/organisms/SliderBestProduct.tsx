@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { getProducts } from "@/api/get-product";
+import { getProducts } from "@/api/get-all-product";
 import { ProductProps } from "@/types/type";
 import { getJwt } from "@/jwt/get-jwt";
 import { router } from "expo-router";

@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ProductCard from "@/components/ProductCard";
-import TextInputSearch from "@/components/TextInputSearch";
+import ProductCard from "@/components/organisms/ProductCard";
+import TextInputSearch from "@/components/molecules/TextInputSearch";
 import { icons, images } from "@/constants";
-import { getProducts } from "@/api/get-product";
+import { getProducts } from "@/api/get-all-product";
 import { getJwt } from "@/jwt/get-jwt";
 import { router } from "expo-router";
 import { ProductProps } from "@/types/type";
-import { SliderBestProduct } from "@/components/Slider/SliderBestProduct";
+import { SliderBestProduct } from "@/components/organisms/SliderBestProduct";
 
 const Home = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
@@ -80,7 +80,7 @@ const Home = () => {
             onPress={() => {
               router.push(
                 // @ts-ignore
-                `/(root)/(product)/${item.id}?nameProduct=${item.title}`,
+                `/(root)/(product)/${item.id}`,
               );
             }}
           >

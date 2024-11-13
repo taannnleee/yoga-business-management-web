@@ -11,7 +11,7 @@ export const getProducts = async (
 ): Promise<ProductProps[] | string> => {
   try {
     // Construct the API URL
-    const url = new URL(`${BASE_URL}/api/home/getAllProduct`);
+    const url = new URL(`${BASE_URL}/api/product/all`);
     url.searchParams.append("page", page.toString());
     url.searchParams.append("size", size.toString());
     if (keyword) {

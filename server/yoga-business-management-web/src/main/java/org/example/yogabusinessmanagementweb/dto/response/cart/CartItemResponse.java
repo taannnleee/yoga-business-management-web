@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.dto.response.cartitem;
+package org.example.yogabusinessmanagementweb.dto.response.cart;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

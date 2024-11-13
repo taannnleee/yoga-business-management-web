@@ -1,11 +1,8 @@
-package org.example.yogabusinessmanagementweb.dto.request.cartitem;
+package org.example.yogabusinessmanagementweb.dto.request.cart;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Map;
 
 @Data
 @RequiredArgsConstructor

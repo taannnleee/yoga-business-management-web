@@ -4,15 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
+import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
+import org.example.yogabusinessmanagementweb.common.mapper.SubCategoryMapperImpl;
 import org.example.yogabusinessmanagementweb.dto.request.category.CategoryCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse;
+import org.example.yogabusinessmanagementweb.dto.response.category.CategoryUserResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CategoryRepository;
+import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +27,9 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
+    SubCategoryRepository subCategoryRepository;
+    private final SubCategoryMapperImpl subCategoryMapperImpl;
+
 
     @Override
     public CategoryResponse addCategory(CategoryCreationRequest categoryCreationRequest) {
@@ -56,6 +64,29 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categoryList = categoryRepository.findAll();
         List<CategoryResponse> list = Mappers.mapperEntityToDto (categoryList, CategoryResponse.class);
         return list;
+    }
+
+    @Override
+    public List<CategoryUserResponse> getAllCategoryByUser() {
+        List<CategoryUserResponse> categoryList = new ArrayList<>();
+        return categoryList;
+//        List<CategoryUserResponse> categoryUserResponses = new ArrayList<>();
+//
+//        List<Category> categoryList = categoryRepository.findAll();
+//
+//        for (Category category : categoryList) {
+//            CategoryUserResponse categoryUserResponse = new CategoryUserResponse();
+//            categoryUserResponse.setId(category.getId());
+//            categoryUserResponse.setName(category.getName());
+//
+//            List<SubCategory> list = subCategoryRepository.findAllByCategory(category);
+//
+//            categoryUserResponse.setListCategory(list);
+//            categoryUserResponses.add(categoryUserResponse);
+//        }
+//
+//
+//        return categoryUserResponses;
     }
 }
 

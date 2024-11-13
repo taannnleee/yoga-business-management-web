@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
+import org.example.yogabusinessmanagementweb.common.entities.Wishlist;
 import org.example.yogabusinessmanagementweb.common.mapper.AddressMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.UserMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
@@ -120,6 +121,10 @@ public class UserServiceImpl implements UserService {
         user.setRoles(ERole.USER.name() );
 
         user.setAddresses(arrayList);
+
+        //tạo ra một wish list cho người dùng
+        Wishlist wishlist = new Wishlist();
+        user.setWishlist(wishlist);
         userRepository.save(user);
         authencationService.sendOTP(registrationRequest.getEmail());
 

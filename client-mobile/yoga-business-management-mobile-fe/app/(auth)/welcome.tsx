@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { router } from "expo-router";
 import Swiper from "react-native-swiper";
 import { onWelcome } from "@/constants";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/atoms/CustomButton";
 
 const Welcome = () => {
   const swiperRef = useRef<Swiper>(null);

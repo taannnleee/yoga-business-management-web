@@ -30,8 +30,9 @@ const Home = () => {
 
   // Redirect based on authentication status
   return isAuthenticated ? (
-    <Redirect href="/(root)/(tabs)/home" />
+    <Redirect href="/(auth)/welcome" />
   ) : (
+    // <Redirect href="/(root)/(tabs)/home" />
     // <Redirect href="/(root)/(admin)/dashboard" />
     <Redirect href="/(auth)/welcome" />
     // <Redirect href="/(root)/(admin)/dashboard" />

@@ -47,8 +47,9 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @OneToMany(mappedBy = "user")
     List<GroupHasUser> groupHasUsers;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    Wishlist wishlist;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    List<Wishlist> wishlists;
 
     @OneToOne
     Token token;

@@ -10,8 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "Wishlist")
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Getter
 @Setter
@@ -20,8 +18,9 @@ public class Wishlist  extends AbstractEntity<Long> implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
+    
+    public Wishlist() {
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    Product product;
+    }
+
 }

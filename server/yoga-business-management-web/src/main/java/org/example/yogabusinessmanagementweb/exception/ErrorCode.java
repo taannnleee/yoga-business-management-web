@@ -52,7 +52,10 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(1032, "order not found",HttpStatus.NOT_FOUND),
 
 
-    CART_ITEM_NOT_FOUND(1033, "Cart item not found",HttpStatus.NOT_FOUND);
+    CART_ITEM_NOT_FOUND(1033, "Cart item not found",HttpStatus.NOT_FOUND),
+
+    WISHLIST_NOT_FOUND(1034, "Wishlist not found",HttpStatus.NOT_FOUND),
+    PRODUCT_EXISTS_WISHLIST(1035, "The product already exists in the wishlist",HttpStatus.NOT_FOUND);
     // MODULE ERROR
 
     // CLASS ERROR

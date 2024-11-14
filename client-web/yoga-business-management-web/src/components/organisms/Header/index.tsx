@@ -41,6 +41,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
         <p className="cursor-pointer" onClick={() => router.push("/address")}>Địa chỉ</p>
         <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
         <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
+        <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
         <p
             className="cursor-pointer"
             onClick={() => {

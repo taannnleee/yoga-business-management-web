@@ -23,7 +23,9 @@ const ProductDetail: React.FC = () => {
           });
 
           if (response) {
-            setProduct(response.data.data); // Updated to set product data
+            setProduct(response.data.data);
+            
+            console.log(response.data.data)
           } else {
             setError("Product not found");
           }
@@ -43,9 +45,9 @@ const ProductDetail: React.FC = () => {
   if (error) return <div>{error}</div>; // Show error message
 
   return (
-      <div className="flex w-full justify-center">
-            <ProductDetailTemplate product={product} />
-      </div>
+    <div className="flex w-full justify-center">
+      <ProductDetailTemplate product={product} />
+    </div>
   );
 };
 

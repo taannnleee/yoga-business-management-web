@@ -56,9 +56,6 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "rating_id")
     List<Rating> ratings;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    List<Wishlist> wishlists;
 
 //    // Thuộc tính mới để lưu danh sách variants dưới dạng JSON
     @JdbcTypeCode(SqlTypes.JSON)

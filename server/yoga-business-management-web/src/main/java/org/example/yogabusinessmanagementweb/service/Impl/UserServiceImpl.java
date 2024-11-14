@@ -123,8 +123,8 @@ public class UserServiceImpl implements UserService {
         user.setAddresses(arrayList);
 
         //tạo ra một wish list cho người dùng
-        Wishlist wishlist = new Wishlist();
-        user.setWishlist(wishlist);
+//        Wishlist wishlist = new Wishlist();
+//        user.setWishlist(wishlist);
         userRepository.save(user);
         authencationService.sendOTP(registrationRequest.getEmail());
 

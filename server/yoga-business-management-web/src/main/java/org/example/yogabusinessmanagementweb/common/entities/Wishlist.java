@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Wishlist  extends AbstractEntity<Long> implements Serializable {
     @ManyToOne

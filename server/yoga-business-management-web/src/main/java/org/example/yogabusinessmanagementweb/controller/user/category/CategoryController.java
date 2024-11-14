@@ -9,6 +9,7 @@ import org.example.yogabusinessmanagementweb.dto.request.category.CategoryCreati
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryUserResponse;
+import org.example.yogabusinessmanagementweb.dto.response.category.CategoryWithProductResponse;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/api")
+@RequestMapping("/api/category")
 @Slf4j
 public class CategoryController {
     CategoryService categoryService;
@@ -28,4 +29,9 @@ public class CategoryController {
 //        List<CategoryUserResponse> list = categoryService.getAllCategoryByUser();
 //        return new ApiResponse<>(HttpStatus.OK.value(), "get all category by user successfully",list);
 //    }
+    @GetMapping("/with-products")
+    public ApiResponse<List<CategoryWithProductResponse>> getCategoriesWithProducts() {
+        List<CategoryWithProductResponse> list = categoryService.getCategoriesWithProducts();
+        return new ApiResponse<>(HttpStatus.OK.value(), "get all category successfully",list);
+    }
 }

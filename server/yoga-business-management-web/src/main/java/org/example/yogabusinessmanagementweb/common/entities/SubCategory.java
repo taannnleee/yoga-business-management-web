@@ -31,7 +31,9 @@ public class SubCategory extends AbstractEntity<Long> implements Serializable  {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     EStatus status = EStatus.ACTIVE;
-
+    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Product> products;
 }
 
 

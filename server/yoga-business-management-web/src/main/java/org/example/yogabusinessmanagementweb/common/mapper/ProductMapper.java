@@ -5,15 +5,16 @@ import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreation
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductMapper {
 
     // Ignore the variantList field in the Product entity when mapping
     Product toProduct(ProductCreationRequest productDTO);
-    ProductResponse productToProductResponse(Product product);
 
+    ProductResponse toProductResponse(Product product);
     List<ProductResponse> productsToProductResponses(List<Product> products);
 }

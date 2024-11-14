@@ -1,7 +1,6 @@
 package org.example.yogabusinessmanagementweb.service;
 
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
-import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResponse;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.springframework.data.domain.Page;

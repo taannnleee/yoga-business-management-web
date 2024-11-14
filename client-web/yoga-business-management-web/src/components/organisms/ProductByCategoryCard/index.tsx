@@ -20,10 +20,13 @@ import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
 
 interface ProductByCategoryCardProps {
+    categoryName: string;
     products: any[];
+    subCategories: any[];
+    image: string;
 }
 
-const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products }) => {
+const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,categoryName, subCategories,products } : ProductByCategoryCardProps) => {
     const toast = useToast();
     const [quantity, setQuantity] = useState(1);
     const [currentVariant, setCurrentVariant] = useState<any>({});
@@ -130,40 +133,42 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ products 
                                 mr: 2,
                             }}
                         />
-                        <Typography variant="h4" fontWeight="bold" color={"red"} mr={2}>
-                            THẢM TẬP YOGA
+                        <Typography
+                            variant="h4"
+                            fontWeight="bold"
+                            color="red"
+                            mr={2}
+                            sx={{ textTransform: 'uppercase' }}  // Sử dụng sx để áp dụng style
+                        >
+                            {categoryName}
                         </Typography>
-                        <Box display="flex" alignItems="center" className="mx-auto justify-between gap-8">
-                            <Typography variant="body1" component="a" href="#" className="cursor-pointer">
-                                Phổ thông
-                            </Typography>
-                            <Typography variant="body1" component="a" href="#" className="cursor-pointer">
-                                Du lịch
-                            </Typography>
-                            <Typography variant="body1" component="a" href="#" className="cursor-pointer">
-                                Định tuyến
-                            </Typography>
-                            <Typography variant="body1" component="a" href="#" className="cursor-pointer">
-                                Khăn
-                            </Typography>
-                            <Typography variant="body1" component="a" href="#" className="cursor-pointer">
-                                Túi & Dây đeo
-                            </Typography>
-                            <Typography variant="body1" component="a" href="#" className="cursor-pointer">
-                                Nước lau
-                            </Typography>
-                        </Box>
 
+
+                        <Box display="flex" alignItems="center" className="mx-auto justify-between gap-8">
+                            {subCategories.map((subCategory: any) => (
+                                <Typography
+                                    key={subCategory.id} // Thêm key để tránh lỗi
+                                    variant="body1"
+                                    component="a"
+                                    href="#"
+                                    className="cursor-pointer"
+                                >
+                                    {subCategory.name} {/* Hiển thị tên của subCategory */}
+                                </Typography>
+                            ))}
+
+
+                        </Box>
                         <Button variant="contained" color="primary" className="ml-auto">
                             Xem tất cả
                         </Button>
                     </Box>
 
-                    <Divider className="my-2" />
+                        <Divider className="my-2" />
                     <div className="flex justify-start items-start space-x-4">
                         <Box className="w-[240px] h-[634px] mt-[-2px]">
                             <Image
-                                src="https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/collection_4_banner.jpg?1720673795720"
+                                src={image}
                                 alt="Category Image"
                                 width={240}
                                 height={634}

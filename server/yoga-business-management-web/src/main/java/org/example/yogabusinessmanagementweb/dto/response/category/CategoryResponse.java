@@ -12,5 +12,6 @@ import java.util.List;
 public class CategoryResponse {
     Long id;
     String name;
+    String urlImage;
     List<SubCategoryResponse> subCategories;
 }

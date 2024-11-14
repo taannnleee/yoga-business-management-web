@@ -6,7 +6,6 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.entities.models.ProductVariants;
 import org.example.yogabusinessmanagementweb.common.util.json.Variant;
 import org.example.yogabusinessmanagementweb.common.util.json.VariantConverter;
 import org.hibernate.annotations.JdbcTypeCode;

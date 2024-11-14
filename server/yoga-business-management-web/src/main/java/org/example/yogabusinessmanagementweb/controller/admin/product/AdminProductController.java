@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
-import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResponse;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;

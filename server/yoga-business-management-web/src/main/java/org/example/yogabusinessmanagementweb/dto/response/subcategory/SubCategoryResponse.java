@@ -4,6 +4,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
+import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
+
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
@@ -11,6 +14,5 @@ import org.example.yogabusinessmanagementweb.common.entities.Category;
 public class SubCategoryResponse {
     Long id;
     String name;
-    String status;
 
 }

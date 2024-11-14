@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.mapper.ProductMapper;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
-import org.example.yogabusinessmanagementweb.dto.response.product.AddProductResponse;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
@@ -14,9 +13,7 @@ import org.example.yogabusinessmanagementweb.repositories.TempRepository;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
-import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.service.SubCategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     }
     @Override
     public ProductResponse getById(String id) {
-        return productMapper.productToProductResponse((getProductById(id)));
+        return productMapper.toProductResponse((getProductById(id)));
     }
     @Override
     public Page<ProductResponse> searchProducts(String keyword, Pageable pageable) {

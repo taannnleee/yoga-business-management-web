@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import ProductDetailTemplate from "@/components/template/ProductDetail";
 import { useParams } from "next/navigation";
 import axios from "axios";
-
 const ProductDetail: React.FC = () => {
   const params = useParams();
   const id = params.id;

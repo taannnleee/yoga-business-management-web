@@ -3,7 +3,7 @@ import { DialogContent, Typography, Button } from '@mui/material';
 import Image from 'next/image';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { useRouter } from 'next/navigation';
-
+import { FaRegHeart, FaHeart, FaSearchPlus } from "react-icons/fa";
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -68,25 +68,41 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         setSelectedImageRight(image);
         setSelectedImage(image);
     };
-
+    const isFavorited = false;
     return (
         <DialogContent className={"w-[1030px] h-[559px]"}>
             <div className="flex items-center space-x-8">
                 <div className="flex-1">
-                    {/* Hiển thị ảnh lớn */}
-                    <Image
-                        src={selectedImage}
-                        alt={selectedProduct?.title || ""}
-                        width={390}
-                        height={390}
-                        className="rounded-md"
-                    />
+                    <div className="flex items-center space-x-4 relative">
+                        {/* Heart icon positioned at the top-right of the container */}
+                        <button
+                            className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
+                        >
+                            {!isFavorited ? (
+                                <FaRegHeart className="text-black w-6 h-6"/>
+                            ) : (
+                                <FaHeart className="text-red-500 w-6 h-6"/>
+                            )}
+                        </button>
+
+                        {/* Hiển thị ảnh lớn */}
+                        <Image
+                            src={selectedImage}
+                            alt={selectedProduct?.title || ""}
+                            width={390}
+                            height={390}
+                            className="rounded-md"
+                        />
+                    </div>
+
+
                     {/* Các ảnh nhỏ bên dưới ảnh lớn */}
                     <div className="mt-4 flex space-x-4 overflow-x-auto">
                         {selectedProduct?.variants?.color &&
                             Object.entries(selectedProduct.variants.color).map(([color, image], index) => {
                                 return image ? (
-                                    <div key={index} className="flex flex-col items-center" onClick={() => handleImageLeftClick(image)}>
+                                    <div key={index} className="flex flex-col items-center"
+                                         onClick={() => handleImageLeftClick(image)}>
                                         <Image
                                             src={typeof image === 'string' && image !== '' ? image : '/path/to/fallback/image.jpg'}
                                             alt={`${color} image`}
@@ -102,7 +118,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
 
                 <div className="flex-2 space-y-4">
                     <Typography variant="h6" className="font-bold text-ellipsis text-black">
-                        {selectedProduct?.title}
+                    {selectedProduct?.title}
                     </Typography>
 
                     <Typography variant="subtitle1" className="text-gray-600">
@@ -155,7 +171,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
 
                                                         ) : (
                                                             <div
-                                                                className={`flex items-center justify-center w-11 h-11 border border-gray-300 rounded-md cursor-pointer ${value === currentVariant[variantType]?.value ? 'border-2 border-blue-800' : ''}`}
+                                                                className={`flex items-center justify-center w-11 h-11 border border-gray-300 rounded-md cursor-pointer ${value === currentVariant[variantType]?.value ? 'border-2 border-red-800' : ''}`}
                                                             >
                                                                 <Typography className="text-center">{value}</Typography>
                                                             </div>

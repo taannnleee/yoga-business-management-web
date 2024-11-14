@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import ProductDetailTemplate from "@/components/template/ProductDetail";
 import { useParams } from "next/navigation";
 import axios from "axios";
+
 const ProductDetail: React.FC = () => {
   const params = useParams();
   const id = params.id;
 
-  const [product, setProduct] = useState<any>(null); // Replace 'any' with a more specific type if possible
+  const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,7 +16,7 @@ const ProductDetail: React.FC = () => {
     const fetchProductData = async () => {
       if (id) {
         try {
-          const accessToken = localStorage.getItem("accessToken"); // Get token from localStorage
+          const accessToken = localStorage.getItem("accessToken");
           const response = await axios.get(`http://localhost:8080/api/product-detail/getProduct/${id}`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -24,13 +25,10 @@ const ProductDetail: React.FC = () => {
 
           if (response) {
             setProduct(response.data.data);
-            
-            console.log(response.data.data)
           } else {
             setError("Product not found");
           }
         } catch (error) {
-          console.error("Error fetching product:", error);
           setError("Error fetching product");
         } finally {
           setLoading(false);
@@ -41,13 +39,13 @@ const ProductDetail: React.FC = () => {
     fetchProductData();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>; // Show loading state
-  if (error) return <div>{error}</div>; // Show error message
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div className="flex w-full justify-center">
-      <ProductDetailTemplate product={product} />
-    </div>
+      <div className=" bg-white flex justify-center">
+        <ProductDetailTemplate product={product} />
+      </div>
   );
 };
 

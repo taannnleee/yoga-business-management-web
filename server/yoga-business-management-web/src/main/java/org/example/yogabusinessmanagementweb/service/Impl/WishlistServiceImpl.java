@@ -13,6 +13,7 @@ import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.WishlistRepository;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.service.WishlistService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,4 +83,14 @@ public class WishlistServiceImpl implements WishlistService {
         return wishlist;
     }
 
+    @Override
+    public Wishlist deleteWishlistByProductId(HttpServletRequest request, String productId) {
+        User user  = jwtUtil.getUserFromRequest(request);
+        Wishlist wishlist  =  wishlistRepository.findByProductIdAndUserId(Long.valueOf(productId), user.getId());
+        if(wishlist == null) {
+            throw  new AppException(ErrorCode.WISHLIST_NOT_FOUND);
+        }
+        wishlistRepository.deleteById(wishlist.getId());
+        return wishlist;
+    }
 }

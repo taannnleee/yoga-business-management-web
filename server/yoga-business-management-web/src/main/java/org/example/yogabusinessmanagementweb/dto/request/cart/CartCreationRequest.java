@@ -19,4 +19,5 @@ public class CartCreationRequest {
 
     Map<String, Map<String, String>>  currentVariant;
 
+
 }

@@ -80,9 +80,9 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                             className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
                         >
                             {!isFavorited ? (
-                                <FaRegHeart className="text-black w-6 h-6"/>
+                                <FaRegHeart className="text-black w-6 h-6" />
                             ) : (
-                                <FaHeart className="text-red-500 w-6 h-6"/>
+                                <FaHeart className="text-red-500 w-6 h-6" />
                             )}
                         </button>
 
@@ -103,7 +103,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                             Object.entries(selectedProduct.variants.color).map(([color, image], index) => {
                                 return image ? (
                                     <div key={index} className="flex flex-col items-center"
-                                         onClick={() => handleImageLeftClick(image)}>
+                                        onClick={() => handleImageLeftClick(image)}>
                                         <Image
                                             src={typeof image === 'string' && image !== '' ? image : '/path/to/fallback/image.jpg'}
                                             alt={`${color} image`}
@@ -119,7 +119,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
 
                 <div className="flex-2 space-y-4">
                     <Typography variant="h6" className="font-bold text-ellipsis text-black">
-                    {selectedProduct?.title}
+                        {selectedProduct?.title}
                     </Typography>
 
                     <Typography variant="subtitle1" className="text-gray-600">

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
         if (!cartResponse.isPresent() ) {
             throw new AppException(ErrorCode.CART_NOT_FOUND);
         }
-        
+
         Cart cart = cartResponse.get();
 
         // Tạo đối tượng Order
@@ -60,6 +61,8 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(cartItem.getProduct());
             orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setCurrentVariant(cartItem.getCurrentVariant());
+            orderItem.setTotalPrice(cartItem.getTotalPrice());
 
             // Thêm OrderItem vào danh sách Order
             order.getOrderItems().add(orderItem);
@@ -82,11 +85,13 @@ public class OrderServiceImpl implements OrderService {
         cart.setTotalItem(0);
         cart.setTotalPrice(BigDecimal.valueOf(0));
 
+//        cartItemRepository.deleteAll(cart.getCartItems());  // Xóa tất cả CartItem trong giỏ hàng
 
-        // Xóa các item trong cart
-        cart.getCartItems().clear();
-
-        //lưu cart và cart item sẽ tự lưu
+        for (Iterator<CartItem> iterator = cart.getCartItems().iterator(); iterator.hasNext();) {
+            CartItem cartItem = iterator.next();
+            iterator.remove();  // Xóa phần tử hiện tại
+            cartItemRepository.delete(cartItem);
+        }
         cartRepository.save(cart);
 
         OrderCreationResponse orderCreationResponse = new OrderCreationResponse();

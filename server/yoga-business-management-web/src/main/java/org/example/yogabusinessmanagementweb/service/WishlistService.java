@@ -17,4 +17,6 @@ public interface WishlistService {
     Wishlist deleteWishlistOfUser(HttpServletRequest request, String wishlistId);
 
     Wishlist getWishlistExists(HttpServletRequest request,WishListRequest wishListRequest);
+
+    Wishlist deleteWishlistByProductId(HttpServletRequest request, String productId);
 }

@@ -6,6 +6,7 @@ import { apiURL } from '../../config/constanst';
 import { toast } from 'react-toastify';
 import Header from '../../components/Header';
 import FooterSection from '../../components/FooterSection';
+import UploadWidget from '../../designs/UploadWidget';
 
 interface Category {
   id: number;
@@ -26,6 +27,7 @@ const CategoryManagement: React.FC = () => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
+  const [urlImage, setUrlImage] = useState<string>("");
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -64,7 +66,10 @@ const CategoryManagement: React.FC = () => {
     try {
       await axios.post(
         `${apiURL}/api/admin/add-category`,
-        { name: formData.name },
+        {
+          name: formData.name,
+          urlImage: urlImage
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -158,6 +163,10 @@ const CategoryManagement: React.FC = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
+          />
+          <UploadWidget
+            setThumbnailUploaded={(image: string) => setUrlImage(image)}
+            thumbnailUploaded={urlImage}
           />
         </Box>
         <Box marginTop={2}>

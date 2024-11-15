@@ -46,9 +46,7 @@ public class OrderServiceImpl implements OrderService {
         if (!cartResponse.isPresent() ) {
             throw new AppException(ErrorCode.CART_NOT_FOUND);
         }
-        if(cartResponse.get().getCartItems().isEmpty()){
-            throw new AppException(ErrorCode.CART_ITEM_EMPTY);
-        }
+        
         Cart cart = cartResponse.get();
 
         // Tạo đối tượng Order

@@ -59,6 +59,16 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/login-admin")
+    public ApiResponse<TokenRespone> loginAdmin(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            TokenRespone tokenRespone = authencationService.authenticationAdmin(loginRequest);
+            return new ApiResponse<>( HttpStatus.OK.value(),"Login success",tokenRespone);
+        }catch (BadCredentialsException e){
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");
+        }
+    }
+
     @PostMapping("/logout")
     public ApiResponse<?> logout(HttpServletRequest request) {
         return new ApiResponse<>(HttpStatus.OK.value(), "Logout success", authencationService.logout(request));

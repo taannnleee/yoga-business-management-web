@@ -36,9 +36,18 @@ public class WishListController {
         return new ApiResponse<>(HttpStatus.OK.value(), "get all wish list success",list );
     }
 
+    //xóa wish list theo wishlistId
     @DeleteMapping("/delete-wishlist-of-user/{wishlistId}")
     public ApiResponse<?> deleteWishlist(HttpServletRequest request, @PathVariable String wishlistId ) {
         Wishlist  wishlist  = wishlistService.deleteWishlistOfUser(request,wishlistId);
+        return new ApiResponse<>(HttpStatus.OK.value(), "delete wish list success",wishlist );
+    }
+
+    //xóa wish list theo product id
+    @DeleteMapping("/delete-wishlist-by-product-id/{productId}")
+    public ApiResponse<?> deleteWishlistByProductId(HttpServletRequest request, @PathVariable String productId ) {
+
+        Wishlist  wishlist  = wishlistService.deleteWishlistByProductId(request,productId);
         return new ApiResponse<>(HttpStatus.OK.value(), "delete wish list success",wishlist );
     }
 

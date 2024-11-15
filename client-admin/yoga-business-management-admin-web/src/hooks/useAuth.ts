@@ -27,7 +27,7 @@ export const useAuth = () => {
     console.log('Username, password', username);
     try {
       setLoginLoading(true);
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch('http://localhost:8080/api/auth/login-admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,17 +38,21 @@ export const useAuth = () => {
         }),
       });
       const result = await response.json();
-      if (response) {
+      if (response.ok) {
         toast.success('Login successfully', {
+
           position: 'top-right',
           autoClose: 0,
           theme: 'colored',
           hideProgressBar: true,
         });
         history.push('/home');
-        console.log('response: ', result.data.accesstoken);
         localStorage.setItem('accessToken', result.data.accesstoken);
         localStorage.setItem('refreshToken', result.data.accesstoken);
+
+        console.log("kkk1")
+        console.log(result.data.accesstoken)
+
         // dispatch(setUser(response?.data?.data as any));
         // dispatch(setAccessToken(response?.data?.data?.accessToken));
       } else {

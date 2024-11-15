@@ -18,13 +18,14 @@ import {
     CircularProgress,  // Import CircularProgress
 } from "@mui/material";
 import AddressSelection from "@/app/(main)/checkout/AddressSelection";
-import {useRouter} from "next/navigation"; // Đảm bảo AddressSelection chấp nhận chỉ id
+import { useRouter } from "next/navigation"; // Đảm bảo AddressSelection chấp nhận chỉ id
 
 interface IProduct {
     id: string;
     title: string;
     quantity: number;
     price: number;
+    currentVariant: string
 }
 
 const Checkout: React.FC = () => {
@@ -92,6 +93,7 @@ const Checkout: React.FC = () => {
                 title: item.product.title,
                 quantity: item.quantity,
                 price: item.product.price,
+                currentVariant: item.currentVariant
             })));
             setTotalPrice(data.data.totalPrice);
         } catch (err: any) {
@@ -114,6 +116,30 @@ const Checkout: React.FC = () => {
         handleCloseConfirmDialog();
     };
 
+
+    // Lấy các giá trị "value" từ các variants trong product
+    const getVariantValues = (variants: any) => {
+        if (!variants) {
+            console.log('Variants is null or undefined');
+            return 'No variants available';
+        }
+
+        const values = Object.keys(variants).map((variantType) => {
+            const variantDetails = variants[variantType];
+
+            if (!variantDetails) {
+                console.log(`Variant type ${variantType} is missing`);
+                return `${variantType}: N/A`;
+            }
+
+            const value = variantDetails.value || 'N/A'; // Nếu value không tồn tại, trả về 'N/A'
+            console.log(`Variant type: ${variantType}, value: ${value}`);
+
+            return `${variantType}: ${value}`;
+        });
+
+        return values.join(", ");
+    };
     return (
         <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
             <Typography variant="h4" sx={{ marginBottom: "20px", fontWeight: "bold" }}>
@@ -150,7 +176,8 @@ const Checkout: React.FC = () => {
                             <>
                                 {products.map((product) => (
                                     <Box display="flex" justifyContent="space-between" key={product.id} sx={{ marginBottom: "10px" }}>
-                                        <Typography>{product.title} (x{product.quantity})</Typography>
+                                        <Typography>{product.title} (x{product.quantity}) -{getVariantValues(product.currentVariant)}</Typography>
+
                                         <Typography>{(product.price * product.quantity).toLocaleString()} VND</Typography>
                                     </Box>
                                 ))}

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { useRouter } from 'next/navigation';
 import { FaRegHeart, FaHeart, FaSearchPlus } from "react-icons/fa";
+import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -127,9 +128,10 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                     <Typography variant="h5" className="text-red-500">
                         {selectedProduct?.price?.toLocaleString()}₫
                     </Typography>
-                    <Typography variant="body2" className="text-black max-w-xl overflow-hidden">
-                        {selectedProduct?.description || "Thông tin sản phẩm đang cập nhật."}
+                    <Typography variant="body2" className="text-black max-w-xl overflow-hidden line-clamp-5">
+                        <RichTextDisplay className="my-4" content={selectedProduct?.description || ""} />
                     </Typography>
+
                     <span
                         className={"text-red-600 hover:cursor-pointer"}
                         onClick={() => router.push(`/product-detail/${selectedProduct.id}`)}

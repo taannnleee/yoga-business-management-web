@@ -150,6 +150,8 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
         variants,
       };
 
+      console.log(productData);
+      console.log(accessToken)
       const response = await axios.post(
         `${apiURL}/api/admin/add-product`,
         productData,

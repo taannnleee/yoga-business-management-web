@@ -40,11 +40,15 @@ export const useAuth = () => {
       const result = await response.json();
       if (response) {
         toast.success('Login successfully', {
+
           position: 'top-right',
           autoClose: 0,
           theme: 'colored',
           hideProgressBar: true,
         });
+        console.log("kkk")
+        console.log(result)
+        localStorage.setItem("accessToken", result);
         history.push('/home');
         console.log('response: ', result.data.accesstoken);
         localStorage.setItem('accessToken', result.data.accesstoken);

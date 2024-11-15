@@ -15,6 +15,9 @@ interface IImportProductFormProps {
 }
 
 const accessToken = localStorage.getItem("accessToken");
+console.log("kkkk2")
+console.log(accessToken)
+
 
 const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   const { open, onClose, subId, onImportSuccess } = props;
@@ -46,7 +49,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   //upload ảnh
   const uploadImage = async (file: File, color: string) => {
     setLoading(true);
-    const accessToken = localStorage.getItem("accessToken");
+
 
     try {
       const formData = new FormData();
@@ -193,14 +196,6 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
               fullWidth
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              margin="normal"
-            />
-
-            <TextField
-              label="Đường dẫn ảnh"
-              fullWidth
-              value={imagePath}
-              onChange={(e) => setImagePath(e.target.value)}
               margin="normal"
             />
             <UploadWidget

@@ -13,7 +13,8 @@ import CourseManagement from '../pages/CourseManagement';
 import CourseDetailPage from '../pages/CourseDetail';
 
 export default function RootApp() {
-  const { accessToken } = useAppSelector((state: IRootState) => state.auth);
+  // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
+  const accessToken = localStorage.getItem("accessToken");
 
   return (
     <div>

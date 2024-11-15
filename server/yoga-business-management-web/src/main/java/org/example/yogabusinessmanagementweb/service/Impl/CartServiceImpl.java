@@ -244,6 +244,9 @@ public class CartServiceImpl implements CartService {
         }
         cart.setTotalPrice(totalPrice);
 
+
+        // lưu lại cart item
+
         // Lưu lại cart
         cartRepository.save(cart);
 

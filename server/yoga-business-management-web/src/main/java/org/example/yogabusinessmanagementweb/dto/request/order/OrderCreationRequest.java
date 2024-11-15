@@ -9,6 +9,7 @@ import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDe
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
@@ -16,6 +17,8 @@ import java.util.List;
 public class OrderCreationRequest {
     String addressId;
     String paymentMethod;
+
+    Map<String, Map<String, String>>  currentVariant;
 //    List<Product> products;
 //    BigDecimal totalPrice;
 }

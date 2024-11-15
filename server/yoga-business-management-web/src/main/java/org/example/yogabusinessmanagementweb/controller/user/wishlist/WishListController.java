@@ -46,7 +46,6 @@ public class WishListController {
     //xóa wish list theo product id
     @DeleteMapping("/delete-wishlist-by-product-id/{productId}")
     public ApiResponse<?> deleteWishlistByProductId(HttpServletRequest request, @PathVariable String productId ) {
-
         Wishlist  wishlist  = wishlistService.deleteWishlistByProductId(request,productId);
         return new ApiResponse<>(HttpStatus.OK.value(), "delete wish list success",wishlist );
     }

@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
+import { Select, MenuItem } from "@mui/material";
 import {
     Box,
     Typography,
@@ -25,7 +26,7 @@ interface IProduct {
     title: string;
     quantity: number;
     price: number;
-    currentVariant: string
+    currentVariant: any
 }
 
 const Checkout: React.FC = () => {
@@ -39,6 +40,7 @@ const Checkout: React.FC = () => {
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [orderLoading, setOrderLoading] = useState(false); // Trạng thái loading khi đặt hàng
     const toast = useToast();
+    // const [currentVariant, setCurrentVariant] = useState<any>({});
 
     // Handle payment method change
     const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +60,15 @@ const Checkout: React.FC = () => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({ addressId, paymentMethod }),
+                body: JSON.stringify({
+                    addressId,
+                    paymentMethod,
+                    products: products.map((product) => ({
+                        id: product.id,
+                        quantity: product.quantity,
+                        variant: product.currentVariant,
+                    })),
+                }),
             });
 
             if (!response.ok) throw new Error("Failed to create order");
@@ -94,6 +104,7 @@ const Checkout: React.FC = () => {
                 quantity: item.quantity,
                 price: item.product.price,
                 currentVariant: item.currentVariant
+
             })));
             setTotalPrice(data.data.totalPrice);
         } catch (err: any) {

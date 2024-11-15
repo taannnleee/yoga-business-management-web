@@ -46,9 +46,6 @@ export const useAuth = () => {
           theme: 'colored',
           hideProgressBar: true,
         });
-        console.log("kkk")
-        console.log(result)
-        localStorage.setItem("accessToken", result);
         history.push('/home');
         localStorage.setItem('accessToken', result.data.accesstoken);
         localStorage.setItem('refreshToken', result.data.accesstoken);

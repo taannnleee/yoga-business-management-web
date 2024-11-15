@@ -8,10 +8,12 @@ import org.example.yogabusinessmanagementweb.dto.response.address.AddressRespons
 
 import org.example.yogabusinessmanagementweb.dto.response.cart.CartItemResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface CartItemMapper {
+    @Mapping(target = "product.subCategory", ignore = true)
     CartItemResponse toCartItemResponse(CartItem cartItem);
     CartItem toCartItem(CartItemCreationRequest cartItemCreationRequest);
 

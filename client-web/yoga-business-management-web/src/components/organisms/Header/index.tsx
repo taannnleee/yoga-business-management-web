@@ -18,9 +18,11 @@ import LogoCourse from "../../atom/ButtonCourse";
 import ButtonCourse from "../../atom/ButtonCourse";
 import {useToast} from "@/hooks/useToast";
 import CartButton from "@/components/molecules/CartButton";
+import HoverDropdown from "@/components/molecules/HoverDropdown";
 interface IHeaderV2Props {}
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
+  const dropdownItems = ['Sản phẩm 1', 'Sản phẩm 2', 'Sản phẩm 3'];
   const router = useRouter();
   const toast = useToast();
   const [openLogin, setOpenLogin] = useState<boolean>(false);
@@ -39,8 +41,8 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   // Check if the access token exists
   const accessToken = localStorage.getItem("accessToken");
   const modalContent = accessToken ? (
-      <div className="space-y-2 w-24 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
-        <p className="cursor-pointer" onClick={() => router.push("/address")}>Địa chỉ</p>
+      <div className="space-y-2 w-28 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
+        <p className="cursor-pointer w-full" onClick={() => router.push("/address")}>Địa chỉ</p>
         <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
         <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
         <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
@@ -131,31 +133,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
                 Giới thiệu
               </a>
 
-              <div className="relative group">
-                <button className="text-black hover:text-orange-600 flex items-center relative">
-                  <span>Sản phẩm</span>
-                  <ChevronDownIcon className="w-5 h-5 ml-1 text-black"/>
-
-                  {/* Pseudo bridge */}
-                  <div className="absolute left-0 top-full w-full h-4 bg-transparent group-hover:block z-10"></div>
-                </button>
-
-                {/* Dropdown menu */}
-                <div
-                    className="absolute left-0 hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
-                  <ul className="py-2">
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 1</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 2</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 3</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <HoverDropdown buttonText="Sản phẩm" items={dropdownItems} />
 
 
               {/* Tư vấn dropdown */}
@@ -170,16 +148,16 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
 
                 {/* Dropdown menu */}
                 <div
-                    className="absolute left-0 hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
+                    className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
                   <ul className="py-2">
                     <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 1</span>
+                      <span className="text-black hover:text-orange-600 text-sm">Chọn thảm yoga</span>
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 2</span>
+                      <span className="text-black hover:text-orange-600 text-sm">Chọn quần áo yoga</span>
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 3</span>
+                      <span className="text-black hover:text-orange-600 text-sm">Câu hỏi thường gặp - FAQ</span>
                     </li>
                   </ul>
                 </div>
@@ -197,16 +175,16 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
 
                 {/* Dropdown menu */}
                 <div
-                    className="absolute left-0 hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
+                    className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
                   <ul className="py-2">
                     <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 1</span>
+                      <span className="text-black hover:text-orange-600 text-sm">Khuyến mãi</span>
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 2</span>
+                      <span className="text-black hover:text-orange-600 text-sm">Yoga và Thiền</span>
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600">Category 3</span>
+                      <span className="text-black hover:text-orange-600 text-sm">Ebook yoga</span>
                     </li>
                   </ul>
                 </div>

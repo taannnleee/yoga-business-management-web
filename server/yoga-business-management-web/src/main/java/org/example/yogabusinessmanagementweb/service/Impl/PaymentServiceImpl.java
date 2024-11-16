@@ -1,8 +1,12 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.yogabusinessmanagementweb.common.config.payment.VNPAYConfig;
+import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.request.order.OrderVnpayRequest;
 import org.example.yogabusinessmanagementweb.dto.response.payment.PaymentVnpayResponse;
 import org.example.yogabusinessmanagementweb.service.PaymentService;
 import org.example.yogabusinessmanagementweb.utils.VNPayUtil;
@@ -18,10 +22,11 @@ public class PaymentServiceImpl implements PaymentService {
     private final VNPAYConfig vnPayConfig;
 
     @Override
-    public PaymentVnpayResponse createVnPayPayment(HttpServletRequest request) {
+    public PaymentVnpayResponse createVnPayPayment(HttpServletRequest request,
+                                                   OrderCreationRequest orderRequest) throws JsonProcessingException {
         long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
         String bankCode = request.getParameter("bankCode");
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(orderRequest);
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", bankCode);
@@ -36,6 +41,11 @@ public class PaymentServiceImpl implements PaymentService {
         return PaymentVnpayResponse.builder()
                 .code(00)
                 .message("success")
-                .paymentUrl(paymentUrl).build();
+                .paymentUrl(paymentUrl)
+                .addressId(orderRequest.getAddressId())
+                .paymentMethod(orderRequest.getPaymentMethod())
+                .build();
     }
+
+
 }

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import ProductByCategoryCard from "@/components/organisms/ProductByCategoryCard";
 import SaleoffCard from "@/components/organisms/SaleOffCard";
 import Image from "next/image";
+import {ProductByCategoryCardSkeleton} from "@/components/organisms/ProductByCategoryCard/skeleton";
+import {ProductByCategoryCard} from "@/components/organisms/ProductByCategoryCard";
 
 interface IHomePageProps {}
 const imageUrls = [
@@ -13,11 +14,13 @@ const imageUrls = [
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_1.jpg?1720673795720",
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_4.jpg?1720673795720"
 ];
+
 const HomePage: React.FC<IHomePageProps> = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [categories, setCategories] = useState<any[]>([]);
     const [fetchingProducts, setFetchingProducts] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
@@ -29,6 +32,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
     const handleDotClick = (index: number) => {
         setCurrentIndex(index);
     };
+
     useEffect(() => {
         // Fetch products by category
         const fetchProducts = async () => {
@@ -61,7 +65,6 @@ const HomePage: React.FC<IHomePageProps> = () => {
 
     return (
         <>
-
             <Box sx={{
                 position: "relative",
                 height: "482px",
@@ -103,28 +106,31 @@ const HomePage: React.FC<IHomePageProps> = () => {
                     ))}
                 </Box>
             </Box>
-        <Box>
+
             <SaleoffCard />
 
             {fetchingProducts ? (
-                <div>Loading...</div>
+                // Show skeleton loader while fetching products
+                <div>
+                    <ProductByCategoryCardSkeleton /> {/* Show skeleton when fetching */}
+                    <ProductByCategoryCardSkeleton />
+                    <ProductByCategoryCardSkeleton />
+                </div>
             ) : error ? (
                 <div>Error: {error}</div>
             ) : (
                 categories.map((category) => {
-                    let productsToDisplay: any[] = []; // Mảng để lưu các sản phẩm đã chọn
+                    let productsToDisplay: any[] = [];
                     let count = 0;
 
                     // Duyệt qua từng subCategory
                     for (let i = 0; i < category.subCategories.length; i++) {
                         const subCategory = category.subCategories[i];
-                        const productsInSubCategory = subCategory.products.slice(0, 8 - count); // Lấy thêm sản phẩm nếu chưa đủ
+                        const productsInSubCategory = subCategory.products.slice(0, 8 - count);
 
-                        // Thêm sản phẩm từ subCategory vào mảng
                         productsToDisplay = [...productsToDisplay, ...productsInSubCategory];
                         count += productsInSubCategory.length;
 
-                        // Nếu đã đủ 8 sản phẩm thì dừng lại
                         if (count >= 8) {
                             break;
                         }
@@ -142,10 +148,8 @@ const HomePage: React.FC<IHomePageProps> = () => {
                     );
                 })
             )}
-        </Box>
         </>
     );
-
 };
 
 export default HomePage;

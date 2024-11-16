@@ -10,9 +10,9 @@ interface LeftSideProps {
   setSelectedImage: (image: string) => void;
 }
 
-const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrentVariant, selectedImage, setSelectedImage }) => {
+export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrentVariant, selectedImage, setSelectedImage }) => {
   const [selectedImageLeft, setSelectedImageLeft] = useState(selectedImage || "");
-  const [isFavorited, setIsFavorited] = useState(null);
+  const [isFavorited, setIsFavorited] = useState(false);
   const [loading, setLoading] = useState(false); // State to track loading
   const accessToken = localStorage.getItem("accessToken");
 
@@ -157,5 +157,3 @@ const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrent
     </div>
   );
 };
-
-export default LeftSide;

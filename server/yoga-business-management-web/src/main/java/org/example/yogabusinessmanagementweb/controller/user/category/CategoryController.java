@@ -34,4 +34,9 @@ public class CategoryController {
         List<CategoryWithProductResponse> list = categoryService.getCategoriesWithProducts();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all category successfully",list);
     }
+    @GetMapping("/with-sub-categories")
+    public ApiResponse<?> getAllCategory() {
+        List<CategoryResponse> list = categoryService.getAllCategory();
+        return new ApiResponse<>(HttpStatus.OK.value(), "get all category with subcategory successfully",list);
+    }
 }

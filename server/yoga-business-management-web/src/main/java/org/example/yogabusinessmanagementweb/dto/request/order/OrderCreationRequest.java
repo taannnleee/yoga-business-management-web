@@ -18,7 +18,7 @@ public class OrderCreationRequest {
     String addressId;
     String paymentMethod;
 
-    Map<String, Map<String, String>>  currentVariant;
+//    Map<String, Map<String, String>>  currentVariant;
 //    List<Product> products;
 //    BigDecimal totalPrice;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DialogContent, Typography, Button } from '@mui/material';
+import {DialogContent, Typography, Button, CircularProgress} from '@mui/material';
 import Image from 'next/image';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,7 @@ interface Props {
 
 const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddToCart, handleVariantChange }: Props) => {
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [selectedImageLeft, setSelectedImageLeft] = useState(selectedProduct?.imagePath || "");
     const [selectedImageRight, setSelectedImageRight] = useState("");
@@ -65,7 +66,13 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         setSelectedImageLeft(image);
         setSelectedImage(image);
     };
-
+    const handleAddToCartClick = () => {
+        setLoading(true);  // Set loading state to true when clicked
+        handleAddToCart();  // Your add to cart logic
+        setTimeout(() => {
+            setLoading(false);  // Set loading state to false after action completes (example with timeout)
+        }, 4000);  // Simulate a delay for the action (e.g., network request)
+    };
     const handleImageRightClick = (image: unknown) => {
         setSelectedImageRight(image);
         setSelectedImage(image);
@@ -206,9 +213,10 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                                     backgroundColor: '#a22622',
                                 },
                             }}
-                            onClick={handleAddToCart}
+                            disabled={loading}
+                            onClick={handleAddToCartClick}
                         >
-                            Thêm vào giỏ
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Thêm vào giỏ'} {/* Show spinner if loading */}
                         </Button>
                     </div>
                 </div>

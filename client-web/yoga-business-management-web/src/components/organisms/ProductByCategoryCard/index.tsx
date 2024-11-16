@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal";
 import {useDispatch} from "react-redux";
-import {incrementTotalItems, setTotalItems} from "@/redux/cartSlice"; // Import axios
+import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice"; // Import axios
 
 interface ProductByCategoryCardProps {
     categoryName: string;
@@ -28,7 +28,7 @@ interface ProductByCategoryCardProps {
     image: string;
 }
 
-const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,categoryName, subCategories,products } : ProductByCategoryCardProps) => {
+export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,categoryName, subCategories,products } : ProductByCategoryCardProps) => {
     const toast = useToast();
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(1);
@@ -288,5 +288,3 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,cate
         </div>
     );
 };
-
-export default ProductByCategoryCard;

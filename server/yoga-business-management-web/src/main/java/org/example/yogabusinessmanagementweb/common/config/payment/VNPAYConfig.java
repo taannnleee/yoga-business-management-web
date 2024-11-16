@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.common.config.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
+import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.utils.VNPayUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +35,7 @@ public class VNPAYConfig {
     @Value("${payment.vnPay.orderType}")
     private String orderType;
 
-    public Map<String, String> getVNPayConfig() {
+    public Map<String, String> getVNPayConfig(OrderCreationRequest orderRequest) {
         Map<String, String> vnpParamsMap = new HashMap<>();
         vnpParamsMap.put("vnp_Version", this.vnp_Version);
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
@@ -52,6 +53,8 @@ public class VNPAYConfig {
         calendar.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(calendar.getTime());
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
+        vnpParamsMap.put("vnp_OrderInfo", "Order123|" + orderRequest.getAddressId() + "|" + orderRequest.getPaymentMethod());
+
         return vnpParamsMap;
     }
 }

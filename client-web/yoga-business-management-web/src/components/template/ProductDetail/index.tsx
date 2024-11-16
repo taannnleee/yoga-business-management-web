@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import LeftSide from "../LeftSide";
-import RightSide from "../RightSide";
+import {LeftSideProductDetail} from "../LeftSide/LeftSideProductDetail";
+import {RightSideProductDetail} from "../RightSide/RightSideProductDetail";
 import CustomerBenefits from "@/components/organisms/CustomerBenefits";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { FaArrowAltCircleUp, FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -71,7 +71,7 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
         <div className="w-full max-w-screen-xl mx-auto py-10">
             <div className="flex gap-8">
                 <div className="flex-[0.4]">
-                    <LeftSide
+                    <LeftSideProductDetail
                         product={product}
                         currentVariant={currentVariant}
                         setCurrentVariant={setCurrentVariant}
@@ -80,7 +80,7 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                     />
                 </div>
                 <div className="flex-[0.4]">
-                    <RightSide
+                    <RightSideProductDetail
                         product={product}
                         quantity={quantity}
                         setQuantity={setQuantity}

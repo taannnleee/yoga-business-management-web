@@ -13,7 +13,7 @@ interface RightSideProps {
     handleVariantSelect: (variantType: string, value: string, image: string) => void;
 }
 
-const RightSide: React.FC<RightSideProps> = ({
+export const RightSideProductDetail: React.FC<RightSideProps> = ({
                                                  product, quantity, setQuantity, handleAddToCart, currentVariant, handleVariantSelect
                                              }) => {
     return (
@@ -153,4 +153,3 @@ const RightSide: React.FC<RightSideProps> = ({
     );
 };
 
-export default RightSide;

@@ -34,8 +34,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
     const [changedQuantity, setChangedQuantity] = useState(0); // Số lượng thay đổi
     const debouncedChangedQuantity = useDebounce(changedQuantity, 1000); // Debounce số lượng thay đổi
 
-    console.log("tan")
-    console.log(cartItem);
     useEffect(() => {
         const updateCart = async () => {
             if (debouncedChangedQuantity > 0) { // Chỉ gọi API khi số lượng tăng

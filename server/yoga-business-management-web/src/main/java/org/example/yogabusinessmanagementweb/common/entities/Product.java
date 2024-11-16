@@ -1,15 +1,10 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.util.json.Variant;
-import org.example.yogabusinessmanagementweb.common.util.json.VariantConverter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
@@ -51,12 +46,6 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     String brand;
     @Column(name = "description", columnDefinition = "TEXT")
     String description;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "rating_id")
-    List<Rating> ratings;
-
-
 //    // Thuộc tính mới để lưu danh sách variants dưới dạng JSON
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "variants", columnDefinition = "json")

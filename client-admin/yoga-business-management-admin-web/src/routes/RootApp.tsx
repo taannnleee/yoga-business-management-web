@@ -12,6 +12,7 @@ import TopicManagement from '../pages/TopicManagement';
 import CourseManagement from '../pages/CourseManagement';
 import CourseDetailPage from '../pages/CourseDetail';
 import OrderManagement from '../pages/OrderManagement';
+import Test from '../pages/Test';
 
 export default function RootApp() {
   // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
@@ -62,6 +63,10 @@ export default function RootApp() {
 
       <Route path="/order-management">
         <OrderManagement />
+      </Route>
+
+      <Route path="/test">
+        <Test />
       </Route>
     </div>
   );

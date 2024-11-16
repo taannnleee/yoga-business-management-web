@@ -158,6 +158,7 @@ export default function MainLayout(props: ISideBarProps) {
     '/category-management',
     '/products-management',
     '/order-management',
+    '/test',
   ];
 
   return (
@@ -236,7 +237,7 @@ export default function MainLayout(props: ISideBarProps) {
             </Collapse>
           </ListItem>
 
-          {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm', 'Quản lý đơn hàng'].map((text, index) => (
+          {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm', 'Quản lý đơn hàng',].map((text, index) => (
             <Link to={to[index + 1]} key={text}>
               <ListItem disablePadding>
                 <ListItemButton sx={{ justifyContent: 'initial', px: 4 }}>

@@ -11,5 +11,10 @@ import java.util.List;
 public interface OrderService {
     OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest);
 
-    List<Order> showOrder(HttpServletRequest request);
+
+    List<Order> showOrderOfUser(HttpServletRequest request);
+
+    Order updateOrderStatus(Long orderId, String status);
+
+    List<Order> getAllOrderByStatus(HttpServletRequest request, String status);
 }

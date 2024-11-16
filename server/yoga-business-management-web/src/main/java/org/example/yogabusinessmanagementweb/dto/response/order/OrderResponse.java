@@ -14,5 +14,5 @@ public class OrderResponse {
     Long id;
     int totalItem;
     BigDecimal totalPrice;
-    List<OrderItemResponse> orderItem;
+//    List<OrderItemResponse> orderItem;
 }

@@ -2,7 +2,7 @@ package org.example.yogabusinessmanagementweb.common.Enum;
 
 public enum EStatusOrder {
     PROCESSING,
-    SHIPPED,
+    DELIVERING,
     CANCELLED,
     COMPLETED;
 }

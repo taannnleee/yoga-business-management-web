@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
@@ -77,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
 
         Payment payment = new Payment();
         payment.setNameMethod(orderRequest.getPaymentMethod());
+        payment.setEPaymentStatus(EPaymentStatus.PAID);
         order.setPayment(payment);
         // Lưu Order và OrderItem vào cơ sở dữ liệu
         orderRepository.save(order);
@@ -98,10 +100,36 @@ public class OrderServiceImpl implements OrderService {
         return orderCreationResponse;
     }
 
+
     @Override
-    public List<Order> showOrder(HttpServletRequest request) {
-        User user = jwtUtil.getUserFromRequest(request);
-        List<Order> list = orderRepository.findAllByUser(user);
+    public List<Order> showOrderOfUser(HttpServletRequest request) {
+        List<Order> list = orderRepository.findAll();
         return list;
     }
+
+    @Override
+    public Order updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        EStatusOrder statusEnum = EStatusOrder.valueOf(status);
+        // Cập nhật trạng thái đơn hàng
+        order.setEStatusOrder(statusEnum);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getAllOrderByStatus(HttpServletRequest request, String status) {
+//        EStatusOrder statusEnum = EStatusOrder.valueOf(status);
+        User user = jwtUtil.getUserFromRequest(request);
+
+        if("ALL".equals(status)){
+            List<Order> list = orderRepository.findAllByUser(user);
+            return list;
+        }
+        else {
+            List<Order> listOrder = orderRepository.findAllByStatusOrderAndUserId(status,user.getId());
+            return listOrder;
+        }
+    }
+
 }

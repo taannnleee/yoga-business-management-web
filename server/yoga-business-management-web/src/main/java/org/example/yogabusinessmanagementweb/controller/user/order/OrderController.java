@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.Order;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.request.order.OrderStatusUpdateRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
@@ -50,9 +51,14 @@ public class OrderController {
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
     }
 
-    @GetMapping("/get-all-order")
-    public ApiResponse<?> getAllOrder(HttpServletRequest request) {
-        List<Order> orderResponse = orderService.showOrder(request);
-        return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
+
+    //get order theo trang thái truyền xuông
+    @GetMapping("/get-all-order-by-status/{status}")
+    public ApiResponse<?> getAllOrderByStatus(HttpServletRequest request, @PathVariable String status) {
+
+            List<Order> list = orderService.getAllOrderByStatus(request, status);
+            return new ApiResponse<>(HttpStatus.OK.value(), "get all order by status success",list);
+
+
     }
 }

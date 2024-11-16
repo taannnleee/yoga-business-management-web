@@ -58,7 +58,7 @@ const OrderPage: React.FC = () => {
     const getStatusByTabIndex = (index: number) => {
         switch (index) {
             case 1:
-                return "SHIPPED";
+                return "DELIVERING";
             case 2:
                 return "PROCESSING";
             case 3:

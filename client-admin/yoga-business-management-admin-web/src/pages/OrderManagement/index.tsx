@@ -201,6 +201,7 @@ const OrderManagement = () => {
                                                     <MenuItem value="PROCESSING">Processing</MenuItem>
                                                     <MenuItem value="COMPLETED">Completed</MenuItem>
                                                     <MenuItem value="CANCELLED">Canceled</MenuItem>
+                                                    <MenuItem value="DELIVERING">Delivering</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </TableCell>

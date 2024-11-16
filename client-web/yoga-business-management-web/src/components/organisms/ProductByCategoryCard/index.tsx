@@ -17,7 +17,9 @@ import axios from "axios";
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
-import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
+import ProductDetailModal from "@/components/organisms/ProductDetailModal";
+import {useDispatch} from "react-redux";
+import {incrementTotalItems, setTotalItems} from "@/redux/cartSlice"; // Import axios
 
 interface ProductByCategoryCardProps {
     categoryName: string;
@@ -28,6 +30,7 @@ interface ProductByCategoryCardProps {
 
 const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,categoryName, subCategories,products } : ProductByCategoryCardProps) => {
     const toast = useToast();
+    const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(1);
     const [currentVariant, setCurrentVariant] = useState<any>({});
     const router = useRouter();
@@ -71,6 +74,7 @@ const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,cate
             console.log("Product added to cart:", data); // Log kết quả
             toast.sendToast("Thành công", "Đã thêm sản phẩm vào giỏ hàng");
             setOpen(false);
+            dispatch(incrementTotalItems());
         } catch (err: any) {
             console.error("Error adding product to cart:", err.message); // Xử lý lỗi nếu có
         }

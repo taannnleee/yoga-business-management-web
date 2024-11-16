@@ -49,7 +49,6 @@ const HomePage: React.FC<IHomePageProps> = () => {
                 const result = await response.json();
                 // Assign the fetched categories to state
                 setCategories(result.data);
-                console.log("result.data", result.data);
             } catch (err: any) {
                 setError(err.message);
             } finally {

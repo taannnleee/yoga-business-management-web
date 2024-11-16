@@ -1,9 +1,13 @@
-import React from "react";
+import { Provider } from 'react-redux';
+import store from '@/redux/store'; // Import your store
+import './globals.css'; // Your global styles
 
-interface IHomPageProps {}
-
-const HomePage: React.FC<IHomPageProps> = (props) => {
-  return <div>HomePage</div>;
-};
-
-export default HomePage;
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+      <Provider store={store}>
+        <html lang="en">
+        <body>{children}</body>
+        </html>
+      </Provider>
+  );
+}

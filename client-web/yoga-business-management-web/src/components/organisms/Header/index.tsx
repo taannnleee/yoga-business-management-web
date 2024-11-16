@@ -17,10 +17,12 @@ import Image from "next/image";
 import LogoCourse from "../../atom/ButtonCourse";
 import ButtonCourse from "../../atom/ButtonCourse";
 import {useToast} from "@/hooks/useToast";
+import CartButton from "@/components/molecules/CartButton";
 interface IHeaderV2Props {}
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const router = useRouter();
+  const toast = useToast();
   const [openLogin, setOpenLogin] = useState<boolean>(false);
   const [isGettingProductCategory, setIsGettingProductCategory] =
       useState<boolean>(false);
@@ -37,7 +39,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   // Check if the access token exists
   const accessToken = localStorage.getItem("accessToken");
   const modalContent = accessToken ? (
-      <div className="space-y-2 w-24">
+      <div className="space-y-2 w-24 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
         <p className="cursor-pointer" onClick={() => router.push("/address")}>Địa chỉ</p>
         <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
         <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
@@ -47,6 +49,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
             onClick={() => {
               localStorage.removeItem("accessToken");
               localStorage.removeItem("refreshToken");
+              toast.sendToast("Success", "Đăng xuất thành công");
               router.replace("/home");
             }}
         >
@@ -242,12 +245,8 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
                       </div>
                   )}
                 </div>
-                <button
-                    className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
-                    onClick={() => router.replace("/cart")}
-                >
-                  <ShoppingCartIcon className="w-8 h-8 text-gray-600"/>
-                </button>
+                <CartButton/>
+
               </div>
             </div>
           </div>

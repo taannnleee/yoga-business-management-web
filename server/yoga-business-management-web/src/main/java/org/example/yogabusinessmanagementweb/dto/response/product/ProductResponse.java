@@ -6,9 +6,11 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
+import org.example.yogabusinessmanagementweb.dto.response.comment.CommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.subcategory.SubCategoryResponse;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -26,5 +28,6 @@ public class ProductResponse {
     String brand;
     String description;
     Double averageRating;
+    List<CommentResponse> comments;
     Map<String, Map<String, String>> variants;
 }

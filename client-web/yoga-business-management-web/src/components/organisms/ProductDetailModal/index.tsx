@@ -5,6 +5,7 @@ import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { useRouter } from 'next/navigation';
 import { FaRegHeart, FaHeart, FaSearchPlus } from "react-icons/fa";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
+import {useDispatch} from "react-redux";
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -15,7 +16,7 @@ interface Props {
 
 const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddToCart, handleVariantChange }: Props) => {
     const router = useRouter();
-
+    const dispatch = useDispatch();
     const [selectedImageLeft, setSelectedImageLeft] = useState(selectedProduct?.imagePath || "");
     const [selectedImageRight, setSelectedImageRight] = useState("");
     const [selectedImage, setSelectedImage] = useState(selectedImageLeft || selectedImageRight);

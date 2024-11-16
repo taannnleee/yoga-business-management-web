@@ -2,14 +2,15 @@ import React from "react";
 
 // You can modify this component to take in `richText` content from your database.
 interface RichTextDisplayProps {
-    content: string; // rich HTML content stored in the database
+    content: string,
+    className?: string
 }
 
-const RichTextDisplay: React.FC<RichTextDisplayProps> = ({ content }) => {
+const RichTextDisplay: React.FC<RichTextDisplayProps> = ({content, className}) => {
     return (
         <div
             className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: content }} // Render HTML content
+            dangerouslySetInnerHTML={{__html: content}} // Render HTML content
         />
     );
 };

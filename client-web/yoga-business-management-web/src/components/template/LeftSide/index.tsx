@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import {FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
 
 interface LeftSideProps {
   product: any;
@@ -8,13 +8,13 @@ interface LeftSideProps {
   setCurrentVariant: (variant: any) => void;
   selectedImage: string;
   setSelectedImage: (image: string) => void;
-  token: string; // Pass token as a prop
 }
 
-const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrentVariant, selectedImage, setSelectedImage, token }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrentVariant, selectedImage, setSelectedImage }) => {
   const [selectedImageLeft, setSelectedImageLeft] = useState(selectedImage || "");
-  const [isFavorited, setIsFavorited] = useState(false);
-  const accessToken = token || localStorage.getItem("accessToken");
+  const [isFavorited, setIsFavorited] = useState(null);
+  const [loading, setLoading] = useState(false); // State to track loading
+  const accessToken = localStorage.getItem("accessToken");
 
   const handleVariantSelect = (variantType: string, value: string, image: string) => {
     const updatedVariant = {
@@ -30,6 +30,7 @@ const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrent
   };
 
   const handleFavoriteToggle = async () => {
+    setLoading(true); // Start loading
     try {
       if (isFavorited) {
         // Call API to remove from wishlist
@@ -64,6 +65,8 @@ const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrent
       }
     } catch (error) {
       console.error("Error toggling wishlist status:", error);
+    } finally {
+      setLoading(false); // Stop loading after API call
     }
   };
 
@@ -113,32 +116,37 @@ const LeftSide: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrent
   return (
     <div>
       <button
-        className="flex top-0 right-0 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
-        onClick={handleFavoriteToggle}
+          className="flex top-0 right-0 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
+          onClick={handleFavoriteToggle}
+          disabled={loading} // Disable the button while loading
       >
-        {!isFavorited ? (
-          <FaRegHeart className="text-black w-6 h-6" />
+        {loading ? (
+            <FaSpinner className="animate-spin text-black w-6 h-6"/> // Show spinner while loading
         ) : (
-          <FaHeart className="text-red-500 w-6 h-6" />
+            !isFavorited ? (
+                <FaRegHeart className="text-black w-6 h-6"/>
+            ) : (
+                <FaHeart className="text-red-500 w-6 h-6"/>
+            )
         )}
       </button>
 
       <Image
-        src={selectedImage}
-        alt={product?.title || ""}
-        width={390}
-        height={390}
-        className="rounded-md"
+          src={selectedImage}
+          alt={product?.title || ""}
+          width={390}
+          height={390}
+          className="rounded-md"
       />
 
       <div className="mt-4 flex space-x-4 overflow-x-auto">
         {product?.variants?.color &&
-          Object.entries(product.variants.color).map(([color, image], index) => (
-            <div key={index} className="flex flex-col items-center"
-              onClick={() => handleVariantSelect('color', color, image)}>
-              <Image
-                src={image || '/path/to/fallback/image.jpg'}
-                alt={`${color} image`}
+            Object.entries(product.variants.color).map(([color, image], index) => (
+                <div key={index} className="flex flex-col items-center"
+                     onClick={() => handleVariantSelect('color', color, image)}>
+                  <Image
+                      src={image || '/path/to/fallback/image.jpg'}
+                      alt={`${color} image`}
                 width={84}
                 height={84}
                 className={`rounded-md cursor-pointer ${image === selectedImageLeft ? "border-2 border-red-500" : ""}`}

@@ -4,6 +4,8 @@ import RightSide from "../RightSide";
 import CustomerBenefits from "@/components/organisms/CustomerBenefits";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { FaArrowAltCircleUp, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import CustomerComment from "@/components/organisms/CustomerComment";
+import SimilarProduct from "@/components/organisms/SimilarProduct";
 
 interface IProductDetailTemplateProps {
     product: any;
@@ -15,6 +17,7 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
     const [quantity, setQuantity] = useState(1);
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);  // Điều khiển trạng thái của mô tả sản phẩm
+    const [isCommentVisible, setIsCommentVisible] = useState(true);  // Điều khiển trạng thái của mô tả sản phẩm
 
     const handleVariantSelect = (variantType: string, value: string, image: string) => {
         const updatedVariant = {
@@ -60,6 +63,9 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
     const toggleDescription = () => {
         setIsDescriptionVisible(!isDescriptionVisible);
     };
+    const toggleComment = () => {
+        setIsCommentVisible(!isCommentVisible);
+    };
 
     return (
         <div className="w-full max-w-screen-xl mx-auto py-10">
@@ -104,15 +110,27 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                 </div>
             )}
 
-            {/* Nút cuộn lên đầu trang */}
-            {showScrollButton && (
+            {/* Mô tả sản phẩm với tiêu đề và nút thu gọn */}
+            <div className="border-t-2 border-gray-300 pt-4 pb-2 flex justify-between items-center mt-12">
+                <h3 className="font-bold text-lg">ĐÁNH GIÁ SẢN PHẨM</h3>
                 <button
-                    className="fixed bottom-12 right-12 bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-600 focus:outline-none z-50"
-                    onClick={scrollToTop}
+                    className="flex items-center text-gray-500 hover:text-gray-700"
+                    onClick={toggleComment}
                 >
-                    <FaArrowAltCircleUp size={30} />
+                    {isCommentVisible ? <FaChevronUp size={20}/> : <FaChevronDown size={20}/>}
                 </button>
+            </div>
+            {isCommentVisible && (
+                <div className="my-4">
+                    <CustomerComment className="mb-4" productDetail={product}/>
+                </div>
             )}
+
+            <div className="border-t-2 border-gray-300 pt-4 pb-2 flex justify-between items-center mt-12">
+                <h3 className="font-bold text-xl mx-auto text-red-500">Có thể bạn thích</h3>
+            </div>
+            <SimilarProduct/>
+
         </div>
     );
 };

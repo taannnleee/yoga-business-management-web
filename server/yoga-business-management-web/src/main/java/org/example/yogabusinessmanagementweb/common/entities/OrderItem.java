@@ -27,8 +27,8 @@ public class OrderItem extends AbstractEntity<Long> implements Serializable {
     int quantity;
 
     @OneToOne()
-    @JoinColumn(name = "rating_id")
-    Rating rating;
+    @JoinColumn(name = "comment_id")
+    Comment comment;
 
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING) // Store enum as a string in the database

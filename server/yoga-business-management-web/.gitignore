@@ -35,3 +35,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore IntelliJ IDEA files and directories
+.idea/
+
+server/.idea/misc.xml
+server/.idea/modules.xml
+server/.idea/workspace.xml
+server/.idea/compiler.xml
+server/.idea/encodings.xml
+server/.idea/jarRepositories.xml

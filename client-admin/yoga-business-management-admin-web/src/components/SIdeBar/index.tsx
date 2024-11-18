@@ -22,6 +22,7 @@ import { useState } from 'react';
 import Collapse from '@mui/material/Collapse';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useLocation } from 'react-router-dom';
 import {
   BuildingStorefrontIcon,
   ChartBarSquareIcon,
@@ -30,6 +31,8 @@ import {
   InboxStackIcon,
   TagIcon,
   UserCircleIcon,
+  HomeIcon,           // Icon cho Tổng quan
+  AcademicCapIcon,    // Icon cho Quản lý khóa học
 } from '@heroicons/react/24/outline';
 import UserMenu from '../UserMenu';
 import { Link, useRouteMatch } from 'react-router-dom';
@@ -38,7 +41,7 @@ import { IRootState } from '../../redux';
 import { useDispatch } from 'react-redux';
 import { setOpenSideBar } from '../../redux/slices/auth';
 
-const drawerWidth = 300;
+const drawerWidth = 280;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -95,7 +98,7 @@ const AppBar = styled(MuiAppBar, {
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-  width: drawerWidth,
+  width: open ? drawerWidth : 80, // Thu gọn khi open = false
   flexShrink: 0,
   whiteSpace: 'nowrap',
   boxSizing: 'border-box',
@@ -137,11 +140,16 @@ export default function MainLayout(props: ISideBarProps) {
   };
 
   const icons = [
+
     <ChartBarSquareIcon className="h-6 w-6 text-gray-500" />,
     <UserCircleIcon className="h-6 w-6 text-gray-500" />,
     <TagIcon className="h-6 w-6 text-gray-500" />,
     <InboxStackIcon className="h-6 w-6 text-gray-500" />,
     <BuildingStorefrontIcon className="h-6 w-6 text-gray-500" />,
+
+    <HomeIcon className="h-6 w-6 text-gray-500" />,
+    <AcademicCapIcon className="h-6 w-6 text-gray-500" />,
+
   ];
 
   const activeIcons = [
@@ -160,10 +168,34 @@ export default function MainLayout(props: ISideBarProps) {
     '/order-management',
   ];
 
+  const [openSidebar, setOpenSidebar] = useState(true);
+  const toggleSidebar = () => {
+    setOpenSidebar(!openSidebar);
+  };
+
+
+
+  // Bổ sung vào trong component
+
+  const location = useLocation();
+
+  // Hàm để kiểm tra xem mục có được chọn hay không
+  const isSelected = (path: string) => {
+    return location.pathname === path;
+  };
+
+
+  const courseManagementItems = [
+    { label: 'Khóa học', url: 'courses' },
+    { label: 'Giảng viên', url: 'teachers' },
+    { label: 'Chủ đề', url: 'topics' },
+  ];
+
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={true} sx={{ backgroundColor: '#4b5563' }}>
+      <AppBar position="fixed" open={openSidebar} sx={{ backgroundColor: '#4b5563' }}>
         <Toolbar>
           <Box
             sx={{
@@ -172,6 +204,18 @@ export default function MainLayout(props: ISideBarProps) {
               width: '100%',
             }}
           >
+            <IconButton
+              color="inherit"
+              aria-label="open sidebar"
+              edge="start"
+              onClick={toggleSidebar}
+              sx={{
+                mr: 2,
+                ...(openSidebar && { display: 'none' }), // Hide button when sidebar is open
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
             <Typography variant="h6" noWrap component="div">
               {title}
             </Typography>
@@ -179,28 +223,52 @@ export default function MainLayout(props: ISideBarProps) {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={true}>
+      <Drawer variant="permanent" open={openSidebar}>
         <DrawerHeader sx={{ pl: 4 }} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <p className="w-1/3 cursor-pointer text-center text-2xl font-bold text-gray-500 laptop:w-fit">
-            Market Floor
+            YOGA
           </p>
+          <IconButton onClick={toggleSidebar}>
+            {openSidebar ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
           {/* Mục Tổng quan */}
           <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={handleOverviewClick} sx={{ justifyContent: 'initial', px: 4 }}>
+            <ListItemButton
+              onClick={handleOverviewClick}
+              sx={{
+                justifyContent: 'initial',
+                px: 4,
+                backgroundColor: isSelected('/home') ? 'green' : 'transparent',  // Thêm màu nền cho mục được chọn
+                '&:hover': {
+                  backgroundColor: isSelected('/home') ? 'darkgreen' : 'transparent',  // Thêm hiệu ứng hover
+                },
+              }}
+            >
               <ListItemIcon sx={{ minWidth: 0, mr: 3 }}>
-                {openOverview ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                <HomeIcon className="h-6 w-6 text-gray-500" /> {/* Icon Tổng quan */}
               </ListItemIcon>
               <ListItemText primary="Tổng quan" />
+              {openOverview ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </ListItemButton>
             <Collapse in={openOverview} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {['Báo cáo doanh thu', 'Phân tích khách hàng', 'Dự đoán xu hướng'].map((text) => (
                   <ListItemButton
                     key={text}
-                    sx={{ pl: 8 }}
+                    sx={{
+                      pl: 8,
+                      backgroundColor: isSelected(`/home/${text.replace(/\s+/g, '-').toLowerCase()}`)
+                        ? 'green'
+                        : 'transparent',
+                      '&:hover': {
+                        backgroundColor: isSelected(`/home/${text.replace(/\s+/g, '-').toLowerCase()}`)
+                          ? 'darkgreen'
+                          : 'transparent',
+                      },
+                    }}
                     component={Link}
                     to={`${to[0]}/${text.replace(/\s+/g, '-').toLowerCase()}`}
                   >
@@ -213,25 +281,45 @@ export default function MainLayout(props: ISideBarProps) {
 
           {/* Mục Quản lý khóa học */}
           <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={handleCourseManagementClick} sx={{ justifyContent: 'initial', px: 4 }}>
+            <ListItemButton
+              onClick={handleCourseManagementClick}
+              sx={{
+                justifyContent: 'initial',
+                px: 4,
+                backgroundColor: isSelected('/course-management') ? 'green' : 'transparent',  // Thêm màu nền cho mục được chọn
+                '&:hover': {
+                  backgroundColor: isSelected('/course-management') ? 'darkgreen' : 'transparent',  // Thêm hiệu ứng hover
+                },
+              }}
+            >
               <ListItemIcon sx={{ minWidth: 0, mr: 3 }}>
-                {openCourseManagement ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                <AcademicCapIcon className="h-6 w-6 text-gray-500" /> {/* Icon Quản lý khóa học */}
               </ListItemIcon>
               <ListItemText primary="Quản lý khóa học" />
+              {openCourseManagement ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </ListItemButton>
             <Collapse in={openCourseManagement} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 8 }} component={Link} to={'/course-management'}>
-                  <ListItemText primary="Khóa học" />
-                </ListItemButton>
-
-                <ListItemButton sx={{ pl: 8 }} component={Link} to={'/teacher-management'}>
-                  <ListItemText primary="Giảng viên" />
-                </ListItemButton>
-
-                <ListItemButton sx={{ pl: 8 }} component={Link} to={'/topic-management'}>
-                  <ListItemText primary="Chủ đề" />
-                </ListItemButton>
+                {courseManagementItems.map(({ label, url }) => (
+                  <ListItemButton
+                    key={url}
+                    sx={{
+                      pl: 8,
+                      backgroundColor: isSelected(`/course-management/${url}`)
+                        ? 'green'
+                        : 'transparent',
+                      '&:hover': {
+                        backgroundColor: isSelected(`/course-management/${url}`)
+                          ? 'darkgreen'
+                          : 'transparent',
+                      },
+                    }}
+                    component={Link}
+                    to={`/course-management/${url}`}
+                  >
+                    <ListItemText primary={label} />
+                  </ListItemButton>
+                ))}
               </List>
             </Collapse>
           </ListItem>
@@ -239,9 +327,18 @@ export default function MainLayout(props: ISideBarProps) {
           {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm', 'Quản lý đơn hàng'].map((text, index) => (
             <Link to={to[index + 1]} key={text}>
               <ListItem disablePadding>
-                <ListItemButton sx={{ justifyContent: 'initial', px: 4 }}>
+                <ListItemButton
+                  sx={{
+                    justifyContent: 'initial',
+                    px: 4,
+                    backgroundColor: isSelected(to[index + 1]) ? 'green' : 'transparent', // Thêm màu nền cho mục được chọn
+                    '&:hover': {
+                      backgroundColor: isSelected(to[index + 1]) ? 'darkgreen' : 'transparent', // Thêm hiệu ứng hover
+                    },
+                  }}
+                >
                   <ListItemIcon sx={{ minWidth: 0, mr: 3 }}>
-                    {path === to[index + 1] ? activeIcons[index + 1] : icons[index + 1]}
+                    {isSelected(to[index + 1]) ? activeIcons[index + 1] : icons[index + 1]}
                   </ListItemIcon>
                   <ListItemText primary={text} />
                 </ListItemButton>

@@ -14,7 +14,7 @@ const UploadWidget: React.FC<IUploadWidgetProps> = (props) => {
     cloudinaryRef.current = (window as any).cloudinary;
     widgetRef.current = cloudinaryRef.current?.createUploadWidget(
       {
-        cloudName: "dfnuzzpe3",
+        cloudName: "dagkur7gg",
         uploadPreset: "ml_default",
       },
       function (error: any, result: any) {

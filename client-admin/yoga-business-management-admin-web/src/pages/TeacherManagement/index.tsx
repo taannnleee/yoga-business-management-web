@@ -6,6 +6,7 @@ import axios from 'axios';
 import { apiURL } from '../../config/constanst';
 import { toast } from 'react-toastify';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import MainLayout from '../../components/SIdeBar';
 
 interface FormData {
     fullName: string;
@@ -296,196 +297,202 @@ const TeacherManagement: React.FC = () => {
     ];
 
     return (
-        <>
-            <Header title="Quản lý giáo viên" />
-            <Box padding={3}>
+        <MainLayout
+            title="Quản lý giáo viên"
+            content={
+                <>
+                    <Box padding={3}>
 
-                <Box marginBottom={3}>
-                    <TextField
-                        label="Họ và Tên"
-                        fullWidth
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <TextField
+                                label="Họ và Tên"
+                                fullWidth
+                                name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                            />
+                        </Box>
 
-                <Box marginBottom={3}>
-                    <TextField
-                        label="Email"
-                        fullWidth
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <TextField
+                                label="Email"
+                                fullWidth
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                        </Box>
 
-                <Box marginBottom={3}>
-                    <TextField
-                        label="Số Điện Thoại"
-                        fullWidth
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleChange}
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <TextField
+                                label="Số Điện Thoại"
+                                fullWidth
+                                name="phoneNumber"
+                                value={formData.phoneNumber}
+                                onChange={handleChange}
+                            />
+                        </Box>
 
-                <Box marginBottom={3}>
-                    <TextField
-                        label="Kinh Nghiệm (năm)"
-                        fullWidth
-                        name="experienceYears"
-                        type="number"
-                        value={formData.experienceYears}
-                        onChange={handleChange}
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <TextField
+                                label="Kinh Nghiệm (năm)"
+                                fullWidth
+                                name="experienceYears"
+                                type="number"
+                                value={formData.experienceYears}
+                                onChange={handleChange}
+                            />
+                        </Box>
 
-                <Box marginBottom={3}>
-                    <TextField
-                        label="Giới Thiệu Ngắn"
-                        fullWidth
-                        name="introduction"
-                        value={formData.introduction}
-                        onChange={handleChange}
-                        multiline
-                        rows={4}  // Cho phép nhập nhiều dòng
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <TextField
+                                label="Giới Thiệu Ngắn"
+                                fullWidth
+                                name="introduction"
+                                value={formData.introduction}
+                                onChange={handleChange}
+                                multiline
+                                rows={4}  // Cho phép nhập nhiều dòng
+                            />
+                        </Box>
 
-                <Box marginBottom={3}>
-                    <TextField
-                        label="Mô tả"
-                        fullWidth
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        multiline
-                        rows={4}  // Cho phép nhập nhiều dòng
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <TextField
+                                label="Mô tả"
+                                fullWidth
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                multiline
+                                rows={4}  // Cho phép nhập nhiều dòng
+                            />
+                        </Box>
 
-                <Box marginBottom={3}>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleChange}
-                    />
-                    <img
-                        src={previewImage}
-                        alt="preview"
-                        style={{ marginTop: 10, width: 100, height: 100, borderRadius: '50%' }}
-                    />
-                </Box>
+                        <Box marginBottom={3}>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleChange}
+                            />
+                            <img
+                                src={previewImage}
+                                alt="preview"
+                                style={{ marginTop: 10, width: 100, height: 100, borderRadius: '50%' }}
+                            />
+                        </Box>
 
-                <Box marginTop={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}
-                        disabled={loading}
-                    >
-                        Tạo Giáo Viên
-                    </Button>
-                </Box>
+                        <Box marginTop={2}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit}
+                                disabled={loading}
+                            >
+                                Tạo Giáo Viên
+                            </Button>
+                        </Box>
 
-                {/* DataGrid */}
-                <Box marginTop={5} height={400}>
-                    <DataGrid
-                        rows={teachers}
-                        columns={columns}
-                        pageSize={rowsPerPage}
-                        rowCount={totalTeachers}
-                        paginationMode="server"
-                        onPageChange={handleChangePage}
-                        onPageSizeChange={handleChangeRowsPerPage}
-                        loading={loading}
-                    />
-                </Box>
-            </Box>
-
-            {/* Edit Teacher Dialog */}
-            <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-                <DialogTitle>Cập Nhật Giáo Viên</DialogTitle>
-                <DialogContent>
-                    <Box marginBottom={3}>
-                        <TextField
-                            label="Họ và Tên"
-                            fullWidth
-                            name="fullName"
-                            value={formData.fullName}
-                            onChange={handleChange}
-                            sx={{ width: '900px' }}
-                        />
+                        {/* DataGrid */}
+                        <Box marginTop={5} height={400}>
+                            <DataGrid
+                                rows={teachers}
+                                columns={columns}
+                                pageSize={rowsPerPage}
+                                rowCount={totalTeachers}
+                                paginationMode="server"
+                                onPageChange={handleChangePage}
+                                onPageSizeChange={handleChangeRowsPerPage}
+                                loading={loading}
+                            />
+                        </Box>
                     </Box>
 
-                    <Box marginBottom={3}>
-                        <TextField
-                            label="Email"
-                            fullWidth
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                        />
-                    </Box>
+                    {/* Edit Teacher Dialog */}
+                    <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+                        <DialogTitle>Cập Nhật Giáo Viên</DialogTitle>
+                        <DialogContent>
+                            <Box marginBottom={3}>
+                                <TextField
+                                    label="Họ và Tên"
+                                    fullWidth
+                                    name="fullName"
+                                    value={formData.fullName}
+                                    onChange={handleChange}
+                                    sx={{ width: '900px' }}
+                                />
+                            </Box>
 
-                    <Box marginBottom={3}>
-                        <TextField
-                            label="Số Điện Thoại"
-                            fullWidth
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleChange}
-                        />
-                    </Box>
+                            <Box marginBottom={3}>
+                                <TextField
+                                    label="Email"
+                                    fullWidth
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </Box>
 
-                    <Box marginBottom={3}>
-                        <TextField
-                            label="Kinh Nghiệm (năm)"
-                            fullWidth
-                            name="experienceYears"
-                            type="number"
-                            value={formData.experienceYears}
-                            onChange={handleChange}
-                        />
-                    </Box>
+                            <Box marginBottom={3}>
+                                <TextField
+                                    label="Số Điện Thoại"
+                                    fullWidth
+                                    name="phoneNumber"
+                                    value={formData.phoneNumber}
+                                    onChange={handleChange}
+                                />
+                            </Box>
 
-                    <Box marginBottom={3}>
-                        <TextField
-                            label="Giới Thiệu"
-                            fullWidth
-                            name="introduction"
-                            value={formData.introduction}
-                            onChange={handleChange}
-                            multiline
-                            rows={4}
-                        />
-                    </Box>
+                            <Box marginBottom={3}>
+                                <TextField
+                                    label="Kinh Nghiệm (năm)"
+                                    fullWidth
+                                    name="experienceYears"
+                                    type="number"
+                                    value={formData.experienceYears}
+                                    onChange={handleChange}
+                                />
+                            </Box>
 
-                    <Box marginBottom={3}>
-                        <TextField
-                            label="Mô tả"
-                            fullWidth
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            multiline
-                            rows={4}
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEditDialogOpen(false)} color="primary">
-                        Hủy
-                    </Button>
-                    <Button onClick={handleUpdate} color="primary" disabled={loading}>
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Cập Nhật'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                            <Box marginBottom={3}>
+                                <TextField
+                                    label="Giới Thiệu"
+                                    fullWidth
+                                    name="introduction"
+                                    value={formData.introduction}
+                                    onChange={handleChange}
+                                    multiline
+                                    rows={4}
+                                />
+                            </Box>
 
-            <FooterSection />
-        </>
+                            <Box marginBottom={3}>
+                                <TextField
+                                    label="Mô tả"
+                                    fullWidth
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    multiline
+                                    rows={4}
+                                />
+                            </Box>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setEditDialogOpen(false)} color="primary">
+                                Hủy
+                            </Button>
+                            <Button onClick={handleUpdate} color="primary" disabled={loading}>
+                                {loading ? <CircularProgress size={24} color="inherit" /> : 'Cập Nhật'}
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
+                    <FooterSection />
+                </>
+            }
+        />
+
+
     );
 };
 

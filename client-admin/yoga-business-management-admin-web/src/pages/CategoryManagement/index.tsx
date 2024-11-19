@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import Header from '../../components/Header';
 import FooterSection from '../../components/FooterSection';
 import UploadWidget from '../../designs/UploadWidget';
+import MainLayout from '../../components/SIdeBar';
 
 interface Category {
   id: number;
@@ -153,87 +154,93 @@ const CategoryManagement: React.FC = () => {
   ];
 
   return (
-    <>
-      <Header title="Quản lý danh mục" />
-      <Box padding={3}>
-        <Box marginBottom={3}>
-          <TextField
-            label="Tên Danh Mục"
-            fullWidth
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <UploadWidget
-            setThumbnailUploaded={(image: string) => setUrlImage(image)}
-            thumbnailUploaded={urlImage}
-          />
-        </Box>
-        <Box marginTop={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            disabled={loading || !formData.name}
-          >
-            {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Danh Mục'}
-          </Button>
-        </Box>
+    <MainLayout
+      title="Quản lý danh mục"
+      content={
+        <>
 
-        {/* DataGrid */}
-        <Box marginTop={5} height={400}>
-          <DataGrid
-            rows={categories}
-            columns={columns}
-            pageSize={rowsPerPage}
-            rowCount={totalCategories}
-            paginationMode="server"
-            onPageChange={(newPage) => setPage(newPage)}
-            onPageSizeChange={(newRowsPerPage) => {
-              setRowsPerPage(newRowsPerPage);
-              setPage(0);
-            }}
-            loading={loading}
-            onRowClick={handleRowClick}  // Thêm sự kiện row click
-          />
-        </Box>
-      </Box>
+          <Box padding={3}>
+            <Box marginBottom={3}>
+              <TextField
+                label="Tên Danh Mục"
+                fullWidth
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+              <UploadWidget
+                setThumbnailUploaded={(image: string) => setUrlImage(image)}
+                thumbnailUploaded={urlImage}
+              />
+            </Box>
+            <Box marginTop={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={loading || !formData.name}
+              >
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Danh Mục'}
+              </Button>
+            </Box>
 
-      {/* Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Chi tiết Danh Mục</DialogTitle>
-        <DialogContent>
-          <Box>
-            <p>ID: {selectedCategoryId}</p>
-            <p>Tên Danh Mục: {selectedCategoryName}</p>
-
-            {/* TextField cho category phụ */}
-            <TextField
-              label="Tên Category Phụ"
-              fullWidth
-              name="subcategoryName"
-              value={subcategoryName}
-              onChange={(e) => setSubcategoryName(e.target.value)}
-              margin="normal"
-            />
+            {/* DataGrid */}
+            <Box marginTop={5} height={400}>
+              <DataGrid
+                rows={categories}
+                columns={columns}
+                pageSize={rowsPerPage}
+                rowCount={totalCategories}
+                paginationMode="server"
+                onPageChange={(newPage) => setPage(newPage)}
+                onPageSizeChange={(newRowsPerPage) => {
+                  setRowsPerPage(newRowsPerPage);
+                  setPage(0);
+                }}
+                loading={loading}
+                onRowClick={handleRowClick}  // Thêm sự kiện row click
+              />
+            </Box>
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Đóng
-          </Button>
-          <Button
-            onClick={handleSubmitSubcategory}
-            color="primary"
-            disabled={loading || !subcategoryName}
-          >
-            {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Category Phụ'}
-          </Button>
-        </DialogActions>
-      </Dialog>
 
-      <FooterSection />
-    </>
+          {/* Dialog */}
+          <Dialog open={openDialog} onClose={handleCloseDialog}>
+            <DialogTitle>Chi tiết Danh Mục</DialogTitle>
+            <DialogContent>
+              <Box>
+                <p>ID: {selectedCategoryId}</p>
+                <p>Tên Danh Mục: {selectedCategoryName}</p>
+
+                {/* TextField cho category phụ */}
+                <TextField
+                  label="Tên Category Phụ"
+                  fullWidth
+                  name="subcategoryName"
+                  value={subcategoryName}
+                  onChange={(e) => setSubcategoryName(e.target.value)}
+                  margin="normal"
+                />
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="primary">
+                Đóng
+              </Button>
+              <Button
+                onClick={handleSubmitSubcategory}
+                color="primary"
+                disabled={loading || !subcategoryName}
+              >
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Category Phụ'}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+
+        </>
+      }
+    />
+
   );
 };
 

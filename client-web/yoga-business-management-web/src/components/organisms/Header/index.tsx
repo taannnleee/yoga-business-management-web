@@ -6,7 +6,7 @@ import {
   Bars3Icon,
   ShoppingCartIcon,
   UserIcon,
-    ChevronDownIcon
+  ChevronDownIcon
 } from "@heroicons/react/24/solid";
 import axios from "axios";
 import SearchBar from "../../molecules/SearchBar";
@@ -16,10 +16,10 @@ import useDebounce from "@/hooks/useDebounce";
 import Image from "next/image";
 import LogoCourse from "../../atom/ButtonCourse";
 import ButtonCourse from "../../atom/ButtonCourse";
-import {useToast} from "@/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 import CartButton from "@/components/molecules/CartButton";
 import HoverDropdown from "@/components/molecules/HoverDropdown";
-interface IHeaderV2Props {}
+interface IHeaderV2Props { }
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const dropdownItems = ['Sản phẩm 1', 'Sản phẩm 2', 'Sản phẩm 3'];
@@ -27,7 +27,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const toast = useToast();
   const [openLogin, setOpenLogin] = useState<boolean>(false);
   const [isGettingProductCategory, setIsGettingProductCategory] =
-      useState<boolean>(false);
+    useState<boolean>(false);
   const [displayMenu, setDisplayMenu] = useState<boolean>(false);
   const [openRegister, setOpenRegister] = useState<boolean>(false);
   const [openMobileDrawer, setOpenMobileDrawer] = useState<boolean>(false);
@@ -41,43 +41,43 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   // Check if the access token exists
   const accessToken = localStorage.getItem("accessToken");
   const modalContent = accessToken ? (
-      <div className="space-y-2 w-28 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
-        <p className="cursor-pointer w-full" onClick={() => router.push("/address")}>Địa chỉ</p>
-        <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
-        <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
-        <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
-        <p
-            className="cursor-pointer"
-            onClick={() => {
-              localStorage.removeItem("accessToken");
-              localStorage.removeItem("refreshToken");
-              toast.sendToast("Success", "Đăng xuất thành công");
-              router.replace("/home");
-            }}
-        >
-          Đăng xuất
-        </p>
-      </div>
+    <div className="space-y-2 w-28 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
+      <p className="cursor-pointer w-full" onClick={() => router.push("/address")}>Địa chỉ</p>
+      <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
+      <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
+      <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
+      <p
+        className="cursor-pointer"
+        onClick={() => {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          toast.sendToast("Success", "Đăng xuất thành công");
+          router.replace("/home");
+        }}
+      >
+        Đăng xuất
+      </p>
+    </div>
   ) : (
-      <div className="space-y-2">
-        <p className="cursor-pointer" onClick={() => router.replace("/login")}>
-          Đăng nhập
-        </p>
-        <p className="cursor-pointer" onClick={() => router.replace("/register")}>
-          Tạo tài khoản
-        </p>
-        <p className="cursor-pointer">Facebook</p>
-        <p className="cursor-pointer">Google</p>
-      </div>
+    <div className="space-y-2">
+      <p className="cursor-pointer" onClick={() => router.replace("/login")}>
+        Đăng nhập
+      </p>
+      <p className="cursor-pointer" onClick={() => router.replace("/create-account")}>
+        Tạo tài khoản
+      </p>
+      <p className="cursor-pointer">Facebook</p>
+      <p className="cursor-pointer">Google</p>
+    </div>
   );
 
   const searchingByKeyword = async (keyword: string) => {
     try {
       const searchResponse = await axios.post(
-          "http://localhost:4000/products/search",
-          {
-            keyword: keyword,
-          }
+        "http://localhost:4000/products/search",
+        {
+          keyword: keyword,
+        }
       );
 
       if (searchResponse) {
@@ -113,134 +113,134 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   };
 
   return (
-      <>
-        <div className="w-full shadow-lg pb-4  bg-white laptop:pb-0 border-b border-gray-200">
-          <div className="w-full flex space-x-4  tablet:space-x-6 laptop:space-x-6 desktop:space-x-8 items-center px-4 py-4  justify-between laptop:justify-around">
-            <div className="flex laptop:hidden  w-1/3 laptop:w-0">
-              <button
-                  className="bg-gray-100 p-2 rounded-lg active:bg-gray-300"
-                  onClick={() => setOpenMobileDrawer(true)}
-              >
-                <Bars3Icon className="text-gray-500 font-bold w-5 h-5" />
+    <>
+      <div className="w-full shadow-lg pb-4  bg-white laptop:pb-0 border-b border-gray-200">
+        <div className="w-full flex space-x-4  tablet:space-x-6 laptop:space-x-6 desktop:space-x-8 items-center px-4 py-4  justify-between laptop:justify-around">
+          <div className="flex laptop:hidden  w-1/3 laptop:w-0">
+            <button
+              className="bg-gray-100 p-2 rounded-lg active:bg-gray-300"
+              onClick={() => setOpenMobileDrawer(true)}
+            >
+              <Bars3Icon className="text-gray-500 font-bold w-5 h-5" />
+            </button>
+          </div>
+          <Logo />
+          <nav className="hidden laptop:flex space-x-6">
+            <a href="/" className="text-gray-600 hover:text-orange-600">
+              Trang chủ
+            </a>
+            <a href="/about" className="text-gray-600 hover:text-orange-600">
+              Giới thiệu
+            </a>
+
+            <HoverDropdown buttonText="Sản phẩm" items={dropdownItems} />
+
+
+            {/* Tư vấn dropdown */}
+            <div className="relative group">
+              <button className="text-black hover:text-orange-600 flex items-center relative">
+                <span>Tư vấn</span>
+                <ChevronDownIcon className="w-5 h-5 ml-1 text-black" />
+
+                {/* Pseudo bridge */}
+                <div className="absolute left-0 top-full w-full h-4 bg-transparent group-hover:block z-10"></div>
               </button>
-            </div>
-            <Logo />
-            <nav className="hidden laptop:flex space-x-6">
-              <a href="/" className="text-gray-600 hover:text-orange-600">
-                Trang chủ
-              </a>
-              <a href="/about" className="text-gray-600 hover:text-orange-600">
-                Giới thiệu
-              </a>
 
-              <HoverDropdown buttonText="Sản phẩm" items={dropdownItems} />
-
-
-              {/* Tư vấn dropdown */}
-              <div className="relative group">
-                <button className="text-black hover:text-orange-600 flex items-center relative">
-                  <span>Tư vấn</span>
-                  <ChevronDownIcon className="w-5 h-5 ml-1 text-black"/>
-
-                  {/* Pseudo bridge */}
-                  <div className="absolute left-0 top-full w-full h-4 bg-transparent group-hover:block z-10"></div>
-                </button>
-
-                {/* Dropdown menu */}
-                <div
-                    className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
-                  <ul className="py-2">
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600 text-sm">Chọn thảm yoga</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600 text-sm">Chọn quần áo yoga</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600 text-sm">Câu hỏi thường gặp - FAQ</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Tin tức dropdown */}
-              <div className="relative group">
-                <button className="text-black hover:text-orange-600 flex items-center relative">
-                  <span>Tin tức</span>
-                  <ChevronDownIcon className="w-5 h-5 ml-1 text-black"/>
-
-                  {/* Pseudo bridge */}
-                  <div className="absolute left-0 top-full w-full h-4 bg-transparent group-hover:block z-10"></div>
-                </button>
-
-                {/* Dropdown menu */}
-                <div
-                    className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
-                  <ul className="py-2">
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600 text-sm">Khuyến mãi</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600 text-sm">Yoga và Thiền</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                      <span className="text-black hover:text-orange-600 text-sm">Ebook yoga</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <ButtonCourse className={"mt-[-12px]"}/>
-            </nav>
-
-            <div className="flex w-1/3 laptop:hidden laptop:w-0 flex-row-reverse">
-              {false ? null : (
-                  <div className="flex flex-row-reverse laptop:hidden  w-1/3 laptop:w-0">
-                    <FulfillmentMangement/>
-                  </div>
-              )}
-            </div>
-
-            <div className="hidden laptop:flex">
-              <div className="hidden laptop:flex flex-end space-x-1 items-center justify-between w-64">
-
-                <FulfillmentMangement/>
-                <div
-                    className="relative"
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                >
-                  <button
-                      className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
-                  >
-                    <UserIcon className="w-8 h-8 text-gray-600"/>
-                  </button>
-
-                  {/* Hover modal */}
-                  {isHovered && (
-                      <div className="absolute left-0 top-full mt-2 bg-white p-4 shadow-lg z-50">
-                        {modalContent}
-                      </div>
-                  )}
-                </div>
-                <CartButton/>
-
+              {/* Dropdown menu */}
+              <div
+                className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
+                <ul className="py-2">
+                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                    <span className="text-black hover:text-orange-600 text-sm">Chọn thảm yoga</span>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                    <span className="text-black hover:text-orange-600 text-sm">Chọn quần áo yoga</span>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                    <span className="text-black hover:text-orange-600 text-sm">Câu hỏi thường gặp - FAQ</span>
+                  </li>
+                </ul>
               </div>
             </div>
+
+            {/* Tin tức dropdown */}
+            <div className="relative group">
+              <button className="text-black hover:text-orange-600 flex items-center relative">
+                <span>Tin tức</span>
+                <ChevronDownIcon className="w-5 h-5 ml-1 text-black" />
+
+                {/* Pseudo bridge */}
+                <div className="absolute left-0 top-full w-full h-4 bg-transparent group-hover:block z-10"></div>
+              </button>
+
+              {/* Dropdown menu */}
+              <div
+                className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
+                <ul className="py-2">
+                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                    <span className="text-black hover:text-orange-600 text-sm">Khuyến mãi</span>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                    <span className="text-black hover:text-orange-600 text-sm">Yoga và Thiền</span>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                    <span className="text-black hover:text-orange-600 text-sm">Ebook yoga</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <ButtonCourse className={"mt-[-12px]"} />
+          </nav>
+
+          <div className="flex w-1/3 laptop:hidden laptop:w-0 flex-row-reverse">
+            {false ? null : (
+              <div className="flex flex-row-reverse laptop:hidden  w-1/3 laptop:w-0">
+                <FulfillmentMangement />
+              </div>
+            )}
           </div>
 
-          <div className="flex laptop:hidden px-2">
-            <SearchBar
-                placeholder="Search for anything, any words"
-                onChange={() => {
-                }}
-                onCategoryChange={() => {
-                }}
-                category=""
-            />
+          <div className="hidden laptop:flex">
+            <div className="hidden laptop:flex flex-end space-x-1 items-center justify-between w-64">
+
+              <FulfillmentMangement />
+              <div
+                className="relative"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <button
+                  className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
+                >
+                  <UserIcon className="w-8 h-8 text-gray-600" />
+                </button>
+
+                {/* Hover modal */}
+                {isHovered && (
+                  <div className="absolute left-0 top-full mt-2 bg-white p-4 shadow-lg z-50">
+                    {modalContent}
+                  </div>
+                )}
+              </div>
+              <CartButton />
+
+            </div>
           </div>
         </div>
-      </>
+
+        <div className="flex laptop:hidden px-2">
+          <SearchBar
+            placeholder="Search for anything, any words"
+            onChange={() => {
+            }}
+            onCategoryChange={() => {
+            }}
+            category=""
+          />
+        </div>
+      </div>
+    </>
   );
 };
 

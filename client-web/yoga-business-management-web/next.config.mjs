@@ -11,7 +11,10 @@ const nextConfig = {
             "yoga.vn",
             "res.cloudinary.com",
             "images.pexels.com",
-            "example.com"
+            "example.com",
+            'bizweb.dktcdn.net',
+            'encrypted-tbn0.gstatic.com',
+            'dotapyogatot.com',
         ],
         dangerouslyAllowSVG: true,
     },

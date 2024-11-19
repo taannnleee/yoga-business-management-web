@@ -85,34 +85,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
     }
   };
 
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 70 },
-    {
-      field: "upc",
-      headerName: "Mã sản phẩm",
-      width: 200,
-      renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="text-gray-800 font-semibold text-sm">{params.value}</div>;
-      },
-    },
-    { field: "name", headerName: "Tên sản phẩm", width: 250 },
-    {
-      field: "category",
-      headerName: "Danh mục",
-      width: 200,
-      renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="text-yellow-600 font-semibold text-sm">{params.value?.name}</div>;
-      },
-    },
-    {
-      field: "price",
-      headerName: "Giá bán",
-      width: 200,
-      renderCell: (params: GridRenderCellParams<any>) => {
-        return <div className="text-green-800 font-semibold text-sm">{params.value?.displayPrice}</div>;
-      },
-    },
-  ];
+
 
   const getAllProductsBySub = async () => {
     try {
@@ -324,31 +297,6 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
                 {loading ? <CircularProgress size={24} /> : "Thêm vào cửa hàng"}
               </Button>
             </div>
-          </div>
-
-          {/* DataGrid hiển thị danh sách sản phẩm */}
-          <div className="mt-6">
-            <DataGrid
-              loading={loading}
-              rows={products}
-              columns={columns}
-              pageSize={10}
-              paginationMode="server"
-              rowCount={totalPages * 10}
-              page={page}
-              onSelectionModelChange={(newSelection) => {
-                const selectedProducts = newSelection.map((item: any) => products.find((product) => product.id === item));
-                setSelectedItem([...selectedProducts] as any[]);
-              }}
-              sx={{ height: "500px" }}
-              hideFooterPagination
-            />
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(event, newPage) => setPage(newPage)}
-              className="mt-4"
-            />
           </div>
         </div>
       ) : null}

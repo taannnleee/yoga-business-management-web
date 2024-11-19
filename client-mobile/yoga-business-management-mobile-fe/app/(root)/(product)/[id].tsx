@@ -132,7 +132,7 @@ const ProductDetail = () => {
         {/* Rating Section */}
         <View className="mb-6">
           <Text className="text-[14px] font-bold">{selectedProduct.title}</Text>
-          {/* Soft gray background with subtle padding for better separation */}
+          {/* Soft gray background with subtle padding for bet`ter separation */}
           <ProductRating averageRating={selectedProduct.averageRating} />
         </View>
 

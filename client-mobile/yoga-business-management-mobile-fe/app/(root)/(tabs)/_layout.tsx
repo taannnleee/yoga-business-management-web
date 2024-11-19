@@ -56,7 +56,7 @@ const TabsLayout = () => {
   const tabBarStyle = {
     backgroundColor: "#333333",
     borderRadius: 20,
-    paddingBottom: 0,
+    paddingBottom: 25,
     overflow: "hidden",
     marginHorizontal: 20,
     marginBottom: 20,
@@ -71,7 +71,7 @@ const TabsLayout = () => {
 
   return (
     <Tabs
-      initialRouteName={"index"}
+      initialRouteName={"home"}
       screenOptions={{
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "white",

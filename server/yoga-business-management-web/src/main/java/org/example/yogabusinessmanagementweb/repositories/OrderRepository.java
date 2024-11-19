@@ -13,8 +13,10 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findAllByUser (User user);
+
+    List<Order> findAllByUser(User user);
 
     @Query(value = "SELECT * FROM Orders o WHERE o.status_order = :status AND o.user_id = :userId", nativeQuery = true)
     List<Order> findAllByStatusOrderAndUserId(@Param("status") String status, @Param("userId") Long userId);
 }
+

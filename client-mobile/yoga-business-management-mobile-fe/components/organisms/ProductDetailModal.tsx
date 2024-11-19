@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -10,7 +10,7 @@ import {
   Modal,
 } from "react-native";
 import { Button } from "react-native-elements";
-import CustomNumberInput from "@/components/atoms/CustomNumberInput";
+import CustomNumberInput from "@/components/atoms/CustomNumberInput"; // Đảm bảo bạn đã import đúng
 import { Product } from "@/types/product";
 import { Variants } from "@/types/variant";
 
@@ -39,12 +39,18 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   selectedProduct,
   selectedImage,
   selectedImageLeft,
-  quantity,
+  quantity: initialQuantity,
   currentVariant,
   handleVariantSelect,
   handleImageLeftClick,
   handleImageRightClick,
 }) => {
+  const [quantity, setQuantity] = useState(initialQuantity);
+
+  const handleQuantityChange = (newQuantity: number) => {
+    setQuantity(newQuantity);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Modal
@@ -87,9 +93,7 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           onPress={() => handleImageLeftClick(image)}
                         >
                           <Image
-                            source={{
-                              uri: image || "/path/to/fallback/image.jpg",
-                            }}
+                            source={image ? { uri: image } : {}}
                             className={`w-20 h-20 rounded-lg ${
                               image === selectedImageLeft
                                 ? "border-2 border-red-500"
@@ -159,10 +163,10 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     ),
                   )}
 
-                <View className="flex-row items-center space-x-4 mt-4">
+                <View className="flex-row items-center space-x-4 mt-4 mb-16">
                   <CustomNumberInput
                     value={quantity}
-                    onChange={(newQuantity) => {}}
+                    onChange={handleQuantityChange} // Lưu ý rằng hàm này sẽ cập nhật giá trị quantity
                   />
                   <Button
                     title="Add to Cart"

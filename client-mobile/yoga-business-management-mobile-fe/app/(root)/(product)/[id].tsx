@@ -18,6 +18,7 @@ import { getJwt } from "@/jwt/get-jwt";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal";
 import ProductRating from "@/components/organisms/ProductRating";
 import Icon from "react-native-vector-icons/AntDesign";
+import FooterProductDetailModal from "@/components/organisms/FooterProductDetail";
 
 const ProductDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -65,7 +66,17 @@ const ProductDetail = () => {
       handleImageRightClick(image);
     }
   };
+  const handleChat = () => {
+    console.log("Chat ngay!");
+  };
 
+  const handleAddToCart = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleBuyWithVoucher = () => {
+    console.log("Mua với Voucher!");
+  };
   const handleImageLeftClick = (image) => {
     setSelectedImageLeft(image);
     setSelectedImage(image);
@@ -143,7 +154,12 @@ const ProductDetail = () => {
           </Text>
         </View>
       </ScrollView>
-
+      <FooterProductDetailModal
+        onChat={handleChat}
+        onAddToCart={handleAddToCart}
+        onBuyWithVoucher={handleBuyWithVoucher}
+        setIsModalVisible={setIsModalVisible}
+      />
       {isModalVisible && (
         <ProductDetailModal
           isVisible={isModalVisible}

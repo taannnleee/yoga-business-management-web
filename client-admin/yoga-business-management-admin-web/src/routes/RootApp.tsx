@@ -44,15 +44,15 @@ export default function RootApp() {
         <LoginPage />
       </Route>
 
-      <Route path="/teacher-management">
+      <Route path="/course-management/teachers">
         <TeacherManagement />
       </Route>
 
-      <Route path="/topic-management">
+      <Route path="/course-management/topics">
         <TopicManagement />
       </Route>
 
-      <Route path="/course-management">
+      <Route path="/course-management/courses">
         <CourseManagement />
       </Route>
 

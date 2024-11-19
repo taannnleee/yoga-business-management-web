@@ -127,16 +127,6 @@ const OrderManagement = () => {
             title="Danh sách đơn hàng"
             content={
                 <Box p={3}>
-                    {/* Header */}
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                        <Typography variant="h5" fontWeight="bold">
-                            Order List
-                        </Typography>
-                        <Button variant="contained" color="primary">
-                            Add New Vendor
-                        </Button>
-                    </Box>
-
                     {/* Search */}
                     <Box display="flex" justifyContent="flex-end" mb={2}>
                         <TextField

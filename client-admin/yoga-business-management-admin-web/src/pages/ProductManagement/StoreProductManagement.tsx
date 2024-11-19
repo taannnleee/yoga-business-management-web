@@ -75,7 +75,8 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
         },
       });
       if (response?.data?.status === 200) {
-        setSubcategories(response.data.data);  // Lưu danh sách subcategories vào state
+        setSubcategories(response.data.data);
+        setCurrentSubCategory(response.data.data[0]);
       } else {
         setSubcategories([]);
       }

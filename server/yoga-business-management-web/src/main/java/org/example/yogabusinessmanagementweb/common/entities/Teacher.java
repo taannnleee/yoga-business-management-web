@@ -20,6 +20,7 @@ public class Teacher extends AbstractEntity<Long> {
 
     String introduction;
 
+    @Column(columnDefinition = "LONGTEXT")
     String description;
 
     String email;

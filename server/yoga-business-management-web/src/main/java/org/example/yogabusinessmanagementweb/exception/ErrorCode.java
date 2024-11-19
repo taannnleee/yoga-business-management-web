@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error",HttpStatus.INTERNAL_SERVER_ERROR),
-    UNAUTHENTICATED(9000, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED(9000, "Authentication required. Please log in.", HttpStatus.UNAUTHORIZED),
 
     UNAUTHORIZED(9001, "You do not have permission to access this resource", HttpStatus.FORBIDDEN),
     MISSING_FIELD_REQUIRED(1002, "Missing required field",HttpStatus.BAD_REQUEST),

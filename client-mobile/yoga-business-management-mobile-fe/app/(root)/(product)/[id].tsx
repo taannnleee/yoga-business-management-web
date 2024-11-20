@@ -70,15 +70,17 @@ const ProductDetail = () => {
     console.log("Chat ngay!");
   };
 
-  const handleAddToCart = async () => {
+  const handleClickAddToCart = async () => {
     setIsModalVisible(true); // Mở modal khi người dùng nhấn nút "Thêm Giỏ Hàng"
 
-    // Tiến hành gọi API ở đây
+  };
+
+  const handleAddToCart = async () => {
     try {
       const token = await getJwt(); // Lấy JWT token từ local storage hoặc context
       const cartData = {
         productId: selectedProduct?.id,
-        quantity,
+        quantity: quantity,
         currentVariant: currentVariant, // Các variant sản phẩm nếu có
       };
 
@@ -189,7 +191,7 @@ const ProductDetail = () => {
       </ScrollView>
       <FooterProductDetailModal
         onChat={handleChat}
-        onAddToCart={handleAddToCart}
+        onAddToCart={handleClickAddToCart}
         onBuyWithVoucher={handleBuyWithVoucher}
         setIsModalVisible={setIsModalVisible}
       />
@@ -205,6 +207,8 @@ const ProductDetail = () => {
           handleVariantSelect={handleVariantSelect}
           handleImageLeftClick={handleImageLeftClick}
           handleImageRightClick={handleImageRightClick}
+          handleAddToCart={handleAddToCart}
+          setQuantity={setQuantity}
         />
       )}
     </SafeAreaView>

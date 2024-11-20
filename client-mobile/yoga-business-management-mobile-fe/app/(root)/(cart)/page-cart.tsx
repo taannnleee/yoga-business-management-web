@@ -184,7 +184,7 @@ const ShoppingCartPage = () => {
 
     // Hàm xử lý khi chuyển đến trang thanh toán
     const handleCheckout = () => {
-        // Alert.alert("Thanh toán", "Bạn đã sẵn sàng để thanh toán.");
+        Alert.alert("Thanh toán", "Bạn đã sẵn sàng để thanh toán.");
        
         router.push("/(root)/(checkout)/page-checkout")
 

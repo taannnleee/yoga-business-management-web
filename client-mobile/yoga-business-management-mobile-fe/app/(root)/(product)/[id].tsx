@@ -70,8 +70,42 @@ const ProductDetail = () => {
     console.log("Chat ngay!");
   };
 
-  const handleAddToCart = () => {
-    setIsModalVisible(true);
+  const handleAddToCart = async () => {
+    setIsModalVisible(true); // Mở modal khi người dùng nhấn nút "Thêm Giỏ Hàng"
+
+    // Tiến hành gọi API ở đây
+    try {
+      const token = await getJwt(); // Lấy JWT token từ local storage hoặc context
+      const cartData = {
+        productId: selectedProduct?.id,
+        quantity,
+        currentVariant: currentVariant, // Các variant sản phẩm nếu có
+      };
+
+      // Gọi API thêm vào giỏ hàng
+      const response = await fetch(`${BASE_URL}/api/cart/add-to-cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(cartData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Sản phẩm đã được thêm vào giỏ hàng:", data);
+        // Bạn có thể hiển thị thông báo thành công cho người dùng ở đây
+        // Sau khi thêm sản phẩm vào giỏ hàng, có thể đóng modal
+        setIsModalVisible(false);
+      } else {
+        throw new Error("Lỗi khi thêm sản phẩm vào giỏ hàng");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      // Hiển thị thông báo lỗi nếu có
+      alert("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng");
+    }
   };
 
   const handleBuyWithVoucher = () => {
@@ -111,11 +145,10 @@ const ProductDetail = () => {
                       source={{
                         uri: image || "/path/to/fallback/image.jpg",
                       }}
-                      className={`w-12 h-12 rounded-lg ${
-                        image === selectedImageLeft
-                          ? "border-2 border-red-500"
-                          : ""
-                      }`}
+                      className={`w-12 h-12 rounded-lg ${image === selectedImageLeft
+                        ? "border-2 border-red-500"
+                        : ""
+                        }`}
                     />
                   </TouchableOpacity>
                 ),

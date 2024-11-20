@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getJwt } from "@/jwt/get-jwt";
 import { BASE_URL } from "@/api/config";
+import { router } from "expo-router";
 
 const ShoppingCartPage = () => {
     const [carts, setCarts] = useState(null); // Giỏ hàng
@@ -183,8 +184,10 @@ const ShoppingCartPage = () => {
 
     // Hàm xử lý khi chuyển đến trang thanh toán
     const handleCheckout = () => {
-        Alert.alert("Thanh toán", "Bạn đã sẵn sàng để thanh toán.");
-        navigation.navigate("Checkout"); // Điều hướng đến trang thanh toán
+        // Alert.alert("Thanh toán", "Bạn đã sẵn sàng để thanh toán.");
+       
+        router.push("/(root)/(checkout)/page-checkout")
+
     };
 
     return (

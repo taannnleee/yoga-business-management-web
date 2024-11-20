@@ -13,6 +13,8 @@ const AuthedLayout = () => {
       <Stack.Screen name={"(admin)"} options={{ headerShown: false }} />
       <Stack.Screen name={"(checkout)"} options={{ headerShown: false }} />
       <Stack.Screen name={"(cart)"} options={{ headerShown: false }} />
+      <Stack.Screen name={"(notification)"} options={{ headerShown: false }} />
+      <Stack.Screen name={"(wishlist)"} options={{ headerShown: false }} />
     </Stack>
   );
 };

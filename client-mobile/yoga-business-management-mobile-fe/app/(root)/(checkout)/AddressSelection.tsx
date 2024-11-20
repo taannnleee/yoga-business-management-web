@@ -113,7 +113,7 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
         <View style={styles.container}>
             <View style={styles.header}>
                 {/* <LocationOnIcon style={styles.icon} /> */}
-                <Text style={styles.title}>Địa chỉ nhận</Text>
+                <Text >Địa chỉ nhận</Text>
             </View>
 
             {loading || !shippingInfo ? (
@@ -204,7 +204,8 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         color: "#ee4d2d",
         fontSize: 10,
-        padding: 5
+        padding: 4,
+        marginRight: 2
     },
     addressDetails: {
         marginTop: 10,

@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
             Notification notification = new Notification();
             notification.setTitle("Thêm sản phẩm mới");
             notification.setMessage("Sản phẩm" +" "+product.getTitle()+" "+"vừa được thêm vào hệ thống");
-            notification.setIsRead(false);
+            notification.setRead(false);
             notification.setUser(user);
             notificationRepository.save(notification);
         }

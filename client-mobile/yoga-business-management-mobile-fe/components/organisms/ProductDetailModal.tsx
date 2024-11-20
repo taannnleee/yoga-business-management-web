@@ -18,6 +18,7 @@ const { height } = Dimensions.get("window");
 
 interface ProductDetailModalProps {
   isVisible: boolean;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>; // Đảm bảo kiểu của setQuantity đúng
   toggleModal: () => void;
   selectedProduct: Product;
   selectedImage: string;
@@ -31,6 +32,7 @@ interface ProductDetailModalProps {
   ) => void;
   handleImageLeftClick: (image: string) => void;
   handleImageRightClick: (image: string) => void;
+  handleAddToCart: () => void;
 }
 
 const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
@@ -39,16 +41,16 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   selectedProduct,
   selectedImage,
   selectedImageLeft,
-  quantity: initialQuantity,
+  quantity, // Lấy quantity từ props
   currentVariant,
   handleVariantSelect,
   handleImageLeftClick,
   handleImageRightClick,
+  handleAddToCart,
+  setQuantity, // Lấy setQuantity từ props
 }) => {
-  const [quantity, setQuantity] = useState(initialQuantity);
-
   const handleQuantityChange = (newQuantity: number) => {
-    setQuantity(newQuantity);
+    setQuantity(newQuantity); // Gọi setQuantity từ props để thay đổi quantity trong component cha
   };
 
   return (
@@ -68,23 +70,23 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
           }}
         >
-          <View className="bg-white w-full h-3/4 px-5">
+          <View style={{ backgroundColor: "white", width: "100%", height: "75%", paddingHorizontal: 20 }}>
             {/* Close button (X) */}
             <TouchableOpacity
               onPress={toggleModal}
-              className="absolute top-5 right-5 z-10"
+              style={{ position: "absolute", top: 20, right: 20 }}
             >
-              <Text className="text-3xl text-red-500">×</Text>
+              <Text style={{ fontSize: 30, color: "red" }}>×</Text>
             </TouchableOpacity>
 
             <ScrollView contentContainerStyle={{ marginTop: 50 }}>
-              <View className="items-center space-y-4">
+              <View style={{ alignItems: "center", spaceY: 10 }}>
                 <Image
                   source={{ uri: selectedImage }}
-                  className="w-full h-24 rounded-lg"
+                  style={{ width: "100%", height: 150, borderRadius: 10 }}
                   resizeMode="cover"
                 />
-                <View className="flex-row space-x-4 mt-4">
+                <View style={{ flexDirection: "row", marginTop: 20 }}>
                   {selectedProduct.variants?.color &&
                     Object.entries(selectedProduct.variants.color).map(
                       ([color, image], index) => (
@@ -94,84 +96,77 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         >
                           <Image
                             source={image ? { uri: image } : {}}
-                            className={`w-20 h-20 rounded-lg ${
-                              image === selectedImageLeft
-                                ? "border-2 border-red-500"
-                                : ""
-                            }`}
+                            style={{
+                              width: 50,
+                              height: 50,
+                              borderRadius: 10,
+                              borderWidth: image === selectedImageLeft ? 2 : 0,
+                              borderColor: "red",
+                            }}
                           />
                         </TouchableOpacity>
-                      ),
+                      )
                     )}
                 </View>
-                <Text className="text-xl font-bold">
+                <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 10 }}>
                   {selectedProduct.title}
                 </Text>
-                <Text className="text-lg text-gray-600">
+                <Text style={{ fontSize: 16, color: "gray" }}>
                   Brand: {selectedProduct.brand}
                 </Text>
-                <Text className="text-xl text-red-500">
+                <Text style={{ fontSize: 20, color: "red", marginTop: 10 }}>
                   {selectedProduct.price.toLocaleString()}₫
                 </Text>
-                <Text className="text-sm text-gray-700">
-                  {selectedProduct.description ||
-                    "Product details are coming soon."}
+                <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>
+                  {selectedProduct.description || "Product details are coming soon."}
                 </Text>
 
                 {selectedProduct.variants &&
-                  Object.entries(selectedProduct.variants).map(
-                    ([variantType, variantValues]) => (
-                      <View key={variantType} className="my-4">
-                        <Text className="text-lg font-semibold">
-                          {variantType.charAt(0).toUpperCase() +
-                            variantType.slice(1)}
-                        </Text>
-                        <View className="flex-row space-x-4 mt-2">
-                          {Object.entries(variantValues).map(
-                            ([value, image], index) => (
-                              <TouchableOpacity
-                                key={index}
-                                onPress={() =>
-                                  handleVariantSelect(variantType, value, image)
-                                }
-                                className={`w-20 h-20 flex items-center justify-center ${
-                                  value === currentVariant[variantType]?.value
-                                    ? "border-2 border-blue-800"
-                                    : "border border-gray-300"
-                                }`}
-                              >
-                                {variantType === "color" ? (
-                                  <>
-                                    <Image
-                                      source={{
-                                        uri:
-                                          image ||
-                                          "/path/to/fallback/image.jpg",
-                                      }}
-                                      className="w-10 h-10 rounded-full"
-                                    />
-                                    <Text className="text-center">{value}</Text>
-                                  </>
-                                ) : (
-                                  <Text className="text-center">{value}</Text>
-                                )}
-                              </TouchableOpacity>
-                            ),
-                          )}
-                        </View>
+                  Object.entries(selectedProduct.variants).map(([variantType, variantValues]) => (
+                    <View key={variantType} style={{ marginTop: 20 }}>
+                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                        {variantType.charAt(0).toUpperCase() + variantType.slice(1)}
+                      </Text>
+                      <View style={{ flexDirection: "row", marginTop: 10 }}>
+                        {Object.entries(variantValues).map(([value, image], index) => (
+                          <TouchableOpacity
+                            key={index}
+                            onPress={() => handleVariantSelect(variantType, value, image)}
+                            style={{
+                              width: 50,
+                              height: 50,
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderWidth: value === currentVariant[variantType]?.value ? 2 : 1,
+                              borderColor: value === currentVariant[variantType]?.value ? "blue" : "gray",
+                              marginRight: 10,
+                              borderRadius: 10,
+                            }}
+                          >
+                            {variantType === "color" ? (
+                              <>
+                                <Image
+                                  source={{ uri: image || "/path/to/fallback/image.jpg" }}
+                                  style={{ width: 30, height: 30, borderRadius: 15 }}
+                                />
+                                <Text style={{ textAlign: "center" }}>{value}</Text>
+                              </>
+                            ) : (
+                              <Text style={{ textAlign: "center" }}>{value}</Text>
+                            )}
+                          </TouchableOpacity>
+                        ))}
                       </View>
-                    ),
-                  )}
+                    </View>
+                  ))}
 
-                <View className="flex-row items-center space-x-4 mt-4 mb-16">
-                  <CustomNumberInput
-                    value={quantity}
-                    onChange={handleQuantityChange} // Lưu ý rằng hàm này sẽ cập nhật giá trị quantity
-                  />
+                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+                  <CustomNumberInput value={quantity} onChange={handleQuantityChange} />
                   <Button
                     title="Add to Cart"
-                    className="bg-red-500 py-2 px-4 rounded-lg"
-                    onPress={toggleModal}
+                    containerStyle={{ marginLeft: 20 }}
+                    buttonStyle={{ backgroundColor: "red", paddingVertical: 10, paddingHorizontal: 20 }}
+                    onPress={handleAddToCart}
                   />
                 </View>
               </View>

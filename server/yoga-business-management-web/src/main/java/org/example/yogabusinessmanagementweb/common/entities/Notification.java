@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 public class Notification  extends AbstractEntity<Long>{
 
     @Column
-    private String title; // Tiêu đề thông báo
+    private String title;
 
     @Column
-    private String message; // Nội dung thông báo
+    private String message;
 
     @Column
-    private Boolean isRead = false; // Trạng thái đã đọc hay chưa
+    private boolean isRead;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

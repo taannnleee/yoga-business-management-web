@@ -20,6 +20,7 @@ import ProductRating from "@/components/organisms/ProductRating";
 import Icon from "react-native-vector-icons/AntDesign";
 import FooterProductDetailModal from "@/components/organisms/FooterProductDetail";
 
+
 const ProductDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   console.log("Product ID:", id);
@@ -30,6 +31,8 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [currentVariant, setCurrentVariant] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadProductData = async () => {
@@ -40,12 +43,39 @@ const ProductDetail = () => {
           setSelectedProduct(productData);
           setSelectedImageLeft(productData.imagePath || "");
           setSelectedImage(productData.imagePath || "");
+
+          fetchFavoriteStatus(productData.id, token);
         }
       }
     };
 
     loadProductData();
   }, [id]);
+
+  // Fetch favorite status from API
+  const fetchFavoriteStatus = async (productId: string, token: string) => {
+    try {
+      console.log("tan1")
+      console.log(productId)
+      console.log(token)
+      const response = await fetch(`${BASE_URL}/api/wishlist/get-wishlist-exists`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (response.ok) {
+        setIsLiked(true);
+      } else {
+        // console.error("Failed to fetch favorite status");
+      }
+    } catch (error) {
+      console.error("Error fetching favorite status:", error);
+    }
+  };
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible); // Toggle modal visibility
@@ -74,6 +104,49 @@ const ProductDetail = () => {
   const handleClickAddToCart = async () => {
     setIsModalVisible(true); // Mở modal khi người dùng nhấn nút "Thêm Giỏ Hàng"
 
+  };
+
+  // add and delete wishlist
+  const handleFavoriteToggle = async () => {
+    setLoading(true); // Start loading
+    try {
+      const token = await getJwt(); // Fetch token
+      if (isLiked) {
+        // Call API to remove from wishlist
+        const response = await fetch(`${BASE_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct?.id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          setIsLiked(false);
+        } else {
+          console.error("Failed to remove from wishlist");
+        }
+      } else {
+        // Call API to add to wishlist
+        const response = await fetch(`${BASE_URL}/api/wishlist/add-wishlist`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ productId: selectedProduct?.id }),
+        });
+
+        if (response.ok) {
+          setIsLiked(true);
+        } else {
+          console.error("Failed to add to wishlist");
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling wishlist status:", error);
+    } finally {
+      setLoading(false); // Stop loading after API call
+    }
   };
 
   const handleAddToCart = async () => {
@@ -123,6 +196,9 @@ const ProductDetail = () => {
     setSelectedImageRight(image);
     setSelectedImage(image);
   };
+  const toggleLike = () => {
+    setIsLiked((prev) => !prev); // Toggle between true and false
+  };
 
   if (!selectedProduct) return <Text>Loading...</Text>;
 
@@ -171,7 +247,13 @@ const ProductDetail = () => {
             </View>
             <View className="flex-row space-x-2">
               <Text className="text-sm">Đã bán 7,3k</Text>
-              <Icon name={"hearto"} size={20} color={"#f44336"} />
+              <TouchableOpacity onPress={handleFavoriteToggle}>
+                <Icon
+                  name={isLiked ? "heart" : "hearto"}
+                  size={20}
+                  color={isLiked ? "#f44336" : "#ccc"} // Red if liked, gray if not liked
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </View>

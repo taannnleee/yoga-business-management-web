@@ -118,6 +118,16 @@ const Home = () => {
                 onPress={() => router.push("/(root)/(cart)/page-cart")}>
                 <Icon name="shoppingcart" size={25} color="black" />
               </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(notification)/page-notification")}>
+                <Icon name="notification" size={25} color="blue" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(wishlist)/page-wishlist")}>
+                <Icon name="heart" size={25} color="red" />
+              </TouchableOpacity>
             </View>
 
 

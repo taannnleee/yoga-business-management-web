@@ -49,6 +49,7 @@ const ProductDetail = () => {
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible); // Toggle modal visibility
+    console.log("Hello");
     console.log(isModalVisible);
     console.log("Hello");
   };

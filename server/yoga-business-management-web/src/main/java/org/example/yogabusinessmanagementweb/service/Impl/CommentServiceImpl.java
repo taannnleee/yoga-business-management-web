@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.entities.Comment;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
+import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.common.mapper.CommentMapper;
+import org.example.yogabusinessmanagementweb.dto.request.comment.CommentCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.comment.CommentOrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
@@ -26,6 +29,7 @@ public class CommentServiceImpl implements CommentService {
     CommentRepository commentRepository;
     CommentMapper commentMapper;
     ProductService productService;
+    ProductRepository productRepository;
     @Override
     public List<CommentResponse> all(Pageable pageable) {
         Page<Comment> commentPage = commentRepository.findAll(pageable);
@@ -55,6 +59,18 @@ public class CommentServiceImpl implements CommentService {
                 setReplies(replyResponse);
             }
         }
+    }
+    public CommentOrderResponse addComment(CommentCreationRequest commentRequest, User user) {
+        // Tìm sản phẩm và người dùng từ các ID
+        Product product = productRepository.findById(Long.valueOf(commentRequest.getProductId()))
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Tạo comment mới
+        Comment comment = commentMapper.toComment(commentRequest);
+        comment.setUser(user);
+        comment.setProduct(product);
+        // Sử dụng MapStruct để chuyển đổi Comment sang CommentResponse
+        return commentMapper.toCommentOrderResponse(commentRepository.save(comment));
     }
     @Override
     public Comment findById(String id) {

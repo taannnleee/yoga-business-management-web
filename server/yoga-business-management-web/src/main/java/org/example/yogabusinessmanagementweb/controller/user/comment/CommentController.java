@@ -1,9 +1,14 @@
 package org.example.yogabusinessmanagementweb.controller.user.comment;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
+import org.example.yogabusinessmanagementweb.dto.request.comment.CommentCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.comment.CommentOrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
@@ -27,7 +32,7 @@ import java.util.List;
 @Slf4j
 public class CommentController {
     CommentService commentService;
-
+    JwtUtil jwtUtil;
     @GetMapping("/all")
     public ApiResponse<?> all(
             @RequestParam(defaultValue = "1") int page,
@@ -67,5 +72,14 @@ public class CommentController {
 
             // Trả về kết quả
             return new ApiResponse<>(HttpStatus.OK.value(), "Get all comments successfully", commentResponseList);
+    }
+    @PostMapping()
+    public ApiResponse<?> addComment(HttpServletRequest servletRequestm, @RequestBody CommentCreationRequest request) {
+            User user  = jwtUtil.getUserFromRequest(servletRequestm);
+
+        // Xử lý thêm comment, mặc định parentComment = null
+            CommentOrderResponse commentResponse = commentService.addComment(request,user);
+            // Trả về kết quả
+            return new ApiResponse<>(HttpStatus.CREATED.value(), "Comment added successfully", commentResponse);
     }
 }

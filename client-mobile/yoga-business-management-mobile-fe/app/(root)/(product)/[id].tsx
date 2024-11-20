@@ -16,12 +16,13 @@ import { Variants } from "@/types/variant";
 import { fetchProductData } from "@/api/product-detail";
 import { getJwt } from "@/jwt/get-jwt";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal";
-import ProductRating from "@/components/organisms/ProductRating";
+import ProductRating from "@/app/(root)/(product)/ProductRating";
 import Icon from "react-native-vector-icons/AntDesign";
 import FooterProductDetailModal from "@/components/organisms/FooterProductDetail";
-
-
+import { useWindowDimensions } from "react-native";
+import RenderHTML from "react-native-render-html";
 const ProductDetail = () => {
+  const { width } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id: string }>();
   console.log("Product ID:", id);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -224,10 +225,11 @@ const ProductDetail = () => {
                       source={{
                         uri: image || "/path/to/fallback/image.jpg",
                       }}
-                      className={`w-12 h-12 rounded-lg ${image === selectedImageLeft
-                        ? "border-2 border-red-500"
-                        : ""
-                        }`}
+                      className={`w-12 h-12 rounded-lg ${
+                        image === selectedImageLeft
+                          ? "border-2 border-red-500"
+                          : ""
+                      }`}
                     />
                   </TouchableOpacity>
                 ),
@@ -262,14 +264,21 @@ const ProductDetail = () => {
         <View className="mb-6">
           <Text className="text-[14px] font-bold">{selectedProduct.title}</Text>
           {/* Soft gray background with subtle padding for bet`ter separation */}
-          <ProductRating averageRating={selectedProduct.averageRating} />
+          <ProductRating selectedProduct={selectedProduct} />
         </View>
 
         {/* Description Section */}
-        <View className="mb-6">
-          <Text className="text-sm text-gray-700">
-            {selectedProduct.description || "Product details are coming soon."}
-          </Text>
+        <View style={{ marginBottom: 16 }}>
+          {selectedProduct.description ? (
+            <RenderHTML
+              contentWidth={width}
+              source={{ html: selectedProduct.description }}
+            />
+          ) : (
+            <Text style={{ fontSize: 14, color: "gray" }}>
+              Product details are coming soon.
+            </Text>
+          )}
         </View>
       </ScrollView>
       <FooterProductDetailModal

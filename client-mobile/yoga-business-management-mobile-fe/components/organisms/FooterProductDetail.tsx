@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import { Link, router } from "expo-router";
+
 const FooterProductDetailModal = ({
   onChat,
   onAddToCart,
@@ -23,7 +24,6 @@ const FooterProductDetailModal = ({
       <TouchableOpacity
         onPress={onAddToCart}
         className="flex-row items-center justify-center bg-green-500 py-3 rounded-lg mb-2"
-
       >
         <Icon name="shoppingcart" size={20} color="white" />
         <Text className="ml-2 text-white font-bold text-sm">Thêm Giỏ Hàng</Text>

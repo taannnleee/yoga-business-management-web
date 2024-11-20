@@ -6,12 +6,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.Order;
+import org.example.yogabusinessmanagementweb.common.entities.OrderItem;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderStatusUpdateRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
+import org.example.yogabusinessmanagementweb.dto.response.orderItem.OrderItemResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.CartService;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
@@ -61,4 +64,10 @@ public class OrderController {
 
 
     }
+    @PutMapping("/update-comment/{orderItemId}")
+    public ApiResponse<?> updateCommentInOrderItem(@PathVariable Long orderItemId, @RequestParam Long commentId) {
+        OrderCommentResponse orderItem = orderService.updateCommentInOrderItem(orderItemId, commentId);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Comment updated successfully",orderItem);
+    }
+
 }

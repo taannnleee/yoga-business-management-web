@@ -39,7 +39,6 @@ public class Comment extends AbstractEntity<Long> implements Serializable {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "currentVariant", columnDefinition = "json")
     Map<String, String> currentVariant;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentId")
     @JsonBackReference

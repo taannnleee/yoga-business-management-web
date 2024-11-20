@@ -115,7 +115,8 @@ const Home = () => {
               <Text className="text-2xl font-JakartaSemiBold">Chào bạn 👋</Text>
 
               <TouchableOpacity
-                onPress={() => router.push("/(root)/(cart)/page-cart")}>
+                onPress={() => router.push("/(root)/(cart)/page-cart")}
+              >
                 <Icon name="shoppingcart" size={25} color="black" />
               </TouchableOpacity>
 
@@ -129,7 +130,6 @@ const Home = () => {
                 <Icon name="heart" size={25} color="red" />
               </TouchableOpacity>
             </View>
-
 
             <TextInputSearch
               keyword={keyword}

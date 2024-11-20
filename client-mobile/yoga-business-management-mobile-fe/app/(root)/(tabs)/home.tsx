@@ -16,6 +16,7 @@ import { getJwt } from "@/jwt/get-jwt";
 import { router } from "expo-router";
 import { ProductProps } from "@/types/type";
 import { SliderBestProduct } from "@/components/organisms/SliderBestProduct";
+import Icon from "react-native-vector-icons/AntDesign";
 
 const Home = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
@@ -112,7 +113,14 @@ const Home = () => {
           <>
             <View className="flex flex-row items-center justify-between my-5">
               <Text className="text-2xl font-JakartaSemiBold">Chào bạn 👋</Text>
+
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(cart)/1")}>
+                <Icon name="shoppingcart" size={25} color="black" />
+              </TouchableOpacity>
             </View>
+
+
             <TextInputSearch
               keyword={keyword}
               setKeyword={setKeyword}

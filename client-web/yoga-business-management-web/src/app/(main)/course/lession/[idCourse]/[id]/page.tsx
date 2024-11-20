@@ -169,13 +169,19 @@ const LessionPage: React.FC<any> = () => {
 
                 {/* Right Side - Buttons */}
                 <div className="flex flex-col space-y-2">
-                    <Button variant="secondary" className="w-[182px] h-[44px] bg-[#0e3521] text-white rounded-lg hover:bg-[#0b291a] text-sm">
+                    <Button variant="secondary"
+                    // className="w-[182px] h-[44px] bg-[#0e3521] text-white rounded-lg hover:bg-[#0b291a] text-sm"
+                    >
                         Đánh dấu khóa học
                     </Button>
-                    <Button variant="secondary" className="w-[182px] h-[44px] bg-[#a5a5a5] text-white rounded-lg hover:bg-[#8b8b8b] text-sm">
+                    <Button variant="secondary"
+                    // className="w-[182px] h-[44px] bg-[#a5a5a5] text-white rounded-lg hover:bg-[#8b8b8b] text-sm"
+                    >
                         Thêm vào yêu thích
                     </Button>
-                    <Button variant="secondary" className="w-[182px] h-[44px] bg-[#f05dab] text-white rounded-lg hover:bg-[#cc498c] text-sm">
+                    <Button variant="secondary"
+                    // className="w-[182px] h-[44px] bg-[#f05dab] text-white rounded-lg hover:bg-[#cc498c] text-sm"
+                    >
                         Mở khóa Premium
                     </Button>
                 </div>
@@ -215,7 +221,7 @@ const LessionPage: React.FC<any> = () => {
                             {/* Right Side - Next Lesson Button */}
                             <Button
                                 variant="secondary"
-                                className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
+                            // className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
                             >
                                 Bài tiếp theo
                             </Button>
@@ -266,7 +272,8 @@ const LessionPage: React.FC<any> = () => {
                     {/* Right Side - Next Lesson Button */}
                     <Button variant="secondary"
                         onClick={() => router.push(`/course/lession/${parseInt(lectureId as string) + 1}`)}
-                        className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm">
+                    // className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
+                    >
                         Bài tiếp theo
                     </Button>
                 </div>

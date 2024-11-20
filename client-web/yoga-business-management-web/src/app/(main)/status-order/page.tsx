@@ -68,7 +68,7 @@ const StatusOrder = () => {
                     <div className="text-center text-white p-8 rounded-lg shadow-lg bg-gray-500 max-w-md mx-auto">
                         {/* Thông điệp chúc mừng */}
                         <h1 className="text-4xl font-bold mb-4 animate__animated animate__fadeIn animate__delay-1s">
-                            Chúc Mừng, {userName}!
+                            Chúc mừng
                         </h1>
                         <p className="text-xl mb-6 animate__animated animate__fadeIn animate__delay-2s">
                             Đơn hàng của bạn đã được đặt thành công. Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi!

@@ -2,7 +2,9 @@ package org.example.yogabusinessmanagementweb.common.mapper;
 
 import org.example.yogabusinessmanagementweb.common.entities.Comment;
 import org.example.yogabusinessmanagementweb.common.entities.Topic;
+import org.example.yogabusinessmanagementweb.dto.request.comment.CommentCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.request.topic.TopicCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.comment.CommentOrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicResponse;
 import org.mapstruct.Mapper;
@@ -23,4 +25,11 @@ public interface CommentMapper {
     @Mapping(target = "replies", ignore = true)
     List<CommentResponse> toCommentResponses(List<Comment> comments);
 
+//    @Mapping(target = "user", source = "user")
+//    @Mapping(target = "parentComment", ignore = true)  // Prevent mapping the parentComment directly
+//    @Mapping(target = "replies", ignore = true)
+    CommentOrderResponse toCommentOrderResponse(Comment comment);
+
+
+    Comment toComment(CommentCreationRequest request);
 }

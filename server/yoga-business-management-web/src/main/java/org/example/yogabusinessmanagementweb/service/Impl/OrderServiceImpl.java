@@ -5,18 +5,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
+import org.example.yogabusinessmanagementweb.common.mapper.OrderItemMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.orderItem.OrderItemResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CartItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.CartRepository;
+import org.example.yogabusinessmanagementweb.repositories.OrderItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderRepository;
-import org.example.yogabusinessmanagementweb.service.AddressService;
-import org.example.yogabusinessmanagementweb.service.OrderService;
-import org.example.yogabusinessmanagementweb.service.ProductService;
-import org.example.yogabusinessmanagementweb.service.UserService;
+import org.example.yogabusinessmanagementweb.service.*;
 import org.example.yogabusinessmanagementweb.common.entities.*;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,9 @@ public class OrderServiceImpl implements OrderService {
     CartItemRepository cartItemRepository;
     OrderRepository orderRepository;
     AddressService addressService;
-
+    OrderItemRepository orderItemRepository;
+    CommentService commentService;
+    OrderItemMapper orderItemMapper;
     @Override
     public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
 
@@ -130,6 +133,22 @@ public class OrderServiceImpl implements OrderService {
             List<Order> listOrder = orderRepository.findAllByStatusOrderAndUserId(status,user.getId());
             return listOrder;
         }
+    }
+
+    public OrderItem findById(String id) {
+        OrderItem orderItem = orderItemRepository.findById(Long.valueOf(id)).orElseThrow(
+                () -> new AppException(ErrorCode.WISHLIST_NOT_FOUND)
+        );
+        return orderItem;
+    }
+    public OrderCommentResponse updateCommentInOrderItem(Long orderItemId, Long commentId) {
+        // Fetch OrderItem by orderItemId
+        OrderItem orderItem = findById(String.valueOf(orderItemId));
+        Comment comment = commentService.findById(String.valueOf(commentId));
+        // Update the OrderItem with the new Comment
+        orderItem.setComment(comment);
+        // Save the updated OrderItem
+        return orderItemMapper.toOrderCommentResponse(orderItemRepository.save(orderItem));
     }
 
 }

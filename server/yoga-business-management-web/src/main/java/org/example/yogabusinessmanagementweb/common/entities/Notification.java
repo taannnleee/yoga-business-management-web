@@ -25,7 +25,7 @@ public class Notification  extends AbstractEntity<Long>{
     @Column
     private boolean isRead;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
 

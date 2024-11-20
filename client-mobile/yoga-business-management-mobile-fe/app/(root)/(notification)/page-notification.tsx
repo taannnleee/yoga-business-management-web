@@ -17,7 +17,7 @@ interface Notification {
     title: string;
     message: string;
     createdAt: string;
-    isRead: boolean;
+    read: boolean;
     user: User;
 }
 
@@ -64,16 +64,41 @@ const NotificationPage: React.FC = () => {
                     <Text style={styles.description}>{item.message}</Text>
                     <View style={styles.footer}>
                         <Text style={styles.date}>Ngày: {new Date(item.createdAt).toLocaleDateString()}</Text>
-                        <Text style={styles.status}>Trạng thái: {item.isRead ? 'Đã đọc' : 'Chưa đọc'}</Text>
+                        <Text style={styles.status}>Trạng thái: {item.read ? 'Đã đọc' : 'Chưa đọc'}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
         );
     };
 
-    const handleNotificationPress = (notification: Notification) => {
+    const handleNotificationPress = async (notification: Notification) => {
         setSelectedNotification(notification);
         setIsModalVisible(true);
+
+        // Gọi API để thay đổi trạng thái của thông báo khi nó được mở
+        try {
+            const token = await getJwt();
+            const response = await fetch(`${BASE_URL}/api/notification/change-status/${notification.id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to change notification status');
+            }
+
+            // Cập nhật trạng thái "Đã đọc" trong danh sách thông báo
+            setNotifications((prevNotifications) =>
+                prevNotifications.map((item) =>
+                    item.id === notification.id ? { ...item, read: true } : item
+                )
+            );
+        } catch (error) {
+            setError('Không thể thay đổi trạng thái thông báo. Vui lòng thử lại.');
+        }
     };
 
     const closeModal = () => {
@@ -106,7 +131,6 @@ const NotificationPage: React.FC = () => {
                 >
                     <View style={styles.modalBackground}>
                         <View style={styles.modalContainer}>
-
                             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                                 <Text style={styles.closeButtonText}>×</Text>
                             </TouchableOpacity>
@@ -114,7 +138,7 @@ const NotificationPage: React.FC = () => {
                             <Text style={styles.modalTitle}>{selectedNotification.title}</Text>
                             <Text style={styles.modalMessage}>{selectedNotification.message}</Text>
                             <Text style={styles.modalDate}>Ngày: {new Date(selectedNotification.createdAt).toLocaleDateString()}</Text>
-                            <Text style={styles.modalStatus}>Trạng thái: {selectedNotification.isRead ? 'Đã đọc' : 'Chưa đọc'}</Text>
+
                         </View>
                     </View>
                 </Modal>

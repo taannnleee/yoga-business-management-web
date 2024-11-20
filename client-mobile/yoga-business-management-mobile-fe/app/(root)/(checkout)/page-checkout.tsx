@@ -11,9 +11,9 @@ import {
     ActivityIndicator,
     TouchableOpacity
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // React Navigation for routing
 import AddressSelection from './AddressSelection';
 import { getJwt } from "@/jwt/get-jwt";
+import { router } from 'expo-router';
 
 interface IProduct {
     id: string;
@@ -24,7 +24,6 @@ interface IProduct {
 }
 
 const Checkout: React.FC = () => {
-    const navigation = useNavigation();
     const [addressId, setAddressId] = useState<string>(''); // Store address ID
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -93,7 +92,7 @@ const Checkout: React.FC = () => {
             const data = await response.json();
             const paymentUrl = data.data.paymentUrl;
             setOrderLoading(false);
-            navigation.navigate('Payment', { url: paymentUrl }); // Assuming you have a Payment screen for handling the payment
+
         } catch (error: any) {
             console.error('Error initiating VNPay payment:', error.message);
             setError(error.message);
@@ -133,8 +132,10 @@ const Checkout: React.FC = () => {
             if (!response.ok) throw new Error('Failed to create order');
 
             const data = await response.json();
-            Alert.alert('Success', 'Order placed successfully');
-            navigation.navigate('OrderStatus'); // Navigate to order status screen
+            // Alert.alert('Success', 'Order placed successfully');
+            setOrderLoading(false);
+            setOpenConfirmDialog(false);
+            router.replace("/(root)/(tabs)/activity")
         } catch (error: any) {
             console.error('Error creating order:', error.message);
             setError(error.message);

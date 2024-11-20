@@ -2,11 +2,15 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
+import org.example.yogabusinessmanagementweb.common.entities.Notification;
+import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.common.mapper.ProductMapper;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
+import org.example.yogabusinessmanagementweb.repositories.NotificationRepository;
 import org.example.yogabusinessmanagementweb.repositories.ProductRepository;
 import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
 import org.example.yogabusinessmanagementweb.repositories.TempRepository;
@@ -14,6 +18,7 @@ import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.service.SubCategoryService;
+import org.example.yogabusinessmanagementweb.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +36,8 @@ public class ProductServiceImpl implements ProductService {
     TempRepository tempRepository;
     ProductMapper productMapper;
     SubCategoryService subCategoryService;
+    UserService userService;
+    NotificationRepository notificationRepository;
 
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
@@ -87,6 +94,17 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.SUBCATEGORY_NOT_FOUND));
 
         product.setSubCategory(subCategory);
+
+
+        List<User> list = userService.getAllUser();
+        for(User user : list){
+            Notification notification = new Notification();
+            notification.setTitle("Thêm sản phẩm mới");
+            notification.setMessage("Sản phẩm" +" "+product.getTitle()+" "+"vừa được thêm vào hệ thống");
+            notification.setIsRead(false);
+            notification.setUser(user);
+            notificationRepository.save(notification);
+        }
         //Lưu product
         return productRepository.save(product);
     }

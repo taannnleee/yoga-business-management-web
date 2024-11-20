@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
-import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getJwt } from "@/jwt/get-jwt";
 import { BASE_URL } from "@/api/config";
@@ -10,7 +9,7 @@ const ShoppingCartPage = () => {
     const [carts, setCarts] = useState(null); // Giỏ hàng
     const [loading, setLoading] = useState(true); // Trạng thái đang tải
     const [error, setError] = useState(null); // Lỗi khi gọi API
-    const navigation = useNavigation(); // Để sử dụng điều hướng
+
 
     // Hàm gọi API để lấy giỏ hàng
     const fetchCart = async () => {
@@ -174,7 +173,7 @@ const ShoppingCartPage = () => {
             updateCartSubtract(cartItemId, productId, newQuantity);
         }
 
-        
+
     };
 
     // Tính tổng tiền giỏ hàng
@@ -185,8 +184,8 @@ const ShoppingCartPage = () => {
     // Hàm xử lý khi chuyển đến trang thanh toán
     const handleCheckout = () => {
         Alert.alert("Thanh toán", "Bạn đã sẵn sàng để thanh toán.");
-       
-        router.push("/(root)/(checkout)/page-checkout")
+
+        router.replace("/(root)/(checkout)/page-checkout")
 
     };
 

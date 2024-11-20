@@ -115,7 +115,7 @@ const Home = () => {
               <Text className="text-2xl font-JakartaSemiBold">Chào bạn 👋</Text>
 
               <TouchableOpacity
-                onPress={() => router.push("/(root)/(cart)/1")}>
+                onPress={() => router.push("/(root)/(cart)/page-cart")}>
                 <Icon name="shoppingcart" size={25} color="black" />
               </TouchableOpacity>
             </View>

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getJwt } from "@/jwt/get-jwt";
 import { BASE_URL } from "@/api/config";
+import { router } from "expo-router";
 
 const ShoppingCartPage = () => {
     const [carts, setCarts] = useState(null); // Giỏ hàng
@@ -78,7 +79,6 @@ const ShoppingCartPage = () => {
             }
 
             const data = await response.json();
-            console.log(data);
             fetchCart();
         } catch (err) {
             setError(err.message);
@@ -87,15 +87,10 @@ const ShoppingCartPage = () => {
         }
     };
 
-    // API call for updating cart quantity (sử dụng hàm này để cập nhật số lượng sản phẩm)
-    const updateCart = async (cartItemId, productId, newQuantity) => {
-        const id = cartItemId;
-        setLoading(true);
-        setError(null);
-
+    // API call for updating cart quantity
+    const updateCartIncrease = async (cartItemId, productId, newQuantity) => {
         try {
-
-            const token = await getJwt(); // Lấy token từ localStorage hoặc theo cách bạn lấy token
+            const token = await getJwt();
             const response = await fetch(`${BASE_URL}/api/cart/increase-to-cart`, {
                 method: "POST",
                 headers: {
@@ -103,24 +98,83 @@ const ShoppingCartPage = () => {
                     "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    id,  // ID của item trong giỏ hàng
-                    productId,   // ID của sản phẩm
-                    quantity: newQuantity, // Số lượng mới
+                    id: cartItemId,
+                    productId,
+                    quantity: 1,
                 }),
             });
 
             if (!response.ok) {
-                throw new Error("Failed to increase product quantity");
+                throw new Error("Failed to update product quantity");
             }
 
-            const data = await response.json();
-            console.log(data);
-            fetchCart(); // Cập nhật giỏ hàng sau khi thay đổi
+            // Không cần fetch lại giỏ hàng, chỉ cập nhật số lượng cho sản phẩm đã thay đổi
+            setCarts(prevCarts => ({
+                ...prevCarts,
+                cartItem: prevCarts.cartItem.map(item =>
+                    item.id === cartItemId
+                        ? { ...item, quantity: newQuantity, totalPrice: newQuantity * item.product.price }
+                        : item
+                ),
+            }));
+
         } catch (err) {
             setError(err.message);
-        } finally {
-            setLoading(false);
         }
+    };
+    const updateCartSubtract = async (cartItemId, productId, newQuantity) => {
+        try {
+            const token = await getJwt();
+            const response = await fetch(`${BASE_URL}/api/cart/subtract-from-cart-item`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    id: cartItemId,
+                    productId,
+                    quantity: 1,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update product quantity");
+            }
+
+            // Không cần fetch lại giỏ hàng, chỉ cập nhật số lượng cho sản phẩm đã thay đổi
+            setCarts(prevCarts => ({
+                ...prevCarts,
+                cartItem: prevCarts.cartItem.map(item =>
+                    item.id === cartItemId
+                        ? { ...item, quantity: newQuantity, totalPrice: newQuantity * item.product.price }
+                        : item
+                ),
+            }));
+
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    // Hàm để xử lý thay đổi số lượng, gọi API ngay lập tức khi tăng/giảm số lượng
+    const handleChangeQuantity = (cartItemId, productId, action) => {
+        // Tìm sản phẩm tương ứng trong giỏ hàng
+        const cartItem = carts.cartItem.find(item => item.id === cartItemId);
+        if (!cartItem) return;
+
+        let newQuantity = cartItem.quantity;
+
+        // Xử lý tăng hoặc giảm số lượng
+        if (action === 'increase') {
+            newQuantity += 1;
+            updateCartIncrease(cartItemId, productId, newQuantity);
+        } else if (action === 'decrease' && newQuantity > 1) {
+            newQuantity -= 1;
+            updateCartSubtract(cartItemId, productId, newQuantity);
+        }
+
+        
     };
 
     // Tính tổng tiền giỏ hàng
@@ -131,32 +185,10 @@ const ShoppingCartPage = () => {
     // Hàm xử lý khi chuyển đến trang thanh toán
     const handleCheckout = () => {
         Alert.alert("Thanh toán", "Bạn đã sẵn sàng để thanh toán.");
-        navigation.navigate("Checkout"); // Điều hướng đến trang thanh toán
+       
+        router.push("/(root)/(checkout)/page-checkout")
+
     };
-
-    // Hàm để thay đổi số lượng sản phẩm trong giỏ hàng
-    const handleChangeQuantity = (cartItemId, productId, action) => {
-        if (carts) {
-            const updatedCartItems = carts.cartItem.map(item => {
-                let newQuantity = item.quantity;
-                if (action === 'increase') {
-                    newQuantity++;
-                    updateCart(item.id, item.product.id, newQuantity); // Gọi API để cập nhật
-                }
-                if (action === 'decrease' && newQuantity > 1) {
-                    newQuantity--;
-                    updateCart(item.id, item.product.id, newQuantity); // Gọi API để cập nhật
-                }
-                return {
-                    ...item,
-                    quantity: newQuantity,
-                    totalPrice: newQuantity * item.product.price, // Cập nhật lại giá sản phẩm
-                };
-            });
-
-            setCarts({ ...carts, cartItem: updatedCartItems });
-        }
-    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -182,6 +214,7 @@ const ShoppingCartPage = () => {
                                     <TouchableOpacity onPress={() => handleChangeQuantity(item.id, item.product.id, 'decrease')}>
                                         <Text style={styles.quantityButton}>-</Text>
                                     </TouchableOpacity>
+                                    {/* Hiển thị số lượng chính thức từ giỏ hàng */}
                                     <Text style={styles.quantity}>{item.quantity}</Text>
                                     <TouchableOpacity onPress={() => handleChangeQuantity(item.id, item.product.id, 'increase')}>
                                         <Text style={styles.quantityButton}>+</Text>
@@ -200,11 +233,10 @@ const ShoppingCartPage = () => {
                                 </View>
                                 <TouchableOpacity
                                     style={styles.removeButton}
-                                    onPress={() => handleRemoveProduct(item.product.id)}  // Gọi hàm handleRemoveProduct và truyền productId
+                                    onPress={() => handleRemoveProduct(item.product.id)}
                                 >
                                     <Text style={styles.removeButtonText}>Xóa</Text>
                                 </TouchableOpacity>
-
                             </View>
                         </View>
                     )}

@@ -2,9 +2,14 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+interface Category {
+    id: number;
+    name: string;
+}
+
 interface CategoryState {
-    selectedCategory: string | null;
-    selectedSubCategory: string | null;
+    selectedCategory: Category | null;
+    selectedSubCategory: Category | null;
 }
 
 const initialState: CategoryState = {
@@ -16,11 +21,11 @@ const categorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
-        setSelectedCategory: (state, action: PayloadAction<string>) => {
+        setSelectedCategory: (state, action: PayloadAction<Category>) => { // Category object as payload
             state.selectedCategory = action.payload;
             state.selectedSubCategory = null; // Reset subcategory when a new category is selected
         },
-        setSelectedSubCategory: (state, action: PayloadAction<string>) => {
+        setSelectedSubCategory: (state, action: PayloadAction<Category>) => { // Category object as payload
             state.selectedSubCategory = action.payload;
         },
     },

@@ -21,7 +21,7 @@ const BottomContent: React.FC<BottomContentProps> = ({
                                                          setCurrentPage,
                                                      }) => {
     return (
-        <div className="pr-2 pl-4 px-2 flex justify-between items-center mb-20">
+        <div className="pr-2 pl-4 px-2 flex justify-between items-center my-20">
             <span className="w-[30%] text-small text-default-400">
                 {"Total : " + totalItems}
             </span>

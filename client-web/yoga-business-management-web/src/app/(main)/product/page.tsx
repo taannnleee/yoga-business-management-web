@@ -45,14 +45,14 @@ const ProductPage: React.FC = () => {
 
     return (
         <div className="flex flex-col min-h-screen"> {/* Ensure full height layout */}
-            <div className="flex flex-row space-x-4 flex-grow"> {/* Allowing Right and Left Side to grow */}
+            <div className="flex flex-row space-x-8 flex-grow"> {/* Allowing Right and Left Side to grow */}
                 {/* Left Side - Show Skeleton or Product Component */}
-                <div className="flex-none w-1/3">
+                <div className="flex-none w-1/6">
                     {loading ? <LeftSideGetAllProductSkeleton /> : <LeftSideGetAllProduct />}
                 </div>
 
                 {/* Right Side - Show Product Component */}
-                <div className="flex flex-col justify-between">
+                <div className="flex flex-col justify-between w-5/6">
                     {<RightSideGetAllProduct />}
                         <BottomContent
                             totalItems={totalItems}

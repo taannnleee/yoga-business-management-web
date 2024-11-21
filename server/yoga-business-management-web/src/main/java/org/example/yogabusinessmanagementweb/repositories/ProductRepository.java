@@ -6,6 +6,8 @@ import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -17,4 +19,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Phương thức tìm sản phẩm theo subCategory
     Page<Product> findBySubCategory(SubCategory subCategory, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.subCategory.id = :subCategoryId " +
+            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<Product> filterBySubCategory(@Param("subCategoryId") Long subCategoryId,
+                                      @Param("keyword") String keyword,
+                                      Pageable pageable);
+
+    @Query("SELECT p FROM Product p " +
+            "LEFT JOIN p.subCategory sc " +
+            "LEFT JOIN sc.category c " +
+            "WHERE (:subCategoryId IS NULL OR sc.id = :subCategoryId) " +
+            "AND (:categoryId IS NULL OR c.id = :categoryId) " +
+            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', CAST(:keyword AS string), '%'))) ")
+    Page<Product> filterProducts(@Param("subCategoryId") Long subCategoryId,
+                                 @Param("categoryId") Long categoryId,
+                                 @Param("keyword") String keyword,
+                                 Pageable pageable);
+
+
 }

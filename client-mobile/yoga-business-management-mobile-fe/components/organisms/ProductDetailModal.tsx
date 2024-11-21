@@ -15,6 +15,7 @@ import { Product } from "@/types/product";
 import { Variants } from "@/types/variant";
 import { useWindowDimensions } from "react-native";
 import RenderHTML from "react-native-render-html";
+
 const { height } = Dimensions.get("window");
 
 interface ProductDetailModalProps {

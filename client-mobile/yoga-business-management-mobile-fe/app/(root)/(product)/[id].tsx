@@ -21,6 +21,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import FooterProductDetailModal from "@/components/organisms/FooterProductDetail";
 import { useWindowDimensions } from "react-native";
 import RenderHTML from "react-native-render-html";
+
 const ProductDetail = () => {
   const { width } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -56,17 +57,20 @@ const ProductDetail = () => {
   // Fetch favorite status from API
   const fetchFavoriteStatus = async (productId: string, token: string) => {
     try {
-      console.log("tan1")
-      console.log(productId)
-      console.log(token)
-      const response = await fetch(`${BASE_URL}/api/wishlist/get-wishlist-exists`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      console.log("tan1");
+      console.log(productId);
+      console.log(token);
+      const response = await fetch(
+        `${BASE_URL}/api/wishlist/get-wishlist-exists`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ productId }),
         },
-        body: JSON.stringify({ productId }),
-      });
+      );
 
       if (response.ok) {
         setIsLiked(true);
@@ -104,7 +108,6 @@ const ProductDetail = () => {
 
   const handleClickAddToCart = async () => {
     setIsModalVisible(true); // Mở modal khi người dùng nhấn nút "Thêm Giỏ Hàng"
-
   };
 
   // add and delete wishlist
@@ -114,12 +117,15 @@ const ProductDetail = () => {
       const token = await getJwt(); // Fetch token
       if (isLiked) {
         // Call API to remove from wishlist
-        const response = await fetch(`${BASE_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct?.id}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${token}`,
+        const response = await fetch(
+          `${BASE_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct?.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.ok) {
           setIsLiked(false);
@@ -132,7 +138,7 @@ const ProductDetail = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ productId: selectedProduct?.id }),
         });
@@ -248,7 +254,7 @@ const ProductDetail = () => {
               </Text>
             </View>
             <View className="flex-row space-x-2">
-              <Text className="text-sm">Đã bán 7,3k</Text>
+              <Text className="text-sm">Đã bán 15</Text>
               <TouchableOpacity onPress={handleFavoriteToggle}>
                 <Icon
                   name={isLiked ? "heart" : "hearto"}

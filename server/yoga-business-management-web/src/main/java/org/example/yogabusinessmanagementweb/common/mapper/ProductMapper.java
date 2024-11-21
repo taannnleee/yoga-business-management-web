@@ -12,7 +12,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import java.util.List;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {UserMapper.class})
-public interface ProductMapper {
+public interface ProductMapper{
 
     // Ignore the variantList field in the Product entity when mapping
     Product toProduct(ProductCreationRequest productDTO);
@@ -24,4 +24,5 @@ public interface ProductMapper {
     CommentResponse commentToCommentResponse(Comment comment);
 
     List<CommentResponse> commentListToCommentResponseList(List<Comment> comments);
+
 }

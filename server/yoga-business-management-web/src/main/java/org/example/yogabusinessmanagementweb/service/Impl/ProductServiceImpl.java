@@ -5,8 +5,10 @@ import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.example.yogabusinessmanagementweb.common.entities.Notification;
 import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.common.mapper.GenericMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.ProductMapper;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.ListDto;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
@@ -38,7 +40,6 @@ public class ProductServiceImpl implements ProductService {
     SubCategoryService subCategoryService;
     UserService userService;
     NotificationRepository notificationRepository;
-
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
         return productRepository.findAll(pageable);
@@ -122,6 +123,16 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
             return false;
         }
+    }
+    @Override
+    public ListDto<List<ProductResponse>> filterProducts(Long subCategoryId, Long categoryId, String keyword, Pageable pageable) {
+        Page<Product> productPage = productRepository.filterProducts(subCategoryId, categoryId, keyword, pageable);
+
+        // Map các sản phẩm sang ProductResponse
+        List<ProductResponse> productResponses = productMapper.productsToProductResponses(productPage.getContent());
+
+        // Chuyển đổi sang ListDto
+        return GenericMapper.toListDto(productResponses, productPage);
     }
 
 }

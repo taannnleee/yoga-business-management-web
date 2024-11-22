@@ -50,7 +50,7 @@ public class OrderController {
 //        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
 //        System.out.println("Products: " + orderRequest.getProducts());
 //        System.out.println("Total Price: " + orderRequest.getTotalPrice());
-//        OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
+        OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
 
 //        Order order  = new Order();
 //        webSocketService.sendOrderToAdmins(order);

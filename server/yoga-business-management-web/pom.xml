@@ -165,6 +165,11 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
         </dependency>
 

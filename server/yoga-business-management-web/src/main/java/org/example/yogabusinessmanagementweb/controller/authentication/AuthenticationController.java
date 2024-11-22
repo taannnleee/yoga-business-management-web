@@ -70,7 +70,7 @@ public class AuthenticationController {
 
 
             WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
-            webSocketService.registerAdminSession(session);
+//            webSocketService.registerAdminSession(session);
             return new ApiResponse<>( HttpStatus.OK.value(),"Login success",tokenRespone);
         }catch (BadCredentialsException e){
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");

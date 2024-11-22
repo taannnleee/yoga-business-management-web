@@ -52,8 +52,8 @@ public class OrderController {
 //        System.out.println("Total Price: " + orderRequest.getTotalPrice());
 //        OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
 
-        Order order  = new Order();
-        webSocketService.sendOrderToAdmins(order);
+//        Order order  = new Order();
+//        webSocketService.sendOrderToAdmins(order);
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
     }
 

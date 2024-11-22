@@ -139,9 +139,9 @@ const HomePage: React.FC<IHomePageProps> = () => {
                     return (
                         <div key={category.id}>
                             <ProductByCategoryCard
+                                category={category}
                                 image={category.urlImage}
                                 subCategories={category.subCategories}
-                                categoryName={category.name}
                                 products={productsToDisplay}
                             />
                         </div>

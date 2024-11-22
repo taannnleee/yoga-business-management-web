@@ -20,13 +20,13 @@ interface CategoryView {
     id: number;
     name: string;
 }
-export const LeftSideGetAllProduct: React.FC = () => {
+export const LeftSideGetAllProduct: React.FC = (props) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const dispatch = useDispatch();
-
+    const { setPage, setTotalItems } = props;
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -57,6 +57,8 @@ export const LeftSideGetAllProduct: React.FC = () => {
         const categoryData = { id: category.id, name: category.name };
         dispatch(setSelectedCategory(categoryData)); // Passing both id and name for the category
         dispatch(setSelectedSubCategory(null)); // Clear selected subcategory when category is clicked
+        setPage(1); // Reset page to 1 when category is clicked
+        setTotalItems(1); // Reset total items to 1 when category is clicked
     };
 
     const handleSubCategoryClick = (category: CategoryView,subCategory: SubCategory  )=> {
@@ -64,13 +66,15 @@ export const LeftSideGetAllProduct: React.FC = () => {
         const subCategoryData = { id: subCategory.id, name: subCategory.name }; // Passing both id and name for the subcategory
         dispatch(setSelectedCategory(categoryData)); // Ensure the parent category is selected
         dispatch(setSelectedSubCategory(subCategoryData)); // Set selected subcategory
+        setPage(1); // Reset page to 1 when category is clicked
+        setTotalItems(1); // Reset total items to 1 when category is clicked
     };
 
 
     return (
         <div className="w-64 bg-white shadow-lg p-4 space-y-4">
             <div>
-                {categories.map((category) => (
+                {[...categories, { id: undefined, name: 'Tất cả sản phẩm', subCategories: [] }].map((category) => (
                     <div key={category.id} className="space-y-2">
                         <div
                             onClick={() => handleCategoryClick(category)}  // Pass category name

@@ -27,5 +27,5 @@ public class CommentResponse {
     @JsonManagedReference
     List<CommentResponse> replies;
     Date createdAt;
-    Map<String, String> currentVariant;
+    Map<String, Map<String, String>>  currentVariant;
 }

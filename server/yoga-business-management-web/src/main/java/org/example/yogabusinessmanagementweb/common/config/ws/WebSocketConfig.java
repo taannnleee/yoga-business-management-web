@@ -8,14 +8,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
-    /**
-     * localhost:8080/data
+public class  WebSocketConfig implements WebSocketConfigurer {
 
-     */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(getDataHandler(), "/data");
+        registry.addHandler(new DataHandler(), "/ws/order").setAllowedOrigins("*");
 
     }
     @Bean

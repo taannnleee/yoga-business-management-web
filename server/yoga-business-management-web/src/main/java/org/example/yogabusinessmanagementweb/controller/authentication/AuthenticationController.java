@@ -13,11 +13,13 @@ import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.token.TokenRespone;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
+import org.example.yogabusinessmanagementweb.service.Impl.WebSocketService;
 import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.WebSocketSession;
 
 
 @RestController
@@ -30,6 +32,7 @@ public class AuthenticationController {
     UserRepository userRepository;
     EmailService emailService;
     AuthencationService authencationService;
+    WebSocketService webSocketService;
 
     @PostMapping("/register")
     public ApiResponse<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
@@ -60,14 +63,31 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login-admin")
-    public ApiResponse<TokenRespone> loginAdmin(@Valid @RequestBody LoginRequest loginRequest) {
+    public ApiResponse<TokenRespone> loginAdmin(HttpServletRequest request,@Valid @RequestBody LoginRequest loginRequest) {
         try {
             TokenRespone tokenRespone = authencationService.authenticationAdmin(loginRequest);
+
+
+
+            WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
+            webSocketService.registerAdminSession(session);
             return new ApiResponse<>( HttpStatus.OK.value(),"Login success",tokenRespone);
         }catch (BadCredentialsException e){
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");
         }
     }
+
+//    @PostMapping("/logout-admin")
+//    public ApiResponse<?> logoutAdmin(HttpServletRequest request) {
+//        WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
+//
+//        if (session != null) {
+//            webSocketService.unregisterAdminSession(session);  // Hủy đăng ký session admin
+//            return new ApiResponse<>(HttpStatus.OK.value(), "Logout success");
+//        } else {
+//            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "No active WebSocket session found");
+//        }
+//    }
 
     @PostMapping("/logout")
     public ApiResponse<?> logout(HttpServletRequest request) {

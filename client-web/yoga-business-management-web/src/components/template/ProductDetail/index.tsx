@@ -30,10 +30,6 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
         }
     };
 
-    const handleAddToCart = () => {
-        // Add the logic to add product to the cart
-    };
-
     // Hàm để cuộn lên đầu trang
     const scrollToTop = () => {
         window.scrollTo({
@@ -84,7 +80,6 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                         product={product}
                         quantity={quantity}
                         setQuantity={setQuantity}
-                        handleAddToCart={handleAddToCart}
                         currentVariant={currentVariant}
                         handleVariantSelect={handleVariantSelect}
                     />

@@ -19,16 +19,17 @@ import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal";
 import {useDispatch} from "react-redux";
-import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice"; // Import axios
+import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice";
+import {setSelectedCategory} from "@/redux/category/categorySlice"; // Import axios
 
 interface ProductByCategoryCardProps {
-    categoryName: string;
+    category: any;
     products: any[];
     subCategories: any[];
     image: string;
 }
 
-export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,categoryName, subCategories,products } : ProductByCategoryCardProps) => {
+export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,category, subCategories,products } : ProductByCategoryCardProps) => {
     const toast = useToast();
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(1);
@@ -48,6 +49,10 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
         setCurrentVariant(variant); // Cập nhật variant hiện tại
         console.log("hehehe");
         console.log("Current Variant:", variant);
+    };
+    const handleViewAllProduct = (category: any) => {
+        dispatch(setSelectedCategory(category)); // Passing both id and name for the category
+        router.push(`/product`);
     };
 
     const handleAddToCart = async () => {
@@ -144,7 +149,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
                             mr={2}
                             sx={{ textTransform: 'uppercase' }}  // Sử dụng sx để áp dụng style
                         >
-                            {categoryName}
+                            {category.name}
                         </Typography>
 
 
@@ -163,7 +168,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
 
 
                         </Box>
-                        <Button variant="contained" color="primary" className="ml-auto">
+                        <Button variant="contained" color="primary" className="ml-auto" onClick={() => handleViewAllProduct(category)}>
                             Xem tất cả
                         </Button>
                     </Box>

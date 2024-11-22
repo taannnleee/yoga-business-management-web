@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/useToast";
 import ConfirmDialog from "@/components/molecules/ConfirmDialog";
 import { apiURL } from "@/constanst";
 import {formatDate} from "@/utils/dateUtils";
+import StarRating from "@/components/molecules/StarRating";
 
 // Define types for props
 interface IProductCommentCardProps {
@@ -74,7 +75,14 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
             setIsReplying(false);
         }
     };
+    const getVariantString = (currentVariant) => {
+        if (!currentVariant) return ""; // Nếu không có currentVariant, trả về chuỗi rỗng
 
+        // Lấy tất cả các `value` trong currentVariant
+        return Object.values(currentVariant)
+            .map((variant) => variant.value) // Chỉ lấy giá trị của từng variant
+            .join(", "); // Nối chúng lại bằng dấu phẩy
+    };
     const handleDeleteComment = async () => {
         try {
             setIsDeleting(true);
@@ -151,7 +159,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                     isConfirmLoadingButton={isDeleting}
                 />
             )}
-            <div className="my-2 pl-4 rounded-xl bg-secondary-100 h-fit">
+            <div className="my-2 pl-4 rounded-xl bg-gray-200 h-fit">
                 {commentMode === "view" ? (
                     <div className="flex justify-between w-full">
                         <div className="flex items-center gap-x-2">
@@ -168,13 +176,17 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                                 </div>
                             )}
                             <div>
-                                <div className="flex flex-col tablet:flex-row tablet:items-center">
+                                <div className="flex flex-col tablet:flex-col tablet:items-center">
                                     <p className="text-sm tablet:text-lg font-semibold text-secondary-900">
                                         {comment?.user.fullname}
                                     </p>
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1">
-                                        {comment.createdAt &&
-                                            `vào lúc ${formatDate(comment.createdAt)}`}
+                                        {comment.ratePoint &&
+                                            <StarRating rating={comment.ratePoint} />}
+                                    </p>
+                                    <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1 mt-5">
+                                        {comment.ratePoint &&
+                                            `vào lúc ${formatDate(comment.createdAt)} | Phân loại hàng: ${getVariantString(comment.currentVariant)}`}
                                     </p>
                                 </div>
 

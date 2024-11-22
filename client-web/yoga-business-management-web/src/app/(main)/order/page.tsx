@@ -14,9 +14,13 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
+    InputBase, CircularProgress,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import StarRating from "@/components/molecules/StarRating";
+import {useToast} from "@/hooks/useToast";
 
+// Các interface dữ liệu
 interface OrderItem {
     id: number;
     name: string;
@@ -25,6 +29,7 @@ interface OrderItem {
     totalPrice: string;
     product: Product;
     currentVariant: any;
+    comment?: any;
 }
 
 interface Order {
@@ -35,7 +40,7 @@ interface Order {
     status: string;
     payment: Payment;
     orderItems: OrderItem[];
-    estatusOrder: String;
+    estatusOrder: string;
 }
 
 interface Product {
@@ -47,10 +52,15 @@ interface Payment {
 }
 
 const OrderPage: React.FC = () => {
-    const [selectedTab, setSelectedTab] = useState(0);
-    const [orderData, setOrderData] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [spinner, setSpinner] = useState(false);
+    const toast = useToast();
+    const [selectedTab, setSelectedTab] = useState(0); // Trạng thái tab hiện tại
+    const [orderData, setOrderData] = useState<Order[]>([]); // Trạng thái chứa danh sách đơn hàng
+    const [loading, setLoading] = useState(false); // Trạng thái tải dữ liệu
+    const [review, setReview] = useState(""); // Trạng thái cho nội dung đánh giá
+    const [rating, setRating] = useState(0); // Trạng thái cho xếp hạng sao
 
+    // Hàm thay đổi tab
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSelectedTab(newValue);
     };
@@ -70,11 +80,12 @@ const OrderPage: React.FC = () => {
         }
     };
 
+    // Lấy dữ liệu đơn hàng từ API
     useEffect(() => {
         const fetchOrderData = async (status: string) => {
-            setLoading(true);
+            setLoading(true); // Bắt đầu tải dữ liệu
             try {
-                const token = localStorage.getItem("accessToken");
+                const token = localStorage.getItem("accessToken"); // Lấy token
                 const response = await fetch(`http://localhost:8080/api/order/get-all-order-by-status/${status}`, {
                     method: "GET",
                     headers: {
@@ -87,8 +98,8 @@ const OrderPage: React.FC = () => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                const data = await response.json();
-                setOrderData(data.data);
+                const data = await response.json(); // Phân tích dữ liệu JSON
+                setOrderData(data.data); // Lưu dữ liệu vào trạng thái
             } catch (error) {
                 console.error("Error fetching order data:", error);
             } finally {
@@ -98,11 +109,7 @@ const OrderPage: React.FC = () => {
 
         const status = getStatusByTabIndex(selectedTab);
         fetchOrderData(status);
-    }, [selectedTab]); // Chạy lại khi tab thay đổi
-
-    if (loading) {
-        return <Typography>Loading...</Typography>;
-    }
+    }, [selectedTab]);
     const getVariantValues = (variants: any) => {
         if (!variants) {
             console.log('Variants is null or undefined');
@@ -125,9 +132,78 @@ const OrderPage: React.FC = () => {
 
         return values.join(", ");
     };
+    const handleReviewSubmit = async (orderItem: any) => {
+        setSpinner(true);
+        if (review.trim() === "") {
+            alert("Please enter a review before submitting!");
+            return;
+        }
+
+        if (rating === 0) {
+            alert("Please select a star rating before submitting!");
+            return;
+        }
+
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+
+            const commentResponse = await fetch(`http://localhost:8080/api/comment`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    content: review,
+                    ratePoint: rating,
+                    productId: 2, // Cập nhật theo ID sản phẩm nếu cần
+                    currentVariant: orderItem.currentVariant,
+                }),
+            });
+
+            const commentData = await commentResponse.json();
+
+            if (commentResponse.status !== 200) {
+                alert(commentData.message || "Unable to add review!");
+                return;
+            }
+
+            const newCommentId = commentData.data.id;
+
+            // Cập nhật đánh giá vào đơn hàng
+            const updateResponse = await fetch(
+                `http://localhost:8080/api/order/update-comment/${orderItem.id}?commentId=${newCommentId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            const updateData = await updateResponse.json();
+
+            toast.sendToast("Thành công", "Bạn đã đánh giá sản phẩm");
+
+            // Reset review và rating sau khi gửi thành công
+            setReview("");
+            setRating(0);
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred while submitting the review!");
+        }
+        finally {
+            setSpinner(false);
+        }
+    };
+
+    if (loading) {
+        return <Typography>Loading...</Typography>;
+    }
+
     return (
         <Container>
-            {/* Tabs for Order Types */}
+            {/* Tabs cho các loại đơn hàng */}
             <AppBar position="static" color="default">
                 <Tabs
                     value={selectedTab}
@@ -144,21 +220,16 @@ const OrderPage: React.FC = () => {
                 </Tabs>
             </AppBar>
 
-            {/* Order Information */}
             <Box mt={3}>
                 {orderData.length > 0 ? (
                     orderData.map((order) => (
                         <Card key={order.id} sx={{ mb: 3 }}>
                             <CardContent>
-                                {/* Order Summary */}
                                 <Box display="flex" justifyContent="space-between" alignItems="center">
                                     <Typography variant="subtitle1">
                                         Mã đơn hàng: {order.id} | Người đặt: {order.createdBy}
                                     </Typography>
-                                    <Typography
-                                        variant="subtitle1"
-                                        sx={{ textAlign: "right" }}
-                                    >
+                                    <Typography variant="subtitle1" sx={{ textAlign: "right" }}>
                                         {order.estatusOrder}
                                     </Typography>
                                 </Box>
@@ -167,32 +238,31 @@ const OrderPage: React.FC = () => {
                                     <strong>{order.totalPrice}</strong>
                                 </Typography>
 
-                                {/* Accordion for Order Items */}
                                 <Accordion sx={{ mt: 2 }}>
                                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                         <Typography>Chi tiết sản phẩm</Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {order.orderItems && order.orderItems.length > 0 ? (
-                                            order.orderItems.map((item) => (
-                                                <Card key={item.id} sx={{ display: "flex", mb: 2 }}>
+                                        {order.orderItems.map((orderItem) => (
+                                            <div key={orderItem.id}>
+                                                <Card sx={{ display: "flex", mb: 2 }}>
                                                     <CardMedia
                                                         component="img"
                                                         sx={{ width: 120 }}
-                                                        image={item.product.imagePath}
-                                                        alt={item.name}
+                                                        image={orderItem.product.imagePath} // Sửa từ `item` thành `orderItem`
+                                                        alt={orderItem.name}
                                                     />
                                                     <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
                                                         <CardContent>
-                                                            <Typography variant="h6">{item.name}</Typography>
+                                                            <Typography variant="h6">{orderItem.name}</Typography>
                                                             <Typography variant="body2" color="text.secondary">
-                                                                Số lượng: {item.quantity}
+                                                                Số lượng: {orderItem.quantity}
                                                             </Typography>
                                                             <Typography variant="body1" color="error">
-                                                                Giá :{item.totalPrice}
+                                                                Giá: {orderItem.totalPrice}
                                                             </Typography>
                                                             <Typography variant="body2" color="success">
-                                                                {getVariantValues(item.currentVariant)}
+                                                                {getVariantValues(orderItem.currentVariant)}
                                                             </Typography>
                                                         </CardContent>
                                                         <Box display="flex" justifyContent="flex-end" p={1}>
@@ -202,10 +272,45 @@ const OrderPage: React.FC = () => {
                                                         </Box>
                                                     </Box>
                                                 </Card>
-                                            ))
-                                        ) : (
-                                            <Typography variant="body2">Không có sản phẩm nào trong đơn hàng.</Typography>
-                                        )}
+
+                                                {/* Xử lý phần đánh giá */}
+                                                {selectedTab === 3 && !orderItem?.comment && (
+                                                    <>
+                                                        <InputBase
+                                                            value={review}
+                                                            onChange={(e) => setReview(e.target.value)}
+                                                            placeholder="Nhập đánh giá..."
+                                                            sx={{
+                                                                width: "100%",
+                                                                mb: 2,
+                                                                padding: 1,
+                                                                border: "1px solid #ccc",
+                                                                borderRadius: 1,
+                                                            }}
+                                                        />
+                                                        {/* Xếp hạng sao */}
+                                                        <StarRating rating={rating} onRatingChange={setRating} />
+                                                        <Button
+                                                            variant="contained"
+                                                            onClick={() => handleReviewSubmit(orderItem)}
+                                                            sx={{ mt: 2 }}
+                                                            disabled={spinner}
+                                                        >
+                                                            {spinner ? <CircularProgress size={24} color="inherit" /> : 'Xác nhận'}
+                                                        </Button>
+                                                    </>
+                                                )}
+
+                                                {selectedTab === 3 && orderItem?.comment && (
+                                                    <>
+                                                        <Typography variant="h6" sx={{ mt: 2 }}>
+                                                            {orderItem.comment.content}
+                                                        </Typography>
+                                                        <StarRating rating={orderItem.comment.ratePoint} />
+                                                    </>
+                                                )}
+                                            </div>
+                                        ))}
                                     </AccordionDetails>
                                 </Accordion>
                             </CardContent>

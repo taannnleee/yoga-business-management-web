@@ -10,7 +10,7 @@ import {useToast} from "@/hooks/useToast";
 import {useDispatch} from "react-redux";
 
 // Component ProductCard nhận các props: product, loading, handleAddToCart, và renderStars
-const ProductCard = ({ product, loading, renderStars }) => {
+export const ProductCard = ({ product, loading, renderStars }) => {
     const [open, setOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -178,4 +178,3 @@ const ProductCard = ({ product, loading, renderStars }) => {
     );
 };
 
-export default ProductCard;

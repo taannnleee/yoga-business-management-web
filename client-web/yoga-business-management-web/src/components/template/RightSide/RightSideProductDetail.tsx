@@ -1,8 +1,11 @@
 // RightSide.tsx
-import React from "react";
-import { Typography, Button } from '@mui/material';
+import React, {useState} from "react";
+import {Typography, Button, CircularProgress} from '@mui/material';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import Image from "next/image";
+import {incrementTotalItems} from "@/redux/cart/cartSlice";
+import {useToast} from "@/hooks/useToast";
+import {useDispatch} from "react-redux";
 
 interface RightSideProps {
     product: any;
@@ -14,8 +17,44 @@ interface RightSideProps {
 }
 
 export const RightSideProductDetail: React.FC<RightSideProps> = ({
-                                                 product, quantity, setQuantity, handleAddToCart, currentVariant, handleVariantSelect
+                                                 product, quantity, setQuantity, currentVariant, handleVariantSelect
                                              }) => {
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    const toast = useToast();
+    const handleAddToCart = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("accessToken");
+            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    productId: product.id.toString(),
+                    quantity: quantity,
+                    currentVariant: currentVariant,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to add product to cart");
+            }
+
+            const data = await response.json();
+            console.log("Product added to cart:", data);
+            toast.sendToast("Thành công", "Đã thêm sản phẩm vào giỏ hàng");
+            dispatch(incrementTotalItems());
+        } catch (err: any) {
+            console.error("Error adding product to cart:", err.message);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <div className="space-y-4">
             <Typography variant="h6" className="font-bold text-ellipsis text-black">
@@ -130,7 +169,7 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                     }}
                     onClick={handleAddToCart}
                 >
-                    THÊM VÀO GIỎ
+                    {loading ? <CircularProgress size={24} color="inherit" /> : 'THÊM VÀO GIỎ'}
                 </Button>
                 <Button
                     sx={{

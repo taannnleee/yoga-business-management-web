@@ -181,12 +181,16 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                                         {comment?.user.fullname}
                                     </p>
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1">
-                                        {comment.ratePoint &&
-                                            <StarRating rating={comment.ratePoint} />}
+                                        {comment.ratePoint !== 0 &&
+                                            <StarRating rating={comment.ratePoint}/>}
                                     </p>
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1 mt-5">
-                                        {comment.ratePoint &&
+                                        {comment.ratePoint !== 0 &&
                                             `vào lúc ${formatDate(comment.createdAt)} | Phân loại hàng: ${getVariantString(comment.currentVariant)}`}
+                                    </p>
+                                    <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1 mt-5">
+                                        {comment.ratePoint === 0 &&
+                                            `vào lúc ${formatDate(comment.createdAt)}`}
                                     </p>
                                 </div>
 

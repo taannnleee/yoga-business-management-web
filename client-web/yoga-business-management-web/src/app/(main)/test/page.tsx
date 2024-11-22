@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { Client } from '@stomp/stompjs';
+import { Client, Stomp } from '@stomp/stompjs'; // Import Stomp từ @stomp/stompjs
 import SockJS from 'sockjs-client';  // Import SockJS
 
 // Định nghĩa kiểu cho ChatMessage
@@ -10,7 +10,7 @@ interface ChatMessage {
 }
 
 const Chat = () => {
-    const [stompClient, setStompClient] = useState<any>(null);  // Ép kiểu stompClient thành any
+    const [stompClient, setStompClient] = useState<Client | null>(null);  // Đảm bảo stompClient là kiểu Client
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [message, setMessage] = useState<string>("");
     const [username, setUsername] = useState<string>("");
@@ -32,6 +32,9 @@ const Chat = () => {
                     ]);
                 });
             },
+            onStompError: (frame) => {
+                console.error("STOMP error: ", frame);
+            },
         });
 
         // Kết nối STOMP client
@@ -44,7 +47,6 @@ const Chat = () => {
         return () => {
             if (client) {
                 client.deactivate();  // Deactivate khi component bị unmount
-                console.log("Bạn đã rời đi")
             }
         };
     }, []);
@@ -59,10 +61,16 @@ const Chat = () => {
                 content: message,
             };
 
-            // Ép kiểu stompClient thành any để sử dụng phương thức send()
-            if (stompClient) {
-                (stompClient as any).send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));  // Ép kiểu tại đây
+            // Kiểm tra stompClient đã được kết nối trước khi gọi send
+            if (stompClient && stompClient.connected) {
+                // Sử dụng client.send() thay vì stompClient.send()
+                stompClient.publish({
+                    destination: "/app/chat.sendMessage",
+                    body: JSON.stringify(chatMessage),
+                });
                 setMessage(""); // Reset input message
+            } else {
+                console.error("STOMP client is not connected.");
             }
         }
     };
@@ -77,8 +85,13 @@ const Chat = () => {
                 content: `${username} joined the chat`,
             };
 
-            if (stompClient) {
-                (stompClient as any).send("/app/chat.addUser", {}, JSON.stringify(chatMessage));  // Ép kiểu tại đây
+            if (stompClient && stompClient.connected) {
+                stompClient.publish({
+                    destination: "/app/chat.addUser",
+                    body: JSON.stringify(chatMessage),
+                });
+            } else {
+                console.error("STOMP client is not connected.");
             }
         }
     };

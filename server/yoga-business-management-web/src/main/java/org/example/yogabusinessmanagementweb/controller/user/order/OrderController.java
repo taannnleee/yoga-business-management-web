@@ -18,6 +18,7 @@ import org.example.yogabusinessmanagementweb.dto.response.orderItem.OrderItemRes
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.CartService;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
+import org.example.yogabusinessmanagementweb.service.Impl.WebSocketService;
 import org.example.yogabusinessmanagementweb.service.OrderService;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.service.UserService;
@@ -41,6 +42,7 @@ public class OrderController {
     ProductService productService;
     CartService cartService;
     OrderService orderService;
+    WebSocketService webSocketService;
 
     @PostMapping("/create-order")
     public ApiResponse<?> createOrder(HttpServletRequest request,@RequestBody OrderCreationRequest orderRequest) {
@@ -48,9 +50,10 @@ public class OrderController {
 //        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
 //        System.out.println("Products: " + orderRequest.getProducts());
 //        System.out.println("Total Price: " + orderRequest.getTotalPrice());
-
-
         OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
+
+//        Order order  = new Order();
+//        webSocketService.sendOrderToAdmins(order);
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
     }
 

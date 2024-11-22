@@ -58,7 +58,7 @@ public class AppConfig {
       };
     }
 
-    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test"};
+    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test","/ws/**"};
 
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};
 
@@ -101,7 +101,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return webSecurity ->
                 webSecurity.ignoring()
-                        .requestMatchers("/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**");
+                        .requestMatchers("/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**","/ws/**");
     }
 
     @Bean

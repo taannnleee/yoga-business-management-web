@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface CommentService {
     List<CommentResponse> all(Pageable pageable);
-    List<CommentResponse> byProduct(Pageable pageable,String id,int ratePoint);
+    List<CommentResponse> byProduct(Pageable pageable,String id);
     Comment findById(String id);
     CommentResponse getById(String id);
 //    Comment addProduct(ProductCreationRequest productCreationRequest);

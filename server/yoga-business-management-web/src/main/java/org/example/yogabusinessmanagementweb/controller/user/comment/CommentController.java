@@ -60,7 +60,7 @@ public class CommentController {
     @GetMapping("/by-product/{id}")
     public ApiResponse<?> getByProduct(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "50") int size,
             @PathVariable String id,
             @RequestParam(defaultValue = "0") int ratePoint)
     {

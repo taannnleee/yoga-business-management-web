@@ -65,7 +65,7 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
             setIsPosting(true);
             const comment = watch("comment");
             if (comment?.length > 0) {
-                const response = await fetch(`${apiURL}/products/comments`, {
+                const response = await fetch(`${apiURL}/api/comment`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

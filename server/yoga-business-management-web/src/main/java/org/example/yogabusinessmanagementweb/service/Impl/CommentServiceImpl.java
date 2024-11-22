@@ -39,7 +39,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentResponse> byProduct(Pageable pageable,String id,int ratePoint) {
         Product product = productService.getProductById(id);
-        Page<Comment> commentPage = commentRepository.findByProductAndRatePointGreaterThan(pageable, product, ratePoint);
+        Page<Comment> commentPage;
+        if (ratePoint == 0) {
+            // Nếu ratePoint là null, lấy tất cả các comment thuộc sản phẩm
+            commentPage = commentRepository.findByProduct(pageable, product);
+        } else {
+            // Nếu ratePoint không null, lọc theo điều kiện ratePoint > giá trị
+            commentPage = commentRepository.findByProductAndRatePointGreaterThan(pageable, product, ratePoint);
+        }
         List<CommentResponse> topLevelComments = commentMapper.toCommentResponses(commentPage.getContent());
         for (CommentResponse commentResponse : topLevelComments) {
             setReplies(commentResponse);

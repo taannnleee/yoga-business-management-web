@@ -11,9 +11,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  bool isSidebarOpen = true;
-  bool isOverviewExpanded = false;
-  bool isCourseManagementExpanded = false;
+  bool isSidebarOpen = true; // Điều khiển trạng thái Sidebar
 
   @override
   Widget build(BuildContext context) {
@@ -30,113 +28,113 @@ class _MainLayoutState extends State<MainLayout> {
           ),
         ],
       ),
-      body: Row(
+      body: Stack( // Sử dụng Stack để có thể vẽ FloatingActionButton trên mọi thành phần khác
         children: [
-          // Sidebar
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: isSidebarOpen ? 280 : 80,
-            color: Colors.grey[900],
-            child: Column(
-              children: [
-                // Header Sidebar
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  height: 60,
-                  color: Colors.grey[800],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (isSidebarOpen)
-                        const Text(
-                          "YOGA",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              // Sidebar
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                width: isSidebarOpen ? 280 : 0, // Sidebar sẽ ẩn khi isSidebarOpen = false
+                color: Colors.grey[900],
+                child: isSidebarOpen
+                    ? Column(
+                  children: [
+                    // Header Sidebar
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      height: 60,
+                      color: Colors.grey[800],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (isSidebarOpen)
+                            const Text(
+                              "YOGA",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          IconButton(
+                            icon: Icon(
+                              isSidebarOpen
+                                  ? Icons.chevron_left
+                                  : Icons.chevron_right,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isSidebarOpen = !isSidebarOpen;
+                              });
+                            },
                           ),
-                        ),
-                      IconButton(
-                        icon: Icon(
-                          isSidebarOpen ? Icons.chevron_left : Icons.chevron_right,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            isSidebarOpen = !isSidebarOpen;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                // Menu List
-                Expanded(
-                  child: ListView(
-                    children: [
-                      // Overview Section
-                      ExpansionTile(
-                        leading: const Icon(Icons.home, color: Colors.white),
-                        title: Text(
-                          "Tổng quan",
-                          style: TextStyle(color: isSidebarOpen ? Colors.white : Colors.transparent),
-                        ),
-                        trailing: isSidebarOpen
-                            ? Icon(
-                          isOverviewExpanded ? Icons.expand_less : Icons.expand_more,
-                          color: Colors.white,
-                        )
-                            : null,
-                        children: [
-                          _buildSubMenu("Báo cáo doanh thu", "/home/revenue-report"),
-                          _buildSubMenu("Phân tích khách hàng", "/home/customer-analysis"),
-                          _buildSubMenu("Dự đoán xu hướng", "/home/trend-forecast"),
                         ],
-                        onExpansionChanged: (value) {
-                          setState(() {
-                            isOverviewExpanded = value;
-                          });
-                        },
                       ),
-                      // Course Management Section
-                      ExpansionTile(
-                        leading: const Icon(Icons.school, color: Colors.white),
-                        title: Text(
-                          "Quản lý khóa học",
-                          style: TextStyle(color: isSidebarOpen ? Colors.white : Colors.transparent),
-                        ),
-                        trailing: isSidebarOpen
-                            ? Icon(
-                          isCourseManagementExpanded ? Icons.expand_less : Icons.expand_more,
-                          color: Colors.white,
-                        )
-                            : null,
+                    ),
+                    // Menu List (Hiển thị luôn các mục con mà không cần mở rộng)
+                    Expanded(
+                      child: ListView(
                         children: [
-                          _buildSubMenu("Khóa học", "/course-management/courses"),
-                          _buildSubMenu("Giảng viên", "/course-management/teachers"),
-                          _buildSubMenu("Chủ đề", "/course-management/topics"),
+                          _buildMenuItem("Tổng quan", [
+
+                          ]),
+                          _buildMenuItem("Quản lý danh mục", [
+
+                          ]),
+                          _buildMenuItem("Quản lý sản phẩm", [
+
+                          ]),
+                          _buildMenuItem("Quản lý đơn hàng", [
+
+                          ]),
                         ],
-                        onExpansionChanged: (value) {
-                          setState(() {
-                            isCourseManagementExpanded = value;
-                          });
-                        },
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                )
+                    : null, // Không hiển thị nội dung khi Sidebar bị ẩn
+              ),
+              // Content Area
+              Expanded(
+                child: widget.content,
+              ),
+            ],
+          ),
+          // Nút bấm hiển thị lại Sidebar khi bị ẩn
+          if (!isSidebarOpen)
+            Positioned(
+              left: 16, // Điều chỉnh vị trí nút ra ngoài góc trái trên cùng
+              top: 16, // Điều chỉnh vị trí nút ra ngoài góc trái trên cùng
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    isSidebarOpen = true;
+                  });
+                },
+                child: Icon(Icons.chevron_right),
+                backgroundColor: Colors.grey[800],
+              ),
             ),
-          ),
-          // Content Area
-          Expanded(
-            child: widget.content,
-          ),
         ],
       ),
     );
   }
 
+  // Hàm tạo menu chính (không mở rộng, luôn hiển thị)
+  Widget _buildMenuItem(String title, List<Widget> subMenus) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(title, style: const TextStyle(color: Colors.white)),
+        ),
+        ...subMenus,
+      ],
+    );
+  }
+
+  // Hàm tạo submenu
   Widget _buildSubMenu(String title, String route) {
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 40),

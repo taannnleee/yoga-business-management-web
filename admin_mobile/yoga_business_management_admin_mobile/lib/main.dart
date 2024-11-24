@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           // Điều hướng sang trang HomePage
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const MainLayout(content: content, title: title)),
+            MaterialPageRoute(builder: (context) => const HomePage()),
           );
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Đăng nhập thành công!')),

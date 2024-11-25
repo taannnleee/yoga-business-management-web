@@ -9,6 +9,7 @@ import React from "react";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/config/url";
 
 interface ILoginPageProps { }
 
@@ -21,7 +22,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
   const handlePressLogin = async (values: any) => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {registerUser} from "@/app/api/create-account/register-user";
+import { API_URL } from "@/config/url";
 
 interface ICreateAccountPageProps {}
 
@@ -29,7 +30,7 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
     const handlePressRegister = async (values: any) => {
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:8080/api/auth/register", {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
 const token = localStorage.getItem("accessToken");
 // Define interfaces for the response data
+import { API_URL } from "@/config/url";
 interface Address {
     id: number;
     houseNumber: string;
@@ -53,7 +54,7 @@ const WishList: React.FC = () => {
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/wishlist/get-wishlist-of-user", {
+                const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-of-user`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -84,7 +85,7 @@ const WishList: React.FC = () => {
     // Function to remove item from wishlist
     const removeFromWishlist = async (id: number) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/wishlist/delete-wishlist-of-user/${id}`, {
+            const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-of-user/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,

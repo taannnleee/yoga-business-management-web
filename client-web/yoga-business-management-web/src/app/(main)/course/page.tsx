@@ -6,7 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CourseCard from "@/components/organisms/CourseCard";
-
+import { API_URL } from "@/config/url";
 // Định nghĩa interface cho dữ liệu giáo viên
 interface Teacher {
     id: number;
@@ -86,7 +86,7 @@ const CoursePage: React.FC = () => {
         const fetchInstructors = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch("http://localhost:8080/api/teacher/all-teachers", {
+                const response = await fetch(`${API_URL}/api/teacher/all-teachers`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -117,7 +117,7 @@ const CoursePage: React.FC = () => {
         const fetchTeacherCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`http://localhost:8080/api/course/get-outstanding-courses`, {
+                const response = await fetch(`${API_URL}/api/course/get-outstanding-courses`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

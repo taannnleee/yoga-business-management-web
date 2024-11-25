@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardMedia, Typography, Button, CardActions } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/config/url";
 // Định nghĩa interface cho product
 interface Product {
     id: string;
@@ -24,7 +25,7 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
         setError(null);
         try {
             const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
-            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

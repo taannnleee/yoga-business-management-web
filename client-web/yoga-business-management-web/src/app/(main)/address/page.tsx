@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { API_URL } from "@/config/url";
 import {
     Box,
     Typography,
@@ -28,6 +29,7 @@ interface Address {
     phoneNumberDelivery: string;
 }
 
+
 const AddressList: React.FC = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [loading, setLoading] = useState(true);
@@ -49,7 +51,7 @@ const AddressList: React.FC = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/address/get-address", {
+            const response = await fetch(`${API_URL}/api/address/get-address`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -127,7 +129,7 @@ const AddressList: React.FC = () => {
             };
 
             try {
-                await fetch(`http://localhost:8080/api/address/update/${selectedAddress.id}`, {
+                await fetch(`${API_URL}/api/address/update/${selectedAddress.id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -156,7 +158,7 @@ const AddressList: React.FC = () => {
         };
 
         try {
-            await fetch("http://localhost:8080/api/address/create", {
+            await fetch(`${API_URL}/api/address/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -175,7 +177,7 @@ const AddressList: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (selectedAddress) {
             try {
-                await fetch(`http://localhost:8080/api/address/delete/${selectedAddress.id}`, {
+                await fetch(`${API_URL}/api/address/delete/${selectedAddress.id}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -202,7 +204,7 @@ const AddressList: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (address.status !== "DEFAULT") {
             try {
-                await fetch(`http://localhost:8080/api/address/set-default/${address.id}`, {
+                await fetch(`${API_URL}/api/address/set-default/${address.id}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
-
+import { API_URL } from "@/config/url";
 interface LeftSideProps {
   product: any;
   currentVariant: any;
@@ -34,7 +34,7 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
     try {
       if (isFavorited) {
         // Call API to remove from wishlist
-        const response = await fetch(`http://localhost:8080/api/wishlist/delete-wishlist-by-product-id/${product.id}`, {
+        const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-by-product-id/${product.id}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${accessToken}`,
@@ -48,7 +48,7 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
         }
       } else {
         // Call API to add to wishlist
-        const response = await fetch("http://localhost:8080/api/wishlist/add-wishlist", {
+        const response = await fetch(`${API_URL}/api/wishlist/add-wishlist`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
   useEffect(() => {
     const checkWishlistStatus = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/wishlist/get-wishlist-exists", {
+        const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-exists`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

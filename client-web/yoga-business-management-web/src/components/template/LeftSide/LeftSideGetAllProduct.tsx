@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaSpinner } from 'react-icons/fa';
 import { setSelectedCategory, setSelectedSubCategory } from '@/redux/category/categorySlice';
 import { RootState } from "@/redux/store";
+import { API_URL } from "@/config/url";
 
 interface SubCategory {
     id: number;
@@ -31,7 +32,7 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
         const fetchCategories = async () => {
             try {
                 const accessToken = localStorage.getItem('accessToken');
-                const response = await fetch('http://localhost:8080/api/category/with-sub-categories', {
+                const response = await fetch(`${API_URL}/api/category/with-sub-categories`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -61,7 +62,7 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
         setTotalItems(1); // Reset total items to 1 when category is clicked
     };
 
-    const handleSubCategoryClick = (category: CategoryView,subCategory: SubCategory  )=> {
+    const handleSubCategoryClick = (category: CategoryView, subCategory: SubCategory) => {
         const categoryData = { id: category.id, name: category.name };
         const subCategoryData = { id: subCategory.id, name: subCategory.name }; // Passing both id and name for the subcategory
         dispatch(setSelectedCategory(categoryData)); // Ensure the parent category is selected
@@ -78,9 +79,8 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
                     <div key={category.id} className="space-y-2">
                         <div
                             onClick={() => handleCategoryClick(category)}  // Pass category name
-                            className={`px-4 py-2 transition-all duration-300 ease-in-out cursor-pointer ${
-                                category.id == selectedCategory?.id ? 'text-red-500 font-bold' : 'hover:bg-gray-200 hover:text-orange-600'
-                            }`}
+                            className={`px-4 py-2 transition-all duration-300 ease-in-out cursor-pointer ${category.id == selectedCategory?.id ? 'text-red-500 font-bold' : 'hover:bg-gray-200 hover:text-orange-600'
+                                }`}
                         >
                             <span className="text-black font-bold uppercase text-sm">{category.name}</span>
                         </div>
@@ -88,12 +88,11 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
                             {category.subCategories.map((subCategory) => (
                                 <li
                                     key={subCategory.id}  // Added missing key prop
-                                    onClick={() => handleSubCategoryClick(category,subCategory)}  // Pass both category and subcategory names
-                                    className={`w-full text-sm py-1 transition-all duration-300 ease-in-out cursor-pointer ${
-                                        subCategory.id == selectedSubCategory?.id && category.id == selectedCategory?.id
+                                    onClick={() => handleSubCategoryClick(category, subCategory)}  // Pass both category and subcategory names
+                                    className={`w-full text-sm py-1 transition-all duration-300 ease-in-out cursor-pointer ${subCategory.id == selectedSubCategory?.id && category.id == selectedCategory?.id
                                             ? 'text-red-500 font-bold' // Highlight subcategory only if its parent category is selected
                                             : 'hover:bg-gray-100 hover:text-orange-600'
-                                    }`}
+                                        }`}
                                 >
                                     {subCategory.name}
                                 </li>

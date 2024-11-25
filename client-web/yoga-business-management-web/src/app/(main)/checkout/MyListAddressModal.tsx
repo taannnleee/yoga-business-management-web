@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Skeleton } from "@mui/material";
 import UpdateAddressModal from "./UpdateAddressModal";
 import CachedIcon from '@mui/icons-material/Cached';
-
+import { API_URL } from "@/config/url";
 interface Address {
     id: string;
     fullName: string;
@@ -39,7 +39,7 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
 
         setLoading(true);
         try {
-            const response = await fetch("http://localhost:8080/api/address/get-address", {
+            const response = await fetch(`${API_URL}/api/address/get-address`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${accessToken}` },
             });

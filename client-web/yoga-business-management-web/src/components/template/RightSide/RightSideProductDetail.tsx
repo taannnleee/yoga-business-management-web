@@ -1,11 +1,12 @@
 // RightSide.tsx
-import React, {useState} from "react";
-import {Typography, Button, CircularProgress} from '@mui/material';
+import React, { useState } from "react";
+import { Typography, Button, CircularProgress } from '@mui/material';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import Image from "next/image";
-import {incrementTotalItems} from "@/redux/cart/cartSlice";
-import {useToast} from "@/hooks/useToast";
-import {useDispatch} from "react-redux";
+import { incrementTotalItems } from "@/redux/cart/cartSlice";
+import { useToast } from "@/hooks/useToast";
+import { useDispatch } from "react-redux";
+import { API_URL } from "@/config/url";
 
 interface RightSideProps {
     product: any;
@@ -17,8 +18,8 @@ interface RightSideProps {
 }
 
 export const RightSideProductDetail: React.FC<RightSideProps> = ({
-                                                 product, quantity, setQuantity, currentVariant, handleVariantSelect
-                                             }) => {
+    product, quantity, setQuantity, currentVariant, handleVariantSelect
+}) => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const toast = useToast();
@@ -26,7 +27,7 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -82,7 +83,7 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
 
             </div>
             <Typography variant="subtitle1" className="text-gray-600">
-            Mã sản phẩm: <span className="text-red-500">{product?.code}</span>
+                Mã sản phẩm: <span className="text-red-500">{product?.code}</span>
             </Typography>
             <Typography variant="subtitle1" className="text-gray-600">
                 Thương hiệu: <span className="text-red-500">{product?.brand}</span>
@@ -158,8 +159,8 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
             <div className="flex items-center space-x-4 mt-4">
                 <Button
                     sx={{
-                        width:'230px',
-                        height:'40px',
+                        width: '230px',
+                        height: '40px',
                         backgroundColor: '#f44336',
                         color: 'white',
                         padding: '8px 16px',
@@ -173,8 +174,8 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                 </Button>
                 <Button
                     sx={{
-                        width:'230px',
-                        height:'40px',
+                        width: '230px',
+                        height: '40px',
                         backgroundColor: '#d1d1d1',
                         color: 'red',
                         padding: '8px 16px',

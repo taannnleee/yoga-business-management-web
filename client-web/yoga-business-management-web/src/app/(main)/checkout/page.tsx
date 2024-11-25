@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { Select, MenuItem } from "@mui/material";
+import { API_URL } from "@/config/url";
 import {
     Box,
     Typography,
@@ -49,7 +50,7 @@ const Checkout: React.FC = () => {
     const fetchCart = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const response = await fetch("http://localhost:8080/api/cart/show-cart", {
+            const response = await fetch(`${API_URL}/api/cart/show-cart`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             });
@@ -88,7 +89,7 @@ const Checkout: React.FC = () => {
 
         try {
             // Send the request to initiate the VNPay payment and include the order data
-            const response = await fetch(`http://localhost:8080/api/payment/vn-pay?amount=${totalPrice}&bankCode=NCB`, {
+            const response = await fetch(`${API_URL}/api/payment/vn-pay?amount=${totalPrice}&bankCode=NCB`, {
                 method: "POST",  // Change to POST to send data in the body
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -126,7 +127,7 @@ const Checkout: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         setOrderLoading(true);
         try {
-            const response = await fetch("http://localhost:8080/api/order/create-order", {
+            const response = await fetch(`${API_URL}/api/order/create-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

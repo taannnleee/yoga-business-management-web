@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { API_URL } from "@/config/url";
 import {
     AppBar,
     Tabs,
@@ -18,7 +19,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarRating from "@/components/molecules/StarRating";
-import {useToast} from "@/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 
 // Các interface dữ liệu
 interface OrderItem {
@@ -86,7 +87,7 @@ const OrderPage: React.FC = () => {
             setLoading(true); // Bắt đầu tải dữ liệu
             try {
                 const token = localStorage.getItem("accessToken"); // Lấy token
-                const response = await fetch(`http://localhost:8080/api/order/get-all-order-by-status/${status}`, {
+                const response = await fetch(`${API_URL}/api/order/get-all-order-by-status/${status}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -147,7 +148,7 @@ const OrderPage: React.FC = () => {
         try {
             const accessToken = localStorage.getItem("accessToken");
 
-            const commentResponse = await fetch(`http://localhost:8080/api/comment`, {
+            const commentResponse = await fetch(`${API_URL}/api/comment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -172,7 +173,7 @@ const OrderPage: React.FC = () => {
 
             // Cập nhật đánh giá vào đơn hàng
             const updateResponse = await fetch(
-                `http://localhost:8080/api/order/update-comment/${orderItem.id}?commentId=${newCommentId}`,
+                `${API_URL}/api/order/update-comment/${orderItem.id}?commentId=${newCommentId}`,
                 {
                     method: "PUT",
                     headers: {

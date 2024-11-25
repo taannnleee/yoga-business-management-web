@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal";
 import { incrementTotalItems } from "@/redux/cart/cartSlice";
 import axios from "axios";
-import {useToast} from "@/hooks/useToast";
-import {useDispatch} from "react-redux";
+import { useToast } from "@/hooks/useToast";
+import { useDispatch } from "react-redux";
+import { API_URL } from "@/config/url";
 
 // Component ProductCard nhận các props: product, loading, handleAddToCart, và renderStars
 export const ProductCard = ({ product, loading, renderStars }) => {
@@ -27,7 +28,7 @@ export const ProductCard = ({ product, loading, renderStars }) => {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:8080/api/product/${product.id}`, {
+            const response = await axios.get(`${API_URL}/api/product/${product.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -56,7 +57,7 @@ export const ProductCard = ({ product, loading, renderStars }) => {
     const handleAddToCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

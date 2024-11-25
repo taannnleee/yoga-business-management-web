@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import {FaSpinner} from "react-icons/fa"; // Assuming you're using HeroIcons
-
+import { API_URL } from "@/config/url";
 interface HoverDropdownProps {
     buttonText: string;
 }
@@ -26,7 +26,7 @@ const HoverDropdown: React.FC<HoverDropdownProps> = ({ buttonText }) => {
         const fetchCategories = async () => {
             try {
                 const accessToken = localStorage.getItem('accessToken');
-                const response = await fetch('http://localhost:8080/api/category/with-sub-categories', {
+                const response = await fetch(`${API_URL}/api/category/with-sub-categories`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${accessToken}`,

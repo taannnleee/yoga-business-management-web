@@ -15,7 +15,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
-
+import { API_URL } from "@/config/url";
 interface ProductByCategoryCardProps {}
 
 const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
@@ -41,7 +41,7 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
                     return;
                 }
 
-                const response = await axios.get("http://localhost:8080/api/product/all", {
+                const response = await axios.get(`${API_URL}/api/product/all`, {
                     params: {
                         page: 1,
                         size: 4,
@@ -74,7 +74,7 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
     const handleAddToCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -110,7 +110,7 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:8080/api/product/${product.id}`, {
+            const response = await axios.get(`${API_URL}/api/product/${product.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

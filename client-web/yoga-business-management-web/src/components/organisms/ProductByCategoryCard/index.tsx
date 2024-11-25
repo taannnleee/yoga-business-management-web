@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_URL } from "@/config/url";
 import {
     Box,
     Typography,
@@ -58,7 +59,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
     const handleAddToCart = async () => {
         try {
             const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
-            const response = await fetch("http://localhost:8080/api/cart/add-to-cart", {
+            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -94,7 +95,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
                 return;
             }
 
-            const response = await axios.get(`http://localhost:8080/api/product/${product.id}`, {
+            const response = await axios.get(`${API_URL}/api/product/${product.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

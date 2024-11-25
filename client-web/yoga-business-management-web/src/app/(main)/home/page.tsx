@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import SaleoffCard from "@/components/organisms/SaleOffCard";
 import Image from "next/image";
-import {ProductByCategoryCardSkeleton} from "@/components/organisms/ProductByCategoryCard/skeleton";
-import {ProductByCategoryCard} from "@/components/organisms/ProductByCategoryCard";
-
-interface IHomePageProps {}
+import { ProductByCategoryCardSkeleton } from "@/components/organisms/ProductByCategoryCard/skeleton";
+import { ProductByCategoryCard } from "@/components/organisms/ProductByCategoryCard";
+import { API_URL } from "@/config/url";
+interface IHomePageProps { }
 const imageUrls = [
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720",
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_2.jpg?1720673795720",
@@ -38,7 +38,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch("http://localhost:8080/api/category/with-products", {
+                const response = await fetch(`${API_URL}/api/category/with-products`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

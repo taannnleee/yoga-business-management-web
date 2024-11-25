@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux"; // Redux hooks
 import axios from "axios";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice"; // Redux actions
-
+import { API_URL } from "@/config/url";
 const CartButton = () => {
     const totalItems = useSelector((state) => state.cart.totalItems); // Access Redux state
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const CartButton = () => {
         const fetchCartData = async () => {
             try {
                 const accessToken = localStorage.getItem("accessToken");
-                const response = await axios.get("http://localhost:8080/api/cart/show-cart", {
+                const response = await axios.get(`${API_URL}/api/cart/show-cart`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },

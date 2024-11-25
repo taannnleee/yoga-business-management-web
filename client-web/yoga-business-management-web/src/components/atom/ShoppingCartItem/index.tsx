@@ -4,7 +4,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useDebounce from "../../../hooks/useDebounce"; // Hook debounce
-
+import { API_URL } from "@/config/url";
 interface IProduct {
     id: string;
     title: string;
@@ -43,7 +43,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
 
                 try {
                     const token = localStorage.getItem("accessToken");
-                    const response = await fetch("http://localhost:8080/api/cart/increase-to-cart", {
+                    const response = await fetch(`${API_URL}/api/cart/increase-to-cart`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
 
                 try {
                     const token = localStorage.getItem("accessToken");
-                    const response = await fetch("http://localhost:8080/api/cart/subtract-from-cart-item", {
+                    const response = await fetch(`${API_URL}/api/cart/subtract-from-cart-item`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -127,7 +127,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
 
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/cart/remove-from-cart", {
+            const response = await fetch(`${API_URL}/api/cart/remove-from-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

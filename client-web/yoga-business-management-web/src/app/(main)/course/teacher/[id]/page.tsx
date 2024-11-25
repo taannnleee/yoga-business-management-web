@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import CourseCard from "@/components/organisms/CourseCard"; // Đường dẫn tới component CourseCard
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-
+import { API_URL } from "@/config/url";
 interface Course {
     id: number;
     title: string;
@@ -55,7 +55,7 @@ const TeacherDetailPage: React.FC = () => {
         const fetchTeacherInfo = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`http://localhost:8080/api/teacher/get-teacher/${teacherId}`, {
+                const response = await fetch(`${API_URL}/api/teacher/get-teacher/${teacherId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const TeacherDetailPage: React.FC = () => {
         const fetchTeacherCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`http://localhost:8080/api/course/all-teacher-courses/${teacherId}`, {
+                const response = await fetch(`${API_URL}/api/course/all-teacher-courses/${teacherId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

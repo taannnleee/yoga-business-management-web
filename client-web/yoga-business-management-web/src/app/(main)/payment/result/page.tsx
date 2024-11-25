@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Button from "@/components/atom/Button";
-
+import { API_URL } from "@/config/url";
 const PaymentResult = () => {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
@@ -22,7 +22,7 @@ const PaymentResult = () => {
         const token = localStorage.getItem("accessToken");
         setLoading(true);
         try {
-            const response = await fetch("http://localhost:8080/api/order/create-order", {
+            const response = await fetch(`${API_URL}/api/order/create-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import {ProductCard} from '@/components/molecules/ProductCard'; // Import ProductCard
 import BottomContent from "@/components/molecules/BottomContent";
 import {ProductCardSkeleton} from "@/components/molecules/ProductCard/skeleton"; // Import BottomContent
-
+import { API_URL } from "@/config/url";
 export const RightSideGetAllProduct: React.FC = (props) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
@@ -20,7 +20,7 @@ export const RightSideGetAllProduct: React.FC = (props) => {
         setLoading(true);
         try {
             const accessToken = localStorage.getItem('accessToken');
-            let url = `http://localhost:8080/api/product/filter?page=${page}&pageSize=${itemsPerPage}&sortBy=title&sortDir=${selectedSort || 'asc'}`;
+            let url = `${API_URL}/api/product/filter?page=${page}&pageSize=${itemsPerPage}&sortBy=title&sortDir=${selectedSort || 'asc'}`;
 
             if (selectedSubCategory?.id) {
                 url += `&subCategoryId=${selectedSubCategory.id}`;

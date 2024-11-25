@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CourseCard from "@/components/organisms/CourseCard";
-
+import { API_URL } from "@/config/url";
 // Define types for your courses and categories
 interface Course {
     id: number;
@@ -32,7 +32,7 @@ const DisCoverPage: React.FC = () => {
         const fetchCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch("http://localhost:8080/api/course/all-course", {
+                const response = await fetch(`${API_URL}/api/course/all-course`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

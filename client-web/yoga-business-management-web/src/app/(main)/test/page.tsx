@@ -2,7 +2,7 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Client, Stomp } from '@stomp/stompjs'; // Import Stomp từ @stomp/stompjs
 import SockJS from 'sockjs-client';  // Import SockJS
-
+import { API_URL } from "@/config/url";
 // Định nghĩa kiểu cho ChatMessage
 interface ChatMessage {
     sender: string;
@@ -17,7 +17,7 @@ const Chat = () => {
 
     // Kết nối với WebSocket và thiết lập các handler
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8080/ws"); // URL WebSocket endpoint
+        const socket = new SockJS(`${API_URL}/ws`); // URL WebSocket endpoint
         const client = new Client({
             webSocketFactory: () => socket,  // Chỉ định SockJS factory cho STOMP client
             debug: (str) => console.log(str),

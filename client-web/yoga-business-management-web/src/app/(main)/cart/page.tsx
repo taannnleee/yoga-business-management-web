@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Container, Grid, CssBaseline, Button } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
-
+import { API_URL } from "@/config/url";
 interface IProduct {
     id: string;
     title: string;
@@ -41,7 +41,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch("http://localhost:8080/api/cart/show-cart", {
+            const response = await fetch(`${API_URL}/api/cart/show-cart`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

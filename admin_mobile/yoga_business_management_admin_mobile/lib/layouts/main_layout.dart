@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:yoga_business_management_admin_mobile/category.dart';
+import 'package:yoga_business_management_admin_mobile/overview.dart';
+import 'package:yoga_business_management_admin_mobile/order.dart';
+import 'package:yoga_business_management_admin_mobile/product.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget content;
@@ -11,7 +15,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  bool isSidebarOpen = true; // Điều khiển trạng thái Sidebar
+  bool isSidebarOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +32,14 @@ class _MainLayoutState extends State<MainLayout> {
           ),
         ],
       ),
-      body: Stack( // Sử dụng Stack để có thể vẽ FloatingActionButton trên mọi thành phần khác
+      body: Stack(
         children: [
           Row(
             children: [
               // Sidebar
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                width: isSidebarOpen ? 280 : 0, // Sidebar sẽ ẩn khi isSidebarOpen = false
+                width: isSidebarOpen ? 280 : 0,
                 color: Colors.grey[900],
                 child: isSidebarOpen
                     ? Column(
@@ -48,53 +52,70 @@ class _MainLayoutState extends State<MainLayout> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (isSidebarOpen)
-                            const Text(
-                              "YOGA",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          const Text(
+                            "YOGA",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
                           IconButton(
                             icon: Icon(
-                              isSidebarOpen
-                                  ? Icons.chevron_left
-                                  : Icons.chevron_right,
+                              Icons.chevron_left,
                               color: Colors.white,
                             ),
                             onPressed: () {
                               setState(() {
-                                isSidebarOpen = !isSidebarOpen;
+                                isSidebarOpen = false;
                               });
                             },
                           ),
                         ],
                       ),
                     ),
-                    // Menu List (Hiển thị luôn các mục con mà không cần mở rộng)
+                    // Menu List
                     Expanded(
                       child: ListView(
                         children: [
-                          _buildMenuItem("Tổng quan", [
-
-                          ]),
-                          _buildMenuItem("Quản lý danh mục", [
-
-                          ]),
-                          _buildMenuItem("Quản lý sản phẩm", [
-
-                          ]),
-                          _buildMenuItem("Quản lý đơn hàng", [
-
-                          ]),
+                          _buildMenuItem("Tổng quan", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Overview(),
+                              ),
+                            );
+                          }),
+                          _buildMenuItem("Quản lý danh mục", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Category(),
+                              ),
+                            );
+                          }),
+                          _buildMenuItem("Quản lý sản phẩm", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Product(),
+                              ),
+                            );
+                          }),
+                          _buildMenuItem("Quản lý đơn hàng", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Order(),
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ],
                 )
-                    : null, // Không hiển thị nội dung khi Sidebar bị ẩn
+                    : null,
               ),
               // Content Area
               Expanded(
@@ -105,15 +126,15 @@ class _MainLayoutState extends State<MainLayout> {
           // Nút bấm hiển thị lại Sidebar khi bị ẩn
           if (!isSidebarOpen)
             Positioned(
-              left: 16, // Điều chỉnh vị trí nút ra ngoài góc trái trên cùng
-              top: 16, // Điều chỉnh vị trí nút ra ngoài góc trái trên cùng
+              left: 16,
+              top: 16,
               child: FloatingActionButton(
                 onPressed: () {
                   setState(() {
                     isSidebarOpen = true;
                   });
                 },
-                child: Icon(Icons.chevron_right),
+                child: const Icon(Icons.chevron_right),
                 backgroundColor: Colors.grey[800],
               ),
             ),
@@ -122,26 +143,14 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 
-  // Hàm tạo menu chính (không mở rộng, luôn hiển thị)
-  Widget _buildMenuItem(String title, List<Widget> subMenus) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(title, style: const TextStyle(color: Colors.white)),
-        ),
-        ...subMenus,
-      ],
-    );
-  }
-
-  // Hàm tạo submenu
-  Widget _buildSubMenu(String title, String route) {
+  // Hàm tạo menu chính
+  Widget _buildMenuItem(String title, VoidCallback onTap) {
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 40),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: () {
-        Navigator.pushNamed(context, route);
-      },
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white),
+      ),
+      onTap: onTap,
     );
   }
 }

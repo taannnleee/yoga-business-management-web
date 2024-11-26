@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import SaleoffCard from "@/components/organisms/SaleOffCard";
 import Image from "next/image";
 import { ProductByCategoryCardSkeleton } from "@/components/organisms/ProductByCategoryCard/skeleton";
 import { ProductByCategoryCard } from "@/components/organisms/ProductByCategoryCard";
@@ -107,7 +106,6 @@ const HomePage: React.FC<IHomePageProps> = () => {
                 </Box>
             </Box>
 
-            <SaleoffCard />
 
             {fetchingProducts ? (
                 // Show skeleton loader while fetching products

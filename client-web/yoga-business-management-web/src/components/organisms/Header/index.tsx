@@ -150,13 +150,20 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
               <div
                 className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
                 <ul className="py-2">
-                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                  <li
+                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer"
+                    onClick={() => router.push("/choose-mat")}
+                  >
                     <span className="text-black hover:text-orange-600 text-sm">Chọn thảm yoga</span>
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                  <li
+                    onClick={() => router.push("/yoga-clothing")}
+                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
                     <span className="text-black hover:text-orange-600 text-sm">Chọn quần áo yoga</span>
                   </li>
-                  <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
+                  <li
+                    onClick={() => router.push("/question")}
+                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
                     <span className="text-black hover:text-orange-600 text-sm">Câu hỏi thường gặp - FAQ</span>
                   </li>
                 </ul>
@@ -166,8 +173,8 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
             {/* Tin tức dropdown */}
             <div className="relative group">
               <button className="text-black hover:text-orange-600 flex items-center relative">
-                <span>Tin tức</span>
-                <ChevronDownIcon className="w-5 h-5 ml-1 text-black" />
+                {/* <span>Tin tức</span> */}
+                {/* <ChevronDownIcon className="w-5 h-5 ml-1 text-black" /> */}
 
                 {/* Pseudo bridge */}
                 <div className="absolute left-0 top-full w-full h-4 bg-transparent group-hover:block z-10"></div>

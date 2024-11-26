@@ -242,9 +242,9 @@ export default function MainLayout(props: ISideBarProps) {
               sx={{
                 justifyContent: 'initial',
                 px: 4,
-                backgroundColor: isSelected('/home') ? 'green' : 'transparent',  // Thêm màu nền cho mục được chọn
+                backgroundColor: isSelected('/home') ? 'blue' : 'transparent',  // Thêm màu nền cho mục được chọn
                 '&:hover': {
-                  backgroundColor: isSelected('/home') ? 'darkgreen' : 'transparent',  // Thêm hiệu ứng hover
+                  backgroundColor: isSelected('/home') ? 'blue' : 'transparent',  // Thêm hiệu ứng hover
                 },
               }}
             >
@@ -262,11 +262,11 @@ export default function MainLayout(props: ISideBarProps) {
                     sx={{
                       pl: 8,
                       backgroundColor: isSelected(`/home/${text.replace(/\s+/g, '-').toLowerCase()}`)
-                        ? 'green'
+                        ? 'blue'
                         : 'transparent',
                       '&:hover': {
                         backgroundColor: isSelected(`/home/${text.replace(/\s+/g, '-').toLowerCase()}`)
-                          ? 'darkgreen'
+                          ? 'blue'
                           : 'transparent',
                       },
                     }}
@@ -287,9 +287,9 @@ export default function MainLayout(props: ISideBarProps) {
               sx={{
                 justifyContent: 'initial',
                 px: 4,
-                backgroundColor: isSelected('/course-management') ? 'green' : 'transparent',  // Thêm màu nền cho mục được chọn
+                backgroundColor: isSelected('/course-management') ? 'blue' : 'transparent',  // Thêm màu nền cho mục được chọn
                 '&:hover': {
-                  backgroundColor: isSelected('/course-management') ? 'darkgreen' : 'transparent',  // Thêm hiệu ứng hover
+                  backgroundColor: isSelected('/course-management') ? 'blue' : 'transparent',  // Thêm hiệu ứng hover
                 },
               }}
             >
@@ -307,11 +307,11 @@ export default function MainLayout(props: ISideBarProps) {
                     sx={{
                       pl: 8,
                       backgroundColor: isSelected(`/course-management/${url}`)
-                        ? 'green'
+                        ? 'blue'
                         : 'transparent',
                       '&:hover': {
                         backgroundColor: isSelected(`/course-management/${url}`)
-                          ? 'darkgreen'
+                          ? 'blue'
                           : 'transparent',
                       },
                     }}
@@ -332,9 +332,9 @@ export default function MainLayout(props: ISideBarProps) {
                   sx={{
                     justifyContent: 'initial',
                     px: 4,
-                    backgroundColor: isSelected(to[index + 1]) ? 'green' : 'transparent', // Thêm màu nền cho mục được chọn
+                    backgroundColor: isSelected(to[index + 1]) ? 'blue' : 'transparent', // Thêm màu nền cho mục được chọn
                     '&:hover': {
-                      backgroundColor: isSelected(to[index + 1]) ? 'darkgreen' : 'transparent', // Thêm hiệu ứng hover
+                      backgroundColor: isSelected(to[index + 1]) ? 'blue' : 'transparent', // Thêm hiệu ứng hover
                     },
                   }}
                 >

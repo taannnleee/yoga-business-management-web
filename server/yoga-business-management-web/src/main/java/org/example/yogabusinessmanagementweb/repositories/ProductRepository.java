@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -36,5 +37,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                  @Param("keyword") String keyword,
                                  Pageable pageable);
 
-
+    @Query(value = "SELECT * FROM product ORDER BY sold DESC LIMIT 10", nativeQuery = true)
+    List<Product> findTop10BestSellingProducts();
 }

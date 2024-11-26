@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
+import org.example.yogabusinessmanagementweb.common.mapper.GenericMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderItemMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.ListDto;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
@@ -21,6 +23,9 @@ import org.example.yogabusinessmanagementweb.repositories.OrderItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderRepository;
 import org.example.yogabusinessmanagementweb.service.*;
 import org.example.yogabusinessmanagementweb.common.entities.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -131,18 +136,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrderByStatus(HttpServletRequest request, String status) {
+    public ListDto<List<Order>> getAllOrderByStatus(HttpServletRequest request, String status, Pageable pageable) {
 //        EStatusOrder statusEnum = EStatusOrder.valueOf(status);
         User user = jwtUtil.getUserFromRequest(request);
-
+        Page<Order> listOrder;
         if("ALL".equals(status)){
-            List<Order> list = orderRepository.findAllByUser(user);
-            return list;
+            listOrder = orderRepository.findAllByUser(user, pageable);
         }
         else {
-            List<Order> listOrder = orderRepository.findAllByStatusOrderAndUserId(status,user.getId());
-            return listOrder;
+            listOrder= orderRepository.findAllByStatusAndUser(EStatusOrder.valueOf(status), user, pageable);
         }
+        return GenericMapper.toListDto(listOrder.getContent(), listOrder);
     }
 
     public OrderItem findById(String id) {
@@ -161,4 +165,37 @@ public class OrderServiceImpl implements OrderService {
         return orderItemMapper.toOrderCommentResponse(orderItemRepository.save(orderItem));
     }
 
+
+    public BigDecimal getTotalAmountByStatus(User user, EStatusOrder status) {
+        // Lọc đơn hàng của user theo trạng thái và tính tổng giá trị
+        List<Order> orders = orderRepository.findAllByStatusAndUser(status,user);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+
+        for (Order order : orders) {
+            totalAmount = totalAmount.add(order.getTotalPrice());
+        }
+
+        return totalAmount;
+    }
+
+    public BigDecimal getTotalPendingAmount(User user) {
+        return getTotalAmountByStatus(user, EStatusOrder.PROCESSING);
+    }
+
+    public BigDecimal getTotalShippingAmount(User user) {
+        return getTotalAmountByStatus(user, EStatusOrder.DELIVERING);
+    }
+
+    public BigDecimal getTotalDeliveredAmount(User user) {
+        return getTotalAmountByStatus(user, EStatusOrder.COMPLETED);
+    }
+
+    // Phương thức tính tổng số tiền của tất cả các trạng thái đơn hàng
+    public BigDecimal getTotalAmountByUser(User user) {
+        BigDecimal totalPending = getTotalPendingAmount(user);
+        BigDecimal totalShipping = getTotalShippingAmount(user);
+        BigDecimal totalDelivered = getTotalDeliveredAmount(user);
+
+        return totalPending.add(totalShipping).add(totalDelivered);
+    }
 }

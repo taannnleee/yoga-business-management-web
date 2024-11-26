@@ -9,6 +9,7 @@ import {
 import { Button, Card } from "react-native-paper";
 import { BASE_URL } from "@/api/config";
 import { getJwt } from "@/jwt/get-jwt";
+import { router } from "expo-router";
 
 interface Address {
   id: number;
@@ -132,7 +133,12 @@ const WishList: React.FC = () => {
           data={wishlist}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <Card style={styles.card}>
+            <Card
+              style={styles.card}
+              onPress={() =>
+                router.push(`/(root)/(product)/${item.product.id}`)
+              }
+            >
               <View style={styles.cardContent}>
                 <Card.Cover
                   source={{ uri: item.product.imagePath }}
@@ -140,9 +146,9 @@ const WishList: React.FC = () => {
                 />
                 <View style={styles.textContainer}>
                   <Text style={styles.title}>{item.product.title}</Text>
-                  <Text style={styles.description}>
-                    {item.product.description}
-                  </Text>
+                  {/*<Text style={styles.description}>*/}
+                  {/*  {item.product.description}*/}
+                  {/*</Text>*/}
                   <Text style={styles.price}>
                     Price: {formatPrice(item.product.price)}
                   </Text>
@@ -196,6 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
+    color: "#f44336",
   },
   removeButton: {
     marginTop: 8,

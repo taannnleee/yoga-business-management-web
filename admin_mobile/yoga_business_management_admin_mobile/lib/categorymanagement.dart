@@ -40,8 +40,10 @@ class _CategoryManagementState extends State<CategoryManagement> {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return List<Map<String, dynamic>>.from(data['data']);
+        final data = utf8.decode(response.bodyBytes);
+        final jsonData = json.decode(data);
+
+        return List<Map<String, dynamic>>.from(jsonData['data']);
       } else {
         showError('Failed to fetch categories.');
         return [];

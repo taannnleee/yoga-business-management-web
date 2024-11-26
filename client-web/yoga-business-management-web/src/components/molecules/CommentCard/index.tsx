@@ -4,7 +4,7 @@ import CommentInput from "@/components/atom/CommentInput";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/useToast";
 import ConfirmDialog from "@/components/molecules/ConfirmDialog";
-import { apiURL } from "@/constanst";
+import { apiURL } from "../../../constants";
 import {formatDate} from "@/utils/dateUtils";
 import StarRating from "@/components/molecules/StarRating";
 
@@ -44,15 +44,15 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
     const toast = useToast();
     const accessToken = localStorage.getItem("accessToken");
 
-    const handlePostReply = async () => {
+    const handlePostReply = async (comment) => {
         try {
             setIsReplying(true);
             if (watch("reply")?.length > 0) {
                 const response = await axios.post(
-                    `${apiURL}/products/comments`,
+                    `${apiURL}/api/comment`,
                     {
                         content: watch("reply") || "",
-                        parentComment:comment.id || null,
+                        parentCommentId:comment.id || null,
                         productId: productDetail.id,
                     },
                     {
@@ -61,7 +61,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                         },
                     }
                 );
-                if (response?.data?.success) {
+                if (response?.data?.status === 201) {
                     setIsTurningOnReply(false);
                     onReplyingSuccess?.();
                     toast?.sendToast("success", "Trả lời bình luận thành công");
@@ -252,7 +252,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                             })}
                             control={control}
                             label="Bình luận của bạn"
-                            onPostComment={handleSubmit(handlePostReply)}
+                            onPostComment={handleSubmit(() => handlePostReply(comment))}
                             isPosting={isReplying}
                             isClosable
                             onClose={() => setIsTurningOnReply(false)}

@@ -77,6 +77,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentMapper.toComment(commentRequest);
         comment.setUser(user);
         comment.setProduct(product);
+        comment.setParentComment(commentRequest.getParentCommentId() == null ? null : commentRepository.findById(Long.valueOf(commentRequest.getParentCommentId()))
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND)));
         // Sử dụng MapStruct để chuyển đổi Comment sang CommentResponse
         return commentMapper.toCommentOrderResponse(commentRepository.save(comment));
     }

@@ -16,42 +16,22 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
-    CircularProgress
+    CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import MainLayout from '../../components/SIdeBar';
+import MainLayout from "../../components/SIdeBar";
 import SockJS from "sockjs-client";
-import { Client, StompSubscription } from "@stomp/stompjs";
-
-interface OrderItem {
-    id: number;
-    name: string;
-    image: string;
-    quantity: number;
-    totalPrice: string;
-    product: Product;
-    currentVariant: any;
-}
+import { Client } from "@stomp/stompjs";
 
 interface Order {
     id: number;
     totalPrice: number;
     totalItem: number;
     createdBy: string;
-    status: string;
-    payment: Payment;
-    orderItems: OrderItem[];
-    estatusOrder: string;  // Trạng thái hiện tại của đơn hàng
     createdAt: string;
-}
-
-interface Product {
-    imagePath: string;
-}
-
-interface Payment {
-    nameMethod: string;
+    paymentMethod: string;
+    estatusOrder: string;
     epaymentStatus: string;
 }
 
@@ -65,24 +45,26 @@ const OrderManagement = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const accessToken = localStorage.getItem('accessToken');
-                const response = await fetch("http://localhost:8080/api/admin/get-all-order-of-user", {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
+                const accessToken = localStorage.getItem("accessToken");
+                const response = await fetch(
+                    "http://localhost:8080/api/admin/get-all-order-of-user",
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
 
+                const data = await response.json();
                 setOrders(data.data);
 
-
-                /////
+                // Thiết lập kết nối WebSocket
                 if (!stompClientRef.current) {
                     const socket = new SockJS("http://localhost:8080/ws");
                     const stompClient = new Client({
@@ -96,7 +78,26 @@ const OrderManagement = () => {
                         // Đăng ký lắng nghe kênh /topic/admin
                         stompClient.subscribe("/topic/admin", (message) => {
                             if (message.body) {
-                                alert(message.body);
+
+                                const updatedOrder = JSON.parse(message.body);
+
+                                setOrders((prevOrders) => {
+                                    const existingOrder = prevOrders.find(
+                                        (order) => order.id === updatedOrder.id
+                                    );
+
+                                    if (existingOrder) {
+                                        // Cập nhật đơn hàng đã tồn tại
+                                        return prevOrders.map((order) =>
+                                            order.id === updatedOrder.id
+                                                ? { ...order, ...updatedOrder }
+                                                : order
+                                        );
+                                    } else {
+                                        // Thêm đơn hàng mới
+                                        return [...prevOrders, updatedOrder];
+                                    }
+                                });
                             }
                         });
                     };
@@ -104,8 +105,6 @@ const OrderManagement = () => {
                     stompClient.activate();
                     stompClientRef.current = stompClient;
                 }
-
-
             } catch (err: any) {
                 setError(err.message || "Failed to fetch orders");
             } finally {
@@ -114,25 +113,29 @@ const OrderManagement = () => {
         };
 
         fetchOrders();
+
         // Cleanup khi component bị unmount
         return () => {
             if (stompClientRef.current) {
-                stompClientRef.current.deactivate(); // Hủy kết nối WebSocket khi component unmount
+                stompClientRef.current.deactivate();
             }
         };
     }, []);
 
     const handleStatusChange = async (orderId: number, newStatus: string) => {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem("accessToken");
         try {
-            const response = await fetch(`http://localhost:8080/api/admin/update-order-status/${orderId}`, {
-                method: 'PATCH',
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: newStatus }),
-            });
+            const response = await fetch(
+                `http://localhost:8080/api/admin/update-order-status/${orderId}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ status: newStatus }),
+                }
+            );
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -207,17 +210,21 @@ const OrderManagement = () => {
                                                     borderRadius: "4px",
                                                 }}
                                             >
-                                                {order.payment.epaymentStatus}
+                                                {order.epaymentStatus}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>{order.totalPrice}</TableCell>
-                                        <TableCell>{order.payment.nameMethod}</TableCell>
+                                        <TableCell>{order.paymentMethod}</TableCell>
                                         <TableCell>
                                             {/* Hiển thị trạng thái hiện tại trong dropdown */}
-                                            <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                                            <FormControl
+                                                variant="outlined"
+                                                size="small"
+                                                sx={{ minWidth: 120 }}
+                                            >
                                                 <InputLabel>Status</InputLabel>
                                                 <Select
-                                                    value={order.estatusOrder} // Trạng thái hiện tại
+                                                    value={order.estatusOrder}
                                                     onChange={(e) =>
                                                         handleStatusChange(order.id, e.target.value as string)
                                                     }

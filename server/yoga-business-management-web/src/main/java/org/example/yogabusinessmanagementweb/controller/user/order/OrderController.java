@@ -52,14 +52,13 @@ public class OrderController {
 //        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
 //        System.out.println("Products: " + orderRequest.getProducts());
 //        System.out.println("Total Price: " + orderRequest.getTotalPrice());
-//        Order order =  orderService.createOrder(request,orderRequest);
+        OrderResponse order =  orderService.createOrder(request,orderRequest);
 
 //        Order order  = new Order();
 //        webSocketService.sendOrderToAdmins(order);
 //        OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
-        Order order = new Order();
         messagingTemplate.convertAndSend("/topic/admin", order);
-        return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
+        return new ApiResponse<>(HttpStatus.OK.value(), "create order success",order);
     }
 
 

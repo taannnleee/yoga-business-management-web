@@ -1,14 +1,11 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
-import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "Payment")
@@ -24,4 +21,5 @@ public class Payment extends AbstractEntity<Long> implements Serializable {
 
     @Enumerated(EnumType.STRING)
     EPaymentStatus ePaymentStatus;
+
 }

@@ -11,10 +11,10 @@ import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import java.util.List;
 
 public interface OrderService {
-    OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest);
+    OrderResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest);
 
     OrderCommentResponse updateCommentInOrderItem(Long orderItemId, Long commentId);
-    List<Order> showOrderOfUser(HttpServletRequest request);
+    List<OrderResponse> showOrderOfUser(HttpServletRequest request);
 
     Order updateOrderStatus(Long orderId, String status);
 

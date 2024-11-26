@@ -6,10 +6,12 @@ import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderItemMapper;
+import org.example.yogabusinessmanagementweb.common.mapper.OrderMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.orderItem.OrderItemResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
@@ -41,8 +43,9 @@ public class OrderServiceImpl implements OrderService {
     OrderItemRepository orderItemRepository;
     CommentService commentService;
     OrderItemMapper orderItemMapper;
+    OrderMapper orderMapper;
     @Override
-    public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
+    public OrderResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
 
         User user = jwtUtil.getUserFromRequest(request);
 
@@ -99,15 +102,22 @@ public class OrderServiceImpl implements OrderService {
         }
         cartRepository.save(cart);
 
-        OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
-        return orderCreationResponse;
+        OrderResponse orderResponse =  orderMapper.toOrderResponse(order);
+        orderResponse.setEPaymentStatus(payment.getEPaymentStatus());
+        return orderResponse;
     }
 
 
     @Override
-    public List<Order> showOrderOfUser(HttpServletRequest request) {
+    public List<OrderResponse> showOrderOfUser(HttpServletRequest request) {
+        List<OrderResponse> orderResponseList = new ArrayList<>();
         List<Order> list = orderRepository.findAll();
-        return list;
+        for (Order order : list) {
+            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
     }
 
     @Override

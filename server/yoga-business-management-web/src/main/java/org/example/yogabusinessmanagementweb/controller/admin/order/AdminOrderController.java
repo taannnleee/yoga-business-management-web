@@ -27,7 +27,7 @@ public class AdminOrderController {
 
     @GetMapping("/get-all-order-of-user")
     public ApiResponse<?> getAllOrder(HttpServletRequest request) {
-        List<Order> orderResponse = orderService.showOrderOfUser(request);
+        List<OrderResponse> orderResponse = orderService.showOrderOfUser(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
     }
     @PatchMapping("/update-order-status/{orderId}")

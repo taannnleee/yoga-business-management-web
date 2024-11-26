@@ -25,6 +25,7 @@ import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.service.EmailService;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class OrderController {
     CartService cartService;
     OrderService orderService;
     WebSocketService webSocketService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/create-order")
     public ApiResponse<?> createOrder(HttpServletRequest request,@RequestBody OrderCreationRequest orderRequest) {
@@ -50,11 +52,13 @@ public class OrderController {
 //        System.out.println("Payment Method: " + orderRequest.getPaymentMethod());
 //        System.out.println("Products: " + orderRequest.getProducts());
 //        System.out.println("Total Price: " + orderRequest.getTotalPrice());
-        OrderCreationResponse orderCreationResponse =  orderService.createOrder(request,orderRequest);
+        OrderResponse order =  orderService.createOrder(request,orderRequest);
 
 //        Order order  = new Order();
 //        webSocketService.sendOrderToAdmins(order);
-        return new ApiResponse<>(HttpStatus.OK.value(), "create order success");
+//        OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
+        messagingTemplate.convertAndSend("/topic/admin", order);
+        return new ApiResponse<>(HttpStatus.OK.value(), "create order success",order);
     }
 
 

@@ -9,6 +9,8 @@ import { useAppSelector } from './useRedux';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { apiURL } from '../config/constanst';
+import SockJS from "sockjs-client";
+import { Client, StompSubscription } from "@stomp/stompjs";
 
 export const useAuth = () => {
   const [loginWithGoogle] = useSignInWithGoogle(auth);
@@ -55,6 +57,35 @@ export const useAuth = () => {
 
         // dispatch(setUser(response?.data?.data as any));
         // dispatch(setAccessToken(response?.data?.data?.accessToken));
+        // Khởi tạo WebSocket sau khi đăng nhập thành công
+        const socket = new SockJS("http://localhost:8080/ws");
+        const stompClient = new Client({
+          webSocketFactory: () => socket,
+          debug: (str: string) => console.log(str),
+        });
+
+        stompClient.onConnect = () => {
+          console.log("WebSocket Connected");
+
+          // Đăng ký lắng nghe kênh /topic/admin
+          stompClient.subscribe("/topic/admin", (message) => {
+            if (message.body) {
+              alert(message.body); // Hiển thị thông báo
+            }
+          });
+        };
+
+        stompClient.activate();
+
+        // localStorage.setItem('websocket', JSON.stringify(stompClient));
+
+        // Cleanup khi component bị unmount
+        // return () => {
+        //   stompClient.deactivate();
+        // };
+
+        // Lưu trữ stompClient nếu cần sử dụng sau
+        // window.stompClient = stompClient;
       } else {
         toast.error('Phone number or password in incorrect', {
           position: 'top-right',

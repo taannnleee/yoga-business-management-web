@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     CommentService commentService;
     OrderItemMapper orderItemMapper;
     @Override
-    public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
+    public Order createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
 
         User user = jwtUtil.getUserFromRequest(request);
 
@@ -99,8 +99,7 @@ public class OrderServiceImpl implements OrderService {
         }
         cartRepository.save(cart);
 
-        OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
-        return orderCreationResponse;
+        return order;
     }
 
 

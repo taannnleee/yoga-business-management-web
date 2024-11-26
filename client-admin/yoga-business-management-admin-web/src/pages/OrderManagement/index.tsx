@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     Box,
     Typography,
@@ -21,6 +21,8 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MainLayout from '../../components/SIdeBar';
+import SockJS from "sockjs-client";
+import { Client, StompSubscription } from "@stomp/stompjs";
 
 interface OrderItem {
     id: number;
@@ -57,6 +59,7 @@ const OrderManagement = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const stompClientRef = useRef<Client | null>(null);
 
     // Gọi API để lấy danh sách đơn hàng
     useEffect(() => {
@@ -77,6 +80,32 @@ const OrderManagement = () => {
                 const data = await response.json();
 
                 setOrders(data.data);
+
+
+                /////
+                if (!stompClientRef.current) {
+                    const socket = new SockJS("http://localhost:8080/ws");
+                    const stompClient = new Client({
+                        webSocketFactory: () => socket,
+                        debug: (str: string) => console.log(str),
+                    });
+
+                    stompClient.onConnect = () => {
+                        console.log("WebSocket Connected");
+
+                        // Đăng ký lắng nghe kênh /topic/admin
+                        stompClient.subscribe("/topic/admin", (message) => {
+                            if (message.body) {
+                                alert(message.body);
+                            }
+                        });
+                    };
+
+                    stompClient.activate();
+                    stompClientRef.current = stompClient;
+                }
+
+
             } catch (err: any) {
                 setError(err.message || "Failed to fetch orders");
             } finally {
@@ -85,6 +114,12 @@ const OrderManagement = () => {
         };
 
         fetchOrders();
+        // Cleanup khi component bị unmount
+        return () => {
+            if (stompClientRef.current) {
+                stompClientRef.current.deactivate(); // Hủy kết nối WebSocket khi component unmount
+            }
+        };
     }, []);
 
     const handleStatusChange = async (orderId: number, newStatus: string) => {

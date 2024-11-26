@@ -20,6 +20,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarRating from "@/components/molecules/StarRating";
 import { useToast } from "@/hooks/useToast";
+import {useRouter} from "next/navigation";
 
 // Các interface dữ liệu
 interface OrderItem {
@@ -53,6 +54,7 @@ interface Payment {
 }
 
 const OrderPage: React.FC = () => {
+    const router = useRouter();
     const [spinner, setSpinner] = useState(false);
     const toast = useToast();
     const [selectedTab, setSelectedTab] = useState(0); // Trạng thái tab hiện tại
@@ -157,7 +159,7 @@ const OrderPage: React.FC = () => {
                 body: JSON.stringify({
                     content: review,
                     ratePoint: rating,
-                    productId: 2, // Cập nhật theo ID sản phẩm nếu cần
+                    productId: orderItem.product.id, // Cập nhật theo ID sản phẩm nếu cần
                     currentVariant: orderItem.currentVariant,
                 }),
             });
@@ -246,7 +248,7 @@ const OrderPage: React.FC = () => {
                                     <AccordionDetails>
                                         {order.orderItems.map((orderItem) => (
                                             <div key={orderItem.id}>
-                                                <Card sx={{ display: "flex", mb: 2 }}>
+                                                <Card sx={{ display: "flex", mb: 2 }} className={"hover:cursor-pointer"} onClick={() => router.push(`/product-detail/${orderItem.product.id}`)}>
                                                     <CardMedia
                                                         component="img"
                                                         sx={{ width: 120 }}

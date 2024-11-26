@@ -7,7 +7,7 @@ import CommentInput from "@/components/atom/CommentInput";
 import { Divider } from "@mui/material";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/hooks/useToast";
-import { apiURL } from "@/constanst";
+import { apiURL } from "@/constants";
 
 interface IProductCommentsProps {
     productDetail: any;
@@ -83,9 +83,8 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
                 }
 
                 const result = await response.json();
-                const { success } = result;
-
-                if (success) {
+                console.log("Post comment result:", result.status);
+                if (result?.status === 201) {
                     setValue("comment", "");
                     toast.sendToast("success", "Bình luận thành công");
                     getListComments(); // Refresh comments

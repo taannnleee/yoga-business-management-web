@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Builder
@@ -24,4 +25,5 @@ public class ApiResponse<T>  {
         this.status = status;
         this.message = message;
     }
+
 }

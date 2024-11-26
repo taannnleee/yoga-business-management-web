@@ -15,10 +15,14 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Wishlist  extends AbstractEntity<Long> implements Serializable {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 
-    @OneToMany()
-    @JoinColumn(name = "wish_list_id")
-    List<Product> lovedProducts;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    Product product;
 }

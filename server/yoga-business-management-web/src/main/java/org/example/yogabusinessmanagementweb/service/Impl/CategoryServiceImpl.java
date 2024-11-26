@@ -4,16 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
+import org.example.yogabusinessmanagementweb.common.mapper.CategoryMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.dto.request.category.CategoryCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse;
+import org.example.yogabusinessmanagementweb.dto.response.category.CategoryWithProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CategoryRepository;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -21,6 +24,8 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
+    CategoryMapper categoryMapper;
+
 
     @Override
     public CategoryResponse addCategory(CategoryCreationRequest categoryCreationRequest) {
@@ -49,5 +54,21 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByIdAndStatus(id, status)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
     }
+
+    @Override
+    public List<CategoryResponse> getAllCategory() {
+        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryResponse> list = Mappers.mapperEntityToDto (categoryList, CategoryResponse.class);
+        return list;
+    }
+
+    public List<CategoryWithProductResponse> getCategoriesWithProducts() {
+        List<Category> categories = categoryRepository.findAll();  // Or any method returning List<Category>
+        return categories.stream()
+                .map(categoryMapper::toCategoryWithProductResponse)  // Map to CategoryWithProductResponse
+                .collect(Collectors.toList());
+    }
+
+
 }
 

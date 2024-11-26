@@ -1,14 +1,16 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-
+import java.util.Map;
 @Entity
 @Table(name = "Product")
 @NoArgsConstructor
@@ -17,12 +19,9 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-
+@Convert(attributeName = "json", converter = JsonType.class)
 public class Product extends AbstractEntity<Long> implements Serializable {
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_detail_id")
-    ProductDetail productDetail;
     @Column(name = "image_url")
     String imagePath;
 
@@ -40,4 +39,15 @@ public class Product extends AbstractEntity<Long> implements Serializable {
 
     @Column(name = "average_rating")
     Double averageRating = (double) 0;
+
+    @Column(name = "code")
+    String code;
+    @Column(name = "brand")
+    String brand;
+    @Column(name = "description", columnDefinition = "TEXT")
+    String description;
+//    // Thuộc tính mới để lưu danh sách variants dưới dạng JSON
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "variants", columnDefinition = "json")
+    Map<String, Map<String, String>> variants;
 }

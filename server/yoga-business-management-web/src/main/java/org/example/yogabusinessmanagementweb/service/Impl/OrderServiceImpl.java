@@ -3,28 +3,27 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
+import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
+import org.example.yogabusinessmanagementweb.common.mapper.OrderItemMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
-import org.example.yogabusinessmanagementweb.dto.response.cart.CartItemResponse;
-import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
-import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
+import org.example.yogabusinessmanagementweb.dto.response.orderItem.OrderItemResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
-import org.example.yogabusinessmanagementweb.repositories.AddressRepository;
 import org.example.yogabusinessmanagementweb.repositories.CartItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.CartRepository;
+import org.example.yogabusinessmanagementweb.repositories.OrderItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderRepository;
-import org.example.yogabusinessmanagementweb.service.AddressService;
-import org.example.yogabusinessmanagementweb.service.OrderService;
-import org.example.yogabusinessmanagementweb.service.ProductService;
-import org.example.yogabusinessmanagementweb.service.UserService;
+import org.example.yogabusinessmanagementweb.service.*;
 import org.example.yogabusinessmanagementweb.common.entities.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +38,9 @@ public class OrderServiceImpl implements OrderService {
     CartItemRepository cartItemRepository;
     OrderRepository orderRepository;
     AddressService addressService;
-
+    OrderItemRepository orderItemRepository;
+    CommentService commentService;
+    OrderItemMapper orderItemMapper;
     @Override
     public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
 
@@ -50,14 +51,13 @@ public class OrderServiceImpl implements OrderService {
         if (!cartResponse.isPresent() ) {
             throw new AppException(ErrorCode.CART_NOT_FOUND);
         }
-        if(cartResponse.get().getCartItems().isEmpty()){
-            throw new AppException(ErrorCode.CART_ITEM_EMPTY);
-        }
+
         Cart cart = cartResponse.get();
 
         // Tạo đối tượng Order
         Order order = new Order();
         order.setUser(user);
+        order.setEStatusOrder(EStatusOrder.PROCESSING);
         order.setOrderItems(new ArrayList<>());
 
         // Chuyển đổi CartItem sang OrderItem
@@ -65,6 +65,8 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(cartItem.getProduct());
             orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setCurrentVariant(cartItem.getCurrentVariant());
+            orderItem.setTotalPrice(cartItem.getTotalPrice());
 
             // Thêm OrderItem vào danh sách Order
             order.getOrderItems().add(orderItem);
@@ -79,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
         Payment payment = new Payment();
         payment.setNameMethod(orderRequest.getPaymentMethod());
+        payment.setEPaymentStatus(EPaymentStatus.PAID);
         order.setPayment(payment);
         // Lưu Order và OrderItem vào cơ sở dữ liệu
         orderRepository.save(order);
@@ -87,36 +90,65 @@ public class OrderServiceImpl implements OrderService {
         cart.setTotalItem(0);
         cart.setTotalPrice(BigDecimal.valueOf(0));
 
+//        cartItemRepository.deleteAll(cart.getCartItems());  // Xóa tất cả CartItem trong giỏ hàng
 
-        // Xóa các item trong cart
-        cart.getCartItems().clear();
-
-        //lưu cart và cart item sẽ tự lưu
+        for (Iterator<CartItem> iterator = cart.getCartItems().iterator(); iterator.hasNext();) {
+            CartItem cartItem = iterator.next();
+            iterator.remove();  // Xóa phần tử hiện tại
+            cartItemRepository.delete(cartItem);
+        }
         cartRepository.save(cart);
 
         OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
         return orderCreationResponse;
     }
 
+
     @Override
-    public OrderResponse showOrder(HttpServletRequest request) {
-        User user = jwtUtil.getUserFromRequest(request);
-        Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
-
-
-        // Nếu không tìm thấy giỏ hàng, có thể trả về null hoặc một thông điệp lỗi tùy theo yêu cầu
-        if (cartOptional.isEmpty()) {
-            throw new AppException(ErrorCode.CART_NOT_FOUND);
-        }
-
-        Cart cart = cartOptional.get();
-
-        List<CartItemResponse> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemResponse.class);
-
-        CartResponse response  = Mappers.convertToDto(cart, CartResponse.class);
-        response.setCartItem(itemDTOS);
-//        return response;
-        OrderResponse cartResponse = new OrderResponse();
-        return  cartResponse;
+    public List<Order> showOrderOfUser(HttpServletRequest request) {
+        List<Order> list = orderRepository.findAll();
+        return list;
     }
+
+    @Override
+    public Order updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        EStatusOrder statusEnum = EStatusOrder.valueOf(status);
+        // Cập nhật trạng thái đơn hàng
+        order.setEStatusOrder(statusEnum);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getAllOrderByStatus(HttpServletRequest request, String status) {
+//        EStatusOrder statusEnum = EStatusOrder.valueOf(status);
+        User user = jwtUtil.getUserFromRequest(request);
+
+        if("ALL".equals(status)){
+            List<Order> list = orderRepository.findAllByUser(user);
+            return list;
+        }
+        else {
+            List<Order> listOrder = orderRepository.findAllByStatusOrderAndUserId(status,user.getId());
+            return listOrder;
+        }
+    }
+
+    public OrderItem findById(String id) {
+        OrderItem orderItem = orderItemRepository.findById(Long.valueOf(id)).orElseThrow(
+                () -> new AppException(ErrorCode.WISHLIST_NOT_FOUND)
+        );
+        return orderItem;
+    }
+    public OrderCommentResponse updateCommentInOrderItem(Long orderItemId, Long commentId) {
+        // Fetch OrderItem by orderItemId
+        OrderItem orderItem = findById(String.valueOf(orderItemId));
+        Comment comment = commentService.findById(String.valueOf(commentId));
+        // Update the OrderItem with the new Comment
+        orderItem.setComment(comment);
+        // Save the updated OrderItem
+        return orderItemMapper.toOrderCommentResponse(orderItemRepository.save(orderItem));
+    }
+
 }

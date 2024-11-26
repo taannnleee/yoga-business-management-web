@@ -8,14 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ProductCard from "@/components/ProductCard";
-import TextInputSearch from "@/components/TextInputSearch";
+import ProductCard from "@/components/organisms/ProductCard";
+import TextInputSearch from "@/components/molecules/TextInputSearch";
 import { icons, images } from "@/constants";
-import { getProducts } from "@/api/get-product";
+import { getProducts } from "@/api/get-all-product";
 import { getJwt } from "@/jwt/get-jwt";
 import { router } from "expo-router";
 import { ProductProps } from "@/types/type";
-import { SliderBestProduct } from "@/components/Slider/SliderBestProduct";
+import { SliderBestProduct } from "@/components/organisms/SliderBestProduct";
+import Icon from "react-native-vector-icons/AntDesign";
 
 const Home = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
@@ -80,7 +81,7 @@ const Home = () => {
             onPress={() => {
               router.push(
                 // @ts-ignore
-                `/(root)/(product)/${item.id}?nameProduct=${item.title}`,
+                `/(root)/(product)/${item.id}`,
               );
             }}
           >
@@ -112,7 +113,28 @@ const Home = () => {
           <>
             <View className="flex flex-row items-center justify-between my-5">
               <Text className="text-2xl font-JakartaSemiBold">Chào bạn 👋</Text>
+
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(cart)/page-cart")}
+              >
+                <Icon name="shoppingcart" size={25} color="black" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() =>
+                  router.push("/(root)/(notification)/page-notification")
+                }
+              >
+                <Icon name="notification" size={25} color="blue" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/(wishlist)/page-wishlist")}
+              >
+                <Icon name="heart" size={25} color="red" />
+              </TouchableOpacity>
             </View>
+
             <TextInputSearch
               keyword={keyword}
               setKeyword={setKeyword}

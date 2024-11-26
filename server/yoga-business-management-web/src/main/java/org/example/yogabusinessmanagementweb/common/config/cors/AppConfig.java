@@ -53,12 +53,13 @@ public class AppConfig {
                       .roles(ERole.ADMIN.name())
                       .status(true)
                       .build();
-              userRepository.   save(user);
+              userRepository.save(user);
           }
       };
     }
 
-    private String[] WHITE_LIST = {"/api/auth/**","/test"};
+    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test","/ws/**"};
+
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};
 
     @Bean
@@ -86,7 +87,8 @@ public class AppConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated())
+                        .requestMatchers(WHITE_LIST).permitAll()
+                        .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler(accessDeniedHandler))
@@ -99,7 +101,7 @@ public class AppConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return webSecurity ->
                 webSecurity.ignoring()
-                        .requestMatchers("/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**");
+                        .requestMatchers("/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**","/ws/**");
     }
 
     @Bean

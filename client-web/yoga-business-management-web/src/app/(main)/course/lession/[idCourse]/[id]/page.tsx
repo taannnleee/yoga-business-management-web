@@ -7,7 +7,7 @@ import Image from "next/image";
 import Button from "@/components/atom/Button";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import LectureItem from "@/components/organisms/LessionItem"; // Đổi từ LessionItem thành LectureItem
-
+import { API_URL } from "@/config/url";
 interface Lecture {
     id: number;
     title: string;
@@ -71,7 +71,7 @@ const LessionPage: React.FC<any> = () => {
             const token = localStorage.getItem("accessToken");
             // Thay thế URL này với API endpoint của bạn
             const response = await fetch(
-                `http://localhost:8080/api/course/get-course/${courseId}`,
+                `${API_URL}/api/course/get-course/${courseId}`,
 
                 {
                     method: "GET",
@@ -98,7 +98,7 @@ const LessionPage: React.FC<any> = () => {
         try {
             const token = localStorage.getItem("accessToken");
             const response = await fetch(
-                `http://localhost:8080/api/lecture/get-lecture/${lectureId}`,
+                `${API_URL}/api/lecture/get-lecture/${lectureId}`,
                 {
                     method: "GET",
                     headers: {
@@ -146,7 +146,7 @@ const LessionPage: React.FC<any> = () => {
                                 <span className="ml-5 text-sm text-gray-500">{lecture.duration}</span>
                             </div>
                             <div className="flex flex-row items-center space-x-3 cursor-pointer"
-                                onClick={() => router.push('http://localhost:3000/course/teacher/1')}
+                                onClick={() => router.push(`/course/teacher/${course?.teacher.id}`)}
                             >
                                 {/* Avatar */}
                                 <Image
@@ -169,13 +169,19 @@ const LessionPage: React.FC<any> = () => {
 
                 {/* Right Side - Buttons */}
                 <div className="flex flex-col space-y-2">
-                    <Button variant="secondary" className="w-[182px] h-[44px] bg-[#0e3521] text-white rounded-lg hover:bg-[#0b291a] text-sm">
+                    <Button variant="secondary"
+                    // className="w-[182px] h-[44px] bg-[#0e3521] text-white rounded-lg hover:bg-[#0b291a] text-sm"
+                    >
                         Đánh dấu khóa học
                     </Button>
-                    <Button variant="secondary" className="w-[182px] h-[44px] bg-[#a5a5a5] text-white rounded-lg hover:bg-[#8b8b8b] text-sm">
+                    <Button variant="secondary"
+                    // className="w-[182px] h-[44px] bg-[#a5a5a5] text-white rounded-lg hover:bg-[#8b8b8b] text-sm"
+                    >
                         Thêm vào yêu thích
                     </Button>
-                    <Button variant="secondary" className="w-[182px] h-[44px] bg-[#f05dab] text-white rounded-lg hover:bg-[#cc498c] text-sm">
+                    <Button variant="secondary"
+                    // className="w-[182px] h-[44px] bg-[#f05dab] text-white rounded-lg hover:bg-[#cc498c] text-sm"
+                    >
                         Mở khóa Premium
                     </Button>
                 </div>
@@ -215,7 +221,7 @@ const LessionPage: React.FC<any> = () => {
                             {/* Right Side - Next Lesson Button */}
                             <Button
                                 variant="secondary"
-                                className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
+                            // className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
                             >
                                 Bài tiếp theo
                             </Button>
@@ -266,7 +272,8 @@ const LessionPage: React.FC<any> = () => {
                     {/* Right Side - Next Lesson Button */}
                     <Button variant="secondary"
                         onClick={() => router.push(`/course/lession/${parseInt(lectureId as string) + 1}`)}
-                        className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm">
+                    // className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
+                    >
                         Bài tiếp theo
                     </Button>
                 </div>

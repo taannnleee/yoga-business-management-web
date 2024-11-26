@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.Courses;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
 import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
@@ -49,15 +50,18 @@ public class CourseController {
         Courses courses = coursesService.getCourse(id);
         return new ApiResponse<>(HttpStatus.OK.value(), "get courses by id  successfully",courses);
     }
-//    @GetMapping("/get-course/{id}")
-//    public ResponseEntity<?> getCourse(@PathVariable String id) {
-//        Courses course = coursesService.getCourse(id);
-//
-//        if (course != null) {
-//            return ResponseEntity.status(HttpStatus.OK).body(course);  // Trả về đối tượng course với mã trạng thái 200 OK
-//        } else {
-//            // Trả về thông báo lỗi và mã trạng thái 404
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
-//        }
-//    }
+
+    @GetMapping("/all-teacher-courses/{id}")
+    public ApiResponse<?> allTeacherCourses(@PathVariable String id) {
+        List<CourseResponse> allTeacherCourses = coursesService.allTeacherCourses(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get all teacher courses successfully",allTeacherCourses);
+    }
+
+    // get các khóa học nổi bậc. Get 8 khóa học
+    @GetMapping("/get-outstanding-courses")
+    public ApiResponse<?> getOutstandingCourses() {
+        List<CourseResponse> list = coursesService.getOutstandingCourses();
+        return new ApiResponse<>(HttpStatus.OK.value(), "get courses outstanding successfully",list);
+    }
+
 }

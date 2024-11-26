@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductDetailResponse;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Data
 @RequiredArgsConstructor
@@ -20,6 +21,10 @@ public class ProductCreationRequest {
     @NotNull(message = "Price in Product is required")
     BigDecimal price;
     Double averageRating = 0.0;
-    @NotNull(message = "Product Detail is required")
-    ProductDetailCreationRequest productDetail;
+
+    String code;
+    String brand;
+    String description;
+    Map<String, Map<String, String>> variants;
+
 }

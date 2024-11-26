@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.example.yogabusinessmanagementweb.common.entities.Cart;
 import org.example.yogabusinessmanagementweb.dto.request.user.LoginRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.ResetPasswordRequest;
@@ -69,6 +70,39 @@ public class AuthencationService {
                         .accessToken(accessToken)
                         .refreshToken(refresh_token)
                         .build());
+        user.setToken(savedToken);
+        userRepository.save(user);
+        return TokenRespone.builder()
+                .accesstoken(user.getToken().getAccessToken())
+                .refreshtoken(user.getToken().getRefreshToken())
+                .userid(user.getId())
+                .build();
+    }
+
+    public TokenRespone authenticationAdmin(LoginRequest loginRequest){
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        }
+        catch (BadCredentialsException e) {
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
+
+        if(!(ERole.ADMIN.name().equals(user.getRoles()))){
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+
+        String accessToken =  jwtService.generateToken(user);
+        String refresh_token =  jwtService.generateRefreshToken(user);
+
+        //save token vào db
+        Token savedToken = tokenService.save(Token.builder()
+                .username(user.getUsername())
+                .accessToken(accessToken)
+                .refreshToken(refresh_token)
+                .build());
         user.setToken(savedToken);
         userRepository.save(user);
         return TokenRespone.builder()

@@ -26,12 +26,14 @@ public class SubCategory extends AbstractEntity<Long> implements Serializable  {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    Category Category;
+    Category category;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     EStatus status = EStatus.ACTIVE;
-
+    @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Product> products;
 }
 
 

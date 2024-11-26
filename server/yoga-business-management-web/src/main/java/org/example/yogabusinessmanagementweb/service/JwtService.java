@@ -10,4 +10,5 @@ public interface JwtService {
     String generateToken(User user);
     String extractUsername(String token, ETokenType tokenType);
     Boolean isValid(String token,ETokenType tokenType, UserDetails userDetails);
+    void revokeToken(String token, ETokenType tokenType);
 }

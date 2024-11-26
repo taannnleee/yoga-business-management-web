@@ -1,6 +1,8 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
+import { Select, MenuItem } from "@mui/material";
+import { API_URL } from "@/config/url";
 import {
     Box,
     Typography,
@@ -15,22 +17,24 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    CircularProgress,  // Import CircularProgress
+    CircularProgress, // Import CircularProgress
 } from "@mui/material";
 import AddressSelection from "@/app/(main)/checkout/AddressSelection";
-import {useRouter} from "next/navigation"; // Đảm bảo AddressSelection chấp nhận chỉ id
+import {useRouter, useSearchParams} from "next/navigation";
 
 interface IProduct {
     id: string;
     title: string;
     quantity: number;
     price: number;
+    currentVariant: any;
 }
 
 const Checkout: React.FC = () => {
+    const searchParams = useSearchParams();
     const router = useRouter();
-    const [addressId, setAddressId] = useState<string>("");  // Lưu id địa chỉ
-    const [paymentMethod, setPaymentMethod] = useState("creditCard");
+    const [addressId, setAddressId] = useState<string>(""); // Lưu id địa chỉ
+    const [paymentMethod, setPaymentMethod] = useState("cash");
     const [products, setProducts] = useState<IProduct[]>([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -39,25 +43,105 @@ const Checkout: React.FC = () => {
     const [orderLoading, setOrderLoading] = useState(false); // Trạng thái loading khi đặt hàng
     const toast = useToast();
 
-    // Handle payment method change
     const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPaymentMethod(e.target.value);
     };
 
-    // Handle order submission
+    const fetchCart = async () => {
+        const token = localStorage.getItem("accessToken");
+        try {
+            const response = await fetch(`${API_URL}/api/cart/show-cart`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch cart");
+
+            const data = await response.json();
+            setProducts(data.data.cartItem.map((item: any) => ({
+                id: item.product.id,
+                title: item.product.title,
+                quantity: item.quantity,
+                price: item.product.price,
+                currentVariant: item.currentVariant,
+            })));
+            setTotalPrice(data.data.totalPrice);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handlePaymentVNPay = async () => {
+        const token = localStorage.getItem("accessToken");
+        setOrderLoading(true);
+        // Prepare the order data to send with the payment request
+        const orderData = {
+            addressId,
+            paymentMethod,
+            // products: products.map((product) => ({
+            //     id: product.id,
+            //     quantity: product.quantity,
+            //     variant: product.currentVariant,
+            // })),
+        };
+
+        try {
+            // Send the request to initiate the VNPay payment and include the order data
+            const response = await fetch(`${API_URL}/api/payment/vn-pay?amount=${totalPrice}&bankCode=NCB`, {
+                method: "POST",  // Change to POST to send data in the body
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json", // Ensure the request body is JSON
+                },
+                body: JSON.stringify(orderData),  // Pass the order data in the request body
+            });
+
+            if (!response.ok) throw new Error("Failed to initiate VNPay payment");
+
+            const data = await response.json();
+            const paymentUrl = data.data.paymentUrl;
+            setOrderLoading(false);
+            // Redirect to the payment URL
+            router.push(paymentUrl);
+        } catch (error: any) {
+            console.error("Error initiating VNPay payment:", error.message);
+            setError(error.message);
+            toast.sendToast("Error", "Error initiating VNPay payment");
+        }
+    };
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (paymentMethod === "vnpay") {
+            await handlePaymentVNPay();
+        } else {
+            await createOrder();
+        }
+    };
+
+    const createOrder = async () => {
         const token = localStorage.getItem("accessToken");
-        setOrderLoading(true); // Bắt đầu loading khi đặt hàng
+        setOrderLoading(true);
         try {
-            const response = await fetch("http://localhost:8080/api/order/create-order", {
+            const response = await fetch(`${API_URL}/api/order/create-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ addressId, paymentMethod }),
+                body: JSON.stringify({
+                    addressId,
+                    paymentMethod,
+                    products: products.map((product) => ({
+                        id: product.id,
+                        quantity: product.quantity,
+                        variant: product.currentVariant,
+                    })),
+                }),
             });
 
             if (!response.ok) throw new Error("Failed to create order");
@@ -71,33 +155,7 @@ const Checkout: React.FC = () => {
             setError(error.message);
             toast.sendToast("Error", "Error creating order");
         } finally {
-            setOrderLoading(false); // Dừng loading khi hoàn thành
-        }
-    };
-
-    // Fetch cart items
-    const fetchCart = async () => {
-        const token = localStorage.getItem("accessToken");
-        try {
-            const response = await fetch("http://localhost:8080/api/cart/show-cart", {
-                method: "GET",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            });
-
-            if (!response.ok) throw new Error("Failed to fetch cart");
-
-            const data = await response.json();
-            setProducts(data.data.cartItem.map((item: any) => ({
-                id: item.product.id,
-                title: item.product.title,
-                quantity: item.quantity,
-                price: item.product.price,
-            })));
-            setTotalPrice(data.data.totalPrice);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
+            setOrderLoading(false);
         }
     };
 
@@ -105,7 +163,6 @@ const Checkout: React.FC = () => {
         fetchCart();
     }, []);
 
-    // Handle order confirmation dialog open/close
     const handleOpenConfirmDialog = () => setOpenConfirmDialog(true);
     const handleCloseConfirmDialog = () => setOpenConfirmDialog(false);
 
@@ -121,15 +178,14 @@ const Checkout: React.FC = () => {
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8}>
-                    {/* AddressSelection nhận id và cập nhật addressId */}
                     <AddressSelection selectedAddressId={addressId} setSelectedAddressId={setAddressId} />
-
                     <Paper sx={{ padding: "20px", marginTop: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
                             Payment Method
                         </Typography>
                         <RadioGroup value={paymentMethod} onChange={handlePaymentChange}>
                             <FormControlLabel value="creditCard" control={<Radio />} label="Credit/Debit Card" />
+                            <FormControlLabel value="vnpay" control={<Radio />} label="VNPAY" />
                             <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
                             <FormControlLabel value="cash" control={<Radio />} label="Cash on Delivery (COD)" />
                         </RadioGroup>
@@ -150,7 +206,9 @@ const Checkout: React.FC = () => {
                             <>
                                 {products.map((product) => (
                                     <Box display="flex" justifyContent="space-between" key={product.id} sx={{ marginBottom: "10px" }}>
-                                        <Typography>{product.title} (x{product.quantity})</Typography>
+                                        <Typography>
+                                            {product.title} (x{product.quantity})
+                                        </Typography>
                                         <Typography>{(product.price * product.quantity).toLocaleString()} VND</Typography>
                                     </Box>
                                 ))}
@@ -167,13 +225,12 @@ const Checkout: React.FC = () => {
                             sx={{ marginTop: "20px" }}
                             onClick={handleOpenConfirmDialog}
                         >
-                            {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"} {/* Hiển thị spinner khi loading */}
+                            {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"}
                         </Button>
                     </Paper>
                 </Grid>
             </Grid>
 
-            {/* Confirmation Dialog */}
             <Dialog open={openConfirmDialog} onClose={handleCloseConfirmDialog}>
                 <DialogContent>
                     <DialogContentText>Are you sure you want to place this order?</DialogContentText>
@@ -183,7 +240,7 @@ const Checkout: React.FC = () => {
                         Huỷ
                     </Button>
                     <Button onClick={handleConfirmOrder} color="primary" autoFocus>
-                        {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"} {/* Hiển thị spinner khi loading */}
+                        {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"}
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -3,6 +3,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -27,8 +28,12 @@ public class Order extends AbstractEntity<Long> implements Serializable {
     @Column(name = "total_item")
     int totalItem;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_order")
+    EStatusOrder eStatusOrder;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
     @Column(name = "order_date")

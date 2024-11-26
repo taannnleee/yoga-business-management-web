@@ -11,9 +11,11 @@ import TeacherManagement from '../pages/TeacherManagement';
 import TopicManagement from '../pages/TopicManagement';
 import CourseManagement from '../pages/CourseManagement';
 import CourseDetailPage from '../pages/CourseDetail';
+import OrderManagement from '../pages/OrderManagement';
 
 export default function RootApp() {
-  const { accessToken } = useAppSelector((state: IRootState) => state.auth);
+  // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
+  const accessToken = localStorage.getItem("accessToken");
 
   return (
     <div>
@@ -42,20 +44,24 @@ export default function RootApp() {
         <LoginPage />
       </Route>
 
-      <Route path="/teacher-management">
+      <Route path="/course-management/teachers">
         <TeacherManagement />
       </Route>
 
-      <Route path="/topic-management">
+      <Route path="/course-management/topics">
         <TopicManagement />
       </Route>
 
-      <Route path="/course-management">
+      <Route path="/course-management/courses">
         <CourseManagement />
       </Route>
 
       <Route path="/course-detail/:id">
         <CourseDetailPage />
+      </Route>
+
+      <Route path="/order-management">
+        <OrderManagement />
       </Route>
     </div>
   );

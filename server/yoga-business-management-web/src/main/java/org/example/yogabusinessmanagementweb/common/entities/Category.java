@@ -30,5 +30,8 @@ public class Category extends AbstractEntity<Long> implements Serializable  {
 
     @Column(name = "category_name")
     String name;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<SubCategory> subCategories;
 }
 

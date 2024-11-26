@@ -15,4 +15,7 @@ public class CartResponse {
     int totalItem;
     BigDecimal totalPrice;
     List<CartItemResponse> cartItem;
+
+
+
 }

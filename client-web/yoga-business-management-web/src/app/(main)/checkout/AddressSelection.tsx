@@ -3,7 +3,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Button, Skeleton } from "@mui/material";
 import AddAddressModal from './AddAddressModal';
 import MyListAddressModal from "@/app/(main)/checkout/MyListAddressModal";
-
+import { API_URL } from "@/config/url";
 interface Address {
     id: string;
     fullName: string;
@@ -20,18 +20,18 @@ interface AddressSelectionProps {
     loading: boolean;
     setShippingInfo: React.Dispatch<React.SetStateAction<any>>;
     addNewAddress: (address: Address) => void;
-    selectedAddressId : string;
-    setSelectedAddressId : React.Dispatch<React.SetStateAction<string>>;
+    selectedAddressId: string;
+    setSelectedAddressId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const AddressSelection: React.FC<AddressSelectionProps> = ({
-                                                               addresses,
-                                                               loading,
-                                                               setShippingInfo,
-                                                               selectedAddressId,
-                                                                setSelectedAddressId,
-                                                               addNewAddress
-                                                           }) => {
+    addresses,
+    loading,
+    setShippingInfo,
+    selectedAddressId,
+    setSelectedAddressId,
+    addNewAddress
+}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isListModalOpen, setIsListModalOpen] = useState(false);
     const [shippingInfo, setShippingInfoState] = useState<any>(null);
@@ -75,7 +75,7 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                     return;
                 }
 
-                const response = await fetch("http://localhost:8080/api/user/get-user-address-default", {
+                const response = await fetch(`${API_URL}/api/user/get-user-address-default`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${accessToken}`, // Pass the token in the Authorization header

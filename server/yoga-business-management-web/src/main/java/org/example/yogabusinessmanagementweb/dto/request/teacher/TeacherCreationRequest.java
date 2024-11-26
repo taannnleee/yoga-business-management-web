@@ -12,6 +12,8 @@ public class TeacherCreationRequest {
 
     String introduction;
 
+    String description;
+
     String email;
 
     String phoneNumber;

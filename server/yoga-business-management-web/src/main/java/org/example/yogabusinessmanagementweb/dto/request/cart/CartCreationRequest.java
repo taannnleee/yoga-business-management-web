@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Map;
+
 @Data
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
@@ -14,5 +16,8 @@ public class CartCreationRequest {
 
     @NotNull(message = "Quantity id is required")
     int quantity;
+
+    Map<String, Map<String, String>>  currentVariant;
+
 
 }

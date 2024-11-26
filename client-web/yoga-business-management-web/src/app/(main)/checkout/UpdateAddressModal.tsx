@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
-
+import { API_URL } from "@/config/url";
 interface Address {
     id: string;
     fullName: string;
@@ -55,7 +55,7 @@ const UpdateAddressModal: React.FC<UpdateAddressModalProps> = ({
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/api/address/update/${formData.id}`, {
+            const response = await fetch(`${API_URL}/api/address/update/${formData.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

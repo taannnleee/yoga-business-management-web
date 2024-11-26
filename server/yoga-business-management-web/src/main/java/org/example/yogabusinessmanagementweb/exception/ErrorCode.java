@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error",HttpStatus.INTERNAL_SERVER_ERROR),
-    UNAUTHENTICATED(9000, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED(9000, "Authentication required. Please log in.", HttpStatus.UNAUTHORIZED),
 
     UNAUTHORIZED(9001, "You do not have permission to access this resource", HttpStatus.FORBIDDEN),
     MISSING_FIELD_REQUIRED(1002, "Missing required field",HttpStatus.BAD_REQUEST),
@@ -47,8 +47,17 @@ public enum ErrorCode {
     COURSE_NOT_FOUND(1030, "Course not found",HttpStatus.NOT_FOUND),
     SECTION_NOT_FOUND(1031, "section not found",HttpStatus.NOT_FOUND),
 
-    LECTURE_NOT_FOUND(1032, "lecture not found",HttpStatus.NOT_FOUND);
+    LECTURE_NOT_FOUND(1032, "lecture not found",HttpStatus.NOT_FOUND),
 
+    ORDER_NOT_FOUND(1032, "order not found",HttpStatus.NOT_FOUND),
+
+
+    CART_ITEM_NOT_FOUND(1033, "Cart item not found",HttpStatus.NOT_FOUND),
+
+    WISHLIST_NOT_FOUND(1034, "Wishlist not found",HttpStatus.NOT_FOUND),
+    PRODUCT_EXISTS_WISHLIST(1035, "The product already exists in the wishlist",HttpStatus.NOT_FOUND),
+    COMMENT_NOT_FOUND(1036, "Comment not found",HttpStatus.NOT_FOUND),
+    NOTIFICATION_NOT_FOUND(1037, "Comment not found",HttpStatus.NOT_FOUND);
     // MODULE ERROR
 
     // CLASS ERROR

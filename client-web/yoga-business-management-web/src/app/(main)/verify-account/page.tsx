@@ -7,8 +7,9 @@ import React from "react";
 import { useToast } from "@/hooks/useToast";
 import OTPInput from "@/components/atom/OtpInput";
 import { useRouter, useSearchParams } from "next/navigation";
+import { API_URL } from "@/config/url";
 
-interface ILoginPageProps {}
+interface ILoginPageProps { }
 
 const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     const { control, handleSubmit } = useForm();
@@ -24,7 +25,7 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
         try {
             setLoading(true);
             const response = await fetch(
-                `http://localhost:8080/api/auth/verifyOTP_register?OTP=${values.otp}&email=${email}`,
+                `${API_URL}/api/auth/verifyOTP_register?OTP=${values.otp}&email=${email}`,
                 {
                     method: "POST",
                     headers: {

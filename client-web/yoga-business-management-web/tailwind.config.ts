@@ -1,3 +1,4 @@
+import {nextui} from '@nextui-org/theme';
 /** @type {import('tailwindcss').Config} */
 
 const screens = {
@@ -38,6 +39,7 @@ module.exports = {
     "./src/components/templates/**/*.{js,ts,jsx,tsx}",
     "./src/layouts/**/*.{js,ts,jsx,tsx}",
     "./src/designs/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/components/(button|pagination|select|ripple|spinner|listbox|divider|popover|scroll-shadow).js"
   ],
   theme: {
     extend: {
@@ -45,5 +47,5 @@ module.exports = {
       colors: colors,
     },
   },
-  plugins: [],
+  plugins: [nextui()],
 };

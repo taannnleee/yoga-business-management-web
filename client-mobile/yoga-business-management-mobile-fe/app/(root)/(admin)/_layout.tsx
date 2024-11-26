@@ -22,7 +22,9 @@ const TabIcon = ({
     }`}
   >
     <View
-      className={`rounded-full w-12 h-12 items-center justify-center ${focused ? "bg-general-400" : ""}`}
+      className={`rounded-full w-12 h-12 items-center justify-center ${
+        focused ? "bg-general-400" : ""
+      }`}
     >
       <Image
         source={source}
@@ -60,12 +62,15 @@ const TabsLayout = () => {
     overflow: "hidden",
     marginHorizontal: 20,
     marginBottom: 20,
-    height: keyboardVisible ? 0 : 58,
+    height: keyboardVisible ? 0 : 58, // Hide tab bar when keyboard is visible
     display: "flex",
-    justifyContent: "",
+    justifyContent: "center",
     alignItems: "center",
-    flexDirection: "colum",
+    flexDirection: "row",
     position: "absolute",
+    bottom: 0, // Ensure the tab bar is at the bottom
+    left: 0,
+    right: 0,
   };
 
   return (

@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class CategoryCreationRequest {
     @NotNull(message = "Name is required")
     String name;
+    String urlImage;
 }

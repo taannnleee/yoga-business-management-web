@@ -10,6 +10,7 @@ import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseRespo
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CoursesRepository;
+import org.example.yogabusinessmanagementweb.repositories.TeacherRepository;
 import org.example.yogabusinessmanagementweb.repositories.TopicRepository;
 import org.example.yogabusinessmanagementweb.service.CoursesService;
 import org.example.yogabusinessmanagementweb.service.TeacherService;
@@ -30,6 +31,7 @@ public class CoursesServiceImpl implements CoursesService {
     TopicService topicService;
 
     TopicRepository topicRepository;
+    TeacherRepository teacherRepository;
 
     @Override
     public CourseResponse addCourse(CourseCreationRequest courseCreationRequest) {
@@ -86,6 +88,21 @@ public class CoursesServiceImpl implements CoursesService {
             List<Lectures> lecturesList = sections.getLectures();
         }
         return courses;
+    }
+
+    @Override
+    public List<CourseResponse> allTeacherCourses(String id) {
+        Teacher teacher = teacherService.getTeacherByid(id);
+        List<Courses> coursesList =  coursesRepository.findAllByTeacher(teacher);
+        List<CourseResponse> courseResponseList = courseMapper.toCoursesResponseList(coursesList);
+        return courseResponseList;
+    }
+
+    @Override
+    public List<CourseResponse> getOutstandingCourses() {
+        List<Courses> coursesList =  coursesRepository.findTop4ByOrderByIdAsc();
+        List<CourseResponse> courseResponses =  courseMapper.toCoursesResponseList(coursesList);
+        return courseResponses;
     }
 
     @Override

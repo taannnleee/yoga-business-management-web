@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, TextField, CircularProgress } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
-
+import { API_URL } from "@/config/url";
 interface Address {
     fullName: string;
     phone: string;
@@ -58,7 +58,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 
         setLoading(true);
         try {
-            await fetch("http://localhost:8080/api/address/create", {
+            await fetch(`${API_URL}/api/address/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

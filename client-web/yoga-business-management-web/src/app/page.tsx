@@ -26,5 +26,3 @@ export default function Home() {
 
     return null; // Không render gì cả vì sẽ redirect
 }
-
-

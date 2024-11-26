@@ -127,4 +127,27 @@ public class JwtServiceImpl implements JwtService {
     private Claims extraAllClaim(String token, ETokenType tokenType) {
         return Jwts.parser().setSigningKey(getKey(tokenType)).build().parseClaimsJws(token).getBody();
     }
+
+    @Override
+    public void revokeToken(String token, ETokenType tokenType) {
+        // Kiểm tra xem token có hợp lệ không
+//        if (isTokenExpried(token, tokenType)) {
+//            throw new InvalidDataAccessApiUsageException("Token is already expired");
+//        }
+
+        // Lấy thông tin claims của token hiện tại
+        Claims claims = extraAllClaim(token, tokenType);
+
+        // Tạo token mới với thời gian hết hạn là hiện tại để thu hồi token cũ
+        Date currentDate = new Date(System.currentTimeMillis());
+
+        String newToken = Jwts.builder()
+                .setClaims(claims)
+                .setSubject(claims.getSubject())
+                .setIssuedAt(currentDate) // Đặt thời gian phát hành mới
+                .setExpiration(currentDate) // Đặt expiration về thời gian hiện tại
+                .signWith(getKey(tokenType), SignatureAlgorithm.HS256) // Dùng khóa tương ứng với loại token
+                .compact();
+
+    }
 }

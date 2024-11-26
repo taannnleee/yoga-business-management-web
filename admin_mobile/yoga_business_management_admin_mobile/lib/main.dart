@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'config.dart';
-import 'package:yoga_business_management_admin_mobile/home.dart';
+import 'package:yoga_business_management_admin_mobile/overview.dart';
 import 'storage.dart';
 
 void main() {
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           // Điều hướng sang trang HomePage
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(builder: (context) => const Overview()),
           );
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Đăng nhập thành công!')),

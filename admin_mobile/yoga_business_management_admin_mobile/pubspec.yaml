@@ -38,6 +38,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   http: ^1.2.2  # Đã thêm vào đây
   fluttertoast: ^8.0.9
+  image_picker: ^0.8.8+5
 
 
 dev_dependencies:

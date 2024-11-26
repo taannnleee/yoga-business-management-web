@@ -68,7 +68,9 @@ public class ProductServiceImpl implements ProductService {
 
         return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
     }
-
+    public List<Product> getTop10BestSellingProducts() {
+        return productRepository.findTop10BestSellingProducts();
+    }
     @Override
     public Page<ProductResponse> getAllProductBySubcategory(String id,String keyword, Pageable pageable) {
         SubCategory subCategory =  subCategoryService.getSubCategoryById(id);

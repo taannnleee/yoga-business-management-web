@@ -3,6 +3,8 @@ package org.example.yogabusinessmanagementweb.repositories;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 import org.example.yogabusinessmanagementweb.common.entities.Order;
 import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,9 +16,14 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    List<Order> findAllByUser(User user);
+    Page<Order> findAllByUser(User user, Pageable pageable);
 
-    @Query(value = "SELECT * FROM Orders o WHERE o.status_order = :status AND o.user_id = :userId", nativeQuery = true)
-    List<Order> findAllByStatusOrderAndUserId(@Param("status") String status, @Param("userId") Long userId);
+    @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status AND o.user = :user")
+    Page<Order> findAllByStatusAndUser(@Param("status") EStatusOrder status,
+                                       @Param("user") User user, Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status AND o.user = :user")
+    List<Order> findAllByStatusAndUser(@Param("status") EStatusOrder status,
+                                       @Param("user") User user);
 }
 

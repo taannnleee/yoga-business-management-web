@@ -50,6 +50,15 @@ public class ProductController {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
     }
+    @GetMapping("/top-selling")
+    public ApiResponse<?> getTop10BestSellingProducts() { // Nhận từ khóa tìm kiếm từ request
+
+            // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
+        List<Product> products = productService.getTop10BestSellingProducts();
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "Get all products successfully", products);
+
+    }
     @GetMapping("/{id}")
     public ApiResponse<?> getById(@PathVariable String id){
         ProductResponse productResponse = productService.getById(id);

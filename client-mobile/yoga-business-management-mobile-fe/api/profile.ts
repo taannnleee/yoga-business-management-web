@@ -2,7 +2,7 @@ import { BASE_URL } from "@/api/config";
 
 export const getProFile = async (token: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/user/getProfile`, {
+    const response = await fetch(`${BASE_URL}/api/user/get-profile`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

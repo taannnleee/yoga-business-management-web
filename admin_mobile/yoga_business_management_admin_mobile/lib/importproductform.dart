@@ -43,6 +43,8 @@ class _ImportProductFormState extends State<ImportProductForm> {
   bool loading = false;
 
   final colors = ["#2196F3", "#FF5722", "#FFEB3B"];
+  final sizes = ["S", "M", "L", "XL"];
+  final thins = ["Thin", "Medium", "Thick"];
 
   // Hàm tải ảnh lên
   Future<void> uploadImage(File file, String color) async {
@@ -56,8 +58,7 @@ class _ImportProductFormState extends State<ImportProductForm> {
 
       final response = await request.send();
       if (response.statusCode == 200) {
-        final responseData =
-        json.decode(await response.stream.bytesToString());
+        final responseData = json.decode(await response.stream.bytesToString());
         final uploadedImageUrl = responseData['data']['url'];
         setState(() {
           variants['color']![color] = uploadedImageUrl;
@@ -150,6 +151,72 @@ class _ImportProductFormState extends State<ImportProductForm> {
               _buildTextField('Thương hiệu', (value) => brand = value),
               _buildTextField('Mô tả', (value) => description = value),
               const SizedBox(height: 16),
+
+              // Thêm trường cho size
+              const Text("Chọn kích thước:"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: sizes.map((size) {
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () => setState(() {
+                          variants['size']![size] = size;
+                        }),
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: variants['size']!.containsKey(size)
+                                  ? Colors.green
+                                  : Colors.grey,
+                            ),
+                          ),
+                          child: Center(child: Text(size)),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+
+              // Thêm trường cho thin
+              const Text("Chọn độ mỏng:"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: thins.map((thin) {
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () => setState(() {
+                          variants['thin']![thin] = thin;
+                        }),
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: variants['thin']!.containsKey(thin)
+                                  ? Colors.green
+                                  : Colors.grey,
+                            ),
+                          ),
+                          child: Center(child: Text(thin)),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+
+              // Thêm trường cho màu sắc
               const Text("Chọn ảnh theo màu:"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -179,6 +246,7 @@ class _ImportProductFormState extends State<ImportProductForm> {
                 }).toList(),
               ),
               const SizedBox(height: 16),
+
               loading
                   ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(

@@ -3,6 +3,7 @@ import 'package:yoga_business_management_admin_mobile/category.dart';
 import 'package:yoga_business_management_admin_mobile/overview.dart';
 import 'package:yoga_business_management_admin_mobile/order.dart';
 import 'package:yoga_business_management_admin_mobile/product.dart';
+import 'package:yoga_business_management_admin_mobile/user.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget content;
@@ -82,7 +83,15 @@ class _MainLayoutState extends State<MainLayout> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const Overview(),
+                                builder: (context) => const User(),
+                              ),
+                            );
+                          }),
+                          _buildMenuItem("Quản lý người dùng", () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const User(),
                               ),
                             );
                           }),

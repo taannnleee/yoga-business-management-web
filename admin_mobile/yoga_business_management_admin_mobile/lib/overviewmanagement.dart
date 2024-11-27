@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'storage.dart';
+import 'config.dart';
 
 class OverViewManagement extends StatefulWidget {
   const OverViewManagement({Key? key}) : super(key: key);
@@ -12,36 +15,90 @@ class OverViewManagement extends StatefulWidget {
 }
 
 class _StatisticalScreenState extends State<OverViewManagement> {
+  double totalPriceForDay = 0.0;
   int selectedTab = 0; // Quản lý tab đang chọn
   DateTime selectedDate = DateTime.now(); // Quản lý ngày chọn
 
+  List<Order> orders = [];
+  bool loading = true;
+  String? error;
+
+  List<_ChartData> barChartDataDay = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Format ngày ban đầu
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+    fetchOrdersByStatus(formattedDate);
+  }
+
+  // Lấy access token
+  Future<String?> _getAccessToken() async {
+    return await getToken();
+  }
+
+  // Fetch dữ liệu từ API theo ngày
+  Future<void> fetchOrdersByStatus(String date) async {
+    setState(() {
+      loading = true;
+      error = null;
+    });
+
+    try {
+      final accessToken = await _getAccessToken();
+      final response = await http.get(
+        Uri.parse('${Config.apiUrl}/api/admin/get-daily-revenue?updatedAt=$date'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          orders = (data['data'] as List)
+              .map((item) => Order.fromJson(item))
+              .toList();
+
+          // Tính tổng giá cho "Theo ngày"
+          totalPriceForDay = orders.fold(0.0, (sum, order) => sum + order.totalPrice);
+
+          // Cập nhật dữ liệu biểu đồ cột
+          barChartDataDay = [
+            _ChartData('Ngày', totalPriceForDay),
+          ];
+        });
+      } else {
+        throw Exception('Failed to fetch orders');
+      }
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+      });
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+  
+
+  // Tabs hiển thị các chế độ xem
   final List<String> tabs = ["Theo ngày", "Theo tháng", "Theo năm"];
 
-  // Dữ liệu cho biểu đồ cột
-  final List<_ChartData> barChartData = [
-    _ChartData('January', 20),
-    _ChartData('February', 45),
-    _ChartData('March', 28),
-    _ChartData('April', 80),
-    _ChartData('May', 99),
-    _ChartData('June', 43),
+  final List<_ChartData> barChartDataMonth = [
+    for (int i = 1; i <= 12; i++) _ChartData('$i', (i * 5.0 + 20.0)),
   ];
 
-  // Dữ liệu cho biểu đồ tròn
-  final List<_PieData> pieChartData1 = [
-    _PieData('Đơn thành công', 12, Colors.blue),
-    _PieData('Đơn huỷ', 11, Colors.red),
-    _PieData('Đơn đang xử lý', 13, Colors.green),
-    _PieData('Đơn đang giao', 15, Colors.orange),
+  final List<_ChartData> barChartDataYear = [
+    _ChartData('2021', 80),
+    _ChartData('2022', 60),
+    _ChartData('2023', 90),
   ];
 
-  final List<_PieData> pieChartData2 = [
-    _PieData('Thảm', 12, Colors.blue),
-    _PieData('Giày', 11, Colors.red),
-    _PieData('Quần áo', 13, Colors.green),
-    _PieData('Gối', 15, Colors.orange),
-  ];
-
+  // Hàm chọn ngày
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -53,6 +110,10 @@ class _StatisticalScreenState extends State<OverViewManagement> {
       setState(() {
         selectedDate = picked;
       });
+
+      // Gọi API với ngày đã chọn
+      String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+      fetchOrdersByStatus(formattedDate);
     }
   }
 
@@ -60,7 +121,7 @@ class _StatisticalScreenState extends State<OverViewManagement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thống kê'),
+        title: const Text('Thống kê'),
       ),
       body: SafeArea(
         child: Padding(
@@ -80,7 +141,7 @@ class _StatisticalScreenState extends State<OverViewManagement> {
                       });
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -91,7 +152,7 @@ class _StatisticalScreenState extends State<OverViewManagement> {
                       ),
                       child: Text(
                         tab,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -101,74 +162,63 @@ class _StatisticalScreenState extends State<OverViewManagement> {
                 }).toList(),
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-              // Date picker button
-              GestureDetector(
-                onTap: () => _selectDate(context),
-                child: Text(
-                  'Chọn ngày: ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
-                  style: TextStyle(fontSize: 16, color: Colors.blue),
+              // Hiển thị Date picker chỉ khi chọn tab "Theo ngày"
+              if (selectedTab == 0)
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: Text(
+                    'Chọn ngày: ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+                    style: const TextStyle(fontSize: 16, color: Colors.blue),
+                  ),
                 ),
-              ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-              // Swiper for charts
+              // Hiển thị biểu đồ
               Expanded(
-                child: Swiper(
-                  loop: true,
-                  itemCount: 2,
-                  pagination: SwiperPagination(),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      // First group of charts
-                      return Column(
-                        children: [
-                          Text(
-                            'Biểu đồ tần suất mua hàng',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Expanded(
-                            child: SfCircularChart(
-                              series: <CircularSeries>[
-                                PieSeries<_PieData, String>(
-                                  dataSource: pieChartData1,
-                                  xValueMapper: (_PieData data, _) => data.category,
-                                  yValueMapper: (_PieData data, _) => data.value,
-                                  pointColorMapper: (_PieData data, _) => data.color,
-                                  dataLabelSettings: DataLabelSettings(isVisible: true),
-                                )
-                              ],
+                child: Column(
+                  children: [
+                    Text(
+                      selectedTab == 0
+                          ? 'Biểu đồ doanh thu mua hàng theo ngày'
+                          : selectedTab == 1
+                          ? 'Biểu đồ doanh thu mua hàng theo tháng'
+                          : 'Biểu đồ doanh thu mua hàng theo năm',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Biểu đồ cột với nhãn trên đỉnh mỗi cột
+                    Expanded(
+                      child: loading
+                          ? const Center(child: CircularProgressIndicator())
+                          : error != null
+                          ? Center(child: Text('Lỗi: $error'))
+                          : SfCartesianChart(
+                        primaryXAxis: CategoryAxis(),
+                        series: <ChartSeries>[
+                          ColumnSeries<_ChartData, String>(
+                            dataSource: selectedTab == 0
+                                ? barChartDataDay
+                                : selectedTab == 1
+                                ? barChartDataMonth
+                                : barChartDataYear,
+                            xValueMapper: (_ChartData data, _) => data.label,
+                            yValueMapper: (_ChartData data, _) => data.value,
+                            color: Colors.blue,
+                            dataLabelSettings: const DataLabelSettings(
+                              isVisible: true,
+                              labelAlignment: ChartDataLabelAlignment.top,
+                              textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
-                      );
-                    } else {
-                      // Second group of charts
-                      return Column(
-                        children: [
-                          Text(
-                            'Biểu đồ dòng tiền mua hàng',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Expanded(
-                            child: SfCartesianChart(
-                              primaryXAxis: CategoryAxis(),
-                              series: <ChartSeries>[
-                                ColumnSeries<_ChartData, String>(
-                                  dataSource: barChartData,
-                                  xValueMapper: (_ChartData data, _) => data.label,
-                                  yValueMapper: (_ChartData data, _) => data.value,
-                                  color: Colors.blue,
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                  },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -186,10 +236,37 @@ class _ChartData {
   _ChartData(this.label, this.value);
 }
 
-class _PieData {
-  final String category;
-  final double value;
-  final Color color;
+class Order {
+  final int id;
+  final double totalPrice;
+  final int totalItem;
+  final String createdBy;
+  final String createdAt;
+  final String paymentMethod;
+  String estatusOrder;
+  final String epaymentStatus;
 
-  _PieData(this.category, this.value, this.color);
+  Order({
+    required this.id,
+    required this.totalPrice,
+    required this.totalItem,
+    required this.createdBy,
+    required this.createdAt,
+    required this.paymentMethod,
+    required this.estatusOrder,
+    required this.epaymentStatus,
+  });
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'],
+      totalPrice: json['totalPrice'],
+      totalItem: json['totalItem'],
+      createdBy: json['createdBy'],
+      createdAt: json['createdAt'],
+      paymentMethod: json['paymentMethod'],
+      estatusOrder: json['estatusOrder'],
+      epaymentStatus: json['epaymentStatus'],
+    );
+  }
 }

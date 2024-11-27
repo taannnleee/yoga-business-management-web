@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +30,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status")
     List<Order> findAllByStatus(@Param("status") EStatusOrder status, Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status AND FUNCTION('DATE', o.updatedAt) = FUNCTION('DATE', :updatedAt)")
+    List<Order> findAllByStatusAndUpdatedAt(@Param("status") EStatusOrder status,
+                                            @Param("updatedAt") Date updatedAt,
+                                            Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status AND FUNCTION('DATE_FORMAT', o.updatedAt, '%Y-%m') = FUNCTION('DATE_FORMAT', :updatedAt, '%Y-%m')")
+    List<Order> findAllByStatusAndYearMonth(@Param("status") EStatusOrder status,
+                                            @Param("updatedAt") Date updatedAt,
+                                            Pageable pageable);
+
 }
 

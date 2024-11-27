@@ -66,7 +66,7 @@ const OrderManagement = () => {
 
                 // Thiết lập kết nối WebSocket
                 if (!stompClientRef.current) {
-                    const socket = new SockJS("http://localhost:8080/ws");
+                    const socket = new SockJS("ws://localhost:8080/ws");
                     const stompClient = new Client({
                         webSocketFactory: () => socket,
                         debug: (str: string) => console.log(str),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:yoga_business_management_admin_mobile/importproductform.dart';
 import 'dart:convert';
 import 'storage.dart';
 import 'config.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class OrderManagement extends StatefulWidget {
   const OrderManagement({Key? key}) : super(key: key);
+
   @override
   _OrderManagementState createState() => _OrderManagementState();
 }
@@ -17,27 +17,67 @@ class _OrderManagementState extends State<OrderManagement> {
   List<Order> orders = [];
   bool loading = true;
   String? error;
-  WebSocketChannel? channel;
+  String selectedStatus = 'ALL'; // Default status
+  final List<String> statuses = ['ALL', 'PROCESSING', 'COMPLETED', 'CANCELLED', 'DELIVERING'];
+  late StompClient stompClient; // WebSocket client
+  late String socketUrl;
 
   @override
   void initState() {
     super.initState();
-    fetchOrders();
-    setupWebSocket();
+    fetchOrdersByStatus(selectedStatus);
+
+    // Ensure WebSocket URL is correctly formatted (replace http with ws)
+    socketUrl = 'ws://localhost:8080';
+    // socketUrl = "ws://192.168.1.46:8080/ws";
+    connectWebSocket();
   }
 
-  @override
-  void dispose() {
-    channel?.sink.close();
-    super.dispose();
+  // Connect to WebSocket
+  void connectWebSocket() {
+    stompClient = StompClient(
+      config: StompConfig(
+        url: socketUrl, // WebSocket URL
+        onConnect: (StompFrame frame) {
+          // Subscribe to receive messages from "/topic/admin"
+          stompClient.subscribe(
+            destination: '/topic/admin', // Listen to admin topic
+            callback: (StompFrame frame) {
+              String message = frame.body ?? "New order created!";
+              showNotification(message); // Show toast notification when a message is received
+            },
+          );
+        },
+        onDisconnect: (_) {
+          print("Disconnected from WebSocket");
+        },
+        onWebSocketError: (error) {
+          print("WebSocket Error: $error");
+        },
+      ),
+    );
+    stompClient.activate(); // Activate WebSocket connection
   }
 
-  // Fetch orders from API
-  Future<void> fetchOrders() async {
+  // Show notification when new order message is received
+  void showNotification(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+    );
+  }
+
+  // Fetch orders by status from API
+  Future<void> fetchOrdersByStatus(String status) async {
+    setState(() {
+      loading = true;
+      error = null;
+    });
+
     try {
       final accessToken = await _getAccessToken();
       final response = await http.get(
-        Uri.parse('${Config.apiUrl}/api/admin/get-all-order-of-user'),
+        Uri.parse('${Config.apiUrl}/api/admin/get-all-order-of-user-by-status/$status?sortBy=createdAt&sortDir=desc'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
@@ -50,68 +90,17 @@ class _OrderManagementState extends State<OrderManagement> {
           orders = (data['data'] as List)
               .map((item) => Order.fromJson(item))
               .toList();
-          loading = false;
         });
       } else {
-        setState(() {
-          error = 'Failed to fetch orders';
-          loading = false;
-        });
+        throw Exception('Failed to fetch orders');
       }
     } catch (e) {
       setState(() {
         error = e.toString();
+      });
+    } finally {
+      setState(() {
         loading = false;
-      });
-    }
-  }
-
-  // WebSocket setup
-  void setupWebSocket() {
-    final socketUrl = 'ws://${Config.apiUrl}/ws';
-    channel = WebSocketChannel.connect(Uri.parse(socketUrl));
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(content: Text('Đăng kí web socket thành công')),
-    // );
-    channel?.stream.listen((message) {
-      final updatedOrder = Order.fromJson(json.decode(message));
-      setState(() {
-        final index = orders.indexWhere((order) => order.id == updatedOrder.id);
-        if (index >= 0) {
-          orders[index] = updatedOrder;
-        } else {
-          orders.add(updatedOrder);
-        }
-      });
-    });
-  }
-
-  // Update order status
-  Future<void> handleStatusChange(int orderId, String newStatus) async {
-    try {
-      final accessToken = await _getAccessToken();
-      final response = await http.patch(
-        Uri.parse('${Config.apiUrl}/api/admin/update-order-status/$orderId'),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({'status': newStatus}),
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          final index = orders.indexWhere((order) => order.id == orderId);
-          if (index >= 0) {
-            orders[index].estatusOrder = newStatus;
-          }
-        });
-      } else {
-        throw Exception('Failed to update order status');
-      }
-    } catch (e) {
-      setState(() {
-        error = e.toString();
       });
     }
   }
@@ -122,34 +111,59 @@ class _OrderManagementState extends State<OrderManagement> {
   }
 
   @override
+  void dispose() {
+    stompClient.deactivate(); // Close WebSocket connection when widget is disposed
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Management'),
+        title: const Text('Order Management'),
       ),
       body: loading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : error != null
           ? Center(child: Text('Error: $error'))
           : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Dropdown for status
+            DropdownButton<String>(
+              value: selectedStatus,
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    selectedStatus = value;
+                  });
+                  fetchOrdersByStatus(value);
+                }
+              },
+              items: statuses.map((status) {
+                return DropdownMenuItem(
+                  value: status,
+                  child: Text(status),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
             // Search bar
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 hintText: 'Search...',
                 suffixIcon: Icon(Icons.search),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: orders.length,
                 itemBuilder: (context, index) {
                   final order = orders[index];
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
                       title: Text('Order ID: ${order.id}'),
                       subtitle: Column(
@@ -164,15 +178,16 @@ class _OrderManagementState extends State<OrderManagement> {
                       trailing: DropdownButton<String>(
                         value: order.estatusOrder,
                         onChanged: (newStatus) {
-                          if (newStatus != null) {
-                            handleStatusChange(order.id, newStatus);
-                          }
+                          // You can handle the status change here if needed
                         },
-                        items: ['PROCESSING', 'COMPLETED', 'CANCELLED', 'DELIVERING']
-                            .map((status) => DropdownMenuItem<String>(
-                          value: status,
-                          child: Text(status),
-                        ))
+                        items: statuses
+                            .where((status) => status != 'ALL') // Exclude 'ALL' from dropdown
+                            .map(
+                              (status) => DropdownMenuItem<String>(
+                            value: status,
+                            child: Text(status),
+                          ),
+                        )
                             .toList(),
                       ),
                     ),

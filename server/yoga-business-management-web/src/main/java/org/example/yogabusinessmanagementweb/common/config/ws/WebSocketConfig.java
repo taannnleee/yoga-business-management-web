@@ -15,30 +15,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Đảm bảo sử dụng ws:// cho WebSocket hoặc wss:// nếu sử dụng SSL
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
+                .setAllowedOriginPatterns("*")  // Cẩn thận với CORS trong môi trường sản xuất
+                .withSockJS(); // SockJS fallback cho các trình duyệt không hỗ trợ WebSocket
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/app"); // Prefix cho các endpoint gửi tới server
+        registry.enableSimpleBroker("/topic"); // Prefix cho các message gửi đến client
     }
 }
-
-//@Value("${frontend.urls}")
-//private String frontendUrls;
-//
-//@Override
-//public void registerStompEndpoints(StompEndpointRegistry registry) {
-//    registry.addEndpoint("/ws")
-//            .setAllowedOriginPatterns(frontendUrls.split(","))
-//            .withSockJS();
-//}
-//
-//@Override
-//public void configureMessageBroker(MessageBrokerRegistry registry) {
-//    registry.setApplicationDestinationPrefixes("/app");
-//    registry.enableSimpleBroker("/topic");
-//}

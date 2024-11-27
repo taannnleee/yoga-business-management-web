@@ -149,6 +149,31 @@ public class OrderServiceImpl implements OrderService {
         return GenericMapper.toListDto(listOrder.getContent(), listOrder);
     }
 
+    @Override
+    public List<OrderResponse> showOrderOfUserByStatus(HttpServletRequest request, String status, Pageable pageable) {
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+
+        if("ALL".equals(status)){
+            Page<Order> list = orderRepository.findAll(pageable);
+            for (Order order : list) {
+                OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+                orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+                orderResponseList.add(orderResponse);
+            }
+            return orderResponseList;
+        }
+        else {
+            List<Order> listOrder = orderRepository.findAllByStatus(EStatusOrder.valueOf(status), pageable);
+            for (Order order : listOrder) {
+                OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+                orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+                orderResponseList.add(orderResponse);
+            }
+            return orderResponseList;
+        }
+
+    }
+
     public OrderItem findById(String id) {
         OrderItem orderItem = orderItemRepository.findById(Long.valueOf(id)).orElseThrow(
                 () -> new AppException(ErrorCode.WISHLIST_NOT_FOUND)

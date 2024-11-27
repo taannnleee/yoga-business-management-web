@@ -39,9 +39,10 @@ dependencies:
   http: ^1.2.2  # Đã thêm vào đây
   fluttertoast: ^8.0.9
   image_picker: ^0.8.8+5
-  google_fonts: ^3.0.1
 
-  web_socket_channel: ^2.1.0
+  stomp_dart_client: ^2.1.0
+  web_socket_channel: ^3.0.1
+
 
 
 dev_dependencies:

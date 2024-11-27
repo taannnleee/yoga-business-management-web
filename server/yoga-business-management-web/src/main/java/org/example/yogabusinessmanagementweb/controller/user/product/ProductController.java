@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class ProductController {
     EmailService emailService;
     AuthencationService authencationService;
     ProductService productService;
+    SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/all")
     public ApiResponse<?> getAllProduct(

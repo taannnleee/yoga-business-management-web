@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,10 +31,13 @@ public class AdminProductController {
     EmailService emailService;
     AuthencationService authencationService;
     ProductService productService;
+    SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/add-product")
     public ApiResponse<?> creatProduct(@Valid  @RequestBody ProductCreationRequest productCreationRequest) {
         Product addProductResponse = productService.addProduct(productCreationRequest);
+        String notification = "thông báo mới";
+        messagingTemplate.convertAndSend("/topic/admin", notification);
         return new ApiResponse<>(HttpStatus.OK.value(), "create product  successfully",addProductResponse);
     }
 

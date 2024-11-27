@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'storage.dart';
 import 'config.dart';
-import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class OrderManagement extends StatefulWidget {
   const OrderManagement({Key? key}) : super(key: key);
@@ -19,52 +18,11 @@ class _OrderManagementState extends State<OrderManagement> {
   String? error;
   String selectedStatus = 'ALL'; // Default status
   final List<String> statuses = ['ALL', 'PROCESSING', 'COMPLETED', 'CANCELLED', 'DELIVERING'];
-  late StompClient stompClient; // WebSocket client
-  late String socketUrl;
 
   @override
   void initState() {
     super.initState();
     fetchOrdersByStatus(selectedStatus);
-
-    // Ensure WebSocket URL is correctly formatted (replace http with ws)
-    socketUrl = 'ws://localhost:8080';
-    // socketUrl = "ws://192.168.1.46:8080/ws";
-    connectWebSocket();
-  }
-
-  // Connect to WebSocket
-  void connectWebSocket() {
-    stompClient = StompClient(
-      config: StompConfig(
-        url: socketUrl, // WebSocket URL
-        onConnect: (StompFrame frame) {
-          // Subscribe to receive messages from "/topic/admin"
-          stompClient.subscribe(
-            destination: '/topic/admin', // Listen to admin topic
-            callback: (StompFrame frame) {
-              String message = frame.body ?? "New order created!";
-              showNotification(message); // Show toast notification when a message is received
-            },
-          );
-        },
-        onDisconnect: (_) {
-          print("Disconnected from WebSocket");
-        },
-        onWebSocketError: (error) {
-          print("WebSocket Error: $error");
-        },
-      ),
-    );
-    stompClient.activate(); // Activate WebSocket connection
-  }
-
-  // Show notification when new order message is received
-  void showNotification(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_LONG,
-    );
   }
 
   // Fetch orders by status from API
@@ -105,15 +63,49 @@ class _OrderManagementState extends State<OrderManagement> {
     }
   }
 
+  // Update order status
+  Future<void> handleStatusChange(int orderId, String newStatus) async {
+    try {
+      final accessToken = await _getAccessToken();
+      final response = await http.patch(
+        Uri.parse('${Config.apiUrl}/api/admin/update-order-status/$orderId'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({'status': newStatus}),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          final index = orders.indexWhere((order) => order.id == orderId);
+          if (index >= 0) {
+            orders[index].estatusOrder = newStatus;
+          }
+        });
+        Fluttertoast.showToast(
+          msg: "Order status updated successfully",
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      } else {
+        throw Exception('Failed to update order status');
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
+  }
+
   // Get access token
   Future<String?> _getAccessToken() async {
     return await getToken();
   }
 
-  @override
-  void dispose() {
-    stompClient.deactivate(); // Close WebSocket connection when widget is disposed
-    super.dispose();
+  // Handle pull to refresh
+  Future<void> _onRefresh() async {
+    fetchOrdersByStatus(selectedStatus); // Reload orders
   }
 
   @override
@@ -157,42 +149,48 @@ class _OrderManagementState extends State<OrderManagement> {
               ),
             ),
             const SizedBox(height: 16),
+            // Wrap ListView with RefreshIndicator
             Expanded(
-              child: ListView.builder(
-                itemCount: orders.length,
-                itemBuilder: (context, index) {
-                  final order = orders[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      title: Text('Order ID: ${order.id}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Customer: ${order.createdBy}'),
-                          Text('Date: ${order.createdAt}'),
-                          Text('Total Price: ${order.totalPrice}'),
-                          Text('Payment Status: ${order.epaymentStatus}'),
-                        ],
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: ListView.builder(
+                  itemCount: orders.length,
+                  itemBuilder: (context, index) {
+                    final order = orders[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        title: Text('Order ID: ${order.id}'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Customer: ${order.createdBy}'),
+                            Text('Date: ${order.createdAt}'),
+                            Text('Total Price: ${order.totalPrice}'),
+                            Text('Payment Status: ${order.epaymentStatus}'),
+                          ],
+                        ),
+                        trailing: DropdownButton<String>(
+                          value: order.estatusOrder,
+                          onChanged: (newStatus) {
+                            if (newStatus != null) {
+                              handleStatusChange(order.id, newStatus);
+                            }
+                          },
+                          items: statuses
+                              .where((status) => status != 'ALL') // Loại bỏ 'ALL'
+                              .map(
+                                (status) => DropdownMenuItem<String>(
+                              value: status,
+                              child: Text(status),
+                            ),
+                          )
+                              .toList(),
+                        ),
                       ),
-                      trailing: DropdownButton<String>(
-                        value: order.estatusOrder,
-                        onChanged: (newStatus) {
-                          // You can handle the status change here if needed
-                        },
-                        items: statuses
-                            .where((status) => status != 'ALL') // Exclude 'ALL' from dropdown
-                            .map(
-                              (status) => DropdownMenuItem<String>(
-                            value: status,
-                            child: Text(status),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],

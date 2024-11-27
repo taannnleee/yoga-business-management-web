@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import SockJS from "sockjs-client";
 import ProductCard from "@/components/organisms/ProductCard";
 import TextInputSearch from "@/components/molecules/TextInputSearch";
 import { icons, images } from "@/constants";
@@ -17,7 +18,16 @@ import { router } from "expo-router";
 import { ProductProps } from "@/types/type";
 import { SliderBestProduct } from "@/components/organisms/SliderBestProduct";
 import Icon from "react-native-vector-icons/AntDesign";
-
+import * as Notifications from "expo-notifications";
+import { Client } from "@stomp/stompjs";
+import { BASE_URL } from "@/api/config";
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 const Home = () => {
   const [products, setProducts] = useState<ProductProps[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +35,64 @@ const Home = () => {
   const [page, setPage] = useState(1); // Start from page 1
   const [isLoadingMore, setIsLoadingMore] = useState(false); // For tracking lazy loading state
   const [hasMore, setHasMore] = useState(true); // For tracking if more products are available
+  useEffect(() => {
+    // Yêu cầu quyền thông báo khi mở ứng dụng lần đầu
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission for notifications was denied");
+      }
+    };
 
+    requestPermissions();
+  }, []);
+  useEffect(() => {
+    // Tạo client STOMP
+    const stompClient = new Client({
+      webSocketFactory: () => new SockJS(`${BASE_URL}/ws`), // Endpoint WebSocket server
+      debug: (msg) => console.log("STOMP Debug: ", msg), // Debug log
+      reconnectDelay: 5000, // Tự động reconnect sau 5 giây nếu mất kết nối
+    });
+
+    // Xử lý khi kết nối thành công
+    stompClient.onConnect = () => {
+      console.log("WebSocket connected!");
+
+      // Đăng ký vào topic "/topic/admin"
+      stompClient.subscribe("/topic/admin", async (message) => {
+        console.log("Received message:", message.body); // Hiển thị tin nhắn nhận được
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Thông báo sản phẩm",
+            body: message.body,
+          },
+          trigger: null, // Trigger ngay lập tức
+        });
+      });
+
+      // Gửi tin nhắn đến server
+      stompClient.publish({
+        destination: "/app/notify", // Đích server nhận tin
+        body: JSON.stringify({ content: "Hello from React Native!" }),
+      });
+    };
+
+    // Kết nối và xử lý lỗi
+    stompClient.onStompError = (frame) => {
+      console.error("Broker error:", frame.headers["message"]);
+    };
+
+    // Kích hoạt kết nối
+    stompClient.activate();
+
+    // Cleanup khi component bị hủy
+    return () => {
+      if (stompClient.active) {
+        stompClient.deactivate();
+      }
+      console.log("WebSocket connection closed on unmount");
+    };
+  }, []);
   // Fetch products using getProducts function
   useEffect(() => {
     const fetchProducts = async () => {

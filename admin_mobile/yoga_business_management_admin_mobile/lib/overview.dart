@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:yoga_business_management_admin_mobile/ordermanagement.dart';
+import 'package:yoga_business_management_admin_mobile/overviewmanagement.dart';
 import '../layouts/main_layout.dart';
 
 class Overview extends StatelessWidget {
@@ -7,13 +9,8 @@ class Overview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
-      title: "Trang chủ",
-      content: Center(
-        child: Text(
-          "Chào mừng bạn đến với trang chủ!",
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      content: const OverViewManagement(),
+      title: 'Over view management',
     );
   }
 }

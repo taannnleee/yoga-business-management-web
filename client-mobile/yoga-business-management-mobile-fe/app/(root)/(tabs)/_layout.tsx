@@ -8,6 +8,9 @@ import {
 } from "react-native";
 import { Tabs } from "expo-router";
 import { icons } from "@/constants";
+import eyecross from "@/assets/icons/eyecross.png";
+import checkmark from "@/assets/icons/check.png";
+import dollar from "@/assets/icons/dollar.png";
 
 const TabIcon = ({
   source,
@@ -107,6 +110,16 @@ const TabsLayout = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} source={icons.profile} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name={"statistical"}
+        options={{
+          title: "Statistical",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} source={icons.dollar} />
           ),
         }}
       />

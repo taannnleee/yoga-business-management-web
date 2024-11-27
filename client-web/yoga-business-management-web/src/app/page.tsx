@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 
 import {useEffect, useLayoutEffect} from "react";
 import { useRouter } from "next/navigation";
+import HomePage from "@/app/(main)/home/page";
 
 export default function Home() {
     const router = useRouter();
@@ -24,5 +25,7 @@ export default function Home() {
         }
     }, [router]);
 
-    return null; // Không render gì cả vì sẽ redirect
+    return (
+        <HomePage/>
+    );
 }

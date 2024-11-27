@@ -85,7 +85,12 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Close button (X) */}
             <TouchableOpacity
               onPress={toggleModal}
-              style={{ position: "absolute", top: 20, right: 20 }}
+              style={{
+                position: "absolute",
+                top: 20,
+                right: 20,
+                zIndex: 10, // Đặt giá trị cao để đảm bảo không bị che khuất
+              }}
             >
               <Text style={{ fontSize: 30, color: "red" }}>×</Text>
             </TouchableOpacity>
@@ -130,18 +135,18 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <Text style={{ fontSize: 20, color: "red", marginTop: 10 }}>
                   {selectedProduct.price.toLocaleString()}₫
                 </Text>
-                <View style={{ marginBottom: 16 }}>
-                  {selectedProduct.description ? (
-                    <RenderHTML
-                      contentWidth={width}
-                      source={{ html: selectedProduct.description }}
-                    />
-                  ) : (
-                    <Text style={{ fontSize: 14, color: "gray" }}>
-                      Product details are coming soon.
-                    </Text>
-                  )}
-                </View>
+                {/*<View style={{ marginBottom: 16 }}>*/}
+                {/*  {selectedProduct.description ? (*/}
+                {/*    <RenderHTML*/}
+                {/*      contentWidth={width}*/}
+                {/*      source={{ html: selectedProduct.description }}*/}
+                {/*    />*/}
+                {/*  ) : (*/}
+                {/*    <Text style={{ fontSize: 14, color: "gray" }}>*/}
+                {/*      Product details are coming soon.*/}
+                {/*    </Text>*/}
+                {/*  )}*/}
+                {/*</View>*/}
 
                 {selectedProduct.variants &&
                   Object.entries(selectedProduct.variants).map(

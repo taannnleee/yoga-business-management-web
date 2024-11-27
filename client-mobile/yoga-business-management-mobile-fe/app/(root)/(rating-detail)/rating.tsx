@@ -116,7 +116,7 @@ const RatingDetail = ({ route }: { route: any }) => {
                     {comment.user?.fullname || "Ẩn danh"}
                   </Text>
                   <View style={{ flexDirection: "row" }}>
-                    {renderStars(comment.ratePoint)}
+                    {comment.ratePoint !== 0 && renderStars(comment.ratePoint)}
                   </View>
                 </View>
               </View>

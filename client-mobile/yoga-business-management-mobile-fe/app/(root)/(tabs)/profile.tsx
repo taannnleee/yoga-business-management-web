@@ -32,6 +32,7 @@ const Profile = () => {
     }
 
     const response = await getProFile(token);
+    console.log("profile response", response);
     if (response.success) {
       setProfileData(response.data.data);
       setUpdatedData(response.data.data);

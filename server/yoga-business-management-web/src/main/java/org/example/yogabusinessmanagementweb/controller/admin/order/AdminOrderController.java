@@ -12,6 +12,9 @@ import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureRespons
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import org.example.yogabusinessmanagementweb.service.LecturesService;
 import org.example.yogabusinessmanagementweb.service.OrderService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +30,21 @@ public class AdminOrderController {
 
     @GetMapping("/get-all-order-of-user")
     public ApiResponse<?> getAllOrder(HttpServletRequest request) {
-        List<Order> orderResponse = orderService.showOrderOfUser(request);
+        List<OrderResponse> orderResponse = orderService.showOrderOfUser(request);
+        return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
+    }
+
+    @GetMapping("/get-all-order-of-user-by-status/{status}")
+    public ApiResponse<?> getAllOrder(HttpServletRequest request, @PathVariable String status, @RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "50") int pageSize,
+                                      @RequestParam(defaultValue = "createdAt") String sortBy, // Field to sort by
+                                      @RequestParam(defaultValue = "desc") String sortDir, // Sort direction: "asc" or "desc"
+                                      @RequestParam(required = false) String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize,
+                sortDir.equalsIgnoreCase("asc")
+                        ? Sort.by(sortBy).ascending()
+                        : Sort.by(sortBy).descending());
+        List<OrderResponse> orderResponse = orderService.showOrderOfUserByStatus(request, status,pageable);
         return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
     }
     @PatchMapping("/update-order-status/{orderId}")
@@ -40,5 +57,37 @@ public class AdminOrderController {
 
         // Trả về đơn hàng đã cập nhật
         return new ApiResponse<>(HttpStatus.OK.value(), "change status order success",updatedOrder);
+    }
+
+    // doanh thu theo ngày, chỉ lấy những đơn đã hoàn thành
+    @GetMapping("/get-daily-revenue")
+    public ApiResponse<?> getAllOrderByDaily(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "50") int pageSize,
+                                      @RequestParam(defaultValue = "2024-11-27") String updatedAt,
+                                      @RequestParam(defaultValue = "updatedAt") String sortBy, // Field to sort by
+                                      @RequestParam(defaultValue = "desc") String sortDir, // Sort direction: "asc" or "desc"
+                                      @RequestParam(required = false) String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize,
+                sortDir.equalsIgnoreCase("asc")
+                        ? Sort.by(sortBy).ascending()
+                        : Sort.by(sortBy).descending());
+        List<OrderResponse> orderResponse = orderService.getDailyRevenue(request,updatedAt,pageable);
+        return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
+    }
+
+    // doanh thu theo tháng của năm, chỉ lấy những đơn đã hoàn thành
+    @GetMapping("/get-month-revenue")
+    public ApiResponse<?> getAllOrderByMonth(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+                                             @RequestParam(defaultValue = "50") int pageSize,
+                                             @RequestParam(defaultValue = "2024-11-27") String updatedAt,
+                                             @RequestParam(defaultValue = "updatedAt") String sortBy, // Field to sort by
+                                             @RequestParam(defaultValue = "desc") String sortDir, // Sort direction: "asc" or "desc"
+                                             @RequestParam(required = false) String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize,
+                sortDir.equalsIgnoreCase("asc")
+                        ? Sort.by(sortBy).ascending()
+                        : Sort.by(sortBy).descending());
+        List<OrderResponse> orderResponse = orderService.getMonthRevenue(request,updatedAt,pageable);
+        return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
     }
 }

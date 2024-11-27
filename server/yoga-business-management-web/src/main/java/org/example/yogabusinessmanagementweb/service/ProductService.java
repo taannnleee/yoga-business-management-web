@@ -21,5 +21,5 @@ public interface ProductService {
 
     Page<ProductResponse> getAllProductBySubcategory(String id,String keyword, Pageable pageable);
     ListDto<List<ProductResponse>> filterProducts(Long subCategoryId, Long categoryId, String keyword, Pageable pageable);
-
+    List<Product> getTop10BestSellingProducts();
 }

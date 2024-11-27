@@ -5,11 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EPaymentStatus;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
+import org.example.yogabusinessmanagementweb.common.mapper.GenericMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderItemMapper;
+import org.example.yogabusinessmanagementweb.common.mapper.OrderMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.ListDto;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCreationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.orderItem.OrderItemResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
@@ -19,13 +23,14 @@ import org.example.yogabusinessmanagementweb.repositories.OrderItemRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderRepository;
 import org.example.yogabusinessmanagementweb.service.*;
 import org.example.yogabusinessmanagementweb.common.entities.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -41,8 +46,9 @@ public class OrderServiceImpl implements OrderService {
     OrderItemRepository orderItemRepository;
     CommentService commentService;
     OrderItemMapper orderItemMapper;
+    OrderMapper orderMapper;
     @Override
-    public OrderCreationResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
+    public OrderResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
 
         User user = jwtUtil.getUserFromRequest(request);
 
@@ -99,15 +105,22 @@ public class OrderServiceImpl implements OrderService {
         }
         cartRepository.save(cart);
 
-        OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
-        return orderCreationResponse;
+        OrderResponse orderResponse =  orderMapper.toOrderResponse(order);
+        orderResponse.setEPaymentStatus(payment.getEPaymentStatus());
+        return orderResponse;
     }
 
 
     @Override
-    public List<Order> showOrderOfUser(HttpServletRequest request) {
+    public List<OrderResponse> showOrderOfUser(HttpServletRequest request) {
+        List<OrderResponse> orderResponseList = new ArrayList<>();
         List<Order> list = orderRepository.findAll();
-        return list;
+        for (Order order : list) {
+            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
     }
 
     @Override
@@ -121,18 +134,80 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrderByStatus(HttpServletRequest request, String status) {
+    public ListDto<List<Order>> getAllOrderByStatus(HttpServletRequest request, String status, Pageable pageable) {
 //        EStatusOrder statusEnum = EStatusOrder.valueOf(status);
         User user = jwtUtil.getUserFromRequest(request);
-
+        Page<Order> listOrder;
         if("ALL".equals(status)){
-            List<Order> list = orderRepository.findAllByUser(user);
-            return list;
+            listOrder = orderRepository.findAllByUser(user, pageable);
         }
         else {
-            List<Order> listOrder = orderRepository.findAllByStatusOrderAndUserId(status,user.getId());
-            return listOrder;
+            listOrder= orderRepository.findAllByStatusAndUser(EStatusOrder.valueOf(status), user, pageable);
         }
+        return GenericMapper.toListDto(listOrder.getContent(), listOrder);
+    }
+
+    @Override
+    public List<OrderResponse> showOrderOfUserByStatus(HttpServletRequest request, String status, Pageable pageable) {
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+
+        if("ALL".equals(status)){
+            Page<Order> list = orderRepository.findAll(pageable);
+            for (Order order : list) {
+                OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+                orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+                orderResponseList.add(orderResponse);
+            }
+            return orderResponseList;
+        }
+        else {
+            List<Order> listOrder = orderRepository.findAllByStatus(EStatusOrder.valueOf(status), pageable);
+            for (Order order : listOrder) {
+                OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+                orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+                orderResponseList.add(orderResponse);
+            }
+            return orderResponseList;
+        }
+
+    }
+
+    private Date convertStringToDate(String dateStr) {
+        try {
+            // Sử dụng định dạng ngày tháng bạn muốn
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Hoặc "yyyy-MM-dd'T'HH:mm:ss" nếu có giờ
+            return dateFormat.parse(dateStr);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format", e);
+        }
+    }
+    @Override
+    public List<OrderResponse> getDailyRevenue(HttpServletRequest request,String updatedAt, Pageable pageable) {
+        Date updatedAtDate = convertStringToDate(updatedAt);
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+
+        List<Order> listOrder = orderRepository.findAllByStatusAndUpdatedAt(EStatusOrder.COMPLETED, updatedAtDate,pageable);
+        for (Order order : listOrder) {
+            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
+
+    }
+
+    @Override
+    public List<OrderResponse> getMonthRevenue(HttpServletRequest request, String updatedAt, Pageable pageable) {
+        Date updatedAtDate = convertStringToDate(updatedAt);
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+
+        List<Order> listOrder = orderRepository.findAllByStatusAndYearMonth(EStatusOrder.COMPLETED, updatedAtDate,pageable);
+        for (Order order : listOrder) {
+            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
     }
 
     public OrderItem findById(String id) {
@@ -151,4 +226,37 @@ public class OrderServiceImpl implements OrderService {
         return orderItemMapper.toOrderCommentResponse(orderItemRepository.save(orderItem));
     }
 
+
+    public BigDecimal getTotalAmountByStatus(User user, EStatusOrder status) {
+        // Lọc đơn hàng của user theo trạng thái và tính tổng giá trị
+        List<Order> orders = orderRepository.findAllByStatusAndUser(status,user);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+
+        for (Order order : orders) {
+            totalAmount = totalAmount.add(order.getTotalPrice());
+        }
+
+        return totalAmount;
+    }
+
+    public BigDecimal getTotalPendingAmount(User user) {
+        return getTotalAmountByStatus(user, EStatusOrder.PROCESSING);
+    }
+
+    public BigDecimal getTotalShippingAmount(User user) {
+        return getTotalAmountByStatus(user, EStatusOrder.DELIVERING);
+    }
+
+    public BigDecimal getTotalDeliveredAmount(User user) {
+        return getTotalAmountByStatus(user, EStatusOrder.COMPLETED);
+    }
+
+    // Phương thức tính tổng số tiền của tất cả các trạng thái đơn hàng
+    public BigDecimal getTotalAmountByUser(User user) {
+        BigDecimal totalPending = getTotalPendingAmount(user);
+        BigDecimal totalShipping = getTotalShippingAmount(user);
+        BigDecimal totalDelivered = getTotalDeliveredAmount(user);
+
+        return totalPending.add(totalShipping).add(totalDelivered);
+    }
 }

@@ -21,7 +21,7 @@ public class ProductCreationRequest {
     @NotNull(message = "Price in Product is required")
     BigDecimal price;
     Double averageRating = 0.0;
-
+    Double sold = 0.0;
     String code;
     String brand;
     String description;

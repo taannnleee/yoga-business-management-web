@@ -29,7 +29,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse addCategory(CategoryCreationRequest categoryCreationRequest) {
+        if(categoryCreationRequest.getUrlImage()==null){
+            categoryCreationRequest.setUrlImage("https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/collection_4_banner.jpg?1730181507139");
+        }
+        
         Category category = Mappers.convertToEntity(categoryCreationRequest, Category.class);
+
 
         // Gán giá trị mặc định cho status nếu nó là null
         if (category.getStatus() == null) {

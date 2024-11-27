@@ -43,10 +43,12 @@ class _ProductManagementState extends State<ProductManagement> {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = utf8.decode(response.bodyBytes);
+        final jsonData = json.decode(data);
+
         setState(() {
-          products = List<Map<String, dynamic>>.from(data['data']['content']);
-          totalPages = data['data']['totalPages'];
+          products = List<Map<String, dynamic>>.from(jsonData['data']['content']);
+          totalPages = jsonData['data']['totalPages'];
         });
       } else {
         Fluttertoast.showToast(msg: 'Không thể tải danh sách sản phẩm.');
@@ -72,9 +74,11 @@ class _ProductManagementState extends State<ProductManagement> {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = utf8.decode(response.bodyBytes);
+        final jsonData = json.decode(data);
+
         setState(() {
-          subcategories = List<Map<String, dynamic>>.from(data['data']);
+          subcategories = List<Map<String, dynamic>>.from(jsonData['data']);
           currentSubCategory = subcategories.isNotEmpty ? subcategories[0] : null;
         });
       } else {

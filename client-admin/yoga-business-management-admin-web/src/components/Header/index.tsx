@@ -7,6 +7,7 @@ import { IRootState } from '../../redux';
 import { setAccessToken, setUser } from '../../redux/slices/auth';
 import LogoutConfirmDialog from '../LogoutConfirmDialog';
 import { useHistory } from 'react-router-dom';
+import { Client, StompSubscription } from "@stomp/stompjs";
 interface IHeaderProps {
   title: string;
 }
@@ -16,12 +17,22 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const { user } = useAppSelector((state: IRootState) => state.auth);
   const dispatch = useDispatch();
   const [open, setOpen] = useState<boolean>(false);
+  // let stompClient: Client | null = null;
   const logOut = () => {
     try {
       localStorage.removeItem('admin');
       localStorage.removeItem('token');
       dispatch(setAccessToken(''));
       dispatch(setUser(null));
+
+      // const savedSocket = localStorage.getItem('websocket');
+      // if (savedSocket) {
+      //   stompClient = JSON.parse(savedSocket);
+      //   stompClient?.deactivate(); // Hủy kết nối WebSocket
+      //   localStorage.removeItem('websocket'); // Xóa khỏi localStorage
+      //   console.log('WebSocket disconnected');
+      // }
+
       history.push('/login');
       toast.success('Đăng xuất thành công', {
         position: 'top-right',

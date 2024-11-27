@@ -103,7 +103,7 @@ const ProductRating = ({
               <View className="ml-3">
                 <Text className="font-bold">{comment.user?.fullname}</Text>
                 <View className="flex-row">
-                  {renderStars(comment.ratePoint)}
+                  {comment.ratePoint !== 0 && renderStars(comment.ratePoint)}
                 </View>
               </View>
             </View>

@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class ProductController {
     EmailService emailService;
     AuthencationService authencationService;
     ProductService productService;
+    SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/all")
     public ApiResponse<?> getAllProduct(
@@ -49,6 +51,15 @@ public class ProductController {
         } catch (RuntimeException e) {
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
+    }
+    @GetMapping("/top-selling")
+    public ApiResponse<?> getTop10BestSellingProducts() { // Nhận từ khóa tìm kiếm từ request
+
+            // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
+        List<Product> products = productService.getTop10BestSellingProducts();
+
+        return new ApiResponse<>(HttpStatus.OK.value(), "Get all products successfully", products);
+
     }
     @GetMapping("/{id}")
     public ApiResponse<?> getById(@PathVariable String id){

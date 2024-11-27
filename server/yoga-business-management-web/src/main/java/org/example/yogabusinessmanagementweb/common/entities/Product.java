@@ -39,7 +39,7 @@ public class Product extends AbstractEntity<Long> implements Serializable {
 
     @Column(name = "average_rating")
     Double averageRating = (double) 0;
-    @Column(name = "sold")
+    @Column(name = "sold", nullable = false)
     Double sold = (double) 0;
 
     @Column(name = "code")

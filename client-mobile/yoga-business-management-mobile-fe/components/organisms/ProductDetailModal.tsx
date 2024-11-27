@@ -85,7 +85,12 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Close button (X) */}
             <TouchableOpacity
               onPress={toggleModal}
-              style={{ position: "absolute", top: 20, right: 20 }}
+              style={{
+                position: "absolute",
+                top: 20,
+                right: 20,
+                zIndex: 10, // Đặt giá trị cao để đảm bảo không bị che khuất
+              }}
             >
               <Text style={{ fontSize: 30, color: "red" }}>×</Text>
             </TouchableOpacity>

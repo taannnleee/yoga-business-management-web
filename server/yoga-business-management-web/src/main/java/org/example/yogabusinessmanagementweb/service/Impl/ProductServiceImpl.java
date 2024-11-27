@@ -24,6 +24,7 @@ import org.example.yogabusinessmanagementweb.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     SubCategoryService subCategoryService;
     UserService userService;
     NotificationRepository notificationRepository;
+    SimpMessagingTemplate messagingTemplate;
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
         return productRepository.findAll(pageable);
@@ -108,6 +110,7 @@ public class ProductServiceImpl implements ProductService {
             notification.setUser(user);
             notificationRepository.save(notification);
         }
+
         //Lưu product
         return productRepository.save(product);
     }

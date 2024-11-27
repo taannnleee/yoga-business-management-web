@@ -314,16 +314,16 @@ const Activity = () => {
                 ))}
               </View>
             )}
-            onEndReached={() => {
-              if (!loading) {
-                setPage(page + 1);
-                fetchOrderData(
-                  getStatusByTabIndex(selectedTab),
-                  sortDirection,
-                  page + 1,
-                );
-              }
-            }}
+            // onEndReached={() => {
+            //   if (!loading) {
+            //     setPage(page + 1);
+            //     fetchOrderData(
+            //       getStatusByTabIndex(selectedTab),
+            //       sortDirection,
+            //       page + 1,
+            //     );
+            //   }
+            // }}
             onEndReachedThreshold={0.1}
             refreshing={refreshing}
             onRefresh={() => {

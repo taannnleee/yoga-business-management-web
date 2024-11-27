@@ -36,8 +36,7 @@ public class AdminProductController {
     @PostMapping("/add-product")
     public ApiResponse<?> creatProduct(@Valid  @RequestBody ProductCreationRequest productCreationRequest) {
         Product addProductResponse = productService.addProduct(productCreationRequest);
-        String notification = "thông báo mới";
-        messagingTemplate.convertAndSend("/topic/admin", notification);
+        messagingTemplate.convertAndSend("/topic/admin", "Có sản phẩm mới được nhập shop với tên là: " + addProductResponse.getTitle());
         return new ApiResponse<>(HttpStatus.OK.value(), "create product  successfully",addProductResponse);
     }
 

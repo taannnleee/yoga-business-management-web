@@ -34,7 +34,9 @@ use case:
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  ![logo](https://github.com/user-attachments/assets/d2297a1e-2b3d-49dc-9be4-e618249b434d)
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="https://yoga.vn/statics/yoga/img/logo-id.png" alt="Logo" width="80" height="80">
+  </a>
 
   <h3 align="center">Advanced mobile programming</h3>
 
@@ -85,10 +87,28 @@ use case:
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+This project is designed to create an online platform for yoga enthusiasts, combining e-commerce with educational resources to provide a comprehensive experience for users. The website allows users to browse and purchase high-quality yoga equipment, including mats, clothing, and accessories, as well as offering a free yoga training course. The course is aimed at helping users start their yoga journey, offering useful tips, techniques, and instructional videos.
+
+In the future, the platform will integrate AI-powered features to enhance the online yoga learning experience. This will include real-time motion tracking and guidance to ensure users are performing the poses correctly. AI will help users get personalized feedback based on their movements, making the learning process more interactive and effective.
+
+The project has been developed with support and guidance from **Thầy Nguyễn Hữu Trung**, a professor at **HCMUTE**, whose expertise has helped shape the vision and direction of this project. The goal is to create a seamless integration of e-commerce, education, and innovative technologies like AI to revolutionize the way people practice yoga online.
+
+### Key Features:
+- **E-commerce**: Browse and purchase a variety of yoga products, including mats, clothing, and accessories.
+- **Free Yoga Course**: Access instructional content for beginners to help you get started with yoga.
+- **AI Integration (Future)**: AI-powered motion tracking to guide users in real-time, providing personalized feedback on yoga poses.
+- **User-Friendly Interface**: The platform is designed to be intuitive and easy to use, with a clean and modern design.
+
+This project aims to make yoga accessible to everyone, whether you're new to the practice or looking to deepen your understanding. The future integration of AI will take this to the next level, helping users perfect their techniques in the comfort of their own home.
+
+### Technologies Used:
+- **AI Integration (Future)**: AI tools for yoga pose recognition
+...
+---
+
 [![image](https://github.com/user-attachments/assets/da3dc0fe-8d34-4c5c-be7f-e12c9d808e3b)
 ](https://example.com)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
 
 
@@ -101,7 +121,7 @@ This section should list any major frameworks/libraries used to bootstrap my pro
 * [![React][React.js]][React-url]
 * [![Spring][Spring]][Spring-url]
 * [![React native][React native]][React native-url]
-* [![Flutter.dev][Flutter.dev]][[Flutter-url]
+* [![Flutter.dev][Flutter.dev]][Flutter-url]
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->

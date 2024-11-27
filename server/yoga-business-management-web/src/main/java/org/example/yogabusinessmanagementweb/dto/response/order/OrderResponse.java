@@ -18,9 +18,11 @@ public class OrderResponse {
     BigDecimal totalPrice;
     String eStatusOrder;
     String createdBy;
+    Date updatedAt;
     Date createdAt;
     String paymentMethod;
     EPaymentStatus  ePaymentStatus;
+
 
 
 }

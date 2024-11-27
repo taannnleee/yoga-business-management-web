@@ -29,4 +29,8 @@ public interface OrderService {
     ListDto<List<Order>> getAllOrderByStatus(HttpServletRequest request, String status, Pageable pageable);
 
     List<OrderResponse> showOrderOfUserByStatus(HttpServletRequest request, String status, Pageable pageable);
+
+    List<OrderResponse> getDailyRevenue(HttpServletRequest request, String updatedAt,Pageable pageable);
+
+    List<OrderResponse> getMonthRevenue(HttpServletRequest request, String updatedAt, Pageable pageable);
 }

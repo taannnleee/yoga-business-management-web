@@ -29,10 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -172,6 +170,44 @@ public class OrderServiceImpl implements OrderService {
             return orderResponseList;
         }
 
+    }
+
+    private Date convertStringToDate(String dateStr) {
+        try {
+            // Sử dụng định dạng ngày tháng bạn muốn
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Hoặc "yyyy-MM-dd'T'HH:mm:ss" nếu có giờ
+            return dateFormat.parse(dateStr);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format", e);
+        }
+    }
+    @Override
+    public List<OrderResponse> getDailyRevenue(HttpServletRequest request,String updatedAt, Pageable pageable) {
+        Date updatedAtDate = convertStringToDate(updatedAt);
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+
+        List<Order> listOrder = orderRepository.findAllByStatusAndUpdatedAt(EStatusOrder.COMPLETED, updatedAtDate,pageable);
+        for (Order order : listOrder) {
+            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
+
+    }
+
+    @Override
+    public List<OrderResponse> getMonthRevenue(HttpServletRequest request, String updatedAt, Pageable pageable) {
+        Date updatedAtDate = convertStringToDate(updatedAt);
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+
+        List<Order> listOrder = orderRepository.findAllByStatusAndYearMonth(EStatusOrder.COMPLETED, updatedAtDate,pageable);
+        for (Order order : listOrder) {
+            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
     }
 
     public OrderItem findById(String id) {

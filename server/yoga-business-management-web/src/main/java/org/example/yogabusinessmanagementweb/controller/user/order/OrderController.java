@@ -66,6 +66,7 @@ public class OrderController {
 //        Order order  = new Order();
 //        webSocketService.sendOrderToAdmins(order);
 //        OrderCreationResponse orderCreationResponse = new OrderCreationResponse();
+//        String order = "Đã có đơn hàng mới";
         messagingTemplate.convertAndSend("/topic/admin", order);
         return new ApiResponse<>(HttpStatus.OK.value(), "create order success",order);
     }

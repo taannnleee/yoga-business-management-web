@@ -16,6 +16,7 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+    Page<Order> findAll(Pageable pageable);
     Page<Order> findAllByUser(User user, Pageable pageable);
 
     @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status AND o.user = :user")
@@ -25,5 +26,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status AND o.user = :user")
     List<Order> findAllByStatusAndUser(@Param("status") EStatusOrder status,
                                        @Param("user") User user);
+
+    @Query("SELECT o FROM Order o WHERE o.eStatusOrder = :status")
+    List<Order> findAllByStatus(@Param("status") EStatusOrder status, Pageable pageable);
 }
 

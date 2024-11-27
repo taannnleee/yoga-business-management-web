@@ -27,4 +27,6 @@ public interface OrderService {
     BigDecimal getTotalAmountByUser(User user);
 
     ListDto<List<Order>> getAllOrderByStatus(HttpServletRequest request, String status, Pageable pageable);
+
+    List<OrderResponse> showOrderOfUserByStatus(HttpServletRequest request, String status, Pageable pageable);
 }

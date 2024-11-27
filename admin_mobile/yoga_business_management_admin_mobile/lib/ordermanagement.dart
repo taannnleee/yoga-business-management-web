@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:yoga_business_management_admin_mobile/importproductform.dart';
 import 'dart:convert';
 import 'storage.dart';
 import 'config.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 class OrderManagement extends StatefulWidget {
   const OrderManagement({Key? key}) : super(key: key);
+
   @override
   _OrderManagementState createState() => _OrderManagementState();
 }
@@ -17,27 +16,26 @@ class _OrderManagementState extends State<OrderManagement> {
   List<Order> orders = [];
   bool loading = true;
   String? error;
-  WebSocketChannel? channel;
+  String selectedStatus = 'ALL'; // Default status
+  final List<String> statuses = ['ALL', 'PROCESSING', 'COMPLETED', 'CANCELLED', 'DELIVERING'];
 
   @override
   void initState() {
     super.initState();
-    fetchOrders();
-    setupWebSocket();
+    fetchOrdersByStatus(selectedStatus);
   }
 
-  @override
-  void dispose() {
-    channel?.sink.close();
-    super.dispose();
-  }
+  // Fetch orders by status from API
+  Future<void> fetchOrdersByStatus(String status) async {
+    setState(() {
+      loading = true;
+      error = null;
+    });
 
-  // Fetch orders from API
-  Future<void> fetchOrders() async {
     try {
       final accessToken = await _getAccessToken();
       final response = await http.get(
-        Uri.parse('${Config.apiUrl}/api/admin/get-all-order-of-user'),
+        Uri.parse('${Config.apiUrl}/api/admin/get-all-order-of-user-by-status/$status?sortBy=createdAt&sortDir=desc'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
@@ -50,40 +48,19 @@ class _OrderManagementState extends State<OrderManagement> {
           orders = (data['data'] as List)
               .map((item) => Order.fromJson(item))
               .toList();
-          loading = false;
         });
       } else {
-        setState(() {
-          error = 'Failed to fetch orders';
-          loading = false;
-        });
+        throw Exception('Failed to fetch orders');
       }
     } catch (e) {
       setState(() {
         error = e.toString();
+      });
+    } finally {
+      setState(() {
         loading = false;
       });
     }
-  }
-
-  // WebSocket setup
-  void setupWebSocket() {
-    final socketUrl = 'ws://${Config.apiUrl}/ws';
-    channel = WebSocketChannel.connect(Uri.parse(socketUrl));
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(content: Text('Đăng kí web socket thành công')),
-    // );
-    channel?.stream.listen((message) {
-      final updatedOrder = Order.fromJson(json.decode(message));
-      setState(() {
-        final index = orders.indexWhere((order) => order.id == updatedOrder.id);
-        if (index >= 0) {
-          orders[index] = updatedOrder;
-        } else {
-          orders.add(updatedOrder);
-        }
-      });
-    });
   }
 
   // Update order status
@@ -106,13 +83,18 @@ class _OrderManagementState extends State<OrderManagement> {
             orders[index].estatusOrder = newStatus;
           }
         });
+        Fluttertoast.showToast(
+          msg: "Order status updated successfully",
+          toastLength: Toast.LENGTH_SHORT,
+        );
       } else {
         throw Exception('Failed to update order status');
       }
     } catch (e) {
-      setState(() {
-        error = e.toString();
-      });
+      Fluttertoast.showToast(
+        msg: "Error: $e",
+        toastLength: Toast.LENGTH_SHORT,
+      );
     }
   }
 
@@ -121,63 +103,94 @@ class _OrderManagementState extends State<OrderManagement> {
     return await getToken();
   }
 
+  // Handle pull to refresh
+  Future<void> _onRefresh() async {
+    fetchOrdersByStatus(selectedStatus); // Reload orders
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Management'),
+        title: const Text('Order Management'),
       ),
       body: loading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : error != null
           ? Center(child: Text('Error: $error'))
           : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Dropdown for status
+            DropdownButton<String>(
+              value: selectedStatus,
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    selectedStatus = value;
+                  });
+                  fetchOrdersByStatus(value);
+                }
+              },
+              items: statuses.map((status) {
+                return DropdownMenuItem(
+                  value: status,
+                  child: Text(status),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
             // Search bar
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 hintText: 'Search...',
                 suffixIcon: Icon(Icons.search),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
+            // Wrap ListView with RefreshIndicator
             Expanded(
-              child: ListView.builder(
-                itemCount: orders.length,
-                itemBuilder: (context, index) {
-                  final order = orders[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      title: Text('Order ID: ${order.id}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Customer: ${order.createdBy}'),
-                          Text('Date: ${order.createdAt}'),
-                          Text('Total Price: ${order.totalPrice}'),
-                          Text('Payment Status: ${order.epaymentStatus}'),
-                        ],
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: ListView.builder(
+                  itemCount: orders.length,
+                  itemBuilder: (context, index) {
+                    final order = orders[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        title: Text('Order ID: ${order.id}'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Customer: ${order.createdBy}'),
+                            Text('Date: ${order.createdAt}'),
+                            Text('Total Price: ${order.totalPrice}'),
+                            Text('Payment Status: ${order.epaymentStatus}'),
+                          ],
+                        ),
+                        trailing: DropdownButton<String>(
+                          value: order.estatusOrder,
+                          onChanged: (newStatus) {
+                            if (newStatus != null) {
+                              handleStatusChange(order.id, newStatus);
+                            }
+                          },
+                          items: statuses
+                              .where((status) => status != 'ALL') // Loại bỏ 'ALL'
+                              .map(
+                                (status) => DropdownMenuItem<String>(
+                              value: status,
+                              child: Text(status),
+                            ),
+                          )
+                              .toList(),
+                        ),
                       ),
-                      trailing: DropdownButton<String>(
-                        value: order.estatusOrder,
-                        onChanged: (newStatus) {
-                          if (newStatus != null) {
-                            handleStatusChange(order.id, newStatus);
-                          }
-                        },
-                        items: ['PROCESSING', 'COMPLETED', 'CANCELLED', 'DELIVERING']
-                            .map((status) => DropdownMenuItem<String>(
-                          value: status,
-                          child: Text(status),
-                        ))
-                            .toList(),
-                      ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],

@@ -256,7 +256,7 @@ export default function MainLayout(props: ISideBarProps) {
             </ListItemButton>
             <Collapse in={openOverview} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {['Báo cáo doanh thu', 'Phân tích khách hàng', 'Dự đoán xu hướng'].map((text) => (
+                {['Báo cáo doanh thu', 'Dự đoán xu hướng'].map((text) => (
                   <ListItemButton
                     key={text}
                     sx={{

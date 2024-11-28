@@ -32,5 +32,7 @@ public interface OrderService {
 
     List<OrderResponse> getDailyRevenue(HttpServletRequest request, String updatedAt,Pageable pageable);
 
-    List<OrderResponse> getMonthRevenue(HttpServletRequest request, String updatedAt, Pageable pageable);
+    List<List<OrderResponse>> getMonthRevenue(HttpServletRequest request, String year, Pageable pageable);
+
+    List<String> getListYear(HttpServletRequest request);
 }

@@ -1,6 +1,7 @@
+'use client'
 import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-import { useRerender } from "../../hooks/useRerender";
+import { format } from "date-fns";
 import MainLayout from "../../components/SIdeBar";
 import useWindowDimensions from "../../hooks/useWindowDimension";
 import axios from "axios";
@@ -11,44 +12,133 @@ import RevenueIcon from "../../assets/images/RevenueIcon.png";
 import GiveMoneyIcon from "../../assets/images/GiveMoneyIcon.png";
 import RevenueOnEveryBid from "../../assets/images/RevenueOnBid.png";
 import CreateFeeRevenue from "../../assets/images/CreateFeeRevenue.png";
+import DailyRevenueChart from "./DailyRevenueChart";
 
-interface IStatistic {
-  productStatistics: {
-    productsTotal: number;
-    productsTotalByCategory: {
-      category: string;
-      total: number;
-    };
-  };
-  transactionStatistics: {
-    postSaleFeeStatistics: {
-      average: number;
-      min: number;
-      max: number;
-      total: number;
-    };
-    preSaleFeeStatistics: {
-      total: number;
-    };
-    revenueStatistics: {
-      average: number;
-      min: number;
-      max: number;
-      total: number;
-    };
-  };
+interface ProductWithCategory {
+  id: string;
+  name: string;
+  urlImage: string;
+  quantity: string;
 }
 
 export default function DashBoard() {
-  const { rerender } = useRerender();
-  const { user, accessToken } = useAppSelector(
-    (state: IRootState) => state.auth
-  );
-  const [statisticData, setStatisticData] = useState<IStatistic | null>(null);
-  const [listCategory, setListCategory] = useState<any[]>([]);
-  const { openSideBar: open } = useAppSelector(
-    (state: IRootState) => state.auth
-  );
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [totalPriceForDay, setTotalPriceForDay] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [theProdcutOfStore, setTheProductOfStore] = useState<ProductWithCategory[]>([]);
+
+  const [monthlyRevenueData, setMonthlyRevenueData] = useState<number[]>([]);
+  const accessToken = localStorage.getItem('accessToken');
+
+  // Fetch product data from the API
+  const fetchTheProductOfStore = async () => {
+    setLoading(true);
+    setError(null);  // Reset error state before fetching
+
+    try {
+      const response = await fetch(`${apiURL}/api/admin/get-all-category-and-quantity-product`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      setTheProductOfStore(data.data); // Update the products list
+
+      // Update the barState
+      const categories = data.data.map((item: ProductWithCategory) => item.name);
+      const quantities = data.data.map((item: ProductWithCategory) => parseInt(item.quantity));  // Convert quantity to number
+
+      setBarState(prevState => ({
+        ...prevState,
+        options: {
+          ...prevState.options,
+          xaxis: {
+            categories, // Update categories from the response data
+          },
+        },
+        series: [
+          {
+            name: "Số lượng",
+            data: quantities, // Update data with product quantities
+          },
+        ],
+      }));
+
+    } catch (error) {
+
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch product data from the API
+  const fetchStoreRevenueByMonth = async () => {
+    setLoading(true);
+    setError(null);  // Reset error state before fetching
+
+    try {
+      const response = await fetch(`${apiURL}/api/admin/get-month-revenue`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      console.log("tanne");
+      console.log(data.data);
+      setTheProductOfStore(data.data);
+
+      const revenuePerMonth = data.data.map((monthData: any) => {
+        return monthData.reduce((sum: number, order: any) => sum + order.totalPrice, 0);
+      });
+      console.log(revenuePerMonth);
+      setMonthlyRevenueData(revenuePerMonth);
+      console.log("haha")
+      console.log(monthlyRevenueData)
+
+      setLineState(prevState => ({
+        ...prevState,
+        series: [
+          {
+            name: "Doanh thu",
+            data: monthlyRevenueData,  // Cập nhật dữ liệu của biểu đồ
+          },
+        ],
+      }));
+    } catch (error) {
+
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTheProductOfStore();
+    fetchStoreRevenueByMonth();
+  }, []);
+
+
+  // Handle date change
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    setSelectedDate(new Date(newDate));
+  };
 
   const [lineState, setLineState] = useState({
     options: {
@@ -64,6 +154,7 @@ export default function DashBoard() {
           "Tháng 5",
           "Tháng 6",
           "Tháng 7",
+          "Tháng 8",
           "Tháng 9",
           "Tháng 10",
           "Tháng 11",
@@ -73,8 +164,11 @@ export default function DashBoard() {
     },
     series: [
       {
-        name: "Số lượng",
-        data: [7, 5, 5, 10, 30, 40, 8, 30, 41, 42, 43],
+        name: "Doanh thu",
+        data: monthlyRevenueData,
+
+
+        // monthlyRevenueData,
       },
     ],
   });
@@ -85,22 +179,13 @@ export default function DashBoard() {
         id: "basic-line",
       },
       xaxis: {
-        categories: [
-          "Puma",
-          "Louis Vuiton",
-          "Balenciaga",
-          "Channel",
-          "Adidas",
-          "Nike",
-          "Saint Laurent",
-          "Dior",
-        ],
+        categories: [], // Initially empty, will be updated after fetching data
       },
     },
     series: [
       {
         name: "Số lượng",
-        data: [7, 5, 5, 10, 30, 40, 8, 5],
+        data: [], // Initially empty, will be updated after fetching data
       },
     ],
   });
@@ -134,247 +219,48 @@ export default function DashBoard() {
     },
   });
 
-  const dimension = useWindowDimensions();
-
-  useEffect(() => {
-    setLineState((prev) => ({
-      ...prev,
-      options: {
-        ...prev.options,
-        chart: {
-          ...prev.options.chart,
-          width: (dimension.width * 80) / 100,
-        },
-      },
-    }));
-
-    // Update dimensions for pie chart
-    setPieState((prev) => ({
-      ...prev,
-      options: {
-        ...prev.options,
-        chart: {
-          ...prev.options.chart,
-          width: (dimension.width * 80) / 100,
-        },
-      },
-    }));
-
-    // Update dimensions for bar chart
-    setBarState((prev) => ({
-      ...prev,
-      options: {
-        ...prev.options,
-        chart: {
-          ...prev.options.chart,
-          width: (dimension.width * 80) / 100,
-        },
-      },
-    }));
-  }, [dimension]);
-
-  const getStatisticData = async () => {
-    console.log("bearer token is", `Bearer ${accessToken}`);
-    try {
-      const res = await axios.get(`${apiURL}/statistics`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (res.data.success) {
-        let postSaleFeePortion =
-          res.data.data.transactionStatistics.postSaleFeeStatistics.total /
-          res.data.data.transactionStatistics.revenueStatistics.total;
-        let preSaleFeePortion = 1 - postSaleFeePortion;
-        //set pie state
-        setPieState({
-          series: [
-            79000, 9000,
-            // postSaleFeePortion * 100 || 70,
-            // preSaleFeePortion * 100 || 30,
-          ],
-          options: {
-            chart: {
-              width: 380,
-              type: "pie",
-            },
-            labels: ["Chiếu khấu sản phẩm", "Phí đăng sản phẩm"],
-            theme: {
-              monochrome: {
-                enabled: true,
-              },
-            },
-            responsive: [
-              {
-                breakpoint: 480,
-                options: {
-                  chart: {
-                    width: 200,
-                  },
-                  legend: {
-                    position: "bottom",
-                  },
-                },
-              },
-            ],
-          },
-        });
-
-        const categories =
-          res.data.data.productStatistics.productsTotalByCategory?.map(
-            (item: any) => item?.category
-          );
-        const quantityOnCategory =
-          res.data.data.productStatistics.productsTotalByCategory?.map(
-            (item: any) => item?.total
-          );
-
-        setBarState({
-          options: {
-            chart: {
-              id: "basic-line",
-            },
-            xaxis: {
-              categories: categories,
-            },
-          },
-          series: [
-            {
-              name: "Số lượng",
-              data: quantityOnCategory,
-            },
-          ],
-        });
-        setStatisticData(res.data.data);
-      } else {
-        console.log(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (!!user) {
-      getStatisticData();
-    }
-  }, [user]);
-
   return (
     <MainLayout
       title="Tổng quan thông tin của sàn"
       content={
-        statisticData ? (
-          <div className="flex flex-col gap-y-10 px-10">
-            <div className="flex-row gap-x-5 items-center grid grid-cols-2 w-full">
-              <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md">
-                <p className="text-center text-xl text-gray-500 font-bold">
-                  Thống kê doanh thu của sàn
-                </p>
-                <div className="flex w-full justify-center mt-4">
-                  <div className="grid grid-cols-2 gap-x-10 gap-y-4 w-full">
-                    <div className="w-full">
-                      <div className="shadow-lg drop-shadow-md rounded-xl w-full h-[180px] p-4 border border-gray-100 hover:opacity-50 cursor-pointer flex flex-col justify-between">
-                        <p className="text-gray-500 font-bold text-sm text-right">
-                          Tổng lợi nhuận của sàn
-                        </p>
-                        <div className="flex flex-col items-center my-2">
-                          <img
-                            src={RevenueIcon}
-                            className="w-[100px] h-[80px]"
-                          />
-                        </div>
-                        <p className="text-md font-bold text-green-600 text-right">
-                          {983?.toString().prettyMoney()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-full">
-                      <div className="shadow-lg drop-shadow-md rounded-xl w-full h-[180px] p-4 border border-gray-100 hover:opacity-50 cursor-pointer flex flex-col justify-between">
-                        <p className="text-gray-500 font-bold text-sm text-right">
-                          Lợi nhuận trung bình / sản phẩm
-                        </p>
-                        <div className="flex flex-col items-center my-2">
-                          <img
-                            src={RevenueOnEveryBid}
-                            className="w-[100px] h-[80px]"
-                          />
-                        </div>
-                        <p className="text-md font-bold text-green-600 text-right">
-                          {91?.toString().prettyMoney()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-full">
-                      <div className="shadow-lg drop-shadow-md rounded-xl w-full h-[180px] p-4 border border-gray-100 hover:opacity-50 cursor-pointer flex flex-col justify-between">
-                        <p className="text-gray-500 font-bold text-sm text-right">
-                          Lợi nhuận chiết khấu
-                        </p>
-                        <div className="flex flex-col items-center my-2">
-                          <img
-                            src={GiveMoneyIcon}
-                            className="w-[100px] h-[80px]"
-                          />
-                        </div>
-                        <p className="text-md font-bold text-green-600 text-right">
-                          {889?.toString().prettyMoney()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-full">
-                      <div className="shadow-lg drop-shadow-md rounded-xl w-full h-[180px] p-4 border border-gray-100 hover:opacity-50 cursor-pointer flex flex-col justify-between">
-                        <p className="text-gray-500 font-bold text-sm text-right">
-                          Lợi nhuận từ phí đăng
-                        </p>
-                        <div className="flex flex-col items-center my-2">
-                          <img
-                            src={CreateFeeRevenue}
-                            className="w-[100px] h-[80px]"
-                          />
-                        </div>
-                        <p className="text-md font-bold text-green-600 text-right">
-                          {94?.toString().prettyMoney()}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md">
-                <p className="text-center text-xl text-gray-500 font-bold mb-2">
-                  Biểu đồ tỷ lệ phần trăm doanh thu
-                </p>
-                <Chart
-                  options={pieState.options as any}
-                  series={pieState.series}
-                  type="pie"
-                  height="380"
-                />
-              </div>
-            </div>
-            <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md w-full">
-              {/* <p className="text-center text-2xl text-gray-500 font-bold mb-4">
-            Doanh thu của cửa hàng theo tháng (2023)
-          </p>
-          <Chart
-            options={lineState.options}
-            series={lineState.series}
-            type="line"
-            width="99%"
-            height="280"
-          /> */}
-              <p className="text-center text-xl text-gray-500 font-bold">
-                Số lượng sản phẩm đang có trên sàn theo từng danh mục
-              </p>
-              <Chart
-                options={barState.options}
-                series={barState.series}
-                type="bar"
-                height="300"
+        <div className="flex flex-col gap-y-10 px-10">
+          <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md w-full">
+            <p className="text-center text-2xl text-gray-500 font-bold mb-4">
+              Doanh thu của cửa hàng theo tháng (2024)
+            </p>
+            <Chart
+              options={lineState.options}
+              series={lineState.series}
+              type="line"
+              width="99%"
+              height="280"
+            />
+            <p className="text-center text-xl text-gray-500 font-bold">
+              Số lượng sản phẩm đang có trên sàn theo từng danh mục
+            </p>
+            <Chart
+              options={barState.options}
+              series={barState.series}
+              type="bar"
+              height="300"
+            />
+          </div>
+          {/* New daily revenue chart */}
+          <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md w-full">
+            <p className="text-center text-2xl text-gray-500 font-bold mb-4">
+              Doanh thu ngày: {format(selectedDate, "dd/MM/yyyy")}
+            </p>
+            <div className="flex justify-between items-center">
+              <input
+                type="date"
+                value={format(selectedDate, "yyyy-MM-dd")}
+                onChange={handleDateChange}
+                className="border p-2 rounded-lg"
               />
             </div>
+            <DailyRevenueChart selectedDate={selectedDate} />
           </div>
-        ) : null
+        </div>
       }
     />
   );

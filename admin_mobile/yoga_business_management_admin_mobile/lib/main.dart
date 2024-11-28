@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: Colors.deepPurple,
+                            backgroundColor: Colors.blue,
                           ),
                           child: loginLoading
                               ? const CircularProgressIndicator(color: Colors.white)

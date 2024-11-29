@@ -192,6 +192,12 @@ export default function MainLayout(props: ISideBarProps) {
     { label: 'Chủ đề', url: 'topics' },
   ];
 
+  const overviewManagementItems = [
+    { label: 'Báo cáo doanh thu', url: 'dashboard' },
+    { label: 'Dự đoán xu hướng', url: 'trend' },
+
+  ];
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -256,24 +262,24 @@ export default function MainLayout(props: ISideBarProps) {
             </ListItemButton>
             <Collapse in={openOverview} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {['Báo cáo doanh thu', 'Dự đoán xu hướng'].map((text) => (
+                {overviewManagementItems.map(({ label, url }) => (
                   <ListItemButton
-                    key={text}
+                    key={url}
                     sx={{
                       pl: 8,
-                      backgroundColor: isSelected(`/home/${text.replace(/\s+/g, '-').toLowerCase()}`)
+                      backgroundColor: isSelected(`/home/${url}`)
                         ? 'blue'
                         : 'transparent',
                       '&:hover': {
-                        backgroundColor: isSelected(`/home/${text.replace(/\s+/g, '-').toLowerCase()}`)
+                        backgroundColor: isSelected(`/home/${url}`)
                           ? 'blue'
                           : 'transparent',
                       },
                     }}
                     component={Link}
-                    to={`${to[0]}/${text.replace(/\s+/g, '-').toLowerCase()}`}
+                    to={`/home/${url}`}
                   >
-                    <ListItemText primary={text} />
+                    <ListItemText primary={label} />
                   </ListItemButton>
                 ))}
               </List>

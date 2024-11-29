@@ -12,7 +12,6 @@ import RevenueIcon from "../../assets/images/RevenueIcon.png";
 import GiveMoneyIcon from "../../assets/images/GiveMoneyIcon.png";
 import RevenueOnEveryBid from "../../assets/images/RevenueOnBid.png";
 import CreateFeeRevenue from "../../assets/images/CreateFeeRevenue.png";
-import DailyRevenueChart from "./DailyRevenueChart";
 
 interface ProductWithCategory {
   id: string;
@@ -21,7 +20,7 @@ interface ProductWithCategory {
   quantity: string;
 }
 
-export default function DashBoard() {
+export default function TrendPrediction() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [totalPriceForDay, setTotalPriceForDay] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -224,7 +223,7 @@ export default function DashBoard() {
         <div className="flex flex-col gap-y-10 px-10">
           <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md w-full">
             <p className="text-center text-2xl text-gray-500 font-bold mb-4">
-              Doanh thu của cửa hàng theo tháng (2024)
+              Xu hướng mua hàng của khách hàng vào các tháng trong năm
             </p>
             <Chart
               options={lineState.options}
@@ -233,31 +232,9 @@ export default function DashBoard() {
               width="99%"
               height="280"
             />
-            <p className="text-center text-xl text-gray-500 font-bold">
-              Số lượng sản phẩm đang có trên sàn theo từng danh mục
-            </p>
-            <Chart
-              options={barState.options}
-              series={barState.series}
-              type="bar"
-              height="300"
-            />
+
           </div>
-          {/* New daily revenue chart */}
-          <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md w-full">
-            <p className="text-center text-2xl text-gray-500 font-bold mb-4">
-              Doanh thu ngày: {format(selectedDate, "dd/MM/yyyy")}
-            </p>
-            <div className="flex justify-between items-center">
-              <input
-                type="date"
-                value={format(selectedDate, "yyyy-MM-dd")}
-                onChange={handleDateChange}
-                className="border p-2 rounded-lg"
-              />
-            </div>
-            <DailyRevenueChart selectedDate={selectedDate} />
-          </div>
+
         </div>
       }
     />

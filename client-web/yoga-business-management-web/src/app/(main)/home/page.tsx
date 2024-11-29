@@ -1,11 +1,13 @@
 "use client";
-
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import Image from "next/image";
 import { ProductByCategoryCardSkeleton } from "@/components/organisms/ProductByCategoryCard/skeleton";
 import { ProductByCategoryCard } from "@/components/organisms/ProductByCategoryCard";
 import { API_URL } from "@/config/url";
+import { useToast } from "@/hooks/useToast";
 interface IHomePageProps { }
 const imageUrls = [
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720",
@@ -15,10 +17,12 @@ const imageUrls = [
 ];
 
 const HomePage: React.FC<IHomePageProps> = () => {
+    const toast = useToast();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [categories, setCategories] = useState<any[]>([]);
     const [fetchingProducts, setFetchingProducts] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [hasNewOrder, setHasNewOrder] = useState<boolean>(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -32,34 +36,64 @@ const HomePage: React.FC<IHomePageProps> = () => {
         setCurrentIndex(index);
     };
 
-    useEffect(() => {
-        // Fetch products by category
-        const fetchProducts = async () => {
-            try {
-                const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/category/with-products`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
+    const fetchProducts = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const response = await fetch(`${API_URL}/api/category/with-products`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
 
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
-                const result = await response.json();
-                // Assign the fetched categories to state
-                setCategories(result.data);
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setFetchingProducts(false);
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
             }
+
+            const result = await response.json();
+            // Assign the fetched categories to state
+            setCategories(result.data);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setFetchingProducts(false);
+        }
+    };
+
+
+    useEffect(() => {
+        // Create a WebSocket client
+        const stompClient = new Client({
+            webSocketFactory: () => new SockJS(`${API_URL}/ws`), // WebSocket server endpoint
+            debug: (msg) => console.log('STOMP Debug: ', msg),
+            reconnectDelay: 5000, // Reconnect automatically after 5 seconds
+        });
+
+        stompClient.onConnect = () => {
+            console.log('WebSocket connected!');
+            stompClient.subscribe('/topic/notification', async (message) => {
+                console.log('Received message:', message.body);
+                if (!hasNewOrder) {
+                    toast.sendToast("Thành công", "Có thông báo về sản phẩm mới");
+                    setHasNewOrder(true); // Đánh dấu đã hiển thị thông báo
+                }
+                fetchProducts();
+            });
         };
 
-        fetchProducts();
+        stompClient.onStompError = (frame) => {
+            console.error('Broker error:', frame.headers['message']);
+        };
+
+        stompClient.activate();
+
+        return () => {
+            if (stompClient.active) {
+                stompClient.deactivate();
+            }
+            console.log('WebSocket connection closed on unmount');
+        };
     }, []);
 
     return (

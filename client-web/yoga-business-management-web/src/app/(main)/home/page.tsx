@@ -63,6 +63,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
 
 
     useEffect(() => {
+        fetchProducts();
         // Create a WebSocket client
         const stompClient = new Client({
             webSocketFactory: () => new SockJS(`${API_URL}/ws`), // WebSocket server endpoint
@@ -78,7 +79,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
                     toast.sendToast("Thành công", "Có thông báo về sản phẩm mới");
                     setHasNewOrder(true); // Đánh dấu đã hiển thị thông báo
                 }
-                fetchProducts();
+
             });
         };
 

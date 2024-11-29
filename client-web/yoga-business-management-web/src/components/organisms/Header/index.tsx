@@ -1,5 +1,5 @@
 "use client";
-
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -199,6 +199,9 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
 
             <ButtonCourse className={"mt-[-12px]"} />
           </nav>
+          <div>
+            <NotificationsIcon onClick={() => router.push("/notification")} style={{ fontSize: '30px' }} />
+          </div>
 
           <div className="flex w-1/3 laptop:hidden laptop:w-0 flex-row-reverse">
             {false ? null : (
@@ -231,9 +234,10 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
                 )}
               </div>
               <CartButton />
-
             </div>
+
           </div>
+
         </div>
 
         <div className="flex laptop:hidden px-2">

@@ -23,6 +23,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MainLayout from "../../components/SIdeBar";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { toast } from "react-toastify";
 
 interface Order {
     id: number;
@@ -39,7 +40,9 @@ const OrderManagement = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedStatus, setSelectedStatus] = useState<string>('ALL'); // Trạng thái lọc mặc định
     const stompClientRef = useRef<Client | null>(null);
+    const [hasNewOrder, setHasNewOrder] = useState<boolean>(false);
 
     // Gọi API để lấy danh sách đơn hàng
     useEffect(() => {
@@ -47,7 +50,7 @@ const OrderManagement = () => {
             try {
                 const accessToken = localStorage.getItem("accessToken");
                 const response = await fetch(
-                    "http://localhost:8080/api/admin/get-all-order-of-user",
+                    `http://localhost:8080/api/admin/get-all-order-of-user-by-status/${selectedStatus}?sortBy=createdAt&sortDir=desc`,
                     {
                         method: "GET",
                         headers: {
@@ -78,26 +81,20 @@ const OrderManagement = () => {
                         // Đăng ký lắng nghe kênh /topic/admin
                         stompClient.subscribe("/topic/admin", (message) => {
                             if (message.body) {
-
                                 const updatedOrder = JSON.parse(message.body);
+                                console.log(updatedOrder);
 
-                                setOrders((prevOrders) => {
-                                    const existingOrder = prevOrders.find(
-                                        (order) => order.id === updatedOrder.id
-                                    );
+                                // setOrders((prevOrders) => {
+                                //     return [...prevOrders, updatedOrder];
+                                // }
+                                // );
+                                if (!hasNewOrder) {
+                                    toast("Bạn có đơn đặt hàng mới");
+                                    setHasNewOrder(true); // Đánh dấu đã hiển thị thông báo
+                                }
+                                fetchOrders()
 
-                                    if (existingOrder) {
-                                        // Cập nhật đơn hàng đã tồn tại
-                                        return prevOrders.map((order) =>
-                                            order.id === updatedOrder.id
-                                                ? { ...order, ...updatedOrder }
-                                                : order
-                                        );
-                                    } else {
-                                        // Thêm đơn hàng mới
-                                        return [...prevOrders, updatedOrder];
-                                    }
-                                });
+
                             }
                         });
                     };
@@ -117,10 +114,12 @@ const OrderManagement = () => {
         // Cleanup khi component bị unmount
         return () => {
             if (stompClientRef.current) {
-                stompClientRef.current.deactivate();
+
+                stompClientRef.current.deactivate(); // Hủy kết nối WebSocket khi component unmount
+                stompClientRef.current = null;
             }
         };
-    }, []);
+    }, [selectedStatus]); // Khi selectedStatus thay đổi, gọi lại hàm fetchOrders
 
     const handleStatusChange = async (orderId: number, newStatus: string) => {
         const accessToken = localStorage.getItem("accessToken");
@@ -165,17 +164,22 @@ const OrderManagement = () => {
             title="Danh sách đơn hàng"
             content={
                 <Box p={3}>
-                    {/* Search */}
+                    {/* Dropdown để chọn trạng thái đơn hàng */}
                     <Box display="flex" justifyContent="flex-end" mb={2}>
-                        <TextField
-                            variant="outlined"
-                            size="small"
-                            placeholder="Search..."
-                            sx={{ width: 250, mr: 1 }}
-                        />
-                        <Button variant="contained" color="primary">
-                            Search
-                        </Button>
+                        <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                                value={selectedStatus}
+                                onChange={(e) => setSelectedStatus(e.target.value as string)}
+                                label="Status"
+                            >
+                                <MenuItem value="ALL">All</MenuItem>
+                                <MenuItem value="PROCESSING">Processing</MenuItem>
+                                <MenuItem value="COMPLETED">Completed</MenuItem>
+                                <MenuItem value="CANCELLED">Cancelled</MenuItem>
+                                <MenuItem value="DELIVERING">Delivering</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Box>
 
                     {/* Table */}

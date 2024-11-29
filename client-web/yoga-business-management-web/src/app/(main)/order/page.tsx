@@ -102,7 +102,7 @@ const OrderPage: React.FC = () => {
                 }
 
                 const data = await response.json(); // Phân tích dữ liệu JSON
-                setOrderData(data.data); // Lưu dữ liệu vào trạng thái
+                setOrderData(data.data.content); // Lưu dữ liệu vào trạng thái
             } catch (error) {
                 console.error("Error fetching order data:", error);
             } finally {

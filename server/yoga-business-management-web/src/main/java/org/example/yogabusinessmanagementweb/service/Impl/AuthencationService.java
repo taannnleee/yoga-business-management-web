@@ -150,10 +150,10 @@ public class AuthencationService {
 
     public String logout(HttpServletRequest request) {
         // Validate xem token có rỗng không
-        String refresh_token = request.getHeader("x-token");
-        if (StringUtils.isBlank(refresh_token)) {
-            throw new AppException(ErrorCode.TOKEN_EMPTY);
-        }
+//        String refresh_token = request.getHeader("x-token");
+//        if (StringUtils.isBlank(refresh_token)) {
+//            throw new AppException(ErrorCode.TOKEN_EMPTY);
+//        }
 
         // Lấy accessToken
         String authorizationHeader = request.getHeader("Authorization");
@@ -162,11 +162,13 @@ public class AuthencationService {
         }
         String token = authorizationHeader.substring(7);
 
+        // Extract user từ token
+        final String userName = jwtService.extractUsername(token, ACCESSTOKEN);
+
         // Revoke quyền của accessToken
         jwtService.revokeToken(token, ACCESSTOKEN);
 
-        // Extract user từ token
-        final String userName = jwtService.extractUsername(refresh_token, REFRESHTOKEN);
+
 
         // Kiểm tra token trong DB
         Token tokenCurrent = tokenService.getTokenByUsername(userName);
@@ -178,10 +180,7 @@ public class AuthencationService {
 
         return "Token revoked and deleted!";
     }
-
-
-
-
+    
     public String sendOTP(String email) {
         // Check if email exists
         User user = userService.findByEmail(email);

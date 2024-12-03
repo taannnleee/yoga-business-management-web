@@ -19,6 +19,7 @@ import ButtonCourse from "../../atom/ButtonCourse";
 import { useToast } from "@/hooks/useToast";
 import CartButton from "@/components/molecules/CartButton";
 import HoverDropdown from "@/components/molecules/HoverDropdown";
+import { API_URL } from "@/config/url";
 interface IHeaderV2Props { }
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
@@ -40,6 +41,48 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
   const [isHovered, setIsHovered] = useState(false);
   // Check if the access token exists
   const accessToken = localStorage.getItem("accessToken");
+
+  // Hàm logout sẽ gọi API và xử lý đăng xuất
+  const logout = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        return;
+      }
+      console.log("hehehe")
+
+      // Gọi API logout sử dụng fetch
+      const response = await fetch(`${API_URL}/api/auth/logout`, {
+        method: 'POST', // Phương thức POST
+        headers: {
+          'Authorization': `Bearer ${token}`, // Gửi token xác thực trong header
+          'Content-Type': 'application/json', // Đảm bảo body là JSON (mặc dù ở đây body rỗng)
+        },
+      });
+      console.log("hehehe")
+      console.log(response)
+
+      // Kiểm tra nếu logout thành công
+      if (response.ok) {
+        // Xóa token khỏi localStorage
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        toast.sendToast("Success", "Đăng xuất thành công");
+
+        // Điều hướng về trang chủ
+        router.replace("/home");
+      } else {
+        // Xử lý trường hợp logout không thành công
+        toast.sendToast("Error", "Đăng xuất thất bại, vui lòng thử lại.");
+      }
+    } catch (error) {
+      // Xử lý lỗi trong quá trình gọi API
+      console.error("Logout error", error);
+      toast.sendToast("Error", "Đăng xuất thất bại, vui lòng thử lại.");
+    }
+  };
+
+
   const modalContent = accessToken ? (
     <div className="space-y-2 w-28 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
       <p className="cursor-pointer w-full" onClick={() => router.push("/address")}>Địa chỉ</p>
@@ -48,12 +91,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
       <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
       <p
         className="cursor-pointer"
-        onClick={() => {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          toast.sendToast("Success", "Đăng xuất thành công");
-          router.replace("/home");
-        }}
+        onClick={logout}  // Using logout before it is declared
       >
         Đăng xuất
       </p>
@@ -70,6 +108,8 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
       <p className="cursor-pointer">Google</p>
     </div>
   );
+
+
 
   const searchingByKeyword = async (keyword: string) => {
     try {

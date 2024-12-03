@@ -1,4 +1,6 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
+import org.example.yogabusinessmanagementweb.common.entities.Token;
+import org.example.yogabusinessmanagementweb.service.TokenService;
 import org.springframework.security.core.GrantedAuthority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,6 +31,7 @@ import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class JwtServiceImpl implements JwtService {
+    TokenService tokenService;
     @Value("${jwt.expiryTime}")
     String expirytime  ;
 
@@ -131,16 +134,15 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public void revokeToken(String token, ETokenType tokenType) {
         // Kiểm tra xem token có hợp lệ không
-//        if (isTokenExpried(token, tokenType)) {
-//            throw new InvalidDataAccessApiUsageException("Token is already expired");
-//        }
+        if (isTokenExpried(token, tokenType)) {
+            throw new InvalidDataAccessApiUsageException("Token is already expired");
+        }
 
         // Lấy thông tin claims của token hiện tại
         Claims claims = extraAllClaim(token, tokenType);
 
         // Tạo token mới với thời gian hết hạn là hiện tại để thu hồi token cũ
         Date currentDate = new Date(System.currentTimeMillis());
-
         String newToken = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(claims.getSubject())

@@ -50,12 +50,12 @@ const HomePage: React.FC<IHomePageProps> = () => {
 
     const fetchProducts = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
+            // const token = localStorage.getItem("accessToken");
             const response = await fetch(`${API_URL}/api/category/with-products`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    // "Authorization": `Bearer ${token}`,
                 },
             });
 

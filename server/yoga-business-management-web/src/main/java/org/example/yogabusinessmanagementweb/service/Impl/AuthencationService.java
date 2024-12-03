@@ -1,10 +1,12 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.ERole;
+import org.example.yogabusinessmanagementweb.common.Enum.ETokenType;
 import org.example.yogabusinessmanagementweb.common.entities.Cart;
 import org.example.yogabusinessmanagementweb.dto.request.user.LoginRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.ResetPasswordRequest;
@@ -146,16 +148,28 @@ public class AuthencationService {
             throw new AppException(ErrorCode.TOKEN_EMPTY);
         }
 
+        //lấy accessToken
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7);
+
+        jwtService.revokeToken(token, ACCESSTOKEN);
         //extract user from token
         final String userName = jwtService.extractUsername(refresh_token, REFRESHTOKEN);
 
         //check token in db
         Token tokenCurrent = tokenService.getTokenByUsername(userName);
 
-        //delete token
-        tokenService.delete(tokenCurrent);
+        // Xóa token trong DB
+        if (tokenCurrent != null) {
+            tokenService.delete(tokenCurrent);
+        }
         return "delete!";
     }
+
+
 
     public String sendOTP(String email) {
         // Check if email exists

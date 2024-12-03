@@ -38,10 +38,10 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String delete(Token token) {
 
-        User user = userRepository.findByToken(token).orElseThrow(() -> new AppException(ErrorCode.TOKEN_NOT_FOUND));;
-        user.setToken(null);
-        userRepository.save(user);
-        tokenRepository.delete(token);
+//        User user = userRepository.findByToken(token).orElseThrow(() -> new AppException(ErrorCode.TOKEN_NOT_FOUND));;
+//        user.setToken(null);
+//        userRepository.save(user);
+//        tokenRepository.delete(token);
         return  "Delete token success";
     }
 

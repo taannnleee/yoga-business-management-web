@@ -81,8 +81,8 @@ const OrderManagement = () => {
                         // Đăng ký lắng nghe kênh /topic/admin
                         stompClient.subscribe("/topic/admin", (message) => {
                             if (message.body) {
-                                const updatedOrder = JSON.parse(message.body);
-                                console.log(updatedOrder);
+                                // const updatedOrder = JSON.parse(message.body);
+                                // console.log(updatedOrder);
 
                                 // setOrders((prevOrders) => {
                                 //     return [...prevOrders, updatedOrder];

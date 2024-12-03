@@ -6,6 +6,7 @@ import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { FaArrowAltCircleUp, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import CustomerComment from "@/components/organisms/CustomerComment";
 import SimilarProduct from "@/components/organisms/SimilarProduct";
+import Button from "@/components/atom/Button";
 
 interface IProductDetailTemplateProps {
     product: any;
@@ -18,7 +19,19 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [isDescriptionVisible, setIsDescriptionVisible] = useState(true);  // Điều khiển trạng thái của mô tả sản phẩm
     const [isCommentVisible, setIsCommentVisible] = useState(true);  // Điều khiển trạng thái của mô tả sản phẩm
+    const [activeButton, setActiveButton] = useState<string>("Tất cả");
 
+    // Toggle button click
+    const handleButtonClick = (button: string) => {
+        setActiveButton(button);
+        if (button === "Tất cả") {
+            // Do something for "Tất cả"
+        } else if (button === "Bình luận") {
+            // Do something for "Bình luận"
+        } else if (button === "Đánh giá") {
+            // Do something for "Đánh giá"
+        }
+    };
     const handleVariantSelect = (variantType: string, value: string, image: string) => {
         const updatedVariant = {
             ...currentVariant,
@@ -114,6 +127,26 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                 >
                     {isCommentVisible ? <FaChevronUp size={20}/> : <FaChevronDown size={20}/>}
                 </button>
+            </div>
+            <div className="flex items-center justify-between w-[800px] space-x-8">
+                <Button
+                    className={`mt-4 ${activeButton === "Tất cả" ? "bg-black-500" : "bg-red-300"}`}
+                    onClick={() => handleButtonClick("Tất cả")}
+                >
+                    Tất cả
+                </Button>
+                <Button
+                    className={`mt-4 ${activeButton === "Bình luận" ? "bg-black-500" : "bg-red-300"}`}
+                    onClick={() => handleButtonClick("Bình luận")}
+                >
+                    Bình luận
+                </Button>
+                <Button
+                    className={`mt-4 ${activeButton === "Đánh giá" ? "bg-black-500" : "bg-red-300"}`}
+                    onClick={() => handleButtonClick("Đánh giá")}
+                >
+                    Đánh giá
+                </Button>
             </div>
             {isCommentVisible && (
                 <div className="my-4">

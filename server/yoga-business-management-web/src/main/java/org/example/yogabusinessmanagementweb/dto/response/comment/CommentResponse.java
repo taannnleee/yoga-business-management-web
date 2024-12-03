@@ -19,7 +19,7 @@ import java.util.Map;
 public class CommentResponse {
 
     Long id;
-    int ratePoint;
+    Integer ratePoint;
     String content;
     UserCommentResponse user;
     @JsonBackReference

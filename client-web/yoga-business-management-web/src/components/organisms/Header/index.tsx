@@ -239,17 +239,16 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
           </div>
 
         </div>
-
-        <div className="flex laptop:hidden px-2">
-          <SearchBar
-            placeholder="Search for anything, any words"
-            onChange={() => {
-            }}
-            onCategoryChange={() => {
-            }}
-            category=""
-          />
-        </div>
+        {/*<div className="flex laptop:hidden px-2">*/}
+        {/*  <SearchBar*/}
+        {/*    placeholder="Search for anything, any words"*/}
+        {/*    onChange={() => {*/}
+        {/*    }}*/}
+        {/*    onCategoryChange={() => {*/}
+        {/*    }}*/}
+        {/*    category=""*/}
+        {/*  />*/}
+        {/*</div>*/}
       </div>
     </>
   );

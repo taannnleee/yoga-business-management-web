@@ -16,8 +16,10 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findById(Long id);
     Page<Comment> findAll(Pageable pageable);
-    Page<Comment> findByProductAndRatePointGreaterThan(Pageable pageable, Product product, int ratePoint);
+    Page<Comment> findByProductAndRatePoint(Pageable pageable, Product product, int ratePoint);
     List<Comment> findByParentCommentId(Long parentCommentId);
-    Page<Comment> findByProduct(Pageable pageable, Product product);
+    Page<Comment> findByProductAndRatePointIsNull(Pageable pageable, Product product);
+    List<Comment> findByProduct(Product product);
+    Page<Comment> findByProduct(Product product, Pageable pageable);
 
 }

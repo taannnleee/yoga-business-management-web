@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import { LeftSideGetAllProduct } from "@/components/template/LeftSide/LeftSideGetAllProduct";
 import { RightSideGetAllProduct } from "@/components/template/RightSide/RightSideGetAllProduct";
 import { LeftSideGetAllProductSkeleton } from "@/components/template/LeftSide/LeftSideGetAllProductSkeleton";
-
+import { useParams } from 'next/navigation'
 const ProductPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(4); // Default items per page
     const [totalItems, setTotalItems] = useState(1); // Total number of items
-
+    const [searchTerm,setSearchTerm] = useState(useParams().keyword || '');
     // Simulating data fetching and setting initial states
     useEffect(() => {
         const fetchData = async () => {
@@ -37,6 +37,8 @@ const ProductPage: React.FC = () => {
                 {/* Right Side - Show Product Component */}
                 <div className="flex-grow">
                     <RightSideGetAllProduct
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
                         setItemsPerPage={setItemsPerPage}
                         page={page}
                         itemsPerPage={itemsPerPage}

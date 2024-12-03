@@ -7,7 +7,7 @@ import ConfirmDialog from "@/components/molecules/ConfirmDialog";
 import { apiURL } from "../../../constants";
 import {formatDate} from "@/utils/dateUtils";
 import StarRating from "@/components/molecules/StarRating";
-
+import { CiCircleCheck } from "react-icons/ci";
 // Define types for props
 interface IProductCommentCardProps {
     comment: {
@@ -181,15 +181,23 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                                         {comment?.user.fullname}
                                     </p>
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1">
-                                        {comment.ratePoint !== 0 &&
+                                        {comment.ratePoint !== null &&
                                             <StarRating rating={comment.ratePoint}/>}
                                     </p>
-                                    <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1 mt-5">
-                                        {comment.ratePoint !== 0 &&
-                                            `vào lúc ${formatDate(comment.createdAt)} | Phân loại hàng: ${getVariantString(comment.currentVariant)}`}
+                                    <p className="text-black-500 text-[14px] font-bold tablet:text-xs text-sm tablet:ml-1 mt-5">
+                                        {comment.ratePoint !== null && (
+                                            <>
+                                                {`vào lúc ${formatDate(comment.createdAt)} | Phân loại hàng: ${getVariantString(comment.currentVariant)} `}
+                                                <div className={"flex items-center space-x-2"}>
+                                                    <CiCircleCheck className={"text-blue-500 w-6 h-6"}/>
+                                                    <div className={"text-blue-500 "}>Đã mua hàng tại cửa hàng của chúng tôi</div>
+                                                </div>
+                                            </>
+                                        )}
                                     </p>
+
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1 mt-5">
-                                        {comment.ratePoint === 0 &&
+                                        {comment.ratePoint === null &&
                                             `vào lúc ${formatDate(comment.createdAt)}`}
                                     </p>
                                 </div>

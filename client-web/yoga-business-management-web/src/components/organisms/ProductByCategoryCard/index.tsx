@@ -246,10 +246,23 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
                                                     backgroundColor: '#a22622',
                                                 },
                                             }}
-
-                                            onClick={() => router.push(`/product-detail/${product.id}`)}
+                                            onClick={() => {
+                                                setLoading(true); // Set loading to true when button is clicked
+                                                router.push(`/product-detail/${product.id}`);
+                                            }}
+                                            disabled={loading} // Disable button while loading
                                         >
-                                            Xem chi tiết
+                                            {loading ? (
+                                                <CircularProgress
+                                                    size={24} // Adjust the size as per your design preference
+                                                    sx={{
+                                                        color: 'white',
+                                                        marginRight: '8px', // Add space between spinner and text
+                                                    }}
+                                                />
+                                            ) : (
+                                                "Xem chi tiết"
+                                            )}
                                         </Button>
                                     </div>
                                     <div className="text-center mt-2 px-4">

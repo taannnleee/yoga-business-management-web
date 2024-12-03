@@ -140,4 +140,10 @@ public class ProductServiceImpl implements ProductService {
         return GenericMapper.toListDto(productResponses, productPage);
     }
 
+    @Override
+    public void updateProduct(Product product,Double rating,Double sold) {
+        product.setAverageRating(rating);
+        product.setSold(sold);
+        productRepository.save(product);
+    }
 }

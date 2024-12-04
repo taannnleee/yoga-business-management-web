@@ -61,9 +61,9 @@ public class AuthencationService {
 
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
 
-//        if(user.isStatus()==false){
-//            throw new AppException(ErrorCode.USER_NOT_ACTIVE);
-//        }
+        if(user.isStatus()==false){
+            throw new AppException(ErrorCode.USER_NOT_ACTIVE);
+        }
 
 
         String accessToken =  jwtService.generateToken(user);
@@ -79,7 +79,6 @@ public class AuthencationService {
                         .refreshToken(refreshToken)
                         .user(user)
                         .build();
-
 
         return TokenRespone.builder()
                 .accesstoken(savedToken.getAccessToken())
@@ -111,38 +110,42 @@ public class AuthencationService {
         return "Token revoked and deleted!";
     }
 
-//    public TokenRespone authenticationAdmin(LoginRequest loginRequest){
-//        try {
-//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//        }
-//        catch (BadCredentialsException e) {
-//            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
-//        }
-//
-//        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
-//
-//        if(!(ERole.ADMIN.name().equals(user.getRoles()))){
-//            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
-//        }
-//
-//
-//        String accessToken =  jwtService.generateToken(user);
-//        String refresh_token =  jwtService.generateRefreshToken(user);
-//
-//        //save token vào db
-//        Token savedToken = tokenService.save(Token.builder()
-//                .username(user.getUsername())
-//                .accessToken(accessToken)
-//                .refreshToken(refresh_token)
-//                .build());
-//        user.setToken(savedToken);
-//        userRepository.save(user);
-//        return TokenRespone.builder()
-//                .accesstoken(user.getToken().getAccessToken())
-//                .refreshtoken(user.getToken().getRefreshToken())
-//                .userid(user.getId())
-//                .build();
-//    }
+    public TokenRespone authenticationAdmin(LoginRequest loginRequest){
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        }
+        catch (BadCredentialsException e) {
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
+
+    //        if(user.isStatus()==false){
+    //            throw new AppException(ErrorCode.USER_NOT_ACTIVE);
+    //        }
+
+
+        String accessToken =  jwtService.generateToken(user);
+        String refreshToken =  jwtService.generateRefreshToken(user);
+
+        //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
+        revokeAllUserTokens(user);
+        saveUserToken(user, accessToken,refreshToken);
+
+        Token savedToken = Token.builder()
+                .username(user.getUsername())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .user(user)
+                .build();
+
+
+        return TokenRespone.builder()
+                .accesstoken(savedToken.getAccessToken())
+                .refreshtoken(savedToken.getRefreshToken())
+                .userid(user.getId())
+                .build();
+    }
 
     public TokenRespone refresh(HttpServletRequest loginRequest) {
         //validate xem token cos rỗng không

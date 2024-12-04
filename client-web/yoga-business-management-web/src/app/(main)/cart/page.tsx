@@ -43,12 +43,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`);
 
             const data = response.data.data;
             const { totalPrice, totalItem, cartItem } = data;

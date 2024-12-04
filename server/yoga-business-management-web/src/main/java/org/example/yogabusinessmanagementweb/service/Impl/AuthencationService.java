@@ -180,7 +180,7 @@ public class AuthencationService {
 
         return "Token revoked and deleted!";
     }
-    
+
     public String sendOTP(String email) {
         // Check if email exists
         User user = userService.findByEmail(email);

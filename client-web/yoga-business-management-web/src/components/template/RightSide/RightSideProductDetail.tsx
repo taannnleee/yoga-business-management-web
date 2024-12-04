@@ -66,7 +66,9 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                 <Typography variant="subtitle1" className="text-gray-600 flex justify-between items-center space-x-4">
                     {/* Rating */}
                     <div className="flex items-center space-x-2">
-                        <span className="font-bold text-black">{product?.averageRating}</span>
+                        <span className="font-bold text-black">
+                            {product?.averageRating?.toFixed(1)}
+                        </span>
                         <span className="text-yellow-500">
                             {Array.from({length: 5}, (_, index) => {
                                 if (product?.averageRating > index + 0.5) {

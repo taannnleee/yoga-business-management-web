@@ -6,7 +6,9 @@ import org.example.yogabusinessmanagementweb.common.entities.Comment;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.common.mapper.CommentMapper;
+import org.example.yogabusinessmanagementweb.common.mapper.GenericMapper;
 import org.example.yogabusinessmanagementweb.dto.request.comment.CommentCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.ListDto;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentOrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
@@ -37,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentResponse> byProduct(Pageable pageable,String id,int ratePoint) {
+    public ListDto<List<CommentResponse>> byProduct(Pageable pageable, String id, int ratePoint) {
         Product product = productService.getProductById(id);
         Page<Comment> commentPage;
         if(ratePoint == -1) {
@@ -54,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
         for (CommentResponse commentResponse : topLevelComments) {
             setReplies(commentResponse);
         }
-        return topLevelComments;
+        return GenericMapper.toListDto(topLevelComments,commentPage);
     }
     private void setReplies(CommentResponse commentResponse) {
         // Assuming you have a method in the repository to fetch replies based on the parent comment's ID

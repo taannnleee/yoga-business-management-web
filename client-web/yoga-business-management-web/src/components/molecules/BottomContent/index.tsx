@@ -23,7 +23,7 @@ const BottomContent: React.FC<BottomContentProps> = ({
     return (
         <div className="pr-2 pl-4 px-2 flex justify-between items-center my-20">
             <span className="w-[30%] text-small text-default-400">
-                {"Tổng sản phẩm phù hợp : " + totalItems}
+                {"Tổng thông tin phù hợp : " + totalItems}
             </span>
             <Pagination
                 isCompact

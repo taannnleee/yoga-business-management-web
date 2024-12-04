@@ -8,6 +8,7 @@ import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.comment.CommentCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.ListDto;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentOrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.comment.CommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
@@ -20,6 +21,7 @@ import org.example.yogabusinessmanagementweb.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,15 +62,20 @@ public class CommentController {
     @GetMapping("/by-product/{id}")
     public ApiResponse<?> getByProduct(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy, // Field to sort by
+            @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "-1") int ratePoint,
             @PathVariable String id)
     {
             // Tạo Pageable từ trang và kích thước
-            Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(page - 1, pageSize,
+                sortDir.equalsIgnoreCase("asc")
+                        ? Sort.by(sortBy).ascending()
+                        : Sort.by(sortBy).descending());
 
             // Gọi service để lấy dữ liệu phân trang
-            List<CommentResponse> commentResponseList = commentService.byProduct(pageable,id,ratePoint);
+            ListDto<List<CommentResponse>> commentResponseList = commentService.byProduct(pageable,id,ratePoint);
 
             // Trả về kết quả
             return new ApiResponse<>(HttpStatus.OK.value(), "Get all comments successfully", commentResponseList);

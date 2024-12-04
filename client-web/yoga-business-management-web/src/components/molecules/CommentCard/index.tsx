@@ -8,6 +8,7 @@ import { apiURL } from "../../../constants";
 import {formatDate} from "@/utils/dateUtils";
 import StarRating from "@/components/molecules/StarRating";
 import { CiCircleCheck } from "react-icons/ci";
+import Button from "@/components/atom/Button";
 // Define types for props
 interface IProductCommentCardProps {
     comment: {

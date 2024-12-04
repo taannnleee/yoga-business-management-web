@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.common.mapper;
 
+import jakarta.validation.constraints.Null;
 import org.example.yogabusinessmanagementweb.common.entities.Comment;
 import org.example.yogabusinessmanagementweb.common.entities.Topic;
 import org.example.yogabusinessmanagementweb.dto.request.comment.CommentCreationRequest;
@@ -29,7 +30,6 @@ public interface CommentMapper {
 //    @Mapping(target = "parentComment", ignore = true)  // Prevent mapping the parentComment directly
 //    @Mapping(target = "replies", ignore = true)
     CommentOrderResponse toCommentOrderResponse(Comment comment);
-
 
     Comment toComment(CommentCreationRequest request);
 }

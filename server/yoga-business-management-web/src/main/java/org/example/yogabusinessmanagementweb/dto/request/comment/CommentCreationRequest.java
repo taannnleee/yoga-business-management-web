@@ -11,7 +11,7 @@ import java.util.Map;
 public class CommentCreationRequest {
 
     String content;
-    int ratePoint;
+    Integer ratePoint = null;
     String productId;
     // Mặc định parentComment = null
     String parentCommentId = null;

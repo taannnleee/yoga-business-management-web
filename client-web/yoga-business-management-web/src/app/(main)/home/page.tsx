@@ -9,6 +9,7 @@ import { ProductByCategoryCard } from "@/components/organisms/ProductByCategoryC
 import { API_URL } from "@/config/url";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/components/checkToken";
 interface IHomePageProps { }
 const imageUrls = [
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720",

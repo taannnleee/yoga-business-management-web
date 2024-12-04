@@ -26,7 +26,6 @@ public class Token extends AbstractEntity<Long> implements Serializable {
     String refreshToken;
     String OTP;
     boolean revoked;
-
     boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Typography, Container, Grid, CssBaseline, Button } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/components/checkToken";
 import { API_URL } from "@/config/url";
+
 interface IProduct {
     id: string;
     title: string;
@@ -41,26 +43,15 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/cart/show-cart`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`);
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch cart");
-            }
+            const data = response.data.data;
+            const { totalPrice, totalItem, cartItem } = data;
 
-            const data = await response.json();
-            const { totalPrice, totalItem, cartItem } = data.data;
+            console.log('Item:', data);
 
-            console.log('Item:');
-            console.log(data.data)
             // Chuyển đổi dữ liệu giỏ hàng vào dạng cần thiết
             const formattedCartItems = cartItem.map((item: any) => ({
-
                 id: item.id,
                 quantity: item.quantity,
                 totalPrice: item.totalPrice,
@@ -72,11 +63,9 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                     variants: item.product.variants,
                     subCategory: item.product.subCategory.name,
                 },
-
             }));
 
-
-            setCarts({ id: data.data.id, totalPrice, totalItem, cartItem: formattedCartItems });
+            setCarts({ id: data.id, totalPrice, totalItem, cartItem: formattedCartItems });
         } catch (err: any) {
             setError(err.message);
         } finally {

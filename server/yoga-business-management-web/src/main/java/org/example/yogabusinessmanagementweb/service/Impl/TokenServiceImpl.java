@@ -9,8 +9,10 @@ import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.TokenService;
 import org.example.yogabusinessmanagementweb.common.entities.Token;
 import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class TokenServiceImpl implements TokenService {
     TokenRepository tokenRepository;
     UserRepository userRepository;
+    UserService userService;
 
     @Override
     public Token save(Token token) {
@@ -49,4 +52,11 @@ public class TokenServiceImpl implements TokenService {
     public Token getTokenByUsername(String username) {
         return tokenRepository.findByUsername(username).orElse(null);
     }
+
+    @Override
+    public List<Token> getAllTokensByUserName(String userName) {
+        User user =  userService.findUserByUserName(userName);
+        return tokenRepository.getAllByUser(user);
+    }
+
 }

@@ -52,6 +52,7 @@ public class AuthenticationController {
     public ApiResponse<TokenRespone> refreshToken(HttpServletRequest request) {
         return new ApiResponse<>(HttpStatus.OK.value(), "Refresh token success", authencationService.refresh(request));
     }
+
     @PostMapping("/login")
     public ApiResponse<TokenRespone> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
@@ -62,32 +63,31 @@ public class AuthenticationController {
         }
     }
 
-//    @PostMapping("/login-admin")
-//    public ApiResponse<TokenRespone> loginAdmin(HttpServletRequest request,@Valid @RequestBody LoginRequest loginRequest) {
-//        try {
-//            TokenRespone tokenRespone = authencationService.authenticationAdmin(loginRequest);
-//
-//
-//
-//            WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
-////            webSocketService.registerAdminSession(session);
-//            return new ApiResponse<>( HttpStatus.OK.value(),"Login success",tokenRespone);
-//        }catch (BadCredentialsException e){
-//            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");
-//        }
-//    }
+    @PostMapping("/login-admin")
+    public ApiResponse<TokenRespone> loginAdmin(HttpServletRequest request,@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            TokenRespone tokenRespone = authencationService.authenticationAdmin(loginRequest);
 
-//    @PostMapping("/logout-admin")
-//    public ApiResponse<?> logoutAdmin(HttpServletRequest request) {
-//        WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
-//
-//        if (session != null) {
-//            webSocketService.unregisterAdminSession(session);  // Hủy đăng ký session admin
-//            return new ApiResponse<>(HttpStatus.OK.value(), "Logout success");
-//        } else {
-//            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "No active WebSocket session found");
-//        }
-//    }
+
+
+            WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
+//            webSocketService.registerAdminSession(session);
+            return new ApiResponse<>( HttpStatus.OK.value(),"Login success",tokenRespone);
+        }catch (BadCredentialsException e){
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");
+        }
+    }
+
+    @PostMapping("/logout-admin")
+    public ApiResponse<?> logoutAdmin(HttpServletRequest request) {
+        WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
+
+        if (session != null) {
+            return new ApiResponse<>(HttpStatus.OK.value(), "Logout success");
+        } else {
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "No active WebSocket session found");
+        }
+    }
 
     @PostMapping("/logout")
     public ApiResponse<?> logout(HttpServletRequest request) {

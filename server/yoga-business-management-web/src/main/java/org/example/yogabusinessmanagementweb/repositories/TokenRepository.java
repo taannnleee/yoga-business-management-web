@@ -1,6 +1,7 @@
 package org.example.yogabusinessmanagementweb.repositories;
 
 import org.example.yogabusinessmanagementweb.common.entities.Token;
+import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,9 @@ public interface TokenRepository extends JpaRepository<Token, Long>  {
     List<Token> findAllValidTokenByUser(BigInteger id);
 
     Optional<Token> findByAccessToken(String accessToken);
+
+    Optional<Token> findByRefreshToken(String refreshToken);
+
+    List<Token> getAllByUser(User user);
+
 }

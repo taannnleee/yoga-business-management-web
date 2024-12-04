@@ -67,16 +67,16 @@ public class AuthencationService {
 
 
         String accessToken =  jwtService.generateToken(user);
-        String refresh_token =  jwtService.generateRefreshToken(user);
+        String refreshToken =  jwtService.generateRefreshToken(user);
 
         //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
         revokeAllUserTokens(user);
-        saveUserToken(user, accessToken);
+        saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
                         .username(user.getUsername())
                         .accessToken(accessToken)
-                        .refreshToken(refresh_token)
+                        .refreshToken(refreshToken)
                         .user(user)
                         .build();
 
@@ -86,6 +86,29 @@ public class AuthencationService {
                 .refreshtoken(savedToken.getRefreshToken())
                 .userid(user.getId())
                 .build();
+    }
+
+    public String logout(HttpServletRequest request) {
+
+        // Lấy accessToken
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Authorization header is missing or invalid");
+        }
+        String token = authorizationHeader.substring(7);
+
+        // Extract user từ token
+        final String userName = jwtService.extractUsername(token, ACCESSTOKEN);
+
+        // Revoke quyền của accessToken
+        jwtService.revokeToken(token, ACCESSTOKEN);
+
+        // Kiểm tra và xoóa token trong DB
+//        Token tokenCurrent = tokenService.getTokenByUsername(userName);
+//        if (tokenCurrent != null) {
+//            tokenService.delete(tokenCurrent);
+//        }
+        return "Token revoked and deleted!";
     }
 
 //    public TokenRespone authenticationAdmin(LoginRequest loginRequest){
@@ -135,11 +158,14 @@ public class AuthencationService {
 
 
         //validate xem token có hợp lệ không
-        if(!jwtService.isValid(refresh_token, REFRESHTOKEN,user)){
+        if(!jwtService.isValidRefresh(refresh_token, REFRESHTOKEN,user)){
             throw new AppException(ErrorCode.TOKEN_INVALID);
         }
 
         String accessToken =  jwtService.generateToken(user);
+
+        // Lưu token mới vào cơ sở dữ liệu
+        saveUserToken(user, accessToken, refresh_token);
 
         return TokenRespone.builder()
                 .accesstoken(accessToken)
@@ -148,38 +174,6 @@ public class AuthencationService {
                 .build();
     }
 
-    public String logout(HttpServletRequest request) {
-        // Validate xem token có rỗng không
-//        String refresh_token = request.getHeader("x-token");
-//        if (StringUtils.isBlank(refresh_token)) {
-//            throw new AppException(ErrorCode.TOKEN_EMPTY);
-//        }
-
-        // Lấy accessToken
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("Authorization header is missing or invalid");
-        }
-        String token = authorizationHeader.substring(7);
-
-        // Extract user từ token
-        final String userName = jwtService.extractUsername(token, ACCESSTOKEN);
-
-        // Revoke quyền của accessToken
-        jwtService.revokeToken(token, ACCESSTOKEN);
-
-
-
-        // Kiểm tra token trong DB
-        Token tokenCurrent = tokenService.getTokenByUsername(userName);
-
-        // Xóa token trong DB
-        if (tokenCurrent != null) {
-            tokenService.delete(tokenCurrent);
-        }
-
-        return "Token revoked and deleted!";
-    }
 
     public String sendOTP(String email) {
         // Check if email exists
@@ -261,10 +255,11 @@ public class AuthencationService {
         cartRepository.save(cart);
 
     }
-    private void saveUserToken(User user, String jwtToken) {
+    private void saveUserToken(User user, String jwtToken,String refreshToken) {
         var token = Token.builder()
                 .user(user)
                 .accessToken(jwtToken)
+                .refreshToken(refreshToken)
                 .expired(false)
                 .revoked(false)
                 .build();

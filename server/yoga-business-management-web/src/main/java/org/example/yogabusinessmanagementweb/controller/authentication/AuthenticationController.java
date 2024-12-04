@@ -52,6 +52,7 @@ public class AuthenticationController {
     public ApiResponse<TokenRespone> refreshToken(HttpServletRequest request) {
         return new ApiResponse<>(HttpStatus.OK.value(), "Refresh token success", authencationService.refresh(request));
     }
+
     @PostMapping("/login")
     public ApiResponse<TokenRespone> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {

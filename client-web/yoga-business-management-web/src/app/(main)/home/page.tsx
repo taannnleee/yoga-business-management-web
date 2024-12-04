@@ -55,7 +55,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    // "Authorization": `Bearer ${token}`,
                 },
             });
 

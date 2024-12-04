@@ -48,9 +48,6 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     List<GroupHasUser> groupHasUsers;
 
 
-    @OneToOne
-    Token token;
-
     @OneToMany()
     List<UserHasYogaWorkout> yogaWorkouts;
 

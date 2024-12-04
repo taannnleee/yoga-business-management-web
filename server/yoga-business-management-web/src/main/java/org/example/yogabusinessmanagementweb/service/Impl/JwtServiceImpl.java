@@ -1,4 +1,8 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
+import org.example.yogabusinessmanagementweb.common.entities.Token;
+import org.example.yogabusinessmanagementweb.repositories.TokenRepository;
+import org.example.yogabusinessmanagementweb.service.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,6 +33,10 @@ import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class JwtServiceImpl implements JwtService {
+    TokenService tokenService;
+    @Autowired
+    TokenRepository tokenRepository;
+
     @Value("${jwt.expiryTime}")
     String expirytime  ;
 
@@ -63,9 +71,24 @@ public class JwtServiceImpl implements JwtService {
 
 
     @Override
-    public Boolean isValid(String token,ETokenType tokenType, UserDetails userDetails) {
-        final String username = extractUsername(token,tokenType);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpried(token,tokenType)) ;
+    public Boolean isValid(String token, ETokenType tokenType, UserDetails userDetails) {
+        final String username = extractUsername(token, tokenType);
+
+        // Tìm token từ DB
+        Token tokenEntity = tokenRepository.findByAccessToken(token).orElse(null);
+
+        // Nếu token không tồn tại hoặc đã bị thu hồi/ hết hạn, trả về false
+        if (tokenEntity == null) {
+            return false;
+        }
+
+        // Kiểm tra xem token có bị thu hồi hoặc hết hạn không
+        if (tokenEntity.isRevoked() || tokenEntity.isExpired()) {
+            return false;  // Token đã bị thu hồi hoặc hết hạn
+        }
+
+        // Kiểm tra username và hết hạn của token
+        return username.equals(userDetails.getUsername()) && !isTokenExpried(token, tokenType);
     }
 
     private boolean isTokenExpried(String token, ETokenType tokenType) {
@@ -130,24 +153,24 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public void revokeToken(String token, ETokenType tokenType) {
-        // Kiểm tra xem token có hợp lệ không
-//        if (isTokenExpried(token, tokenType)) {
-//            throw new InvalidDataAccessApiUsageException("Token is already expired");
-//        }
+        // Kiểm tra xem token có hết hạn không
+        if (isTokenExpried(token, tokenType)) {
+            throw new InvalidDataAccessApiUsageException("Token is already expired");
+        }
 
-        // Lấy thông tin claims của token hiện tại
+        // Lấy thông tin claims của token
         Claims claims = extraAllClaim(token, tokenType);
 
         // Tạo token mới với thời gian hết hạn là hiện tại để thu hồi token cũ
         Date currentDate = new Date(System.currentTimeMillis());
 
-        String newToken = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(claims.getSubject())
-                .setIssuedAt(currentDate) // Đặt thời gian phát hành mới
-                .setExpiration(currentDate) // Đặt expiration về thời gian hiện tại
-                .signWith(getKey(tokenType), SignatureAlgorithm.HS256) // Dùng khóa tương ứng với loại token
-                .compact();
+        // Tìm token trong cơ sở dữ liệu và cập nhật trạng thái
+        Token tokenEntity = tokenRepository.findByAccessToken(token).orElse(null);
 
+        if (tokenEntity != null) {
+            tokenEntity.setExpired(true);  // Đánh dấu là đã hết hạn
+            tokenEntity.setRevoked(true);  // Đánh dấu là đã thu hồi quyền
+            tokenRepository.save(tokenEntity);  // Lưu lại vào DB
+        }
     }
 }

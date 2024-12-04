@@ -1,10 +1,12 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.ERole;
+import org.example.yogabusinessmanagementweb.common.Enum.ETokenType;
 import org.example.yogabusinessmanagementweb.common.entities.Cart;
 import org.example.yogabusinessmanagementweb.dto.request.user.LoginRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.ResetPasswordRequest;
@@ -12,6 +14,7 @@ import org.example.yogabusinessmanagementweb.dto.response.token.TokenRespone;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CartRepository;
+import org.example.yogabusinessmanagementweb.repositories.TokenRepository;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.JwtService;
 import org.example.yogabusinessmanagementweb.service.TokenService;
@@ -29,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
@@ -45,6 +49,7 @@ public class AuthencationService {
     UserService userService;
     PasswordEncoder passwordEncoder;
     EmailService emailService;
+    TokenRepository tokenRepository;
 
     public TokenRespone authentication(LoginRequest loginRequest){
         try {
@@ -64,53 +69,57 @@ public class AuthencationService {
         String accessToken =  jwtService.generateToken(user);
         String refresh_token =  jwtService.generateRefreshToken(user);
 
-        //save token vào db
-        Token savedToken = tokenService.save(Token.builder()
+        //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
+        revokeAllUserTokens(user);
+        saveUserToken(user, accessToken);
+
+        Token savedToken = Token.builder()
                         .username(user.getUsername())
                         .accessToken(accessToken)
                         .refreshToken(refresh_token)
-                        .build());
-        user.setToken(savedToken);
-        userRepository.save(user);
+                        .user(user)
+                        .build();
+
+
         return TokenRespone.builder()
-                .accesstoken(user.getToken().getAccessToken())
-                .refreshtoken(user.getToken().getRefreshToken())
+                .accesstoken(savedToken.getAccessToken())
+                .refreshtoken(savedToken.getRefreshToken())
                 .userid(user.getId())
                 .build();
     }
 
-    public TokenRespone authenticationAdmin(LoginRequest loginRequest){
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        }
-        catch (BadCredentialsException e) {
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
-        }
-
-        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
-
-        if(!(ERole.ADMIN.name().equals(user.getRoles()))){
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
-        }
-
-
-        String accessToken =  jwtService.generateToken(user);
-        String refresh_token =  jwtService.generateRefreshToken(user);
-
-        //save token vào db
-        Token savedToken = tokenService.save(Token.builder()
-                .username(user.getUsername())
-                .accessToken(accessToken)
-                .refreshToken(refresh_token)
-                .build());
-        user.setToken(savedToken);
-        userRepository.save(user);
-        return TokenRespone.builder()
-                .accesstoken(user.getToken().getAccessToken())
-                .refreshtoken(user.getToken().getRefreshToken())
-                .userid(user.getId())
-                .build();
-    }
+//    public TokenRespone authenticationAdmin(LoginRequest loginRequest){
+//        try {
+//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//        }
+//        catch (BadCredentialsException e) {
+//            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+//        }
+//
+//        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
+//
+//        if(!(ERole.ADMIN.name().equals(user.getRoles()))){
+//            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+//        }
+//
+//
+//        String accessToken =  jwtService.generateToken(user);
+//        String refresh_token =  jwtService.generateRefreshToken(user);
+//
+//        //save token vào db
+//        Token savedToken = tokenService.save(Token.builder()
+//                .username(user.getUsername())
+//                .accessToken(accessToken)
+//                .refreshToken(refresh_token)
+//                .build());
+//        user.setToken(savedToken);
+//        userRepository.save(user);
+//        return TokenRespone.builder()
+//                .accesstoken(user.getToken().getAccessToken())
+//                .refreshtoken(user.getToken().getRefreshToken())
+//                .userid(user.getId())
+//                .build();
+//    }
 
     public TokenRespone refresh(HttpServletRequest loginRequest) {
         //validate xem token cos rỗng không
@@ -140,21 +149,36 @@ public class AuthencationService {
     }
 
     public String logout(HttpServletRequest request) {
-        //validate xem token cos rỗng không
-        String refresh_token = request.getHeader("x-token");
-        if(StringUtils.isBlank(refresh_token)){
-            throw new AppException(ErrorCode.TOKEN_EMPTY);
+        // Validate xem token có rỗng không
+//        String refresh_token = request.getHeader("x-token");
+//        if (StringUtils.isBlank(refresh_token)) {
+//            throw new AppException(ErrorCode.TOKEN_EMPTY);
+//        }
+
+        // Lấy accessToken
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Authorization header is missing or invalid");
         }
+        String token = authorizationHeader.substring(7);
 
-        //extract user from token
-        final String userName = jwtService.extractUsername(refresh_token, REFRESHTOKEN);
+        // Extract user từ token
+        final String userName = jwtService.extractUsername(token, ACCESSTOKEN);
 
-        //check token in db
+        // Revoke quyền của accessToken
+        jwtService.revokeToken(token, ACCESSTOKEN);
+
+
+
+        // Kiểm tra token trong DB
         Token tokenCurrent = tokenService.getTokenByUsername(userName);
 
-        //delete token
-        tokenService.delete(tokenCurrent);
-        return "delete!";
+        // Xóa token trong DB
+        if (tokenCurrent != null) {
+            tokenService.delete(tokenCurrent);
+        }
+
+        return "Token revoked and deleted!";
     }
 
     public String sendOTP(String email) {
@@ -237,37 +261,24 @@ public class AuthencationService {
         cartRepository.save(cart);
 
     }
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .accessToken(jwtToken)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
 
-
-//    public String resetPassword(String secretKey) {
-//        final String userName = jwtService.extractUsername(secretKey, RESETTOKEN);
-//        User user = userService.findByUserName(userName).orElse(null);
-//        if(!jwtService.isValid(secretKey, RESETTOKEN, user)){
-//            throw new InvalidDataAccessApiUsageException("Token is invalid");
-//        }
-//        return "reset";
-//    }
-
-//    public String changePassword(ResetPasswordDTO request) {
-//        User user = isValidUserByToken(request.getSecretKey());
-//        if(!request.getPassword().equals(request.getConfirmPassword())){
-//            throw new InvalidDataAccessApiUsageException("Password not match");
-//        }
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
-//        userService.saveUser(user);
-//        return "Changed";
-//    }
-//    private User isValidUserByToken(String secretKey) {
-//        final String userName = jwtService.extractUsername(secretKey, RESETTOKEN);
-//        User user = userService.findByUserName(userName).orElse(null);
-//
-//        if(!user.isEnabled()){
-//            throw new InvalidDataAccessApiUsageException("User is active");
-//        }
-//
-//        if(!jwtService.isValid(secretKey, RESETTOKEN, user)){
-//            throw new InvalidDataAccessApiUsageException("Token is invalid");
-//        }
-//        return user;
-//    }
+    private void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(BigInteger.valueOf(user.getId()));
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+    }
 }

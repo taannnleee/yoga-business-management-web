@@ -4,6 +4,8 @@ import org.example.yogabusinessmanagementweb.common.Enum.ETokenType;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Map;
+
 public interface JwtService {
     String generateRefreshToken(User user);
     String generateResetToken(User user);

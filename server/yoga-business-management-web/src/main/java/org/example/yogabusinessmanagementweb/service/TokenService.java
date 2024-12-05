@@ -7,8 +7,5 @@ import java.util.List;
 
 public interface TokenService {
 
-    Token save(Token token);
-    String delete(Token token);
-    Token getTokenByUsername(String username);
     List<Token> getAllTokensByUserName(String userName);
 }

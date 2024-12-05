@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.*;
 
@@ -70,7 +74,7 @@ public class AuthencationService {
         String refreshToken =  jwtService.generateRefreshToken(user);
 
         //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
-        revokeAllUserTokens(user);
+//        revokeAllUserTokens(user);
         saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
@@ -129,7 +133,7 @@ public class AuthencationService {
         String refreshToken =  jwtService.generateRefreshToken(user);
 
         //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
-        revokeAllUserTokens(user);
+//        revokeAllUserTokens(user);
         saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
@@ -190,14 +194,17 @@ public class AuthencationService {
         String OTP = OTPGenerator.generateOTP();
         emailService.sendEmail(email, EMessage.TITLE_OTP.getValue(), EMessage.TEXT_EMAIL_OTP.getValue() + OTP);
 
-        // Save OTP into database
-        Token token = tokenService.getTokenByUsername(user.getUsername());
-        if (token == null) {
-            token = new Token();
-            token.setUsername(user.getUsername());
-        }
-        token.setOTP(OTP);
-        tokenService.save(token);
+        //
+        user.setOTP(OTP);
+        // Bước 1: Lấy thời gian hiện tại
+        LocalDateTime currentTime = LocalDateTime.now();
+        // Bước 2: Thêm 2 phút vào thời gian hiện tại
+        LocalDateTime expirationTime = currentTime.plusMinutes(2);
+        // Bước 3: Chuyển đổi LocalDateTime thành java.util.Date
+        Date expirationDate = Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        user.setExpired(expirationDate);
+        userRepository.save(user);
 
         // Return success response
         System.out.println("OTP sent to email: " + email);
@@ -205,43 +212,11 @@ public class AuthencationService {
 
     }
 
-    public void resetPassword(String OTP, String email) {
-        User user = userService.findByEmail(email);
-        Token token = tokenService.getTokenByUsername(user.getUsername());
-        if (token == null) {
-            throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
-        }
-
-        if (!OTP.equals(token.getOTP())) {
-            throw new AppException(ErrorCode.OTP_INVALID);
-        }
-    }
-
-    public String changePassword(ResetPasswordRequest request) {
-
-        User user = userService.findByEmail(request.getEmail());
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new AppException(ErrorCode.PASS_WORD_NOT_MATCHED);
-        }
-
-        String encryptedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPassword(encryptedPassword);
-        userService.saveUser(user);
-
-        return "Password successfully changed";
-    }
-
     public void verifyOTP_register(String OTP, String email) {
 
         User user = userService.findByEmail(email);
 
-        Token token = tokenService.getTokenByUsername(user.getUsername());
-        if (token == null) {
-            throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
-        }
-
-        if (!OTP.equals(token.getOTP())) {
+        if (!OTP.equals(user.getOTP())) {
             throw new AppException(ErrorCode.OTP_INVALID);
         }
 
@@ -279,4 +254,43 @@ public class AuthencationService {
         });
         tokenRepository.saveAll(validUserTokens);
     }
+
+
+    public String changePassword(ResetPasswordRequest request) {
+
+        User user = userService.findByEmail(request.getEmail());
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASS_WORD_NOT_MATCHED);
+        }
+
+        String encryptedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encryptedPassword);
+        userService.saveUser(user);
+
+        return "Password successfully changed";
+    }
+
+    public void checkOtpChangePassWord(@Valid String otp, String email) {
+        User user = userService.findByEmail(email);
+
+        if (!otp.equals(user.getOTP())) {
+            throw new AppException(ErrorCode.OTP_INVALID);
+        }
+    }
+
+//////////////////////////////////////////////////////////////////////////////////
+//    public void resetPassword(String OTP, String email) {
+//        User user = userService.findByEmail(email);
+//        Token token = tokenService.getTokenByUsername(user.getUsername());
+//        if (token == null) {
+//            throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
+//        }
+//
+//        if (!OTP.equals(token.getOTP())) {
+//            throw new AppException(ErrorCode.OTP_INVALID);
+//        }
+//    }
+//
+
 }

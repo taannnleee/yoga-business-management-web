@@ -22,13 +22,14 @@ interface MyListAddressModalProps {
 }
 
 const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
-                                                                   isModalOpen,
-                                                                   closeModal,
-                                                                   openAddAddressModal,
-                                                                   onAddressSelect, // Add onAddressSelect here
-                                                               }) => {
+    isModalOpen,
+    closeModal,
+    openAddAddressModal,
+    onAddressSelect, // Add onAddressSelect here
+}) => {
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+
     const [loading, setLoading] = useState<boolean>(true);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
 
@@ -48,9 +49,9 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
             if (data.status === 200) {
                 const fetchedAddresses = data.data.map((address: any) => ({
                     id: address.id,
-                    fullName: address.nameDelivery || "Tên người nhận",
-                    phone: address.phoneNumberDelivery || "Chưa có số điện thoại",
-                    additionalInfo: "Thông tin thêm",
+                    fullName: address.nameDelivery || "",
+                    phone: address.phoneNumberDelivery || "",
+                    additionalInfo: "",
                     street: address.street,
                     district: address.district,
                     city: address.city,

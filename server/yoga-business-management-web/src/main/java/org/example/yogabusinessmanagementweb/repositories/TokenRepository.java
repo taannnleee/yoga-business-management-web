@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long>  {
-    Optional<Token> findByUsername(String username);
 
     @Query(value = """
       select t from Token t inner join User u\s

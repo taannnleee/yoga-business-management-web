@@ -56,4 +56,10 @@ public class UserController {
 
     }
 
+    @GetMapping("get-email-by-username")
+    public ApiResponse<?> getEmailByUserName(@RequestParam String userName, HttpServletRequest request){
+        String email =  userService.getEmailByUserName(userName,request);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get email by user name successfully",email);
+    }
+
 }

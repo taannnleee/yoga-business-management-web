@@ -94,21 +94,42 @@ public class AuthenticationController {
         return new ApiResponse<>(HttpStatus.OK.value(), "Logout success", authencationService.logout(request));
     }
 
-    @PostMapping("/forgot-password")
-    public ApiResponse<?> forgotPassword(@Valid @RequestBody String email) {
-        String result = authencationService.sendOTP(email);
-        return new ApiResponse<>(HttpStatus.OK.value(), "Success"+result);
+
+    @PostMapping("/send-otp")
+    public ApiResponse<?> sendOtp(@Valid @RequestParam String email) {
+        String sendOtp =  authencationService.sendOTP(email);
+        return new ApiResponse<>(HttpStatus.OK.value(), sendOtp);
     }
 
-    @PostMapping("/reset-password")
-    public ApiResponse<?> resetPassword(@Valid @RequestBody String OTP, String email) {
-        authencationService.resetPassword(OTP, email);
-        return new ApiResponse<>(HttpStatus.OK.value(), "OTP is valid. Proceed with password reset.");
+    @PostMapping("/check-otp-change-password")
+    public ApiResponse<TokenRespone> checkOtpChangePassWord(@Valid @RequestParam String OTP, @RequestParam  String email) {
+        authencationService.checkOtpChangePassWord(OTP, email);
+        return new ApiResponse<>(HttpStatus.OK.value(), "OTP is valid. Proceed with register.");
 
     }
 
     @PostMapping("/change-password")
     public ApiResponse<?> changePassword(@Valid @RequestBody ResetPasswordRequest request) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Success", authencationService.changePassword(request));
+        String changePassword =  authencationService.changePassword(request);
+        return new ApiResponse<>(HttpStatus.OK.value(), changePassword);
     }
+
+
+//    @PostMapping("/forgot-password")
+//    public ApiResponse<?> forgotPassword(@Valid @RequestParam String email) {
+//        String result = authencationService.sendOTP(email);
+//        return new ApiResponse<>(HttpStatus.OK.value(), "Success"+result);
+//    }
+
+//    @PostMapping("/reset-password")
+//    public ApiResponse<?> resetPassword(@Valid @RequestBody String OTP, String email) {
+//        authencationService.resetPassword(OTP, email);
+//        return new ApiResponse<>(HttpStatus.OK.value(), "OTP is valid. Proceed with password reset.");
+//
+//    }
+//
+//    @PostMapping("/change-password")
+//    public ApiResponse<?> changePassword(@Valid @RequestBody ResetPasswordRequest request) {
+//        return new ApiResponse<>(HttpStatus.OK.value(), "Success", authencationService.changePassword(request));
+//    }
 }

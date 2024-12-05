@@ -22,6 +22,8 @@ import java.util.List;
 @Slf4j
 public class AddressController {
     AddressService addressService;
+
+    //trả về list address
     @GetMapping("/get-address")
     public ApiResponse<?> getAddress(HttpServletRequest request) {
         List<Address > addresses = addressService.getAddressOfUser(request);

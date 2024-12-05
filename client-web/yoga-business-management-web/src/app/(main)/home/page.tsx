@@ -27,6 +27,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
     const [error, setError] = useState<string | null>(null);
     const [hasNewOrder, setHasNewOrder] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false)
+    const [productId, setProductId] = useState<number | null>(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -42,7 +43,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
 
     const handleConfirm = () => {
         setOpenModal(false);
-        router.push("/notification"); // Navigate to the notification page
+        router.push(`/product-detail/${productId}`);
     };
 
     const handleCancel = () => {
@@ -88,11 +89,14 @@ const HomePage: React.FC<IHomePageProps> = () => {
             console.log('WebSocket connected!');
             stompClient.subscribe('/topic/notification', async (message) => {
                 console.log('Received message:', message.body);
+                const data = JSON.parse(message.body);
+                const receivedProductId = data;
                 if (!hasNewOrder) {
                     toast.sendToast("Thành công", "Có thông báo về sản phẩm mới");
                     setHasNewOrder(true); // Đánh dấu đã hiển thị thông báo
                 }
-                // setOpenModal(true);  tạm thời tắt
+                setProductId(receivedProductId);
+                setOpenModal(true);
             });
         };
 

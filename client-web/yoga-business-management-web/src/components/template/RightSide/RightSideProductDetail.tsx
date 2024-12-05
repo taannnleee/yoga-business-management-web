@@ -67,16 +67,26 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                     {/* Rating */}
                     <div className="flex items-center space-x-2">
                         <span className="font-bold text-black">{product?.averageRating}</span>
-                        <span className="text-yellow-500">⭐⭐⭐⭐⭐</span> {/* You can customize stars based on rating */}
+                        <span className="text-yellow-500">
+                            {Array.from({length: 5}, (_, index) => {
+                                if (product?.averageRating > index + 0.5) {
+                                    return "⭐"; // Full star
+                                } else if (product?.averageRating > index) {
+                                    return "✩"; // Half star
+                                } else {
+                                    return "☆"; // Empty star
+                                }
+                            })}
+                        </span>
                         <span className="text-gray-500">|</span> {/* Separator | */}
 
                     </div>
 
                     {/* Separator and Views/Sales */}
                     <div className="flex items-center space-x-2">
-                        <span className="text-black font-semibold">100 Đánh giá</span>
+                        <span className="text-black font-semibold">100 Đánh giá/Bình luận</span>
                         <span className="text-gray-500">|</span> {/* Separator | */}
-                        <span className="text-black font-semibold">1000 Đã bán</span>
+                        <span className="text-black font-semibold">{product?.sold} Đã mua</span>
                     </div>
                 </Typography>
 

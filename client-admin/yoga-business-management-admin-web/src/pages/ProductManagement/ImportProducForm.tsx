@@ -14,9 +14,7 @@ interface IImportProductFormProps {
   onImportSuccess: () => void;
 }
 
-const accessToken = localStorage.getItem("accessToken");
-console.log("kkkk2")
-console.log(accessToken)
+
 
 
 const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
@@ -49,7 +47,9 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   //upload ảnh
   const uploadImage = async (file: File, color: string) => {
     setLoading(true);
-
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("kkkk2")
+    console.log(accessToken)
 
     try {
       const formData = new FormData();
@@ -87,32 +87,12 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
 
 
 
-  const getAllProductsBySub = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `${apiURL}/api/admin/get-all-product-by-subcategory/${subId}?page=${page}&size=10`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (response?.data?.status === 200) {
-        setProducts(response.data.data.content);
-        setTotalPages(response.data.data.totalPages);
-      } else {
-        setProducts([]);
-      }
-    } catch (error) {
-      console.log("Lỗi khi lấy sản phẩm:", error);
-      toast.error("Không thể tải sản phẩm.");
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const importProduct = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("kkkk2")
+    console.log(accessToken)
     try {
       const productData = {
         title,
@@ -152,10 +132,6 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    getAllProductsBySub();
-  }, [page]);
 
   return (
     <>

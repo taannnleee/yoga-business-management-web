@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField} from '@mui/material';
 import {ProductCard} from '@/components/molecules/ProductCard'; // Import ProductCard
 import BottomContent from "@/components/molecules/BottomContent";
 import {ProductCardSkeleton} from "@/components/molecules/ProductCard/skeleton"; // Import BottomContent
 import { API_URL } from "@/config/url";
+import {MagnifyingGlassCircleIcon} from "@heroicons/react/24/solid";
+import {Clear} from "@mui/icons-material";
 export const RightSideGetAllProduct: React.FC = (props) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
     const [selectedSort, setSelectedSort] = useState('');
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const { page, setPage, itemsPerPage, setItemsPerPage, totalItems, setTotalItems } = props;
+    const { page, setPage, itemsPerPage, setItemsPerPage, totalItems, setTotalItems,searchTerm, setSearchTerm } = props;
     // Pagination state
-
-
     const fetchProducts = async () => {
         setLoading(true);
         try {
@@ -28,7 +28,9 @@ export const RightSideGetAllProduct: React.FC = (props) => {
             if (selectedCategory?.id) {
                 url += `&categoryId=${selectedCategory.id}`;
             }
-
+            if (searchTerm) {
+                url += `&keyword=${encodeURIComponent(searchTerm)}`;
+            }
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -54,7 +56,7 @@ export const RightSideGetAllProduct: React.FC = (props) => {
     // Call API on dependency changes
     useEffect(() => {
         fetchProducts();
-    }, [selectedSubCategory, selectedSort, page, itemsPerPage]);
+    }, [selectedSubCategory, selectedSort, page, itemsPerPage,searchTerm]);
 
     const handleSortChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setSelectedSort(event.target.value as string);
@@ -71,6 +73,38 @@ export const RightSideGetAllProduct: React.FC = (props) => {
                 <h1 className="text-2xl font-bold text-center ml-[46px] pt-[8px]">
                     {selectedSubCategory?.name || selectedCategory?.name || 'Tất cả sản phẩm'}
                 </h1>
+                <div className="w-64 flex items-center gap-x-2">
+                    <TextField
+                        fullWidth
+                        placeholder="Tìm kiếm..."
+                        variant="outlined"
+                        size="small"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: "8px",
+                            },
+                            "& .MuiInputBase-input": {
+                                padding: "8px",
+                            },
+                        }}
+                        InputProps={{
+                            endAdornment: searchTerm && (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => setSearchTerm("")}
+                                        aria-label="clear search term"
+                                        className={"hover:text-red-500"}
+                                    >
+                                        <Clear fontSize="small" />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </div>
                 <div className="flex justify-end items-center mt-[-24px]">
                     <FormControl className="w-48 h-4">
                         <InputLabel id="sort-select-label text-center">Sắp xếp</InputLabel>
@@ -110,7 +144,8 @@ export const RightSideGetAllProduct: React.FC = (props) => {
                             renderStars={(rating) => (
                                 <div>{'⭐'.repeat(rating)}</div>
                             )}
-                            handleOpenModal={() => {}}
+                            handleOpenModal={() => {
+                            }}
                         />
                     ))
                 )}

@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'storage.dart';
 import 'config.dart';
-
+import 'package:stomp_dart_client/stomp_dart_client.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 class OrderManagement extends StatefulWidget {
   const OrderManagement({Key? key}) : super(key: key);
 
@@ -15,14 +16,51 @@ class OrderManagement extends StatefulWidget {
 class _OrderManagementState extends State<OrderManagement> {
   List<Order> orders = [];
   bool loading = true;
+  late StompClient stompClient;
+  bool connected = false;
+  String statusMessage = "Connecting socket...";
   String? error;
   String selectedStatus = 'ALL'; // Default status
   final List<String> statuses = ['ALL', 'PROCESSING', 'COMPLETED', 'CANCELLED', 'DELIVERING'];
-
   @override
   void initState() {
     super.initState();
     fetchOrdersByStatus(selectedStatus);
+    _connectWebSocket();
+  }
+  // Connect to WebSocket and STOMP server
+
+
+  void _connectWebSocket() {
+    print("hehe");
+    stompClient = StompClient(
+      config: StompConfig.sockJS(
+        url: '${Config.apiUrl}/ws', // Replace with your WebSocket URL
+        onConnect: (StompFrame frame) {
+          setState(() {
+            connected = true;
+            statusMessage = "Connected to WebSocket!";
+          });
+
+          // Subscribe to the '/topic/admin' destination
+          stompClient.subscribe(
+            destination: '/topic/admin', // Topic you're subscribing to
+            callback: (StompFrame frame) {
+              print("Received message: ${frame.body}"); // Handle the received message
+              fetchOrdersByStatus(selectedStatus); // Call your function to fetch orders
+            },
+          );
+        },
+        onWebSocketError: (error) {
+          setState(() {
+            statusMessage = "WebSocket Error: $error";
+          });
+        },
+        reconnectDelay: Duration(seconds: 5), // Automatically reconnect after 5 seconds if disconnected
+      ),
+    );
+
+    stompClient.activate(); // Activate WebSocket connection
   }
 
   // Fetch orders by status from API
@@ -122,6 +160,7 @@ class _OrderManagementState extends State<OrderManagement> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Text(statusMessage),
             // Dropdown for status
             DropdownButton<String>(
               value: selectedStatus,

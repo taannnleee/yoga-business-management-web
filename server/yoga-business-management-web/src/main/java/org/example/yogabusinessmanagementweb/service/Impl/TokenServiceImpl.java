@@ -9,8 +9,10 @@ import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.TokenService;
 import org.example.yogabusinessmanagementweb.common.entities.Token;
 import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,33 +22,13 @@ import java.util.Optional;
 public class TokenServiceImpl implements TokenService {
     TokenRepository tokenRepository;
     UserRepository userRepository;
+    UserService userService;
+
 
     @Override
-    public Token save(Token token) {
-        Optional<Token> optional =  tokenRepository.findByUsername(token.getUsername());
-        if(optional.isEmpty()) {
-            return tokenRepository.save(token);
-        }else{
-            Token currentToken = optional.get();
-            currentToken.setAccessToken(token.getAccessToken());
-            currentToken.setRefreshToken(token.getRefreshToken());
-            return tokenRepository.save(currentToken);
-        }
-
+    public List<Token> getAllTokensByUserName(String userName) {
+        User user =  userService.findUserByUserName(userName);
+        return tokenRepository.getAllByUser(user);
     }
 
-    @Override
-    public String delete(Token token) {
-
-        User user = userRepository.findByToken(token).orElseThrow(() -> new AppException(ErrorCode.TOKEN_NOT_FOUND));;
-        user.setToken(null);
-        userRepository.save(user);
-        tokenRepository.delete(token);
-        return  "Delete token success";
-    }
-
-    @Override
-    public Token getTokenByUsername(String username) {
-        return tokenRepository.findByUsername(username).orElse(null);
-    }
 }

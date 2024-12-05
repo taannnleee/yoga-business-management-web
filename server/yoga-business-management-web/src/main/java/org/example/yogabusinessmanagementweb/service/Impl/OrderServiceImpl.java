@@ -8,6 +8,7 @@ import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 import org.example.yogabusinessmanagementweb.common.mapper.GenericMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderItemMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderMapper;
+import org.example.yogabusinessmanagementweb.common.util.ConvertStringToDate;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ListDto;
@@ -47,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
     CommentService commentService;
     OrderItemMapper orderItemMapper;
     OrderMapper orderMapper;
+    ConvertStringToDate convertStringToDate;
     @Override
     public OrderResponse createOrder(HttpServletRequest request, OrderCreationRequest orderRequest) {
 
@@ -172,18 +174,9 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private Date convertStringToDate(String dateStr) {
-        try {
-            // Sử dụng định dạng ngày tháng bạn muốn
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Hoặc "yyyy-MM-dd'T'HH:mm:ss" nếu có giờ
-            return dateFormat.parse(dateStr);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date format", e);
-        }
-    }
     @Override
     public List<OrderResponse> getDailyRevenue(HttpServletRequest request,String updatedAt, Pageable pageable) {
-        Date updatedAtDate = convertStringToDate(updatedAt);
+        Date updatedAtDate = convertStringToDate.convertStringToDate(updatedAt);
         List<OrderResponse> orderResponseList = new ArrayList<>();
 
         List<Order> listOrder = orderRepository.findAllByStatusAndUpdatedAt(EStatusOrder.COMPLETED, updatedAtDate,pageable);
@@ -197,17 +190,50 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getMonthRevenue(HttpServletRequest request, String updatedAt, Pageable pageable) {
-        Date updatedAtDate = convertStringToDate(updatedAt);
-        List<OrderResponse> orderResponseList = new ArrayList<>();
+    public List<List<OrderResponse>> getMonthRevenue(HttpServletRequest request, String year, Pageable pageable) {
+        // tạo một danh sách các List<OrderResponse>
+        List<List<OrderResponse>> list = new ArrayList<>();
 
-        List<Order> listOrder = orderRepository.findAllByStatusAndYearMonth(EStatusOrder.COMPLETED, updatedAtDate,pageable);
-        for (Order order : listOrder) {
-            OrderResponse orderResponse = orderMapper.toOrderResponse(order);
-            orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
-            orderResponseList.add(orderResponse);
+        // Chuyển year từ String sang int
+        int intYear = Integer.parseInt(year);
+
+        List<String> dateList = new ArrayList<>();
+
+        // Lặp qua tất cả các tháng trong năm (từ 1 đến 12)
+        for (int month = 1; month <= 12; month++) {
+            // Định dạng thành chuỗi "yyyy-MM-dd", tháng và ngày luôn là 1
+            String date = String.format("%d-%02d-01", intYear, month);
+            //chuyển string thành date
+            Date updatedAtDate = convertStringToDate.convertStringToDate(date);
+            List<OrderResponse> orderResponseList = new ArrayList<>();
+
+            List<Order> listOrder = orderRepository.findAllByStatusAndYearMonth(EStatusOrder.COMPLETED, updatedAtDate,pageable);
+            for (Order order : listOrder) {
+                OrderResponse orderResponse = orderMapper.toOrderResponse(order);
+                orderResponse.setEPaymentStatus(order.getPayment().getEPaymentStatus());
+                orderResponseList.add(orderResponse);
+            }
+            list.add(orderResponseList);
         }
-        return orderResponseList;
+
+
+        return list;
+    }
+
+    @Override
+    public List<String> getListYear(HttpServletRequest request) {
+        List<String> listYear = new ArrayList<>();
+        List<Order> listOrder = orderRepository.findAllByStatus(EStatusOrder.COMPLETED);
+        for (Order order : listOrder) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+
+            // Định dạng ngày và chuyển năm thành String
+            String year = sdf.format(order.getUpdatedAt());
+            if (!listYear.contains(year)) {
+                listYear.add(year);
+            }
+        }
+        return listYear;
     }
 
     public OrderItem findById(String id) {

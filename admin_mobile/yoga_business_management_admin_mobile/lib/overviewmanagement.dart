@@ -24,13 +24,54 @@ class _StatisticalScreenState extends State<OverViewManagement> {
   String? error;
 
   List<_ChartData> barChartDataDay = [];
+  final List<_ChartData> barChartDataMonth = [
+    _ChartData('1', 25000000.0),
+    _ChartData('2', 30000000.0),
+    _ChartData('3', 3500000.0),
+    _ChartData('4', 4000000.0),
+    _ChartData('5', 4500000.0),
+    _ChartData('6', 5000000.0),
+    _ChartData('7', 5500000.0),
+    _ChartData('8', 6000000.0),
+    _ChartData('9', 6500000.0),
+    _ChartData('10', 7000000.0),
+    _ChartData('11', 7500000.0),
+    _ChartData('12', 8000000.0),
+    _ChartData('13', 6000000.0),
+    _ChartData('14', 9000000.0),
+    _ChartData('15', 9500000.0),
+    _ChartData('16', 10000000.0),
+    _ChartData('17', 10500000.0),
+    _ChartData('18', 11000000.0),
+    _ChartData('19', 11500000.0),
+    _ChartData('20', 12000000.0),
+    _ChartData('21', 12500000.0),
+    _ChartData('22', 1000000.0),
+    _ChartData('23', 13500000.0),
+    _ChartData('24', 40000000.0),
+    _ChartData('25', 14500000.0),
+    _ChartData('26', 15000000.0),
+    _ChartData('27', 15500000.0),
+    _ChartData('28', 1200000.0),
+    _ChartData('29', 16500000.0),
+    _ChartData('30', 17000000.0),
+  ];
+  final List<_ChartData> barChartDataYear = [
+    _ChartData('2022', 800000000),
+    _ChartData('2023', 600000000),
+    _ChartData('2024', 900000000),
+  ];
 
   @override
   void initState() {
     super.initState();
-    // Format ngày ban đầu
-    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-    fetchOrdersByStatus(formattedDate);
+    // Gán cứng dữ liệu khi khởi tạo cho ngày đầu tiên
+    barChartDataDay = [
+      _ChartData('Ngày 1', 100),
+      _ChartData('Ngày 2', 200),
+      _ChartData('Ngày 3', 150),
+    ];
+    totalPriceForDay = 450; // Tổng doanh thu cho 3 ngày
   }
 
   // Lấy access token
@@ -38,7 +79,7 @@ class _StatisticalScreenState extends State<OverViewManagement> {
     return await getToken();
   }
 
-  // Fetch dữ liệu từ API theo ngày
+  // Fetch dữ liệu từ API theo ngày (chưa cần dùng nữa)
   Future<void> fetchOrdersByStatus(String date) async {
     setState(() {
       loading = true;
@@ -83,20 +124,9 @@ class _StatisticalScreenState extends State<OverViewManagement> {
       });
     }
   }
-  
 
   // Tabs hiển thị các chế độ xem
   final List<String> tabs = ["Theo ngày", "Theo tháng", "Theo năm"];
-
-  final List<_ChartData> barChartDataMonth = [
-    for (int i = 1; i <= 12; i++) _ChartData('$i', (i * 5.0 + 20.0)),
-  ];
-
-  final List<_ChartData> barChartDataYear = [
-    _ChartData('2021', 80),
-    _ChartData('2022', 60),
-    _ChartData('2023', 90),
-  ];
 
   // Hàm chọn ngày
   void _selectDate(BuildContext context) async {
@@ -111,7 +141,7 @@ class _StatisticalScreenState extends State<OverViewManagement> {
         selectedDate = picked;
       });
 
-      // Gọi API với ngày đã chọn
+      // Gọi API với ngày đã chọn (không cần nữa vì giờ sử dụng dữ liệu cứng)
       String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
       fetchOrdersByStatus(formattedDate);
     }
@@ -176,97 +206,139 @@ class _StatisticalScreenState extends State<OverViewManagement> {
 
               const SizedBox(height: 16),
 
-              // Hiển thị biểu đồ
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      selectedTab == 0
-                          ? 'Biểu đồ doanh thu mua hàng theo ngày'
-                          : selectedTab == 1
-                          ? 'Biểu đồ doanh thu mua hàng theo tháng'
-                          : 'Biểu đồ doanh thu mua hàng theo năm',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+              // Biểu đồ theo ngày
+              if (selectedTab == 0) _buildDayChart(),
 
-                    const SizedBox(height: 16),
+              // Biểu đồ theo tháng
+              if (selectedTab == 1) _buildMonthChart(),
 
-                    // Biểu đồ cột với nhãn trên đỉnh mỗi cột
-                    Expanded(
-                      child: loading
-                          ? const Center(child: CircularProgressIndicator())
-                          : error != null
-                          ? Center(child: Text('Lỗi: $error'))
-                          : SfCartesianChart(
-                        primaryXAxis: CategoryAxis(),
-                        series: <ChartSeries>[
-                          ColumnSeries<_ChartData, String>(
-                            dataSource: selectedTab == 0
-                                ? barChartDataDay
-                                : selectedTab == 1
-                                ? barChartDataMonth
-                                : barChartDataYear,
-                            xValueMapper: (_ChartData data, _) => data.label,
-                            yValueMapper: (_ChartData data, _) => data.value,
-                            color: Colors.blue,
-                            dataLabelSettings: const DataLabelSettings(
-                              isVisible: true,
-                              labelAlignment: ChartDataLabelAlignment.top,
-                              textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Biểu đồ theo năm
+              if (selectedTab == 2) _buildYearChart(),
             ],
           ),
         ),
       ),
     );
   }
+
+  // Biểu đồ doanh thu theo ngày
+  Widget _buildDayChart() {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            'Biểu đồ doanh thu mua hàng theo ngày',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : error != null
+                ? Center(child: Text('Lỗi: $error'))
+                : SfCartesianChart(
+              primaryXAxis: CategoryAxis(),
+              series: <ChartSeries>[
+                ColumnSeries<_ChartData, String>(
+                  dataSource: barChartDataDay,
+                  xValueMapper: (_ChartData data, _) => data.label,
+                  yValueMapper: (_ChartData data, _) => data.value,
+                  color: Colors.blue,
+                  dataLabelSettings: const DataLabelSettings(
+                    isVisible: true,
+                    labelAlignment: ChartDataLabelAlignment.top,
+                    textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Biểu đồ doanh thu theo tháng (biểu đồ miền)
+  Widget _buildMonthChart() {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            'Biểu đồ doanh thu mua hàng theo tháng',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : error != null
+                ? Center(child: Text('Lỗi: $error'))
+                : SfCartesianChart(
+              primaryXAxis: CategoryAxis(),
+              series: <ChartSeries>[
+                AreaSeries<_ChartData, String>(
+                  dataSource: barChartDataMonth,
+                  xValueMapper: (_ChartData data, _) => data.label,
+                  yValueMapper: (_ChartData data, _) => data.value,
+                  color: Colors.blue.withOpacity(0.3),
+                  borderColor: Colors.blue,
+                  borderWidth: 2,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Biểu đồ doanh thu theo năm
+  Widget _buildYearChart() {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            'Biểu đồ doanh thu mua hàng theo năm',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : error != null
+                ? Center(child: Text('Lỗi: $error'))
+                : SfCartesianChart(
+              primaryXAxis: CategoryAxis(),
+              series: <ChartSeries>[
+                ColumnSeries<_ChartData, String>(
+                  dataSource: barChartDataYear,
+                  xValueMapper: (_ChartData data, _) => data.label,
+                  yValueMapper: (_ChartData data, _) => data.value,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
+// Định nghĩa dữ liệu biểu đồ
 class _ChartData {
   final String label;
   final double value;
-
   _ChartData(this.label, this.value);
 }
 
+// Mẫu Order để hiển thị doanh thu (giả sử model này có trong ứng dụng của bạn)
 class Order {
-  final int id;
   final double totalPrice;
-  final int totalItem;
-  final String createdBy;
-  final String createdAt;
-  final String paymentMethod;
-  String estatusOrder;
-  final String epaymentStatus;
-
-  Order({
-    required this.id,
-    required this.totalPrice,
-    required this.totalItem,
-    required this.createdBy,
-    required this.createdAt,
-    required this.paymentMethod,
-    required this.estatusOrder,
-    required this.epaymentStatus,
-  });
+  Order({required this.totalPrice});
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'],
       totalPrice: json['totalPrice'],
-      totalItem: json['totalItem'],
-      createdBy: json['createdBy'],
-      createdAt: json['createdAt'],
-      paymentMethod: json['paymentMethod'],
-      estatusOrder: json['estatusOrder'],
-      epaymentStatus: json['epaymentStatus'],
     );
   }
 }

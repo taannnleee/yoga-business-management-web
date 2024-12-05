@@ -13,6 +13,7 @@ import org.example.yogabusinessmanagementweb.repositories.NotificationRepository
 import org.example.yogabusinessmanagementweb.service.NotificationService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     public List<Notification> getAllNotificationByUser(HttpServletRequest request) {
         User user =  jwtUtil.getUserFromRequest(request);
         List<Notification> list =  notificationRepository.findAllByUser(user);
+        Collections.reverse(list);
         return  list;
     }
 

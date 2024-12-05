@@ -79,7 +79,7 @@ public class AdminOrderController {
     @GetMapping("/get-month-revenue")
     public ApiResponse<?> getAllOrderByMonth(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
                                              @RequestParam(defaultValue = "50") int pageSize,
-                                             @RequestParam(defaultValue = "2024-11-27") String updatedAt,
+                                             @RequestParam(defaultValue = "2024") String year,
                                              @RequestParam(defaultValue = "updatedAt") String sortBy, // Field to sort by
                                              @RequestParam(defaultValue = "desc") String sortDir, // Sort direction: "asc" or "desc"
                                              @RequestParam(required = false) String keyword) {
@@ -87,7 +87,15 @@ public class AdminOrderController {
                 sortDir.equalsIgnoreCase("asc")
                         ? Sort.by(sortBy).ascending()
                         : Sort.by(sortBy).descending());
-        List<OrderResponse> orderResponse = orderService.getMonthRevenue(request,updatedAt,pageable);
+        List<List<OrderResponse>> orderResponse = orderService.getMonthRevenue(request,year,pageable);
         return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderResponse);
+    }
+
+    //lấy danh sách các năm tồn tại trong của hàng. để hiern thị leen combobox số chọn số năm
+    @GetMapping("/get-list-year")
+    public ApiResponse<?> getListYear(HttpServletRequest request) {
+
+        List<String> list = orderService.getListYear(request);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get list year success",list);
     }
 }

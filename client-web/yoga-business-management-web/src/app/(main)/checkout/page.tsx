@@ -20,7 +20,7 @@ import {
     CircularProgress, // Import CircularProgress
 } from "@mui/material";
 import AddressSelection from "@/app/(main)/checkout/AddressSelection";
-import {useRouter, useSearchParams} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface IProduct {
     id: string;
@@ -31,6 +31,7 @@ interface IProduct {
 }
 
 const Checkout: React.FC = () => {
+    const [isAddressValid, setIsAddressValid] = useState(true);
     const searchParams = useSearchParams();
     const router = useRouter();
     const [addressId, setAddressId] = useState<string>(""); // Lưu id địa chỉ
@@ -42,6 +43,11 @@ const Checkout: React.FC = () => {
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [orderLoading, setOrderLoading] = useState(false); // Trạng thái loading khi đặt hàng
     const toast = useToast();
+
+    // Hàm kiểm tra tính hợp lệ của địa chỉ
+    const handleAddressValidation = (isValid: boolean) => {
+        setIsAddressValid(isValid);
+    };
 
     const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPaymentMethod(e.target.value);
@@ -171,6 +177,7 @@ const Checkout: React.FC = () => {
         handleCloseConfirmDialog();
     };
 
+
     return (
         <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
             <Typography variant="h4" sx={{ marginBottom: "20px", fontWeight: "bold" }}>
@@ -178,7 +185,12 @@ const Checkout: React.FC = () => {
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8}>
-                    <AddressSelection selectedAddressId={addressId} setSelectedAddressId={setAddressId} />
+                    <AddressSelection
+                        selectedAddressId={addressId}
+                        setSelectedAddressId={setAddressId}
+                        isAddressValid={isAddressValid}
+                        setIsAddressValid={handleAddressValidation}
+                    />
                     <Paper sx={{ padding: "20px", marginTop: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
                             Payment Method
@@ -218,7 +230,7 @@ const Checkout: React.FC = () => {
                         ) : (
                             <Typography>Cart is empty</Typography>
                         )}
-                        <Button
+                        <Button disabled={!isAddressValid}
                             variant="contained"
                             color="primary"
                             fullWidth

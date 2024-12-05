@@ -41,17 +41,17 @@ export const useAuth = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        toast.success('Login successfully', {
+        toast.success('Đăng nhập thành công', {
 
           position: 'top-right',
           autoClose: 0,
           theme: 'colored',
           hideProgressBar: true,
         });
-        history.push('/home');
+
         localStorage.setItem('accessToken', result.data.accesstoken);
         localStorage.setItem('refreshToken', result.data.accesstoken);
-
+        history.push('/home/dashboard');
         console.log("kkk1")
         console.log(result.data.accesstoken)
 

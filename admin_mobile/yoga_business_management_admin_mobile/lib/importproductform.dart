@@ -48,7 +48,7 @@ class _ImportProductFormState extends State<ImportProductForm> {
 
   // Hàm tải ảnh lên
   Future<void> uploadImage(File file, String color) async {
-    setState(() => loading = true);
+    setState(() => loading = true); // Show loading indicator during upload
     try {
       final uri = Uri.parse('${Config.apiUrl}/api/image/upload');
       final request = http.MultipartRequest('POST', uri);
@@ -61,8 +61,12 @@ class _ImportProductFormState extends State<ImportProductForm> {
         final responseData = json.decode(await response.stream.bytesToString());
         final uploadedImageUrl = responseData['data']['url'];
         setState(() {
-          variants['color']![color] = uploadedImageUrl;
           uploadedImages[color] = uploadedImageUrl;
+          if (color == 'product_image') {
+            imagePath = uploadedImageUrl; // Set the product image URL
+          } else {
+            variants['color']![color] = uploadedImageUrl;
+          }
         });
         _showSnackBar('Tải ảnh lên thành công!');
       } else {
@@ -71,7 +75,7 @@ class _ImportProductFormState extends State<ImportProductForm> {
     } catch (error) {
       _showSnackBar('Đã có lỗi khi tải ảnh lên: $error');
     } finally {
-      setState(() => loading = false);
+      setState(() => loading = false); // Hide loading indicator after upload
     }
   }
 
@@ -105,13 +109,15 @@ class _ImportProductFormState extends State<ImportProductForm> {
         _showSnackBar('Sản phẩm đã được thêm vào cửa hàng!');
         widget.onClose();
         widget.onImportSuccess();
+        // Clear all fields after successfully importing the product
+        _clearFormFields();
       } else {
         throw Exception('Failed to add product');
       }
     } catch (error) {
       _showSnackBar('Lỗi khi thêm sản phẩm: $error');
     } finally {
-      setState(() => loading = false);
+      setState(() => loading = false); // Hide loading indicator after product is imported
     }
   }
 
@@ -131,6 +137,25 @@ class _ImportProductFormState extends State<ImportProductForm> {
     );
   }
 
+  // Reset form fields after successful product import
+  void _clearFormFields() {
+    setState(() {
+      title = '';
+      imagePath = '';
+      price = 0;
+      averageRating = 0;
+      code = '';
+      brand = '';
+      description = '';
+      variants = {
+        'size': {},
+        'color': {},
+        'thin': {},
+      };
+      uploadedImages = {};
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.open) return const SizedBox.shrink();
@@ -145,7 +170,18 @@ class _ImportProductFormState extends State<ImportProductForm> {
             children: [
               _buildTextField('Tên sản phẩm', (value) => title = value),
               _buildTextField('Giá', (value) => price = double.tryParse(value) ?? 0, isNumber: true),
-              _buildTextField('Url ảnh', (value) => imagePath = value),
+              // Chọn ảnh sản phẩm
+              const Text('Chọn ảnh sản phẩm:'),
+              GestureDetector(
+                onTap: () => pickImage('product_image'),  // Chọn ảnh sản phẩm
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey[200],
+                  child: uploadedImages.containsKey('product_image')
+                      ? Image.network(uploadedImages['product_image']!, width: 80, height: 80, fit: BoxFit.cover)
+                      : const Icon(Icons.add_a_photo, size: 40, color: Colors.black),
+                ),
+              ),
               _buildTextField('Đánh giá trung bình', (value) => averageRating = double.tryParse(value) ?? 0, isNumber: true),
               _buildTextField('Mã sản phẩm', (value) => code = value),
               _buildTextField('Thương hiệu', (value) => brand = value),
@@ -154,31 +190,21 @@ class _ImportProductFormState extends State<ImportProductForm> {
 
               // Thêm trường cho size
               const Text("Chọn kích thước:"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              Wrap(
+                spacing: 16,
                 children: sizes.map((size) {
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () => setState(() {
+                  return ChoiceChip(
+                    label: Text(size),
+                    selected: variants['size']!.containsKey(size),
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
                           variants['size']![size] = size;
-                        }),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: variants['size']!.containsKey(size)
-                                  ? Colors.green
-                                  : Colors.grey,
-                            ),
-                          ),
-                          child: Center(child: Text(size)),
-                        ),
-                      ),
-                    ],
+                        } else {
+                          variants['size']!.remove(size);
+                        }
+                      });
+                    },
                   );
                 }).toList(),
               ),
@@ -186,31 +212,21 @@ class _ImportProductFormState extends State<ImportProductForm> {
 
               // Thêm trường cho thin
               const Text("Chọn độ mỏng:"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              Wrap(
+                spacing: 16,
                 children: thins.map((thin) {
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () => setState(() {
+                  return ChoiceChip(
+                    label: Text(thin),
+                    selected: variants['thin']!.containsKey(thin),
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
                           variants['thin']![thin] = thin;
-                        }),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: variants['thin']!.containsKey(thin)
-                                  ? Colors.green
-                                  : Colors.grey,
-                            ),
-                          ),
-                          child: Center(child: Text(thin)),
-                        ),
-                      ),
-                    ],
+                        } else {
+                          variants['thin']!.remove(thin);
+                        }
+                      });
+                    },
                   );
                 }).toList(),
               ),
@@ -218,29 +234,21 @@ class _ImportProductFormState extends State<ImportProductForm> {
 
               // Thêm trường cho màu sắc
               const Text("Chọn ảnh theo màu:"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              Wrap(
+                spacing: 16,
                 children: colors.map((color) {
                   return Column(
                     children: [
                       GestureDetector(
                         onTap: () => pickImage(color),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Color(int.parse(color.replaceAll('#', '0xFF'))),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: uploadedImages.containsKey(color)
-                                  ? Colors.green
-                                  : Colors.grey,
-                            ),
-                          ),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color(int.parse(color.replaceAll('#', '0xFF'))),
+                          child: uploadedImages.containsKey(color)
+                              ? Image.network(uploadedImages[color]!, width: 50, height: 50)
+                              : const SizedBox.shrink(),
                         ),
                       ),
-                      if (uploadedImages.containsKey(color))
-                        Image.network(uploadedImages[color]!, width: 60, height: 60),
                     ],
                   );
                 }).toList(),

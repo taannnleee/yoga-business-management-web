@@ -119,9 +119,9 @@ const WishList: React.FC = () => {
                             <Typography variant="h6" gutterBottom>
                                 {item.product.title}
                             </Typography>
-                            <Typography variant="body2" color="textSecondary">
+                            {/* <Typography variant="body2" color="textSecondary">
                                 {item.product.description}
-                            </Typography>
+                            </Typography> */}
                             <Typography variant="body1" color="textPrimary">
                                 Price: ${item.product.price.toFixed(2)}
                             </Typography>

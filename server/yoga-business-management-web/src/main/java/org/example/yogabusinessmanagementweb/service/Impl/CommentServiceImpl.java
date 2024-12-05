@@ -37,17 +37,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentResponse> byProduct(Pageable pageable,String id) {
+    public List<CommentResponse> byProduct(Pageable pageable,String id,int ratePoint) {
         Product product = productService.getProductById(id);
         Page<Comment> commentPage;
-        commentPage = commentRepository.findByProduct(pageable, product);
-//        if (ratePoint == 0) {
-//            // Nếu ratePoint là null, lấy tất cả các comment thuộc sản phẩm
-//            commentPage = commentRepository.findByProduct(pageable, product);
-//        } else {
-//            // Nếu ratePoint không null, lọc theo điều kiện ratePoint > giá trị
-//            commentPage = commentRepository.findByProductAndRatePointGreaterThan(pageable, product, ratePoint);
-//        }
+        if(ratePoint == -1) {
+            commentPage = commentRepository.findByProduct(product,pageable);
+        }
+        else if (ratePoint == 0) {
+            // Nếu ratePoint là null, lấy tất cả các comment thuộc sản phẩm
+            commentPage = commentRepository.findByProductAndRatePointIsNull(pageable, product);
+        } else {
+            // Nếu ratePoint không null, lọc theo điều kiện ratePoint > giá trị
+            commentPage = commentRepository.findByProductAndRatePoint(pageable, product, ratePoint);
+        }
         List<CommentResponse> topLevelComments = commentMapper.toCommentResponses(commentPage.getContent());
         for (CommentResponse commentResponse : topLevelComments) {
             setReplies(commentResponse);
@@ -79,8 +81,12 @@ public class CommentServiceImpl implements CommentService {
         comment.setProduct(product);
         comment.setParentComment(commentRequest.getParentCommentId() == null ? null : commentRepository.findById(Long.valueOf(commentRequest.getParentCommentId()))
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND)));
+        Comment savedComment = commentRepository.save(comment);
+        Double rating = caculateAverageRating(product);
+        Double sold = product.getSold() +1;
+        productService.updateProduct(product,rating,sold);
         // Sử dụng MapStruct để chuyển đổi Comment sang CommentResponse
-        return commentMapper.toCommentOrderResponse(commentRepository.save(comment));
+        return commentMapper.toCommentOrderResponse(savedComment);
     }
     @Override
     public Comment findById(String id) {
@@ -99,5 +105,21 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = findById(id);
         commentRepository.delete(comment);
         return true;
+    }
+    @Override
+    public Double caculateAverageRating(Product product) {
+        List<Comment> comments = commentRepository.findByProduct(product);
+        double total = 0;
+        int count = 0;
+        for(Comment comment : comments){
+            if(comment.getRatePoint() == null){
+                total += 0;
+            }
+            else {
+                total += comment.getRatePoint();
+                count++;
+            }
+        }
+        return total/count;
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
 public interface CommentMapper {
     @Mapping(target = "user", source = "user")
     @Mapping(target = "parentComment", ignore = true)  // Prevent mapping the parentComment directly

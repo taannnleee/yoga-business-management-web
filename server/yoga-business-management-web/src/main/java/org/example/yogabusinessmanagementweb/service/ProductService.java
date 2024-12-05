@@ -15,7 +15,7 @@ public interface ProductService {
     Product getProductById(String id);
     ProductResponse getById(String id);
     Product addProduct(ProductCreationRequest productCreationRequest);
-
+    public void updateProduct(Product product,Double rating,Double sold);
     boolean delete(String productId);
     Page<ProductResponse> searchProducts(String keyword, Pageable pageable);
 

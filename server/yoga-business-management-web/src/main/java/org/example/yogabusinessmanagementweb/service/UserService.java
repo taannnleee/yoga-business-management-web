@@ -32,4 +32,7 @@ public interface UserService {
     void updateProfile(UpdateProfileRequest updateProfileRequest, HttpServletRequest request);
 
     AddressResponse getUserAddressDefault(HttpServletRequest request);
+
+    String getEmailByUserName(String userName, HttpServletRequest request);
+
 }

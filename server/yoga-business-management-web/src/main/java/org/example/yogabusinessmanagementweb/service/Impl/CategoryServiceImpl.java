@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
+import org.example.yogabusinessmanagementweb.common.entities.Product;
+import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.CategoryMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.dto.request.category.CategoryCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse;
+import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponseAndQuantityProduct;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryWithProductResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
@@ -74,6 +77,26 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CategoryResponseAndQuantityProduct> getAllCategoryAndQuantityProduct() {
+        List<CategoryResponseAndQuantityProduct> list = new ArrayList<>();
+        CategoryResponseAndQuantityProduct categoryResponseAndQuantityProduct = new CategoryResponseAndQuantityProduct();
 
+        List<Category> categoryList = categoryRepository.findAll();
+
+        for(Category category : categoryList){
+            categoryResponseAndQuantityProduct = Mappers.convertToDto(category, CategoryResponseAndQuantityProduct.class);
+
+
+            int quantity = 0;
+            for(SubCategory subCategory : category.getSubCategories()){
+                quantity+= subCategory.getProducts().size();
+                categoryResponseAndQuantityProduct.setQuantity(quantity);
+            }
+
+            list.add(categoryResponseAndQuantityProduct);
+        }
+        return list;
+    }
 }
 

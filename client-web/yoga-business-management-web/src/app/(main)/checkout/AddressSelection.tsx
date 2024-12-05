@@ -22,6 +22,9 @@ interface AddressSelectionProps {
     addNewAddress: (address: Address) => void;
     selectedAddressId: string;
     setSelectedAddressId: React.Dispatch<React.SetStateAction<string>>;
+    isAddressValid: boolean;
+    setIsAddressValid: React.Dispatch<React.SetStateAction<boolean>>;
+
 }
 
 const AddressSelection: React.FC<AddressSelectionProps> = ({
@@ -30,11 +33,30 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
     setShippingInfo,
     selectedAddressId,
     setSelectedAddressId,
-    addNewAddress
+    addNewAddress,
+    isAddressValid,
+    setIsAddressValid
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isListModalOpen, setIsListModalOpen] = useState(false);
     const [shippingInfo, setShippingInfoState] = useState<any>(null);
+
+
+    const validateAddress = (address: Address) => {
+        if (
+            address &&
+            address.street && address.street !== "" &&
+            address.district && address.district !== "" &&
+            address.city && address.city !== "" &&
+            address.fullName && address.fullName !== "" &&
+            address.phone && address.phone !== ""
+        ) {
+            setIsAddressValid(true); // All fields are valid
+        } else {
+            setIsAddressValid(false); // One or more fields are empty
+        }
+    };
+
 
     const openAddModal = () => {
         setIsModalOpen(true);
@@ -49,6 +71,8 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
     const closeModal = () => setIsModalOpen(false);
 
     const handleAddressSelect = (address: Address) => {
+        console.log("tan1111111")
+        console.log(address.id)
         setShippingInfoState({
             fullName: address.fullName,
             phone: address.phone,
@@ -61,8 +85,11 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                 additionalInfo: address.additionalInfo
             }
         });
-        setSelectedAddressId(shippingInfo.address.id);
+
+        setSelectedAddressId(address.id);
+
         setIsListModalOpen(false);
+        validateAddress(address);
     };
 
     // Fetch the default address when component mounts
@@ -86,19 +113,27 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                 const data = await response.json();
                 if (data.status === 200) {
                     const { id, houseNumber, street, district, city, nameDelivery, phoneNumberDelivery } = data.data;
+                    const address = {
+                        id,
+                        houseNumber,
+                        street,
+                        district,
+                        city,
+                        additionalInfo: ""
+                    };
+
+                    // Set shipping info state
                     setShippingInfoState({
                         fullName: nameDelivery,
                         phone: phoneNumberDelivery,
-                        address: {
-                            id: id,
-                            houseNumber,
-                            street,
-                            district,
-                            city,
-                            additionalInfo: ""
-                        }
+                        address: address
                     });
+
+                    // Set selected address ID
                     setSelectedAddressId(id);
+
+                    // Validate the address after setting the shipping info
+                    validateAddress(address);
                 } else {
                     console.error("Failed to fetch address:", data.message);
                 }
@@ -127,7 +162,7 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                 <div>
                     <div className="flex items-center justify-between w-full">
                         <p className="font-bold">
-                            {shippingInfo.fullName} {shippingInfo.phone}
+                            Họ và tên: {shippingInfo.fullName} - Số điện thoại  {shippingInfo.phone}
                         </p>
                         {shippingInfo.address.houseNumber && (
                             <p className="border border-solid border-[#ee4d2d] rounded-[1px] text-[#ee4d2d] text-[10px] leading-[12px] mt-0 mb-0 ml-[15px] px-[5px] py-[2px] capitalize text-sm font-semibold text-right">
@@ -136,9 +171,11 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                         )}
                     </div>
                     <p>
-                        {shippingInfo.address.additionalInfo}, {shippingInfo.address.houseNumber} {shippingInfo.address.street}, {shippingInfo.address.district}, {shippingInfo.address.city}
+                        Tỉnh: {shippingInfo.address.city}, Huyện: {shippingInfo.address.district}, Đường: {shippingInfo.address.street}
+
                     </p>
                 </div>
+
             )}
 
             <button

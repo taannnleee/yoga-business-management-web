@@ -22,7 +22,7 @@ import java.util.Map;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class Comment extends AbstractEntity<Long> implements Serializable {
     @Column(name = "rate_point")
-    int ratePoint;
+    Integer ratePoint;
 
     @Column(name = "content", columnDefinition = "TEXT")
     String content;

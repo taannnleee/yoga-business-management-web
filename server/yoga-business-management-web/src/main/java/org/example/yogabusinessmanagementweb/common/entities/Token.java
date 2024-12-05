@@ -24,8 +24,10 @@ public class Token extends AbstractEntity<Long> implements Serializable {
     String username;
     String accessToken;
     String refreshToken;
-    String OTP;
+    boolean revoked;
+    boolean expired;
 
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    public User user;
 }

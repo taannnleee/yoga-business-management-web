@@ -1,22 +1,109 @@
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'package:yoga_business_management_admin_mobile/category.dart';
 import 'package:yoga_business_management_admin_mobile/overview.dart';
 import 'package:yoga_business_management_admin_mobile/order.dart';
 import 'package:yoga_business_management_admin_mobile/product.dart';
 import 'package:yoga_business_management_admin_mobile/user.dart';
+import '../config.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget content;
   final String title;
 
-  const MainLayout({Key? key, required this.content, required this.title}) : super(key: key);
+  const MainLayout({Key? key, required this.content, required this.title})
+      : super(key: key);
 
   @override
   _MainLayoutState createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
+  late StompClient stompClient;
   bool isSidebarOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    //   if (!isAllowed) {
+    //     // This is just a basic example. For real apps, you must show some
+    //     // friendly dialog box before call the request method.
+    //     // This is very important to not harm the user experience
+    //     AwesomeNotifications().requestPermissionToSendNotifications();
+    //   }
+    // });
+    // // Khởi tạo thông báo
+    // AwesomeNotifications().initialize(
+    //   'resource://drawable/res_app_icon',
+    //   [
+    //     NotificationChannel(
+    //       channelGroupKey: 'basic_channel_group',
+    //       channelKey: 'basic_channel',
+    //       channelName: 'Basic notifications',
+    //       channelDescription: 'Notification channel for basic tests',
+    //       defaultColor: Color(0xFF9D50DD),
+    //       ledColor: Colors.white,
+    //     ),
+    //   ],
+    //   channelGroups: [
+    //     NotificationChannelGroup(
+    //       channelGroupKey: 'basic_channel_group',
+    //       channelGroupName: 'Basic group',
+    //     ),
+    //   ],
+    //   debug: true,
+    // );
+    // print("object");
+    // Kết nối WebSocket
+    _connectWebSocket();
+  }
+
+  // Kết nối WebSocket và đăng ký vào topic
+  void _connectWebSocket() {
+    print("Connecting to WebSocket...");
+    stompClient = StompClient(
+      config: StompConfig.sockJS(
+        url: '${Config.apiUrl}/ws', // Thay thế bằng URL WebSocket của bạn
+        onConnect: (StompFrame frame) {
+          print("WebSocket Connected!");
+          // Đăng ký vào topic '/topic/admin'
+          stompClient.subscribe(
+            destination: '/topic/admin', // Topic bạn muốn đăng ký
+            callback: (StompFrame frame) {
+              print("Received message: ${frame.body}"); // Xử lý tin nhắn nhận được
+              // Gửi thông báo khi nhận được tin nhắn
+              // AwesomeNotifications().createNotification(
+              //   content: NotificationContent(
+              //     id: 0,
+              //     channelKey: 'basic_channel', // Đảm bảo tên channel này trùng với channel đã khai báo
+              //     title: 'New Message from Admin',
+              //     body: frame.body.toString(),
+              //     notificationLayout: NotificationLayout.Default,
+              //   ),
+              // );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Đơn hàng mới, cần bạn xác nhận ngay')),
+              );
+            },
+          );
+        },
+        onWebSocketError: (error) {
+          print("WebSocket Error: $error");
+        },
+        reconnectDelay: Duration(seconds: 5), // Tự động reconnect sau 5 giây nếu mất kết nối
+      ),
+    );
+
+    stompClient.activate(); // Kích hoạt kết nối WebSocket
+  }
+
+  @override
+  void dispose() {
+    stompClient.deactivate(); // Đảm bảo ngắt kết nối khi widget bị hủy
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

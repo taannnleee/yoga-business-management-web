@@ -13,6 +13,7 @@ import CourseManagement from '../pages/CourseManagement';
 import CourseDetailPage from '../pages/CourseDetail';
 import OrderManagement from '../pages/OrderManagement';
 import WebSocketDemo from '../pages/test';
+import TrendPrediction from '../pages/TrendPrediction';
 
 export default function RootApp() {
   // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
@@ -23,12 +24,12 @@ export default function RootApp() {
       <Route
         path="/"
         render={() => {
-          return !accessToken ? <Redirect to="/login" /> : <Redirect to="/home" />;
+          return !accessToken ? <Redirect to="/login" /> : <Redirect to="/home/dashboard" />;
         }}
       ></Route>
-      <Route path="/home">
+      {/* <Route path="/home">
         <DashBoard />
-      </Route>
+      </Route> */}
       <Route path="/user-management">
         <UserManagement />
       </Route>
@@ -43,6 +44,13 @@ export default function RootApp() {
       </Route>
       <Route path="/login">
         <LoginPage />
+      </Route>
+
+      <Route path="/home/dashboard">
+        <DashBoard />
+      </Route>
+      <Route path="/home/trend">
+        <TrendPrediction />
       </Route>
 
       <Route path="/course-management/teachers">
@@ -60,6 +68,7 @@ export default function RootApp() {
       <Route path="/course-detail/:id">
         <CourseDetailPage />
       </Route>
+
 
       <Route path="/order-management">
         <OrderManagement />

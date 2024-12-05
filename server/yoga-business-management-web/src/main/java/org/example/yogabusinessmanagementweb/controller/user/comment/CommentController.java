@@ -61,13 +61,14 @@ public class CommentController {
     public ApiResponse<?> getByProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "-1") int ratePoint,
             @PathVariable String id)
     {
             // Tạo Pageable từ trang và kích thước
             Pageable pageable = PageRequest.of(page - 1, size);
 
             // Gọi service để lấy dữ liệu phân trang
-            List<CommentResponse> commentResponseList = commentService.byProduct(pageable,id);
+            List<CommentResponse> commentResponseList = commentService.byProduct(pageable,id,ratePoint);
 
             // Trả về kết quả
             return new ApiResponse<>(HttpStatus.OK.value(), "Get all comments successfully", commentResponseList);

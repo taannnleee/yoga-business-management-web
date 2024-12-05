@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.dto.request.category.CategoryCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponseAndQuantityProduct;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,10 @@ public class AdminCategoryController {
     public ApiResponse<?> getAllCategory() {
         List<CategoryResponse> list = categoryService.getAllCategory();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all category  successfully",list);
+    }
+    @GetMapping("/get-all-category-and-quantity-product")
+    public ApiResponse<?> getAllCategoryAndQuantityProduct() {
+        List<CategoryResponseAndQuantityProduct> list = categoryService.getAllCategoryAndQuantityProduct();
+        return new ApiResponse<>(HttpStatus.OK.value(), "get all category and quantity product successfully",list);
     }
 }

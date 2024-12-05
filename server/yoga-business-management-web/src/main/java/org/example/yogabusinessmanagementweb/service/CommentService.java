@@ -15,11 +15,11 @@ import java.util.List;
 
 public interface CommentService {
     List<CommentResponse> all(Pageable pageable);
-    List<CommentResponse> byProduct(Pageable pageable,String id);
+    List<CommentResponse> byProduct(Pageable pageable,String id,int ratePoint);
     Comment findById(String id);
     CommentResponse getById(String id);
 //    Comment addProduct(ProductCreationRequest productCreationRequest);
     public CommentOrderResponse addComment(CommentCreationRequest commentRequest, User user);
     boolean delete(String id);
-
+    public Double caculateAverageRating(Product product);
 }

@@ -24,34 +24,6 @@ public class TokenServiceImpl implements TokenService {
     UserRepository userRepository;
     UserService userService;
 
-    @Override
-    public Token save(Token token) {
-        Optional<Token> optional =  tokenRepository.findByUsername(token.getUsername());
-        if(optional.isEmpty()) {
-            return tokenRepository.save(token);
-        }else{
-            Token currentToken = optional.get();
-            currentToken.setAccessToken(token.getAccessToken());
-            currentToken.setRefreshToken(token.getRefreshToken());
-            return tokenRepository.save(currentToken);
-        }
-
-    }
-
-    @Override
-    public String delete(Token token) {
-
-//        User user = userRepository.findByToken(token).orElseThrow(() -> new AppException(ErrorCode.TOKEN_NOT_FOUND));;
-//        user.setToken(null);
-//        userRepository.save(user);
-//        tokenRepository.delete(token);
-        return  "Delete token success";
-    }
-
-    @Override
-    public Token getTokenByUsername(String username) {
-        return tokenRepository.findByUsername(username).orElse(null);
-    }
 
     @Override
     public List<Token> getAllTokensByUserName(String userName) {

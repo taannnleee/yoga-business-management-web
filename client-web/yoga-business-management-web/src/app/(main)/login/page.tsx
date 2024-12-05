@@ -53,22 +53,40 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         toast.sendToast("Error", "Tài khoản chưa được kích hoạt");
 
         // Gọi API để lấy email
-        const emailResponse = await fetch(`${API_URL}/api/user/get-email-by-username?userName=${values.username}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-
-          },
-        });
+        const emailResponse = await fetch(
+          `${API_URL}/api/user/get-email-by-username?userName=${values.username}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         const emailResult = await emailResponse.json();
-        console.log("tan1111")
-        console.log(emailResult)
+
         if (emailResponse.ok && emailResult.status === 200) {
-          console.log("tan1111")
-          console.log(emailResult.data)
-          // Nếu gọi API thành công, chuyển tới trang verify-account với email
-          router.replace(`/verify-account?email=${emailResult.data}`);
+          const email = emailResult.data;
+
+          // Gọi API để gửi OTP đến email
+          const otpResponse = await fetch(
+            `${API_URL}/api/auth/send-otp?email=${email}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const otpResult = await otpResponse.json();
+
+          if (otpResponse.ok && otpResult.status === 200) {
+            // Nếu gửi OTP thành công, chuyển tới trang verify-account với email
+            router.replace(`/verify-account?email=${email}`);
+          } else {
+            toast.sendToast("Error", "Failed to send OTP");
+          }
         } else {
           toast.sendToast("Error", "Failed to retrieve email");
         }
@@ -87,9 +105,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
       );
     }
   };
-
-
-
+  
   return (
     <div className="w-full h-auto flex justify-center items-center bg-white">
       <Box

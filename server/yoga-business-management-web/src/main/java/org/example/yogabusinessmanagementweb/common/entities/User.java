@@ -37,7 +37,10 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     Date dateOfBirth;
     String imagePath;
     String roles;
+    String OTP;
+    Date expired;
     boolean status;
+
 
     // User quản lý Address, một chiều
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

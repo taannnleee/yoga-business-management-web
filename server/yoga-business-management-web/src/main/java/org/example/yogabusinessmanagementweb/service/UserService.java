@@ -34,4 +34,5 @@ public interface UserService {
     AddressResponse getUserAddressDefault(HttpServletRequest request);
 
     String getEmailByUserName(String userName, HttpServletRequest request);
+
 }

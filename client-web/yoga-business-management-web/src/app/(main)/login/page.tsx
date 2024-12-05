@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/config/url";
+const token = localStorage.getItem("accessToken");
 
 interface ILoginPageProps { }
 
@@ -26,7 +27,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          
+
         },
         body: JSON.stringify({
           username: values.username,
@@ -35,6 +36,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
       });
 
       const result = await response.json();
+
 
       if (response.ok && result.status === 200) {
         setLoading(false);
@@ -46,6 +48,32 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
 
         // Redirect to home page
         router.replace("/home");
+      } else if (result.status === 1013) {
+        // Tài khoản chưa được kích hoạt, gọi API để lấy email
+        toast.sendToast("Error", "Tài khoản chưa được kích hoạt");
+
+        // Gọi API để lấy email
+        const emailResponse = await fetch(`${API_URL}/api/user/get-email-by-username?userName=${values.username}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+
+          },
+        });
+
+        const emailResult = await emailResponse.json();
+        console.log("tan1111")
+        console.log(emailResult)
+        if (emailResponse.ok && emailResult.status === 200) {
+          console.log("tan1111")
+          console.log(emailResult.data)
+          // Nếu gọi API thành công, chuyển tới trang verify-account với email
+          router.replace(`/verify-account?email=${emailResult.data}`);
+        } else {
+          toast.sendToast("Error", "Failed to retrieve email");
+        }
+
+        setLoading(false);
       } else {
         setLoading(false);
         toast.sendToast("Error", "Login failed", result.message);
@@ -59,6 +87,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
       );
     }
   };
+
 
 
   return (
@@ -155,6 +184,21 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
               href="/create-account"
             >
               Create one
+            </Link>
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "14px",
+              color: "GrayText",
+              textAlign: "center",
+              columnGap: "2px",
+            }}
+          >
+            <Link
+              style={{ marginLeft: "4px", textDecoration: "underline" }}
+              href="/forgot-password"
+            >
+              Forgot password
             </Link>
           </Typography>
         </Box>

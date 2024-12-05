@@ -96,19 +96,19 @@ public class AuthenticationController {
 
     @PostMapping("/forgot-password")
     public ApiResponse<?> forgotPassword(@Valid @RequestBody String email) {
-        String result = authencationService.sendOTP(email);
+        String result = authencationService.forgotPassword(email);
         return new ApiResponse<>(HttpStatus.OK.value(), "Success"+result);
     }
 
-    @PostMapping("/reset-password")
-    public ApiResponse<?> resetPassword(@Valid @RequestBody String OTP, String email) {
-        authencationService.resetPassword(OTP, email);
-        return new ApiResponse<>(HttpStatus.OK.value(), "OTP is valid. Proceed with password reset.");
-
-    }
-
-    @PostMapping("/change-password")
-    public ApiResponse<?> changePassword(@Valid @RequestBody ResetPasswordRequest request) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Success", authencationService.changePassword(request));
-    }
+//    @PostMapping("/reset-password")
+//    public ApiResponse<?> resetPassword(@Valid @RequestBody String OTP, String email) {
+//        authencationService.resetPassword(OTP, email);
+//        return new ApiResponse<>(HttpStatus.OK.value(), "OTP is valid. Proceed with password reset.");
+//
+//    }
+//
+//    @PostMapping("/change-password")
+//    public ApiResponse<?> changePassword(@Valid @RequestBody ResetPasswordRequest request) {
+//        return new ApiResponse<>(HttpStatus.OK.value(), "Success", authencationService.changePassword(request));
+//    }
 }

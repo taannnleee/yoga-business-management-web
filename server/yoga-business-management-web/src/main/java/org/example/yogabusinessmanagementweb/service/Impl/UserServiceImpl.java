@@ -253,4 +253,10 @@ public class UserServiceImpl implements UserService {
         throw new AppException(ErrorCode.ADDRESS_NOT_FOUND);
     }
 
+    @Override
+    public String getEmailByUserName(String userName, HttpServletRequest request) {
+        User user =  findUserByUserName(userName);
+        return user.getEmail();
+    }
+
 }

@@ -2,6 +2,7 @@ package org.example.yogabusinessmanagementweb.service.Impl;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +71,7 @@ public class AuthencationService {
         String refreshToken =  jwtService.generateRefreshToken(user);
 
         //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
-        revokeAllUserTokens(user);
+//        revokeAllUserTokens(user);
         saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
@@ -129,7 +130,7 @@ public class AuthencationService {
         String refreshToken =  jwtService.generateRefreshToken(user);
 
         //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
-        revokeAllUserTokens(user);
+//        revokeAllUserTokens(user);
         saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
@@ -205,33 +206,6 @@ public class AuthencationService {
 
     }
 
-    public void resetPassword(String OTP, String email) {
-        User user = userService.findByEmail(email);
-        Token token = tokenService.getTokenByUsername(user.getUsername());
-        if (token == null) {
-            throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
-        }
-
-        if (!OTP.equals(token.getOTP())) {
-            throw new AppException(ErrorCode.OTP_INVALID);
-        }
-    }
-
-    public String changePassword(ResetPasswordRequest request) {
-
-        User user = userService.findByEmail(request.getEmail());
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new AppException(ErrorCode.PASS_WORD_NOT_MATCHED);
-        }
-
-        String encryptedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPassword(encryptedPassword);
-        userService.saveUser(user);
-
-        return "Password successfully changed";
-    }
-
     public void verifyOTP_register(String OTP, String email) {
 
         User user = userService.findByEmail(email);
@@ -278,5 +252,59 @@ public class AuthencationService {
             token.setRevoked(true);
         });
         tokenRepository.saveAll(validUserTokens);
+    }
+
+    public String forgotPassword(@Valid String email) {
+        // Check if email exists
+        User user = userService.findByEmail(email);
+        // Check if user is active
+        if (!user.isEnabled()) {
+            throw new AppException(ErrorCode.USER_NOT_ACTIVE);
+        }
+
+        // Generate OTP and send email
+        String OTP = OTPGenerator.generateOTP();
+        emailService.sendEmail(email, EMessage.TITLE_OTP.getValue(), EMessage.TEXT_EMAIL_OTP.getValue() + OTP);
+
+        // Save OTP into database
+        Token token = tokenService.getTokenByUsername(user.getUsername());
+        if (token == null) {
+            token = new Token();
+            token.setUsername(user.getUsername());
+        }
+        token.setOTP(OTP);
+        tokenService.save(token);
+
+        // Return success response
+        System.out.println("OTP sent to email: " + email);
+        return "OTP sent successfully";
+    }
+
+//////////////////////////////////////////////////////////////////////////////////
+    public void resetPassword(String OTP, String email) {
+        User user = userService.findByEmail(email);
+        Token token = tokenService.getTokenByUsername(user.getUsername());
+        if (token == null) {
+            throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        if (!OTP.equals(token.getOTP())) {
+            throw new AppException(ErrorCode.OTP_INVALID);
+        }
+    }
+
+    public String changePassword(ResetPasswordRequest request) {
+
+        User user = userService.findByEmail(request.getEmail());
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASS_WORD_NOT_MATCHED);
+        }
+
+        String encryptedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encryptedPassword);
+        userService.saveUser(user);
+
+        return "Password successfully changed";
     }
 }

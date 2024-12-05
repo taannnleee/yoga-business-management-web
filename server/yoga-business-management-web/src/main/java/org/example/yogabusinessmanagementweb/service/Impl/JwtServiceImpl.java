@@ -66,6 +66,9 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUsername(String token,ETokenType tokenType) {
+//        if (!isValid(token, tokenType, userDetails)) {
+//            throw new ExpiredTokenException("Token has expired or is invalid.");
+//        }
         return extractClaim(token,tokenType, Claims::getSubject);
     }
 

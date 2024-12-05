@@ -41,7 +41,7 @@ export const useAuth = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        toast.success('Login successfully', {
+        toast.success('Đăng nhập thành công', {
 
           position: 'top-right',
           autoClose: 0,

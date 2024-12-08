@@ -8,12 +8,15 @@ import { useToast } from "@/hooks/useToast";
 import OTPInput from "@/components/atom/OtpInput";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API_URL } from "@/config/url";
+import axios from "axios";
+import { CircularProgress } from "@mui/material";
 
 interface ILoginPageProps { }
 
 const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     const { control, handleSubmit, watch } = useForm();
     const [loading, setLoading] = React.useState(false);
+    const [isResendingOtp, setIsResendingOtp] = React.useState(false); // Thêm state cho loading toàn màn hình
     const [isVerified, setIsVerified] = React.useState(false); // Trạng thái xác thực OTP thành công
     const toast = useToast();
     const searchParams = useSearchParams();
@@ -50,10 +53,29 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
         }
     };
 
+    const handlePressSendOtp = async () => {
+        try {
+            setIsResendingOtp(true); // Bắt đầu loading
+            const response = await axios.post(
+                `${API_URL}/api/auth/send-otp?email=${email}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            toast.sendToast("Success", response.data.message);
+        } catch (error) {
+            toast.sendToast("Error", "Verification failed", "error");
+        } finally {
+            setIsResendingOtp(false); // Kết thúc loading
+        }
+    };
+
     const handlePasswordSubmit = async (values: any) => {
         const { password, confirmpassword } = values;
 
-        // Kiểm tra nếu mật khẩu và xác nhận mật khẩu khớp
         if (password !== confirmpassword) {
             toast.sendToast("Error", "Passwords do not match", "error");
             return;
@@ -62,23 +84,21 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
         try {
             setLoading(true);
 
-            // Tạo đối tượng dữ liệu cần gửi
             const bodyData = {
                 email: email,
                 password: password,
-                confirmPassword: confirmpassword
+                confirmPassword: confirmpassword,
             };
 
-            // Gửi yêu cầu với phương thức POST và dữ liệu ở trong body
-            const response = await fetch(`${API_URL}/api/auth/change-password`, {
-                method: "POST", // Đảm bảo sử dụng POST
+            const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
+                method: "POST",
                 headers: {
-                    "Content-Type": "application/json", // Đảm bảo gửi dữ liệu dưới dạng JSON
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(bodyData) // Chuyển đối tượng JavaScript thành JSON string
+                body: JSON.stringify(bodyData),
             });
 
-            const result = await response.json(); // Đọc phản hồi từ API
+            const result = await response.json();
 
             if (response.ok) {
                 setLoading(false);
@@ -92,11 +112,30 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
             setLoading(false);
             toast.sendToast("Error", "An error occurred", "error");
         }
-
     };
 
     return (
-        <div className="w-full h-screen flex justify-center items-center bg-white">
+        <div className="w-full h-screen flex justify-center items-center bg-white relative">
+            {/* Hiển thị vòng tròn quay nếu đang resend OTP */}
+            {isResendingOtp && (
+                <Box
+                    sx={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 9999, // Đảm bảo overlay luôn trên cùng
+                    }}
+                >
+                    <CircularProgress color="primary" />
+                </Box>
+            )}
+
             <Box
                 sx={{
                     display: "flex",
@@ -123,7 +162,7 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
 
                 <Divider sx={{ height: 4, width: "100%", margin: "4px 0" }} />
 
-                {!isVerified && ( // Chỉ hiển thị OTPInput và nút Verify khi OTP chưa được xác thực
+                {!isVerified && (
                     <form
                         onSubmit={handleSubmit(handlePressVerifyAccount)}
                         className="w-full flex gap-y-6 flex-col"
@@ -145,8 +184,11 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                     </form>
                 )}
 
-                {isVerified && ( // Hiển thị các ô mật khẩu nếu OTP đã xác thực thành công
-                    <form onSubmit={handleSubmit(handlePasswordSubmit)} className="w-full flex gap-y-6 flex-col mt-6">
+                {isVerified && (
+                    <form
+                        onSubmit={handleSubmit(handlePasswordSubmit)}
+                        className="w-full flex gap-y-6 flex-col mt-6"
+                    >
                         <Input
                             control={control}
                             name="password"
@@ -156,11 +198,11 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                             rules={{ required: "Password is required" }}
                         />
                         <Input
-                            name="confirmpassword" // Changed from phoneNumber to username
+                            name="confirmpassword"
                             control={control}
                             label="Confirm password"
                             placeholder="Confirm password"
-                            rules={{ required: "Confirm password is required" }} // Updated error message
+                            rules={{ required: "Confirm password is required" }}
                         />
                         <Button
                             type="submit"
@@ -197,6 +239,14 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                                 marginLeft: "4px",
                                 marginRight: "4px",
                                 textDecoration: "underline",
+                                cursor: "pointer",
+                            }}
+                            role="button"
+                            onClick={handlePressSendOtp}
+                            sx={{
+                                "&:hover": {
+                                    color: "blue",
+                                },
                             }}
                         >
                             Resend OTP

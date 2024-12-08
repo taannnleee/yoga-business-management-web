@@ -4,6 +4,7 @@ package org.example.yogabusinessmanagementweb.common.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EGender;
 import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,9 +32,14 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     String username;
     String password;
     String phone;
-    String gender;
+    @Enumerated(EnumType.STRING)
+    EGender gender;
     String email;
     String fullname;
+    String firstName;
+    String lastName;
+
+    @Temporal(TemporalType.DATE)
     Date dateOfBirth;
     String imagePath;
     String roles;

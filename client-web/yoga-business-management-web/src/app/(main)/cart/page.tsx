@@ -59,6 +59,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                 product: {
                     id: item.product.id,
                     title: item.product.title,
+                    imagePath: item.product.imagePath,
                     price: item.product.price,
                     variants: item.product.variants,
                     subCategory: item.product.subCategory.name,

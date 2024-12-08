@@ -10,10 +10,10 @@ import React from "react";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {registerUser} from "@/app/api/create-account/register-user";
+import { registerUser } from "@/app/api/create-account/register-user";
 import { API_URL } from "@/config/url";
 
-interface ICreateAccountPageProps {}
+interface ICreateAccountPageProps { }
 
 const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
     const {
@@ -37,8 +37,10 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
                 },
                 body: JSON.stringify({
                     username: values.username, // Adjusted to match API field
-                    fullName: `${values.firstName} ${values.lastName}`, // Combine first and last name
+                    fullName: `${values.firstName} ${values.lastName}`,
                     email: values.email,
+                    firstName: values.firstName,
+                    lastName: values.lastName,
                     phone: values.phoneNumber, // Adjusted to match API field
                     password: values.password,
                     confirmPassword: values.confirmPassword, // Added confirmPassword field
@@ -84,7 +86,7 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
                     borderRadius: "8px",
                 }}
             >
-                <Box>
+                {/* <Box>
                     <Typography sx={{ fontWeight: "600" }} variant="h4">
                         Create account
                     </Typography>
@@ -94,20 +96,20 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
                         Welcome to Market Floor, a marketplace that connects retailers and
                         customers. Enjoy a seamless shopping experience with us.
                     </Typography>
-                </Box>
+                </Box> */}
 
-                <Button variant="secondary">
+                {/* <Button variant="secondary">
                     <span>Sign in with Google </span>
                     <Image
                         alt="google-logo"
                         src={require("../../../assets/icons/google.png")}
                         width={20}
                         height={20}
-                        style={{ marginLeft: "8px" }}
+                        style={{ marginLeft: "8px", }}
                     />
-                </Button>
+                </Button> */}
 
-                <Divider sx={{ height: 4, width: "100%", margin: "4px 0" }} />
+                <Divider sx={{ height: 4, width: "100%", margin: "4px " }} />
 
                 <form
                     onSubmit={handleSubmit(handlePressRegister)}
@@ -154,16 +156,16 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
                     <Input
                         control={control}
                         name="password"
-                        label="Mật khẩu"
-                        placeholder="Nhập mật khẩu của bạn"
+                        label="Password"
+                        placeholder="Password"
                         mode="password"
                         rules={{ required: "Password is required" }}
                     />
                     <Input
                         control={control}
                         name="confirmPassword"
-                        label="Xác nhận mật khẩu"
-                        placeholder="Nhập lại mật khẩu của bạn"
+                        label="Confirm password"
+                        placeholder="Confirm password"
                         mode="password"
                         rules={{
                             required: "Confirm password is required",

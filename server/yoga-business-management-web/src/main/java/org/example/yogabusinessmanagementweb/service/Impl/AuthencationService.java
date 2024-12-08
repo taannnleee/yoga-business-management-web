@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.ERole;
 import org.example.yogabusinessmanagementweb.common.Enum.ETokenType;
 import org.example.yogabusinessmanagementweb.common.entities.Cart;
+import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
+import org.example.yogabusinessmanagementweb.dto.request.user.ChangePasswordRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.LoginRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.ResetPasswordRequest;
 import org.example.yogabusinessmanagementweb.dto.response.token.TokenRespone;
@@ -25,10 +27,13 @@ import org.example.yogabusinessmanagementweb.common.entities.Token;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.service.EmailService;
 import org.example.yogabusinessmanagementweb.common.util.OTPGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +59,8 @@ public class AuthencationService {
     PasswordEncoder passwordEncoder;
     EmailService emailService;
     TokenRepository tokenRepository;
+    private final JwtUtil jwtUtil;
+
 
     public TokenRespone authentication(LoginRequest loginRequest){
         try {
@@ -73,8 +80,6 @@ public class AuthencationService {
         String accessToken =  jwtService.generateToken(user);
         String refreshToken =  jwtService.generateRefreshToken(user);
 
-        //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
-//        revokeAllUserTokens(user);
         saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
@@ -255,8 +260,8 @@ public class AuthencationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
-
-    public String changePassword(ResetPasswordRequest request) {
+    // đây là hàm su dụng cho tính năng quên mật khẩu
+    public String forgotPassWord(ResetPasswordRequest request) {
 
         User user = userService.findByEmail(request.getEmail());
 
@@ -271,7 +276,7 @@ public class AuthencationService {
         return "Password successfully changed";
     }
 
-    public void checkOtpChangePassWord(@Valid String otp, String email) {
+    public void checkOtpForgotPassWord(@Valid String otp, String email) {
         User user = userService.findByEmail(email);
 
         if (!otp.equals(user.getOTP())) {
@@ -279,18 +284,24 @@ public class AuthencationService {
         }
     }
 
-//////////////////////////////////////////////////////////////////////////////////
-//    public void resetPassword(String OTP, String email) {
-//        User user = userService.findByEmail(email);
-//        Token token = tokenService.getTokenByUsername(user.getUsername());
-//        if (token == null) {
-//            throw new AppException(ErrorCode.TOKEN_NOT_FOUND);
-//        }
-//
-//        if (!OTP.equals(token.getOTP())) {
-//            throw new AppException(ErrorCode.OTP_INVALID);
-//        }
-//    }
-//
+    public String changePassword(HttpServletRequest request, @Valid ChangePasswordRequest changePasswordRequest) {
+        User user =  jwtUtil.getUserFromRequest(request);
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (!passwordEncoder.matches(changePasswordRequest.getPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.PASS_WORD_INCORRECT);
+        }
+
+        // Kiểm tra sự khớp của mật khẩu mới và mật khẩu xác nhận mới
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
+            throw new AppException(ErrorCode.PASS_WORD_NOT_MATCHED);
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+
+        return "Password updated successfully";
+    }
 
 }

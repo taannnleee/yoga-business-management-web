@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.dto.CloudinaryResponse;
+import org.example.yogabusinessmanagementweb.dto.request.user.ChangePasswordRequest;
 import org.example.yogabusinessmanagementweb.dto.request.user.UpdateProfileRequest;
 import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
 import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
@@ -60,6 +61,13 @@ public class UserController {
     public ApiResponse<?> getEmailByUserName(@RequestParam String userName, HttpServletRequest request){
         String email =  userService.getEmailByUserName(userName,request);
         return new ApiResponse<>(HttpStatus.OK.value(), "get email by user name successfully",email);
+    }
+
+
+    @PostMapping("/change-password")
+    public ApiResponse<?> changePassword(HttpServletRequest request,@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        String changePassword =  authencationService.changePassword(request,changePasswordRequest);
+        return new ApiResponse<>(HttpStatus.OK.value(), changePassword);
     }
 
 }

@@ -20,6 +20,7 @@ interface ICartItem {
     totalPrice: number;
     product: IProduct;
     currentVariant: string;
+    imagePath: string;
 }
 interface IInputProps {
     cartItem: ICartItem;
@@ -187,7 +188,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                     <CardMedia
                         component="img"
                         sx={{ width: 100 }}
-                        image="https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720"
+                        image={cartItem.product.imagePath}
                         title={cartItem.product.title}
                     />
                 </Grid>

@@ -57,7 +57,9 @@ public enum ErrorCode {
     WISHLIST_NOT_FOUND(1034, "Wishlist not found",HttpStatus.NOT_FOUND),
     PRODUCT_EXISTS_WISHLIST(1035, "The product already exists in the wishlist",HttpStatus.NOT_FOUND),
     COMMENT_NOT_FOUND(1036, "Comment not found",HttpStatus.NOT_FOUND),
-    NOTIFICATION_NOT_FOUND(1037, "Comment not found",HttpStatus.NOT_FOUND);
+    NOTIFICATION_NOT_FOUND(1037, "Comment not found",HttpStatus.NOT_FOUND),
+
+    PASS_WORD_INCORRECT(1038, "Pass word incorrect",HttpStatus.BAD_REQUEST);
     // MODULE ERROR
 
     // CLASS ERROR

@@ -8,18 +8,18 @@ import { useToast } from "@/hooks/useToast";
 import OTPInput from "@/components/atom/OtpInput";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API_URL } from "@/config/url";
-
+import axios from "axios";
 interface ILoginPageProps { }
 
 const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     const { control, handleSubmit } = useForm();
     const [loading, setLoading] = React.useState(false);
+    const [isResendingOtp, setIsResendingOtp] = React.useState(false);
     const toast = useToast();
     const searchParams = useSearchParams();
     const router = useRouter();
 
     const email = searchParams.get("email");
-    const OTP = searchParams.get("OTP");
 
     const handlePressVerifyAccount = async (values: any) => {
         try {
@@ -49,8 +49,34 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
         }
     };
 
+    const handleResendOTP = async () => {
+        try {
+            setIsResendingOtp(true); // Bắt đầu loading
+            const response = await axios.post(
+                `${API_URL}/api/auth/send-otp?email=${email}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            toast.sendToast("Success", response.data.message);
+        } catch (error) {
+            toast.sendToast("Error", "Verification failed", "error");
+        } finally {
+            setIsResendingOtp(false); // Kết thúc loading
+        }
+    };
+
     return (
-        <div className="w-full h-screen flex justify-center items-center bg-white">
+        <div className="w-full h-screen flex justify-center items-center bg-white relative">
+            {isResendingOtp && (
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
+                    <CircularProgress color="inherit" />
+                </div>
+            )}
+
             <Box
                 sx={{
                     display: "flex",
@@ -121,7 +147,9 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                                 marginLeft: "4px",
                                 marginRight: "4px",
                                 textDecoration: "underline",
+                                cursor: "pointer",
                             }}
+                            onClick={handleResendOTP}
                         >
                             Resend OTP
                         </Typography>

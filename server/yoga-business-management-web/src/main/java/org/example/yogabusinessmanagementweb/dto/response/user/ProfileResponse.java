@@ -14,8 +14,12 @@ public class ProfileResponse implements Serializable {
     String username;
     String email;
     String phone;
-
+    String imagePath;
+    String firstName;
+    String lastName;
     String street;
     String city;
     String state;
+    String gender;
+    String dateOfBirth;
 }

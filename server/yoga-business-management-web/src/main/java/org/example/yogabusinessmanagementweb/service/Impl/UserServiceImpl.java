@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
+import org.example.yogabusinessmanagementweb.common.Enum.EGender;
 import org.example.yogabusinessmanagementweb.common.entities.Wishlist;
 import org.example.yogabusinessmanagementweb.common.mapper.AddressMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.UserMapper;
@@ -35,7 +36,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.example.yogabusinessmanagementweb.common.Enum.ETokenType.ACCESSTOKEN;
@@ -169,36 +173,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateProfile(UpdateProfileRequest updateProfileRequest, HttpServletRequest request) {
-        String access_token = request.getHeader("x-token");
-
-        if(StringUtils.isBlank(access_token)){
-            throw new InvalidDataAccessApiUsageException("Token is empty");
-        }
-
-        final String userName = jwtService.extractUsername(access_token, ACCESSTOKEN);
-
-        User user =  userRepository.findByUsername(userName).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
-        //validate xem token có hợp lệ không
-        if(!jwtService.isValid(access_token, ACCESSTOKEN,user)){
-            throw new AppException(ErrorCode.TOKEN_INVALID);
-        }
+        User user = jwtUtil.getUserFromRequest(request);
 
         // Cập nhật thông tin người dùng từ request
-        user.setFullname(updateProfileRequest.getFullname());
-        user.setUsername(updateProfileRequest.getUsername());
+//        user.setUsername(updateProfileRequest.getUsername());
+//        user.setFullname(updateProfileRequest.getFullname());
+
+        user.setFirstName(updateProfileRequest.getFirstName());
+        user.setLastName(updateProfileRequest.getLastName());
         user.setEmail(updateProfileRequest.getEmail());
         user.setPhone(updateProfileRequest.getPhone());
+        user.setImagePath(updateProfileRequest.getImagePath());
 
-        // Cập nhật địa chỉ
-        List<Address> addresses = getUserAddresses(user.getId());
+        String genderString = updateProfileRequest.getGender();
+        if (genderString != null) {
+            try {
+                user.setGender(EGender.valueOf(genderString)); // Sử dụng giá trị của enum nếu hợp lệ
+            } catch (IllegalArgumentException e) {
+                // Nếu không có giá trị hợp lệ, bạn có thể chọn thiết lập giá trị mặc định
+                System.err.println("Invalid gender value: " + genderString + ". Setting to default.");
+//                user.setGender(EGender.OTHER);
+            }
+        }
 
-        addresses.get(0).setCity(updateProfileRequest.getCity());
-        addresses.get(0).setStreet(updateProfileRequest.getStreet());
-        addresses.get(0).setDistrict(updateProfileRequest.getState());
-
-        // Lưu lại thông tin đã được cập nhật
-        userRepository.save(user);
+        // Chuyển đổi String dateOfBirth thành Date
+        if (updateProfileRequest.getDateOfBirth() != null && !updateProfileRequest.getDateOfBirth().isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date dateOfBirth = sdf.parse(updateProfileRequest.getDateOfBirth());
+                user.setDateOfBirth(dateOfBirth);
+            } catch (ParseException e) {
+                // Xử lý lỗi nếu chuỗi ngày tháng không hợp lệ
+                System.err.println("Error parsing date: " + e.getMessage());
+                // Bạn có thể chọn tiếp tục xử lý hoặc ném lỗi tùy theo yêu cầu
+                return; // Không trả về gì vì phương thức có kiểu trả về void
+            }
+            userRepository.save(user);
+        }
     }
 
 

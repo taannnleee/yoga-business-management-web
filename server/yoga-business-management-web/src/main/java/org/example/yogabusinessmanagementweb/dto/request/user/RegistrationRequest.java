@@ -15,6 +15,10 @@ public class RegistrationRequest {
     String username;
     @NotNull(message = "Full name is required")
     String fullName;
+    @NotNull(message = "firstName is required")
+    String firstName;
+    @NotNull(message = "lastName is required")
+    String lastName;
     @NotNull(message = "Email is required")
     String email;
     @NotNull(message = "Phone is required")

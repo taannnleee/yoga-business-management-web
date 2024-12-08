@@ -12,9 +12,15 @@ import java.io.Serializable;
 public class UpdateProfileRequest implements Serializable {
     String fullname;
     String username;
+    String imagePath;
+    String firstName;
+    String lastName;
+    String gender;
     String email;
     String phone;
     String street;
     String city;
     String state;
+
+    String dateOfBirth;
 }

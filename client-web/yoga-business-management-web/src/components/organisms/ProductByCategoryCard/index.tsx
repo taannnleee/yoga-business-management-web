@@ -19,9 +19,9 @@ import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal";
-import {useDispatch} from "react-redux";
-import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice";
-import {setSelectedCategory} from "@/redux/category/categorySlice"; // Import axios
+import { useDispatch } from "react-redux";
+import { incrementTotalItems, setTotalItems } from "@/redux/cart/cartSlice";
+import { setSelectedCategory } from "@/redux/category/categorySlice"; // Import axios
 
 interface ProductByCategoryCardProps {
     category: any;
@@ -30,7 +30,7 @@ interface ProductByCategoryCardProps {
     image: string;
 }
 
-export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({image,category, subCategories,products } : ProductByCategoryCardProps) => {
+export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ image, category, subCategories, products }: ProductByCategoryCardProps) => {
     const toast = useToast();
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(1);
@@ -40,6 +40,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
     const [open, setOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [loading, setLoading] = useState(false); // Add loading state
+    const [loadingDetail, setloadingDetail] = useState(false); // Add loading state
     const handleQuantityChange = (e: { target: { value: React.SetStateAction<number>; }; }) => {
         setQuantity(e.target.value); // Cập nhật giá trị khi người dùng thay đổi
     };
@@ -67,8 +68,8 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
                 },
                 body: JSON.stringify({
                     productId: selectedProduct.id, // Truyền product.id vào API
-                    quantity: quantity, 
-                    currentVariant : currentVariant
+                    quantity: quantity,
+                    currentVariant: currentVariant
                 }),
             });
 
@@ -174,7 +175,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
                         </Button>
                     </Box>
 
-                        <Divider className="my-2" />
+                    <Divider className="my-2" />
                     <div className="flex justify-start items-start space-x-4">
                         <Box className="w-[240px] h-[634px] mt-[-2px]">
                             <Image
@@ -247,12 +248,12 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ima
                                                 },
                                             }}
                                             onClick={() => {
-                                                setLoading(true); // Set loading to true when button is clicked
+                                                setloadingDetail(true); // Set loading to true when button is clicked
                                                 router.push(`/product-detail/${product.id}`);
                                             }}
-                                            disabled={loading} // Disable button while loading
+
                                         >
-                                            {loading ? (
+                                            {loadingDetail ? (
                                                 <CircularProgress
                                                     size={24} // Adjust the size as per your design preference
                                                     sx={{

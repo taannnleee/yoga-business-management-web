@@ -186,10 +186,11 @@ const Checkout: React.FC = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8}>
                     <AddressSelection
-                        selectedAddressId={addressId}
+                        addressId={addressId}
                         setSelectedAddressId={setAddressId}
-                        isAddressValid={isAddressValid}
+                        loading ={loading}
                         setIsAddressValid={handleAddressValidation}
+                        
                     />
                     <Paper sx={{ padding: "20px", marginTop: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>

@@ -76,7 +76,6 @@ public class AuthencationService {
             throw new AppException(ErrorCode.USER_NOT_ACTIVE);
         }
 
-
         String accessToken =  jwtService.generateToken(user);
         String refreshToken =  jwtService.generateRefreshToken(user);
 

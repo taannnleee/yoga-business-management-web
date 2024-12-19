@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {DialogContent, Typography, Button, CircularProgress} from '@mui/material';
+import { DialogContent, Typography, Button, CircularProgress } from '@mui/material';
 import Image from 'next/image';
 import { CustomNumberInput } from "@/components/atom/CustomNumberInput";
 import { useRouter } from 'next/navigation';
-import { FaRegHeart, FaHeart, FaSearchPlus } from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaSearchPlus, FaSpinner } from "react-icons/fa";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
+import { API_URL } from "@/config/url";
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -22,6 +23,8 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
     const [selectedImageRight, setSelectedImageRight] = useState("");
     const [selectedImage, setSelectedImage] = useState(selectedImageLeft || selectedImageRight);
     const [currentVariant, setCurrentVariant] = useState<any>({});
+    const [isFavorited, setIsFavorited] = useState(false);
+    const accessToken = localStorage.getItem("accessToken");
 
     console.log("kkkk");
     console.log("currentVariant", currentVariant);
@@ -41,7 +44,77 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         }
     };
 
+    const handleFavoriteToggle = async () => {
+        setLoading(true); // Start loading
+        try {
+            if (isFavorited) {
+                // Call API to remove from wishlist
+                const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (response.ok) {
+                    setIsFavorited(false);
+                } else {
+                    console.error("Failed to remove from wishlist");
+                }
+            } else {
+                // Call API to add to wishlist
+                const response = await fetch(`${API_URL}/api/wishlist/add-wishlist`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ productId: selectedProduct.id }),
+                });
+
+                if (response.ok) {
+                    setIsFavorited(true);
+                } else {
+                    console.error("Failed to add to wishlist");
+                }
+            }
+        } catch (error) {
+            console.error("Error toggling wishlist status:", error);
+        } finally {
+            setLoading(false); // Stop loading after API call
+        }
+    };
+
     useEffect(() => {
+        const checkWishlistStatus = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-exists`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ productId: selectedProduct.id }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 200) {
+                        setIsFavorited(true); // Set favorite status if the status is 200
+                    }
+                } else {
+                    console.error("Failed to check wishlist status");
+                }
+            } catch (error) {
+                console.error("Error checking wishlist status:", error);
+            }
+        };
+
+        if (selectedProduct.id) {
+            checkWishlistStatus();
+        }
+
+
         // Chọn variant đầu tiên tự động khi Modal được hiển thị
         const defaultVariants: any = {};
 
@@ -77,7 +150,6 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         setSelectedImageRight(image);
         setSelectedImage(image);
     };
-    const isFavorited = false;
     return (
         <DialogContent className={"w-[1030px] h-[559px]"}>
             <div className="flex items-center space-x-8">
@@ -85,6 +157,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                     <div className="flex items-center space-x-4 relative">
                         {/* Heart icon positioned at the top-right of the container */}
                         <button
+                            onClick={handleFavoriteToggle}
                             className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
                         >
                             {!isFavorited ? (

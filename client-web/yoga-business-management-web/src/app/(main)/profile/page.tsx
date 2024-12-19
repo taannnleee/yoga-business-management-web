@@ -18,6 +18,7 @@ import { API_URL } from "@/config/url";
 import { useToast } from "@/hooks/useToast";
 
 const AccountInfo: React.FC = () => {
+    const [phoneError, setPhoneError] = useState<string>('');
     const toast = useToast();
     const [activeTab, setActiveTab] = useState<'accountInfo' | 'changePassword'>('accountInfo');
     const [profileData, setProfileData] = useState<any>(null);
@@ -31,6 +32,11 @@ const AccountInfo: React.FC = () => {
         confirmNewPassword: '',
     });
 
+    const isPhoneValid = (phone: string) => {
+        // Kiểm tra số điện thoại có đúng định dạng (10 chữ số và bắt đầu bằng 0)
+        const phoneRegex = /^0\d{9}$/;
+        return phoneRegex.test(phone);
+    };
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -56,8 +62,26 @@ const AccountInfo: React.FC = () => {
             return;
         }
 
+        // Kiểm tra nếu mật khẩu hiện tại và mật khẩu mới giống nhau
+        if (passwordForm.currentPassword === passwordForm.newPassword) {
+            toast.sendToast("Error", "New password cannot be the same as the current password.", "error");
+            return;
+        }
+
         if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
             toast.sendToast("Error", "New password and confirm new password must match.");
+            return;
+        }
+
+        // Kiểm tra độ dài mật khẩu
+        if (passwordForm.newPassword.length > 50) {
+            toast.sendToast("Error", "Password cannot be longer than 50 characters.", "error");
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,50}$/;
+        if (!passwordRegex.test(passwordForm.newPassword)) {
+            toast.sendToast("Error", "Password must be at least 8 characters long and contain at least one letter, one number, and one special character.", "error");
 
             return;
         }
@@ -195,6 +219,13 @@ const AccountInfo: React.FC = () => {
             toast.sendToast("Error", "Access token is missing.");
             return;
         }
+        // Kiểm tra số điện thoại
+        if (!isPhoneValid(formData.phone)) {
+            setPhoneError("Phone number is invalid. It must be a 10-digit number.");
+            return;
+        } else {
+            setPhoneError(""); // Xóa lỗi nếu số điện thoại hợp lệ
+        }
 
         try {
             const response = await axios.post(
@@ -302,6 +333,9 @@ const AccountInfo: React.FC = () => {
                                 onChange={handleInputChange}
                                 variant="outlined"
                                 fullWidth
+                                InputProps={{
+                                    readOnly: true,  // Ngăn người dùng sửa email
+                                }}
                             />
                             <TextField
                                 label="Phone"
@@ -310,6 +344,8 @@ const AccountInfo: React.FC = () => {
                                 onChange={handleInputChange}
                                 variant="outlined"
                                 fullWidth
+                                error={!!phoneError}  // Hiển thị lỗi nếu có
+                                helperText={phoneError}  // Hiển thị thông báo lỗi
                             />
                         </Box>
 
@@ -323,6 +359,11 @@ const AccountInfo: React.FC = () => {
                                 onChange={handleInputChange}  // Handle input change to update formData
                                 InputLabelProps={{
                                     shrink: true,
+                                }}
+                                InputProps={{
+                                    inputProps: {
+                                        max: new Date().toISOString().split("T")[0], // Set max date to today's date
+                                    },
                                 }}
                                 fullWidth
                             />

@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.dto.request.user;
 
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

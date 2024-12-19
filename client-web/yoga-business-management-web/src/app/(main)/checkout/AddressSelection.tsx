@@ -52,8 +52,10 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
             address.phone && address.phone !== ""
         ) {
             setIsAddressValid(true); // All fields are valid
+
         } else {
             setIsAddressValid(false); // One or more fields are empty
+
         }
     };
 
@@ -119,7 +121,9 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                         street,
                         district,
                         city,
-                        additionalInfo: ""
+                        additionalInfo: "",
+                        nameDelivery,
+                        phoneNumberDelivery
                     };
 
                     // Set shipping info state

@@ -5,13 +5,14 @@ import CachedIcon from '@mui/icons-material/Cached';
 import { API_URL } from "@/config/url";
 interface Address {
     id: string;
-    fullName: string;
-    phone: string;
-    additionalInfo: string;
+    phoneNumberDelivery: string;
+    nameDelivery: string;
+    status?: boolean;
+
+    houseNumber: string;
     street: string;
     district: string;
     city: string;
-    isDefault: boolean;
 }
 
 interface MyListAddressModalProps {
@@ -19,9 +20,11 @@ interface MyListAddressModalProps {
     closeModal: () => void;
     openAddAddressModal: () => void;
     onAddressSelect: (address: Address) => void; // Specify type here
+    fetchDefaultAddress: () => Promise<void>;
 }
 
 const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
+    fetchDefaultAddress,
     isModalOpen,
     closeModal,
     openAddAddressModal,
@@ -47,17 +50,22 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
             const data = await response.json();
 
             if (data.status === 200) {
-                const fetchedAddresses = data.data.map((address: any) => ({
+
+
+                const address: Address[] = data.data.map((address: any) => ({
                     id: address.id,
-                    fullName: address.nameDelivery || "",
-                    phone: address.phoneNumberDelivery || "",
-                    additionalInfo: "",
+                    nameDelivery: address.nameDelivery || "",
+                    phoneNumberDelivery: address.phoneNumberDelivery || "",
                     street: address.street,
                     district: address.district,
                     city: address.city,
+                    houseNumber: address.houseNumber,
                     isDefault: address.status === "DEFAULT",
+
                 }));
-                setAddresses(fetchedAddresses);
+
+
+                setAddresses(address);
             }
         } catch (error) {
             console.error("Error fetching addresses:", error);
@@ -100,12 +108,12 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
                             {addresses.map((address, index) => (
                                 <div key={index}>
                                     <li
-                                        className={`cursor-pointer ${selectedAddress?.phone === address.phone ? "bg-gray-200" : ""}`}
+                                        className={`cursor-pointer ${selectedAddress?.id === address.id ? "bg-gray-200" : ""}`}
                                         onClick={() => handleAddressSelect(address)}
                                     >
                                         <div className="flex justify-between">
-                                            <p className="text-sm">{address.fullName}</p>
-                                            <p className="text-sm">{address.phone}</p>
+                                            <p className="text-sm">{address.nameDelivery}</p>
+                                            <p className="text-sm">{address.phoneNumberDelivery}</p>
                                             <span
                                                 className="text-blue-500 mr-2 cursor-pointer"
                                                 onClick={handleUpdateClick} // Trigger update modal
@@ -113,11 +121,11 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
                                                 Cập nhật
                                             </span>
                                         </div>
-                                        <p className="text-sm">{address.additionalInfo}</p>
+                                        {/* <p className="text-sm">{address.additionalInfo}</p> */}
                                         <p className="text-sm">
                                             {address.street}, {address.district}, {address.city}
                                         </p>
-                                        {address.isDefault && (
+                                        {address.status && (
                                             <p className="border border-solid border-[#ee4d2d] rounded-[1px] text-[#ee4d2d] text-xs leading-[12px] mt-0 mb-0 ml-[15px] px-[5px] py-[2px] capitalize inline-block max-w-max text-center font-semibold">
                                                 Mặc định
                                             </p>
@@ -138,6 +146,8 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
                         onClick={() => {
                             closeModal();
                             if (selectedAddress) {
+                                console.log("tan")
+                                console.log(selectedAddress)
                                 onAddressSelect(selectedAddress); // Use onAddressSelect here
                             }
                         }}
@@ -164,6 +174,8 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
                     isModalOpen={isUpdateModalOpen}
                     setIsModalOpen={setIsUpdateModalOpen}
                     selectedAddress={selectedAddress}
+                    fetchAddresses={fetchAddresses}
+                    fetchDefaultAddress={fetchDefaultAddress}
                 />
             )}
         </div>

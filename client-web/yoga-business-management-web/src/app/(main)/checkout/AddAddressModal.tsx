@@ -3,13 +3,16 @@ import { Button, TextField, CircularProgress } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
 import { API_URL } from "@/config/url";
 interface Address {
-    fullName: string;
-    phone: string;
-    numberHours: string;
+    id?: string;
+    phoneNumberDelivery: string;
+    nameDelivery: string;
+    status?: boolean;
+
+    houseNumber: string;
     street: string;
     district: string;
     city: string;
-    isDefault: boolean;
+
 }
 
 interface AddAddressModalProps {
@@ -19,19 +22,19 @@ interface AddAddressModalProps {
 }
 
 const AddAddressModal: React.FC<AddAddressModalProps> = ({
-                                                             isModalOpen,
-                                                             setIsModalOpen,
-                                                             fetchAddresses,
-                                                         }) => {
+    isModalOpen,
+    setIsModalOpen,
+    fetchAddresses,
+}) => {
     const toast = useToast();
     const [formData, setFormData] = useState<Address>({
-        fullName: "",
-        phone: "",
-        numberHours: "",
+        nameDelivery: "",
+        phoneNumberDelivery: "",
+        houseNumber: "",
         street: "",
         district: "",
         city: "",
-        isDefault: false,
+        status: false,
     });
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -47,13 +50,13 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
     const handleCreateAddress = async () => {
         const token = localStorage.getItem("accessToken");
         const newAddress = {
-            houseNumber: formData.numberHours,
+            houseNumber: formData.houseNumber,
             street: formData.street,
             district: formData.district,
             city: formData.city,
             status: "NORMAL",
-            nameDelivery: formData.fullName,
-            phoneNumberDelivery: formData.phone,
+            nameDelivery: formData.nameDelivery,
+            phoneNumberDelivery: formData.phoneNumberDelivery,
         };
 
         setLoading(true);
@@ -86,9 +89,8 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 
     return (
         <div
-            className={`fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ${
-                isModalOpen ? "block" : "hidden"
-            }`}
+            className={`fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ${isModalOpen ? "block" : "hidden"
+                }`}
         >
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h3 className="text-lg font-semibold mb-4">Thêm địa chỉ mới</h3>
@@ -96,22 +98,22 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
                     <TextField
                         label="Họ tên"
                         fullWidth
-                        name="fullName"
-                        value={formData.fullName}
+                        name="nameDelivery"
+                        value={formData.nameDelivery}
                         onChange={handleChange}
                     />
                     <TextField
                         label="Số điện thoại"
                         fullWidth
-                        name="phone"
-                        value={formData.phone}
+                        name="phoneNumberDelivery"
+                        value={formData.phoneNumberDelivery}
                         onChange={handleChange}
                     />
                     <TextField
                         label="Số nhà"
                         fullWidth
-                        name="numberHours"
-                        value={formData.numberHours}
+                        name="houseNumber"
+                        value={formData.houseNumber}
                         onChange={handleChange}
                     />
                     <TextField

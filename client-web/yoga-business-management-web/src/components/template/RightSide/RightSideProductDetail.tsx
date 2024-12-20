@@ -55,7 +55,6 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
             setLoading(false);
         }
     }
-
     return (
         <div className="space-y-4">
             <Typography variant="h6" className="font-bold text-ellipsis text-black">
@@ -106,54 +105,58 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
             {/*<Typography variant="body2" className="text-black max-w-xl overflow-hidden">*/}
             {/*    {product?.description || "Thông tin sản phẩm đang cập nhật."}*/}
             {/*</Typography>*/}
-
             <div>
                 {product?.variants &&
-                    Object.entries(product.variants).map(([variantType, variantValues]) => (
-                        <div key={variantType} className={"my-4"}>
-                            <Typography variant="subtitle1" className="text-black font-bold">
-                                {variantType.charAt(0).toUpperCase() + variantType.slice(1)} {/* Hiển thị tên variant như 'Color', 'Size',... */}
-                            </Typography>
-                            <div className="flex items-center space-x-4">
-                                {Object.entries(variantValues).map(([value, image], index) => (
-                                    <div
-                                        key={index}
-                                        className={"flex items-center justify-evenly mr-4"}
-                                        onClick={() => handleVariantSelect(variantType, value, image)}
-                                    >
-                                        <Typography className="cursor-pointer">
-                                            <div className={"flex items-center justify-start space-x-2"}>
-                                                {/* Kiểm tra nếu là color thì hiển thị ảnh */}
-                                                {variantType === 'color' ? (
-                                                    <>
-                                                        <Image
-                                                            src={image || '/path/to/fallback/image.jpg'}
-                                                            alt={`${value} color`}
-                                                            width={40}
-                                                            height={40}
-                                                            className={`rounded-md cursor-pointer ${image === currentVariant.color?.image ? 'border-2 border-red-500' : ''}`}
-                                                        />
-                                                        <Typography variant="caption" className="text-center mt-1 mr-8">
-                                                            {value}
-                                                        </Typography>
-                                                    </>
+                    Object.entries(product.variants).map(([variantType, variantValues]) => {
+                        console.log("Variant Type :", variantType);
+                        console.log("Variant Values :", variantValues);
 
-                                                ) : (
-                                                    <div
-                                                        className={`flex items-center justify-center w-11 h-11 border border-gray-300 rounded-md cursor-pointer ${value === currentVariant[variantType]?.value ? 'border-2 border-red-800' : ''}`}
-                                                    >
-                                                        <Typography className="text-center">{value}</Typography>
-                                                    </div>
-                                                )}
-                                                {/* Hiển thị tên value cho tất cả các variants */}
-
-                                            </div>
-                                        </Typography>
-                                    </div>
-                                ))}
+                        return (
+                            <div key={variantType} className={"my-4"}>
+                                <Typography variant="subtitle1" className="text-black font-bold">
+                                    {variantType.charAt(0).toUpperCase() + variantType.slice(1)}
+                                </Typography>
+                                <div className="flex items-center space-x-4">
+                                    {Object.entries(variantValues).map(([value, image], index) => (
+                                        <div
+                                            key={index}
+                                            className={"flex items-center justify-evenly mr-4"}
+                                            onClick={() => {
+                                                console.log("Variant Type (on click):", variantType);
+                                                console.log("Variant Value (on click):", value);
+                                                handleVariantSelect(variantType, value, image);
+                                            }}
+                                        >
+                                            <Typography className="cursor-pointer">
+                                                <div className={"flex items-center justify-start space-x-2"}>
+                                                    {variantType === 'color' ? (
+                                                        <>
+                                                            <Image
+                                                                src={image || '/path/to/fallback/image.jpg'}
+                                                                alt={`${value} color`}
+                                                                width={40}
+                                                                height={40}
+                                                                className={`rounded-md cursor-pointer ${image === currentVariant.color?.image ? 'border-2 border-red-500' : ''}`}
+                                                            />
+                                                            <Typography variant="caption" className="text-center mt-1 mr-8">
+                                                                {value}
+                                                            </Typography>
+                                                        </>
+                                                    ) : (
+                                                        <div
+                                                            className={`flex items-center justify-center w-11 h-11 border border-gray-300 rounded-md cursor-pointer ${value === currentVariant[variantType]?.value ? 'border-2 border-red-800' : ''}`}
+                                                        >
+                                                            <Typography className="text-center">{value}</Typography>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
             </div>
 
             <div className="flex items-center space-x-4 mt-4">

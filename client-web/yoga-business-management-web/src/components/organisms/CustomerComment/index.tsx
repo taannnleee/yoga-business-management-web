@@ -55,11 +55,11 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
                 setListComments(data?.data.content || []); // Set the comments data
                 setTotalItems(data.data.totalElements);
             } else {
-                toast.sendToast("error", data?.message || "Lỗi khi tải bình luận"); // Error handling for unsuccessful response
+                toast.sendToast("error", data?.message || "Lỗi khi tải bình luận", "error"); // Error handling for unsuccessful response
             }
         } catch (error) {
             console.error("Error fetching comments:", error);
-            toast.sendToast("error", "Có lỗi xảy ra, vui lòng thử lại"); // Show generic error message to the user
+            toast.sendToast("error", "Có lỗi xảy ra, vui lòng thử lại", "error"); // Show generic error message to the user
         }
     };
     const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -104,9 +104,9 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
             }
         } catch (error: any) {
             if (error?.message === "Failed to fetch comments" || error?.message === "Failed to post comment") {
-                toast.sendToast("error", "Có lỗi xảy ra, vui lòng thử lại");
+                toast.sendToast("Error", "Có lỗi xảy ra, vui lòng thử lại", "error");
             } else if (error?.response?.status === 401) {
-                toast.sendToast("error", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+                toast.sendToast("Error", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại", "error");
             } else {
                 console.error("Error posting comment:", error);
             }

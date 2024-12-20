@@ -114,7 +114,7 @@ const Checkout: React.FC = () => {
         } catch (error: any) {
             console.error("Error initiating VNPay payment:", error.message);
             setError(error.message);
-            toast.sendToast("Error", "Error initiating VNPay payment");
+            toast.sendToast("Error", "Error initiating VNPay payment", "error");
         }
     };
 
@@ -159,7 +159,7 @@ const Checkout: React.FC = () => {
         } catch (error: any) {
             console.error("Error creating order:", error.message);
             setError(error.message);
-            toast.sendToast("Error", "Error creating order");
+            toast.sendToast("Error", "Error creating order", "error");
         } finally {
             setOrderLoading(false);
         }

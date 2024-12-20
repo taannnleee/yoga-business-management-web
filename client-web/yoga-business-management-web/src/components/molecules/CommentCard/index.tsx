@@ -70,7 +70,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
             }
         } catch (error: any) {
             if (error?.response?.status === 401) {
-                toast.sendToast("error", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+                toast.sendToast("error", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại", "error");
             }
         } finally {
             setIsReplying(false);
@@ -136,7 +136,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
         } catch (error: any) {
             setIsCommenting(false);
             if (error?.response?.status === 401) {
-                toast.sendToast("error", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+                toast.sendToast("error", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại", "error");
             }
         } finally {
             setIsCommenting(false);

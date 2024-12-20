@@ -58,7 +58,7 @@ const AccountInfo: React.FC = () => {
     const handleChangePassword = async () => {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-            toast.sendToast("Error", "Access token is missing.");
+            toast.sendToast("Error", "Access token is missing.", "error");
             return;
         }
 
@@ -69,7 +69,7 @@ const AccountInfo: React.FC = () => {
         }
 
         if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
-            toast.sendToast("Error", "New password and confirm new password must match.");
+            toast.sendToast("Error", "New password and confirm new password must match.", "error");
             return;
         }
 
@@ -117,7 +117,7 @@ const AccountInfo: React.FC = () => {
             // Đưa người dùng trở lại trang đăng nhập (hoặc redirect)
             window.location.href = "/login"; // Thay đổi trang theo yêu cầu của bạn
         } catch (err: any) {
-            toast.sendToast("Error", "Pass word incorrect");
+            toast.sendToast("Error", "Pass word incorrect", "error");
         }
     };
 
@@ -157,7 +157,7 @@ const AccountInfo: React.FC = () => {
                     dateOfBirth: formattedDateOfBirth || '',
                 });
             } catch (err) {
-                toast.sendToast("Error", "Failed to load profile data.");
+                toast.sendToast("Error", "Failed to load profile data.", "error");
             } finally {
                 setLoading(false);
             }
@@ -197,7 +197,7 @@ const AccountInfo: React.FC = () => {
             return response.data.data.url;
         } catch (error) {
             console.error('Image upload failed', error);
-            toast.sendToast("Error", "Failed to upload image.");
+            toast.sendToast("Error", "Failed to upload image.", "error");
 
             return null;
         }
@@ -216,7 +216,7 @@ const AccountInfo: React.FC = () => {
     const handleUpdateProfile = async () => {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-            toast.sendToast("Error", "Access token is missing.");
+            toast.sendToast("Error", "Access token is missing.", "error");
             return;
         }
         // Kiểm tra số điện thoại
@@ -240,7 +240,7 @@ const AccountInfo: React.FC = () => {
 
             setIsProfileUpdated(true);
         } catch (err: any) {
-            toast.sendToast("Error", "Failed to update profile.");
+            toast.sendToast("Error", "Failed to update profile.", "error");
         }
     };
 

@@ -59,7 +59,10 @@ const FulfillmentManagement: React.FC = () => {
             setProducts([]);
         }
     }, [searchTerm]);
-
+    const navigateToProductDetail = (id: string) => {
+        router.push(`/product-detail/${id}`);
+        setOpenPopup(false);
+    }
     return (
         <>
             <button onClick={handleClick}>
@@ -125,6 +128,7 @@ const FulfillmentManagement: React.FC = () => {
                                     <div
                                         key={product.id}
                                         className="max-h-[90px] text-sm cursor-pointer flex items-center gap-2 p-2 bg-white rounded-lg hover:bg-blue-500 hover:text-white transition-colors duration-300 shadow-md"
+                                        onClick={() => navigateToProductDetail(product.id)}
                                     >
                                         <Image
                                             src={product.imagePath}

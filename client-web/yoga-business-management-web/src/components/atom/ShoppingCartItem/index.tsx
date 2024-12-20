@@ -26,9 +26,10 @@ interface IInputProps {
     cartItem: ICartItem;
     onRemove: (productId: string) => void;
     fetchCart: () => void;
+    setLoadPrice: (b: boolean) => void;
 }
 
-const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart }) => {
+const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart,setLoadPrice }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(cartItem.quantity); // Tổng số lượng hiện tại
@@ -41,7 +42,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                 console.log('Tăng số lượng sản phẩm:', cartItem.product.id, debouncedChangedQuantity);
                 setLoading(true);
                 setError(null);
-
+                setLoadPrice(true);
                 try {
                     const token = localStorage.getItem("accessToken");
                     const response = await fetch(`${API_URL}/api/cart/increase-to-cart`, {
@@ -70,12 +71,13 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                     setLoading(false);
                     setChangedQuantity(0); // Reset số lượng thay đổi sau khi cập nhật
                     fetchCart();
+                    setLoadPrice(false);
                 }
             } else if (debouncedChangedQuantity < 0) { // Chỉ gọi API khi số lượng giảm
                 console.log('Giảm số lượng sản phẩm:', cartItem.product.id, debouncedChangedQuantity);
                 setLoading(true);
                 setError(null);
-
+                setLoadPrice(true);
                 try {
                     const token = localStorage.getItem("accessToken");
                     const response = await fetch(`${API_URL}/api/cart/subtract-from-cart-item`, {
@@ -101,7 +103,8 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                 } finally {
                     setLoading(false);
                     setChangedQuantity(0); // Reset số lượng thay đổi sau khi cập nhật
-                    fetchCart()
+                    fetchCart();
+                    setLoadPrice(false);
                 }
             }
         };
@@ -110,12 +113,14 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
     }, [debouncedChangedQuantity, cartItem.product.id]);
 
     const handleIncrease = () => {
+        setLoadPrice(true);
         setQuantity((prevQuantity) => prevQuantity + 1); // Tăng tổng số lượng
         setChangedQuantity((prevChanged) => prevChanged + 1); // Tăng số lượng thay đổi
     };
 
     const handleDecrease = () => {
         if (quantity > 1) {
+            setLoadPrice(true);
             setQuantity((prevQuantity) => prevQuantity - 1); // Giảm tổng số lượng
             setChangedQuantity((prevChanged) => prevChanged - 1); // Giảm số lượng thay đổi
         }

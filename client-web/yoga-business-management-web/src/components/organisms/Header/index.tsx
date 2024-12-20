@@ -108,34 +108,6 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
     </div>
   );
 
-
-
-  const searchingByKeyword = async (keyword: string) => {
-    try {
-      const searchResponse = await axios.post(
-        "http://localhost:4000/products/search",
-        {
-          keyword: keyword,
-        }
-      );
-
-      if (searchResponse) {
-        if (searchResponse?.data?.data?.length > 0) {
-          setSearchResults(searchResponse?.data?.data);
-        }
-      }
-    } catch (error) {
-      console.log("searching error", error);
-      setSearchResults([]);
-    }
-  };
-
-  useEffect(() => {
-    if (debounceKeyword?.length > 0) {
-      searchingByKeyword(debounceKeyword);
-    }
-  }, [debounceKeyword]);
-
   const handleItemClick = (item: any) => {
     let splits = (item?.name as string)?.split(" ");
     let final = "";
@@ -239,7 +211,7 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
             <ButtonCourse className={"mt-[-12px]"} />
           </nav>
           <div>
-            <NotificationsIcon onClick={() => router.push("/notification")} style={{ fontSize: '30px' }} />
+            <NotificationsIcon className={"cursor-pointer"} onClick={() => router.push("/notification")} style={{ fontSize: '30px' }} />
           </div>
 
           <div className="flex w-1/3 laptop:hidden laptop:w-0 flex-row-reverse">

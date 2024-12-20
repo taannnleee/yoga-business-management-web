@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Typography, Container, Grid, CssBaseline, Button } from "@mui/material";
+import {Typography, Container, Grid, CssBaseline, Button, CircularProgress} from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/components/checkToken";
 import { API_URL } from "@/config/url";
+import {FaSpinner} from "react-icons/fa";
 
 interface IProduct {
     id: string;
@@ -36,6 +37,7 @@ interface IShoppingCartPageProps { }
 const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const [carts, setCarts] = useState<ICart | null>(null); // Lưu giỏ hàng
     const [loading, setLoading] = useState(true); // State để theo dõi trạng thái đang tải
+    const [loadPrice, setLoadPrice] = useState(false); // State để theo dõi trạng thái đang tải
     const [error, setError] = useState<string | null>(null); // Lưu lỗi nếu có
     const router = useRouter();
 
@@ -115,6 +117,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                                             cartItem={cartItem}
                                             onRemove={handleRemoveProduct} // Truyền hàm xóa sản phẩm
                                             fetchCart={fetchCart} // Truyền hàm load lại giỏ hàng
+                                            setLoadPrice={setLoadPrice} // Truyền state để theo dõi trạng thái đang tải
                                         />
                                     </Grid>
                                 ))
@@ -128,8 +131,11 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                             <Grid container spacing={2} alignItems="center" justifyContent="flex-end">
                                 <Grid item>
                                     <Typography variant="h6" gutterBottom>
-                                        Tổng tiền thanh toán: {carts?.totalPrice}
-                                        {/* {calculateTotalPrice().toLocaleString()} đ */}
+                                        Tổng tiền thanh toán: {loadPrice ? (
+                                            <FaSpinner className="animate-spin text-black w-6 h-6"/>
+                                        ) : (
+                                            `${carts?.totalPrice ?? 0} đ`
+                                        )}
                                     </Typography>
                                 </Grid>
                                 <Grid item>

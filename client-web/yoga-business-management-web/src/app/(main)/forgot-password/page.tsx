@@ -36,7 +36,7 @@ const ForgotPassword: React.FC<IForgotPasswordProps> = () => {
             router.replace(`/verify-change-password?email=${data.email}`);
         } catch (error: any) {
             // Handle error
-            toast.sendToast("Error", error.response?.data?.message || "Something went wrong");
+            toast.sendToast("Error", error.response?.data?.message || "Something went wrong", "error");
         } finally {
             setLoading(false);
         }

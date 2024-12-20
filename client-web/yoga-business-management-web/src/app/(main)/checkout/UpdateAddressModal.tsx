@@ -76,7 +76,7 @@ const UpdateAddressModal: React.FC<UpdateAddressModalProps> = ({
                 fetchAddresses();
                 setIsModalOpen(false);
             } else {
-                toast.sendToast("Error", "Cập nhật địa chỉ thất bại");
+                toast.sendToast("Error", "Cập nhật địa chỉ thất bại", "error");
             }
         } catch (error) {
             console.error("Error updating address", error);

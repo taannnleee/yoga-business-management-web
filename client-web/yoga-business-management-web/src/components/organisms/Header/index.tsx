@@ -49,7 +49,6 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
       if (!token) {
         return;
       }
-      console.log("hehehe")
 
       // Gọi API logout sử dụng fetch
       const response = await fetch(`${API_URL}/api/auth/logout`, {
@@ -73,12 +72,12 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
         router.replace("/home");
       } else {
         // Xử lý trường hợp logout không thành công
-        toast.sendToast("Error", "Đăng xuất thất bại, vui lòng thử lại.");
+        toast.sendToast("Error", "Đăng xuất thất bại, vui lòng thử lại.", "error");
       }
     } catch (error) {
       // Xử lý lỗi trong quá trình gọi API
       console.error("Logout error", error);
-      toast.sendToast("Error", "Đăng xuất thất bại, vui lòng thử lại.");
+      toast.sendToast("Error", "Đăng xuất thất bại, vui lòng thử lại.", "error");
     }
   };
 

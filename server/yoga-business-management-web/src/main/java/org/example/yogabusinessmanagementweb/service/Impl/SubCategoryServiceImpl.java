@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
+import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.common.mapper.Mappers;
 import org.example.yogabusinessmanagementweb.common.mapper.SubCategoryMapper;
@@ -60,7 +61,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             throw  new AppException(ErrorCode.CATEGORY_NOT_FOUND);
         }
         Category category = categoryOptional.get();
-        List<SubCategory> list = subCategoryRepository.findAllByCategory(category);
+        List<SubCategory> list = subCategoryRepository.findAllByCategoryAndStatus(category, EStatus.ACTIVE);
 
         return Mappers.mapperEntityToDto(list,SubCategoryResponse.class);
     }
@@ -75,9 +76,19 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     public SubCategory getSubCategoryById(String id) {
         Optional<SubCategory> subCategoryOptional = subCategoryRepository.findById(Long.valueOf(id));
         if(subCategoryOptional.isEmpty()) {
-            throw  new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+            throw  new AppException(ErrorCode.SUBCATEGORY_NOT_FOUND);
         }
         return subCategoryOptional.get();
+    }
+
+    @Override
+    public void deleteSubCategoryWithStatus(String id) {
+        SubCategory sub =  getSubCategoryById(id);
+        sub.setStatus(EStatus.INACTIVE);
+        for(Product product : sub.getProducts()) {
+            product.setStatus(false);
+        }
+        subCategoryRepository.save(sub);
     }
 
 }

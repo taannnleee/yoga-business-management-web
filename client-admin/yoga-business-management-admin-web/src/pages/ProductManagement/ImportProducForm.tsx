@@ -25,7 +25,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   const [imagePath, setImagePath] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [averageRating, setAverageRating] = useState<number>(0);
-  const [code, setCode] = useState<string>("");
+  // const [code, setCode] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [variants, setVariants] = useState<{ [key: string]: { [key: string]: string } }>({
@@ -100,7 +100,6 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
         imagePath,
         price,
         averageRating,
-        code,
         brand,
         description,
         variants,
@@ -167,13 +166,13 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
               onChange={(e) => setAverageRating(Number(e.target.value))}
               margin="normal"
             />
-            <TextField
+            {/* <TextField
               label="Mã sản phẩm"
               fullWidth
               value={code}
               onChange={(e) => setCode(e.target.value)}
               margin="normal"
-            />
+            /> */}
             <TextField
               label="Thương hiệu"
               fullWidth

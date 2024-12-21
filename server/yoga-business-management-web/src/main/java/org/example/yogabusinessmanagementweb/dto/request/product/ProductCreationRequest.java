@@ -22,7 +22,7 @@ public class ProductCreationRequest {
     BigDecimal price;
     Double averageRating = 0.0;
     Double sold = 0.0;
-    String code;
+//    String code;
     String brand;
     String description;
     Map<String, Map<String, String>> variants;

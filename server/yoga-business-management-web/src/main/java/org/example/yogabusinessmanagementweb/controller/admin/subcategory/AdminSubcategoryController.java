@@ -38,4 +38,14 @@ public class AdminSubcategoryController {
         List<SubCategoryResponse> list = subCategoryService.getAllSub();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all subcategory successfully",list);
     }
+
+    @GetMapping("/delete-status-sub-category/{id}")
+    public ApiResponse<?> deleteSubCategoryWithStatus(@Valid @PathVariable String id){
+        try{
+            subCategoryService.deleteSubCategoryWithStatus(id);
+            return new ApiResponse<>(HttpStatus.OK.value(), "delete subcategory successfully");
+        }catch (Exception e){
+            return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());
+        }
+    }
 }

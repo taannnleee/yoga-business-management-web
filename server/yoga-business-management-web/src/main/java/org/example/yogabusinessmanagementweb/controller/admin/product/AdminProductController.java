@@ -16,6 +16,7 @@ import org.example.yogabusinessmanagementweb.service.EmailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +45,16 @@ public class AdminProductController {
     public ApiResponse<?> getAllProduct(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String keyword) { // Nhận từ khóa tìm kiếm từ request
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "createdAt") String sortBy, // Field to sort by
+            @RequestParam(defaultValue = "desc") String sortDir) { // Nhận từ khóa tìm kiếm từ request
         try {
-            Pageable pageable = PageRequest.of(page - 1, size);
+            Pageable pageable = PageRequest.of(page - 1, size,
+                    sortDir.equalsIgnoreCase("asc")
+                            ? Sort.by(sortBy).ascending()
+                            : Sort.by(sortBy).descending());
+
+//            Pageable pageable = PageRequest.of(page - 1, size,Sort.by(sortBy).ascending());
 
             // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
             Page<ProductResponse> productPage = productService.searchProducts(keyword, pageable);
@@ -81,6 +89,17 @@ public class AdminProductController {
     public ApiResponse<?> deleteProduct(@Valid @PathVariable String productId) {
         try{
             productService.delete(productId);
+            return new ApiResponse<>(HttpStatus.OK.value(), "delete product  successfully");
+        }catch (Exception e){
+            return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());
+        }
+    }
+
+    // hàm xoá product bằng cách tắt trạng thái status
+    @GetMapping("/delete-status-product/{productId}")
+    public ApiResponse<?> deleteProductWithStatus(@Valid @PathVariable String productId){
+        try{
+            productService.deleteProductWithStatus(productId);
             return new ApiResponse<>(HttpStatus.OK.value(), "delete product  successfully");
         }catch (Exception e){
             return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());

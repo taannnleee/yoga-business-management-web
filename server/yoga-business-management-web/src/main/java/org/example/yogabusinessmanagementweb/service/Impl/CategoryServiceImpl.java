@@ -15,7 +15,11 @@ import org.example.yogabusinessmanagementweb.dto.response.category.CategoryWithP
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CategoryRepository;
+import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
 import org.example.yogabusinessmanagementweb.service.CategoryService;
+import org.example.yogabusinessmanagementweb.service.SubCategoryService;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
-
+    SubCategoryRepository subCategoryRepository;
 
     @Override
     public CategoryResponse addCategory(CategoryCreationRequest categoryCreationRequest) {
@@ -97,6 +101,39 @@ public class CategoryServiceImpl implements CategoryService {
             list.add(categoryResponseAndQuantityProduct);
         }
         return list;
+    }
+
+    public SubCategory getSubCategoryById(String id) {
+        Optional<SubCategory> subCategoryOptional = subCategoryRepository.findById(Long.valueOf(id));
+        if(subCategoryOptional.isEmpty()) {
+            throw  new AppException(ErrorCode.SUBCATEGORY_NOT_FOUND);
+        }
+        return subCategoryOptional.get();
+    }
+    public void deleteSubCategoryWithStatus(String id) {
+        SubCategory sub =  getSubCategoryById(id);
+        sub.setStatus(EStatus.INACTIVE);
+        for(Product product : sub.getProducts()) {
+            product.setStatus(false);
+        }
+        subCategoryRepository.save(sub);
+    }
+
+    @Override
+    public void deleteCategoryWithStatus(String id) {
+        Optional<Category> categoryOptional  =  categoryRepository.findById(Long.parseLong(id));
+        if(categoryOptional.isEmpty()){
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+        Category category = categoryOptional.get();
+        category.setStatus(EStatus.INACTIVE);
+
+        for(SubCategory subCategory : category.getSubCategories()){
+            subCategory.setStatus(EStatus.INACTIVE);
+            deleteSubCategoryWithStatus(String.valueOf(subCategory.getId()));
+        }
+
+        categoryRepository.save(category);
     }
 }
 

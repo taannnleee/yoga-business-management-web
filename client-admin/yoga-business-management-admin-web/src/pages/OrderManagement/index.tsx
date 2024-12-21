@@ -194,7 +194,7 @@ const OrderManagement = () => {
                                     <TableCell>Total</TableCell>
                                     <TableCell>Payment Method</TableCell>
                                     <TableCell>Order Status</TableCell>
-                                    <TableCell>Action</TableCell>
+                                    {/* <TableCell>Action</TableCell> */}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -242,12 +242,12 @@ const OrderManagement = () => {
                                             </FormControl>
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary">
+                                            {/* <IconButton color="primary">
                                                 <EditIcon />
                                             </IconButton>
                                             <IconButton color="error">
                                                 <DeleteIcon />
-                                            </IconButton>
+                                            </IconButton> */}
                                         </TableCell>
                                     </TableRow>
                                 ))}

@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.service;
 
+import jakarta.validation.Valid;
 import org.example.yogabusinessmanagementweb.common.Enum.EStatus;
 import org.example.yogabusinessmanagementweb.common.entities.Category;
 import org.example.yogabusinessmanagementweb.dto.request.category.CategoryCreationRequest;
@@ -19,4 +20,6 @@ public interface CategoryService {
     List<CategoryWithProductResponse> getCategoriesWithProducts();
 
     List<CategoryResponseAndQuantityProduct> getAllCategoryAndQuantityProduct();
+
+    void deleteCategoryWithStatus(@Valid String id);
 }

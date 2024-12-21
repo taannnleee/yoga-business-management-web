@@ -21,6 +21,7 @@ import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
 import org.example.yogabusinessmanagementweb.service.SubCategoryService;
 import org.example.yogabusinessmanagementweb.service.UserService;
+import org.example.yogabusinessmanagementweb.utils.RanDomCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,10 @@ public class ProductServiceImpl implements ProductService {
     UserService userService;
     NotificationRepository notificationRepository;
     SimpMessagingTemplate messagingTemplate;
+
+    RanDomCode ranDomCode;
+
+
     @Override
     public Page<Product> getAllProduct(Pageable pageable) {
         return productRepository.findAll(pageable);
@@ -73,6 +78,18 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getTop10BestSellingProducts() {
         return productRepository.findTop10BestSellingProducts();
     }
+
+    @Override
+    public void deleteProductWithStatus(String productId) {
+        Optional<Product> product = productRepository.findById(Long.valueOf(productId));
+        if (product.isEmpty()) {
+           throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+        Product productEntity = product.get();
+        productEntity.setStatus(false);
+        productRepository.save(productEntity);
+    }
+
     @Override
     public Page<ProductResponse> getAllProductBySubcategory(String id,String keyword, Pageable pageable) {
         SubCategory subCategory =  subCategoryService.getSubCategoryById(id);
@@ -111,6 +128,12 @@ public class ProductServiceImpl implements ProductService {
             notificationRepository.save(notification);
         }
 
+        //Trạng thai product
+        product.setStatus(true);
+
+        //set code product
+        String uniqueCode =  ranDomCode.generateUniqueCode();
+        product.setCode(uniqueCode);
         //Lưu product
         return productRepository.save(product);
     }

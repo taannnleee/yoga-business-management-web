@@ -30,6 +30,9 @@ const CategoryManagement: React.FC = () => {
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
   const [urlImage, setUrlImage] = useState<string>("");
 
+  // Trạng thái lưu thông tin đã submit form hay chưa
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
   const fetchCategories = async () => {
     setLoading(true);
     const accessToken = localStorage.getItem('accessToken');
@@ -44,7 +47,7 @@ const CategoryManagement: React.FC = () => {
         },
       });
       setCategories(response.data.data);
-      setTotalCategories(response.data.data.length);
+      setTotalCategories(response.data.totalCount);  // Use total count from response
     } catch (error) {
       console.error('Failed to fetch categories', error);
       toast.error('Không thể tải danh mục.');
@@ -62,6 +65,12 @@ const CategoryManagement: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setIsSubmitted(true);  // Đặt trạng thái isSubmitted là true khi người dùng submit form
+    if (!formData.name || formData.name.length > 50) {
+      toast.error('Tên danh mục không được để trống và phải dưới 50 ký tự.');
+      return;
+    }
+
     setLoading(true);
     const accessToken = localStorage.getItem('accessToken');
     try {
@@ -79,6 +88,7 @@ const CategoryManagement: React.FC = () => {
       );
       toast.success('Tạo danh mục thành công!');
       setFormData({ name: '' });
+      setIsSubmitted(false);  // Reset lại trạng thái isSubmitted sau khi submit thành công
       fetchCategories();
     } catch (error) {
       console.error('Failed to create category', error);
@@ -106,11 +116,16 @@ const CategoryManagement: React.FC = () => {
       toast.error('Vui lòng nhập tên category phụ.');
       return;
     }
+    if (subcategoryName.length > 50) {
+      toast.error('Tên category phụ không được dài quá 50 ký tự.');
+      return;
+    }
+
     setLoading(true);
     const accessToken = localStorage.getItem('accessToken');
     try {
       await axios.post(
-        `http://localhost:8080/api/admin/add-subcategory`,
+        `${apiURL}/api/admin/add-subcategory`,
         {
           name: subcategoryName,
           categoryId: selectedCategoryId,
@@ -158,7 +173,6 @@ const CategoryManagement: React.FC = () => {
       title="Quản lý danh mục"
       content={
         <>
-
           <Box padding={3}>
             <Box marginBottom={3}>
               <TextField
@@ -167,6 +181,14 @@ const CategoryManagement: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                error={isSubmitted && (!formData.name || formData.name.length > 50)} // Chỉ kiểm tra lỗi khi đã submit form
+                helperText={
+                  isSubmitted && !formData.name
+                    ? "Tên danh mục không được để trống."
+                    : isSubmitted && formData.name.length > 50
+                      ? "Tên danh mục không được dài quá 50 ký tự."
+                      : ""
+                }
               />
               <UploadWidget
                 setThumbnailUploaded={(image: string) => setUrlImage(image)}
@@ -178,7 +200,7 @@ const CategoryManagement: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={loading || !formData.name}
+                disabled={loading || !formData.name || formData.name.length > 50 || !urlImage} // Kiểm tra urlImage
               >
                 {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Danh Mục'}
               </Button>
@@ -198,7 +220,7 @@ const CategoryManagement: React.FC = () => {
                   setPage(0);
                 }}
                 loading={loading}
-                onRowClick={handleRowClick}  // Thêm sự kiện row click
+                onRowClick={handleRowClick}
               />
             </Box>
           </Box>
@@ -219,6 +241,8 @@ const CategoryManagement: React.FC = () => {
                   value={subcategoryName}
                   onChange={(e) => setSubcategoryName(e.target.value)}
                   margin="normal"
+                  error={subcategoryName.length > 50} // Kiểm tra lỗi nếu dài quá 50 ký tự
+                  helperText={subcategoryName.length > 50 ? "Tên category phụ không được dài quá 50 ký tự." : ""}
                 />
               </Box>
             </DialogContent>
@@ -229,18 +253,15 @@ const CategoryManagement: React.FC = () => {
               <Button
                 onClick={handleSubmitSubcategory}
                 color="primary"
-                disabled={loading || !subcategoryName}
+                disabled={loading || !subcategoryName || subcategoryName.length > 50}
               >
                 {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Category Phụ'}
               </Button>
             </DialogActions>
           </Dialog>
-
-
         </>
       }
     />
-
   );
 };
 

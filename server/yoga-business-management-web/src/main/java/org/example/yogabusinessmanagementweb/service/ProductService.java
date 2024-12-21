@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.service;
 
+import jakarta.validation.Valid;
 import org.example.yogabusinessmanagementweb.dto.request.product.ProductCreationRequest;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.dto.response.ListDto;
@@ -22,4 +23,6 @@ public interface ProductService {
     Page<ProductResponse> getAllProductBySubcategory(String id,String keyword, Pageable pageable);
     ListDto<List<ProductResponse>> filterProducts(Long subCategoryId, Long categoryId, String keyword, Pageable pageable);
     List<Product> getTop10BestSellingProducts();
+
+    void deleteProductWithStatus(@Valid String productId);
 }

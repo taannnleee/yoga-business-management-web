@@ -93,7 +93,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
 
   // Cột trong DataGrid
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    // { field: 'id', headerName: 'ID', width: 70 },
     {
       field: 'upc',
       headerName: 'Mã sản phẩm',
@@ -153,6 +153,15 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             onPress: () => {
               setSelectedItem(params.row);
               setOpenUpdateModal(true);
+            },
+            onActionSuccess: () => getAllProducts(),
+          },
+          {
+            id: 'delete',
+            title: 'Xóa sản phẩm',
+            onPress: () => {
+
+
             },
             onActionSuccess: () => getAllProducts(),
           },

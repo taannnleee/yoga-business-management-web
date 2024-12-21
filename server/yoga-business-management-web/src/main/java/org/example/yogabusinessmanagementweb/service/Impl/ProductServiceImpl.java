@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productPage;
 
         if (keyword == null || keyword.isEmpty()) {
-            productPage = productRepository.findAll(pageable); // Lấy tất cả sản phẩm
+            productPage = productRepository.findProductsWithStatusTrue(pageable); // Lấy tất cả sản phẩm
         } else {
             productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable); // Tìm kiếm theo từ khóa
         }

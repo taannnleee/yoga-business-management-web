@@ -61,7 +61,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             throw  new AppException(ErrorCode.CATEGORY_NOT_FOUND);
         }
         Category category = categoryOptional.get();
-        List<SubCategory> list = subCategoryRepository.findAllByCategory(category);
+        List<SubCategory> list = subCategoryRepository.findAllByCategoryAndStatus(category, EStatus.ACTIVE);
 
         return Mappers.mapperEntityToDto(list,SubCategoryResponse.class);
     }

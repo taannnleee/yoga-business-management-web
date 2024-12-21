@@ -39,4 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "SELECT * FROM product ORDER BY sold DESC LIMIT 10", nativeQuery = true)
     List<Product> findTop10BestSellingProducts();
+
+    @Query("SELECT p FROM Product p WHERE p.status = true")
+    Page<Product> findProductsWithStatusTrue(Pageable pageable);
 }

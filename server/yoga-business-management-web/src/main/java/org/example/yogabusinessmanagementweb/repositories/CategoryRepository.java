@@ -21,4 +21,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "JOIN sc.products p " +
             "WHERE c.status = 'ACTIVE' AND sc.status = 'ACTIVE'")
     List<CategoryResponse> findCategoriesWithProducts();
+
+    List<Category> getAllByStatus(EStatus status);
 }

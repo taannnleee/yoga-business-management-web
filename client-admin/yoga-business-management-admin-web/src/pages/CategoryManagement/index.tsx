@@ -8,7 +8,17 @@ import Header from '../../components/Header';
 import FooterSection from '../../components/FooterSection';
 import UploadWidget from '../../designs/UploadWidget';
 import MainLayout from '../../components/SIdeBar';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
+interface SubCategory {
+  id: number;
+  name: string;
+
+}
 interface Category {
   id: number;
   name: string;
@@ -23,6 +33,8 @@ const CategoryManagement: React.FC = () => {
   const [totalCategories, setTotalCategories] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);// State lưu danh sách subcategory
+  const [loadingSubCategories, setLoadingSubCategories] = useState(false); // State hiển thị loading
 
   // Dialog State
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -100,7 +112,8 @@ const CategoryManagement: React.FC = () => {
   const handleRowClick = (params: any) => {
     // Lưu cả id và name của category đã chọn
     setSelectedCategoryId(params.row.id);
-    setSelectedCategoryName(params.row.name);  // Lưu tên của danh mục vào state
+    setSelectedCategoryName(params.row.name);
+    fetchSubCategories(params.row.id);// Lưu tên của danh mục vào state
     setOpenDialog(true);  // Mở dialog
   };
 
@@ -138,14 +151,15 @@ const CategoryManagement: React.FC = () => {
       );
       toast.success('Tạo category phụ thành công!');
       setSubcategoryName('');  // Reset lại subcategory name sau khi thành công
-      setOpenDialog(false);  // Đóng dialog sau khi tạo thành công
-      fetchCategories();  // Tải lại danh mục
+      // setOpenDialog(false); 
+      fetchSubCategories(selectedCategoryId.toString());
     } catch (error) {
       console.error('Failed to create subcategory', error);
       toast.error('Đã có lỗi xảy ra khi tạo category phụ.');
     }
     setLoading(false);
   };
+
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 100 },
@@ -155,18 +169,85 @@ const CategoryManagement: React.FC = () => {
       field: 'actions',
       headerName: 'Hành động',
       width: 180,
-      renderCell: () => (
+      renderCell: (params) => (
         <>
-          <Button variant="outlined" color="primary">
-            Cập Nhật
-          </Button>
-          <Button variant="outlined" color="error" sx={{ ml: 1 }}>
+          <Button
+            variant="outlined"
+            color="error"
+            sx={{ ml: 1 }}
+            onClick={(event) => handleDeleteCategory(params.row, event)}
+          >
             Xóa
           </Button>
         </>
       ),
     },
   ];
+
+  // Hàm xử lý xóa
+  const handleDeleteCategory = async (rowData: Category, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation(); // Dừng sự kiện chọn dòng khi nhấn nút xóa
+    console.log("Xóa mục có ID:", rowData.id);
+    console.log("Xóa danh mục")
+    console.log(rowData.id)
+    const accessToken = localStorage.getItem('accessToken');
+    try {
+
+      const response = await axios.get(`${apiURL}/api/admin/delete-status-category/${rowData.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      toast.success('xóa danh mục thành công!');
+      // const categoryId = selectedCategoryId!;
+      fetchCategories();
+
+    } catch (error) {
+      console.error('Failed to xóa danh mục', error);
+      toast.error('Đã có lỗi xảy ra khi xóa danh mục.');
+    }
+
+  };
+
+  const fetchSubCategories = async (categoryId: string) => {
+    setLoadingSubCategories(true); // Hiển thị loading
+    const accessToken = localStorage.getItem('accessToken'); // Lấy access token từ localStorage
+    try {
+      const response = await axios.get(`${apiURL}/api/admin/get-all-subcategory-of-category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setSubCategories(response.data.data); // Lưu danh sách subcategory
+    } catch (error) {
+      console.error('Failed to fetch subcategories', error);
+      toast.error('Không thể tải danh sách subcategory.');
+    }
+    setLoadingSubCategories(false); // Tắt loading
+  };
+
+  const handleDeleSubCategory = async (categoryId1: string) => {
+    console.log("Xóa danh mục phụ")
+    console.log(categoryId1)
+    const accessToken = localStorage.getItem('accessToken');
+    try {
+
+      const response = await axios.get(`${apiURL}/api/admin/delete-status-sub-category/${categoryId1}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      toast.success('xóa danh mục phụ thành công!');
+      const categoryId = selectedCategoryId!;
+      fetchSubCategories(categoryId.toString());
+
+    } catch (error) {
+      console.error('Failed to xóa danh mục phụ', error);
+      toast.error('Đã có lỗi xảy ra khi xóa danh mục phụ.');
+    }
+  };
 
   return (
     <MainLayout
@@ -230,12 +311,12 @@ const CategoryManagement: React.FC = () => {
             <DialogTitle>Chi tiết Danh Mục</DialogTitle>
             <DialogContent>
               <Box>
-                <p>ID: {selectedCategoryId}</p>
+                {/* <p>ID: {selectedCategoryId}</p> */}
                 <p>Tên Danh Mục: {selectedCategoryName}</p>
 
                 {/* TextField cho category phụ */}
                 <TextField
-                  label="Tên Category Phụ"
+                  label="Tên danh mục phụ"
                   fullWidth
                   name="subcategoryName"
                   value={subcategoryName}
@@ -244,6 +325,35 @@ const CategoryManagement: React.FC = () => {
                   error={subcategoryName.length > 50} // Kiểm tra lỗi nếu dài quá 50 ký tự
                   helperText={subcategoryName.length > 50 ? "Tên category phụ không được dài quá 50 ký tự." : ""}
                 />
+
+                <Box mt={2}>
+                  <h3>Danh sách Danh Mục Phụ</h3>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Tên Danh Mục Phụ</TableCell>
+                        <TableCell>Hành Động</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {subCategories.map((subcategory) => (
+                        <TableRow key={subcategory.id}>
+                          <TableCell>{subcategory.name}</TableCell>
+                          <TableCell>{subcategory.name}</TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={() => handleDeleSubCategory(subcategory.id.toString())}
+                              color="secondary"
+                            >
+                              Xóa
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
               </Box>
             </DialogContent>
             <DialogActions>
@@ -255,7 +365,7 @@ const CategoryManagement: React.FC = () => {
                 color="primary"
                 disabled={loading || !subcategoryName || subcategoryName.length > 50}
               >
-                {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo Category Phụ'}
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Tạo danh mục phụ'}
               </Button>
             </DialogActions>
           </Dialog>

@@ -69,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> getAllCategory() {
-        List<Category> categoryList = categoryRepository.findAll();
+        List<Category> categoryList = categoryRepository.getAllByStatus(EStatus.ACTIVE);
         List<CategoryResponse> list = Mappers.mapperEntityToDto (categoryList, CategoryResponse.class);
         return list;
     }

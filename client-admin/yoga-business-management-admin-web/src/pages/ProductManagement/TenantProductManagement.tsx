@@ -21,7 +21,7 @@ interface ITenantProductManagementProps {
 const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props) => {
   const [deleteDisable, setDeleteDisable] = React.useState<boolean>(false);
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
-  const { user, accessToken } = useAppSelector((state: IRootState) => state.auth);
+
   const [products, setProducts] = React.useState<IProduct[]>([]);
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(1);
@@ -30,6 +30,7 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
   const [selectedRow, setSelectedRow] = React.useState<string | number>('');
   const [selectedItem, setSelectedItem] = React.useState<IProduct | null>(null);
   const [openUpdateModal, setOpenUpdateModal] = React.useState<boolean>(false);
+  const accessToken = localStorage.getItem('accessToken');
 
   const getAllProducts = async () => {
     try {
@@ -165,9 +166,10 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
     try {
       setActionLoading(true);
       setSelectedRow(id);
-      const response = await axios.delete(`${apiURL}/products/${id}/`, {
+      const response = await axios.delete(`${apiURL}/api/admin/delete-status-product/${id}/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+
         },
       });
       if (response?.data?.success) {

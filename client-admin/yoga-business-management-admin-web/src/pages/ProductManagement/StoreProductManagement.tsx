@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams, GridSelectionModel } from '@mui/x-data-grid';
 import MainLayout from '../../components/SIdeBar';
-import { Button, Dialog, Pagination, Skeleton, TablePagination } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+
+import { Pagination, Skeleton, TablePagination } from '@mui/material';
 import axios from 'axios';
 import { useAppSelector } from '../../hooks/useRedux';
 import { IRootState } from '../../redux';
@@ -38,6 +40,8 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
   const [subcategories, setSubcategories] = React.useState<any[]>([]);  // State để lưu danh sách subcategories
   const [openUpdateModal, setOpenUpdateModal] = React.useState<boolean>(false);
   const [storeLoading, setStoreLoading] = React.useState<boolean>(false);
+  const [openDeleteConfirmModal, setOpenDeleteConfirmModal] = React.useState<boolean>(false); // Modal xác nhận xóa
+  const [productToDelete, setProductToDelete] = React.useState<IProduct | null>(null); // Sản phẩm cần xóa
   const accessToken = localStorage.getItem('accessToken');
 
   // Hàm lấy tất cả sản phẩm
@@ -78,11 +82,35 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
         setSubcategories(response.data.data);
         setCurrentSubCategory(response.data.data[0]);
       } else {
-        setSubcategories([]);
+        setSubcategories([]);  // Nếu không có subcategories, reset mảng
       }
     } catch (error) {
       console.log('Lỗi khi lấy danh sách loại sản phẩm:', error);
       toast.error('Không thể tải loại sản phẩm.');
+    }
+  };
+
+  const deleteProduct = async (productId: string | number) => {
+    try {
+      console.log("kkkkkkk")
+      setActionLoading(true);
+      const response = await axios.get(`${apiURL}/api/admin/delete-status-product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response?.data?.status === 200) {
+        toast.success('Xóa sản phẩm thành công');
+        getAllProducts();  // Tải lại danh sách sản phẩm sau khi xóa thành công
+      } else {
+        toast.error('Xóa sản phẩm không thành công');
+      }
+    } catch (error) {
+      console.error('Xóa sản phẩm thất bại:', error);
+      toast.error('Đã có lỗi khi xóa sản phẩm');
+    } finally {
+      setActionLoading(false);
+      setOpenDeleteConfirmModal(false);  // Đóng modal xác nhận sau khi xóa
     }
   };
 
@@ -160,8 +188,9 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             id: 'delete',
             title: 'Xóa sản phẩm',
             onPress: () => {
-
-
+              setSelectedItem(params.row);
+              setProductToDelete(params.row);  // Lưu sản phẩm cần xóa vào state
+              setOpenDeleteConfirmModal(true);  // Mở modal xác nhận xóa
             },
             onActionSuccess: () => getAllProducts(),
           },
@@ -281,6 +310,32 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             />
           }
         />
+      )}
+
+      {/* Modal Xác nhận xóa */}
+      {openDeleteConfirmModal && (
+        <Dialog
+          open={openDeleteConfirmModal}
+          onClose={() => setOpenDeleteConfirmModal(false)}
+        >
+          <DialogTitle>Xóa sản phẩm</DialogTitle>
+          <DialogContent>
+            <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDeleteConfirmModal(false)} color="primary">
+              Không
+            </Button>
+            <Button
+              onClick={() => {
+                if (productToDelete) deleteProduct(productToDelete.id);
+              }}
+              color="primary"
+            >
+              Có
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
     </>
   );

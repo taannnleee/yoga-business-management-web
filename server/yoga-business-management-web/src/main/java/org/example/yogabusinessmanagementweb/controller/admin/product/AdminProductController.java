@@ -97,7 +97,7 @@ public class AdminProductController {
 
     // hàm xoá product bằng cách tắt trạng thái status
     @GetMapping("/delete-status-product/{productId}")
-    public ApiResponse<?> deleteProductWithStatus(@Valid @PathVariable String productId){
+    public ApiResponse<?> deleteProductWithStatus(@Valid @PathVariable String productId){;
         try{
             productService.deleteProductWithStatus(productId);
             return new ApiResponse<>(HttpStatus.OK.value(), "delete product  successfully");

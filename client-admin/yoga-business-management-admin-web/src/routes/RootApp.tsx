@@ -14,6 +14,7 @@ import CourseDetailPage from '../pages/CourseDetail';
 import OrderManagement from '../pages/OrderManagement';
 import WebSocketDemo from '../pages/test';
 import TrendPrediction from '../pages/TrendPrediction';
+import PromotionManager from '../pages/PromotionManagement';
 
 export default function RootApp() {
   // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
@@ -76,6 +77,9 @@ export default function RootApp() {
 
       <Route path="/test">
         <WebSocketDemo />
+      </Route>
+      <Route path="/promotion-management">
+        <PromotionManager />
       </Route>
     </div>
   );

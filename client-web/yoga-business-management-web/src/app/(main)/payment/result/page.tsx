@@ -31,6 +31,7 @@ const PaymentResult = () => {
                 body: JSON.stringify({
                     addressId: addressId,
                     paymentMethod: paymentMethod,
+                    totalPricePromotion: vnp_Amount,
                 }),
             });
 
@@ -38,7 +39,7 @@ const PaymentResult = () => {
 
             const data = await response.json();
             console.log("Order created successfully:", data);
-        } catch (error:any) {
+        } catch (error: any) {
             console.error("Error creating order:", error.message);
             setError(error.message);
         } finally {
@@ -63,46 +64,46 @@ const PaymentResult = () => {
 
             <table className="min-w-full table-auto border-collapse">
                 <tbody>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Merchant ID</td>
-                    <td className="px-4 py-2">CTTVNP01</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Merchant Name</td>
-                    <td className="px-4 py-2">VNPAY Demo</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Merchant Transaction Reference</td>
-                    <td className="px-4 py-2">{transactionId}</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Transaction Info</td>
-                    <td className="px-4 py-2">Thanh toán đơn hàng thời gian: {new Date().toLocaleString()}</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Amount</td>
-                    <td className="px-4 py-2">{vnp_Amount}</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Currency</td>
-                    <td className="px-4 py-2">VND</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Transaction Response Code</td>
-                    <td className="px-4 py-2">00</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Message</td>
-                    <td className="px-4 py-2">Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Transaction Number</td>
-                    <td className="px-4 py-2">{transactionId}</td>
-                </tr>
-                <tr className="border-b">
-                    <td className="px-4 py-2 font-medium">Bank</td>
-                    <td className="px-4 py-2">NCB</td>
-                </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Merchant ID</td>
+                        <td className="px-4 py-2">CTTVNP01</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Merchant Name</td>
+                        <td className="px-4 py-2">VNPAY Demo</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Merchant Transaction Reference</td>
+                        <td className="px-4 py-2">{transactionId}</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Transaction Info</td>
+                        <td className="px-4 py-2">Thanh toán đơn hàng thời gian: {new Date().toLocaleString()}</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Amount</td>
+                        <td className="px-4 py-2">{vnp_Amount}</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Currency</td>
+                        <td className="px-4 py-2">VND</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Transaction Response Code</td>
+                        <td className="px-4 py-2">00</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Message</td>
+                        <td className="px-4 py-2">Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Transaction Number</td>
+                        <td className="px-4 py-2">{transactionId}</td>
+                    </tr>
+                    <tr className="border-b">
+                        <td className="px-4 py-2 font-medium">Bank</td>
+                        <td className="px-4 py-2">NCB</td>
+                    </tr>
                 </tbody>
             </table>
 

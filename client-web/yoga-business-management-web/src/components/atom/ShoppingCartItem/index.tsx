@@ -29,7 +29,7 @@ interface IInputProps {
     setLoadPrice: (b: boolean) => void;
 }
 
-const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart,setLoadPrice }) => {
+const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart, setLoadPrice }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(cartItem.quantity); // Tổng số lượng hiện tại
@@ -201,7 +201,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                 {/* Tiêu đề sản phẩm */}
                 <Grid item xs={2}>
                     <Typography sx={{ fontWeight: 'bold' }}>{cartItem.product.title}</Typography>
-                    <Typography variant="body2" color="textSecondary">5.4-inch display</Typography>
+                    {/* <Typography variant="body2" color="textSecondary">5.4-inch display</Typography> */}
                 </Grid>
 
                 {/* Giá sản phẩm */}

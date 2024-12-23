@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import AddressSelection from "@/app/(main)/checkout/AddressSelection";
 import { useRouter, useSearchParams } from "next/navigation";
+import PromotionSelection from "./PromotionSelection";
 
 interface IProduct {
     id: string;
@@ -28,6 +29,14 @@ interface IProduct {
     quantity: number;
     price: number;
     currentVariant: any;
+}
+interface IPromotion {
+    id: string;
+    code: string;
+    discount: number;
+    discountType: string;
+    startDate: string;
+    expiryDate: string;
 }
 
 const Checkout: React.FC = () => {
@@ -43,6 +52,9 @@ const Checkout: React.FC = () => {
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [orderLoading, setOrderLoading] = useState(false); // Trạng thái loading khi đặt hàng
     const toast = useToast();
+    const [totalPricePromotion, setTotalPricePromotion] = useState(0);
+
+    const [selectedPromotion, setSelectedPromotion] = useState<IPromotion | null>(null);
 
     // Hàm kiểm tra tính hợp lệ của địa chỉ
     const handleAddressValidation = (isValid: boolean) => {
@@ -95,7 +107,7 @@ const Checkout: React.FC = () => {
 
         try {
             // Send the request to initiate the VNPay payment and include the order data
-            const response = await fetch(`${API_URL}/api/payment/vn-pay?amount=${totalPrice}&bankCode=NCB`, {
+            const response = await fetch(`${API_URL}/api/payment/vn-pay?amount=${totalPricePromotion}&bankCode=NCB`, {
                 method: "POST",  // Change to POST to send data in the body
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -140,6 +152,7 @@ const Checkout: React.FC = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
+                    totalPricePromotion,
                     addressId,
                     paymentMethod,
                     products: products.map((product) => ({
@@ -188,9 +201,9 @@ const Checkout: React.FC = () => {
                     <AddressSelection
                         addressId={addressId}
                         setSelectedAddressId={setAddressId}
-                        loading ={loading}
+                        loading={loading}
                         setIsAddressValid={handleAddressValidation}
-                        
+
                     />
                     <Paper sx={{ padding: "20px", marginTop: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
@@ -206,6 +219,7 @@ const Checkout: React.FC = () => {
                 </Grid>
 
                 <Grid item xs={12} md={4}>
+
                     <Paper sx={{ padding: "20px" }}>
                         <Typography variant="h6" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
                             Order Summary
@@ -219,6 +233,7 @@ const Checkout: React.FC = () => {
                             <>
                                 {products.map((product) => (
                                     <Box display="flex" justifyContent="space-between" key={product.id} sx={{ marginBottom: "10px" }}>
+
                                         <Typography>
                                             {product.title} (x{product.quantity})
                                         </Typography>
@@ -226,11 +241,22 @@ const Checkout: React.FC = () => {
                                     </Box>
                                 ))}
                                 <Divider sx={{ marginBottom: "10px" }} />
-                                <Typography variant="h6">Total: {totalPrice.toLocaleString()} VND</Typography>
+                                <Typography variant="h6">Giá gốc: {totalPrice.toLocaleString()} VND</Typography>
+                                <Typography variant="h6">Giá hiện tại: {totalPricePromotion.toLocaleString()} VND</Typography>
+                                <Typography>
+                                    Giảm giá: {selectedPromotion?.discount} % / Tổng giá trị đơn hàng
+                                    <PromotionSelection
+                                        totalPrice={totalPrice}
+                                        setTotalPricePromotion={setTotalPricePromotion}
+                                        setSelectedPromotion={setSelectedPromotion}
+                                    />
+                                </Typography>
+
                             </>
                         ) : (
                             <Typography>Cart is empty</Typography>
                         )}
+
                         <Button disabled={!isAddressValid}
                             variant="contained"
                             color="primary"
@@ -241,6 +267,7 @@ const Checkout: React.FC = () => {
                             {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"}
                         </Button>
                     </Paper>
+
                 </Grid>
             </Grid>
 

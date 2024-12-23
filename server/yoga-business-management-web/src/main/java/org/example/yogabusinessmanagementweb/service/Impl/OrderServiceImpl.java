@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setTotalItem(cart.getTotalItem());
-        order.setTotalPrice(cart.getTotalPrice());
+        order.setTotalPrice(orderRequest.getTotalPricePromotion());
         Address address = addressService.getAddressByid(String.valueOf(orderRequest.getAddressId()));
 
         order.setAddress(address);

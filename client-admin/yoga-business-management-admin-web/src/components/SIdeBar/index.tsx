@@ -150,6 +150,7 @@ export default function MainLayout(props: ISideBarProps) {
 
     <HomeIcon className="h-6 w-6 text-gray-500" />,
     <AcademicCapIcon className="h-6 w-6 text-gray-500" />,
+    <GiftIcon className="h-6 w-6 text-gray-500" />,
 
   ];
 
@@ -159,6 +160,7 @@ export default function MainLayout(props: ISideBarProps) {
     <TagIcon className="h-6 w-6 font-semibold text-gray-500" />,
     <InboxStackIcon className="h-6 w-6 font-semibold text-gray-500" />,
     <BuildingStorefrontIcon className="h-6 w-6 font-semibold text-gray-500" />,
+    <GiftIcon className="h-6 w-6 text-gray-500" />
   ];
 
   const to = [
@@ -167,6 +169,7 @@ export default function MainLayout(props: ISideBarProps) {
     '/category-management',
     '/products-management',
     '/order-management',
+    '/promotion-management',
   ];
 
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -331,7 +334,8 @@ export default function MainLayout(props: ISideBarProps) {
             </Collapse>
           </ListItem>
 
-          {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm', 'Quản lý đơn hàng'].map((text, index) => (
+
+          {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm', 'Quản lý đơn hàng', 'Quản lý khuyến mãi'].map((text, index) => (
             <Link to={to[index + 1]} key={text}>
               <ListItem disablePadding>
                 <ListItemButton

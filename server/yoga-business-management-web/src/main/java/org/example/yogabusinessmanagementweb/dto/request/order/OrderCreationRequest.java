@@ -17,6 +17,8 @@ import java.util.Map;
 public class OrderCreationRequest {
     String addressId;
     String paymentMethod;
+    BigDecimal totalPricePromotion;
+    String promotionId;
 
 //    Map<String, Map<String, String>>  currentVariant;
 //    List<Product> products;

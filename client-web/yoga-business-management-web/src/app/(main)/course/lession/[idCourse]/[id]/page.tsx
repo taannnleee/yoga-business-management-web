@@ -150,7 +150,7 @@ const LessionPage: React.FC<any> = () => {
                             >
                                 {/* Avatar */}
                                 <Image
-                                    src={course?.teacher.profilePicture}
+                                    src={course?.teacher.profilePicture || '/default-image.jpg'}
                                     alt="Avatar"
                                     width={50}
                                     height={50}

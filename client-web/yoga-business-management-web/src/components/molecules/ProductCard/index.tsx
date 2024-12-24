@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button, IconButton, CircularProgress, Typography, Dialog } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -10,16 +10,34 @@ import { useToast } from "@/hooks/useToast";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
 
+// Định nghĩa kiểu cho variant và product
+interface Variant {
+    id: string;
+    name: string;
+    price: number;
+    // Các thuộc tính khác của variant (nếu có)
+}
+
+interface Product {
+    id: string;
+    title: string;
+    imagePath: string;
+    price: number;
+    averageRating: number;
+    // Các thuộc tính khác của product
+}
+
 // Component ProductCard nhận các props: product, loading, handleAddToCart, và renderStars
-export const ProductCard = ({ product, loading, renderStars }) => {
+export const ProductCard = ({ product, loading, renderStars }: { product: Product; loading: boolean; renderStars: (rating: number) => JSX.Element }) => {
     const [open, setOpen] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [quantity, setQuantity] = useState(1);
-    const [currentVariant, setCurrentVariant] = useState<any>({});
+    const [currentVariant, setCurrentVariant] = useState<Variant | null>(null);
     const router = useRouter();
     const toast = useToast();
     const dispatch = useDispatch();
-    const handleOpenModal = async (product: any) => {
+
+    const handleOpenModal = async (product: Product) => {
         setOpen(true);
         try {
             const token = localStorage.getItem("accessToken"); // Lấy accessToken từ localStorage
@@ -49,22 +67,32 @@ export const ProductCard = ({ product, loading, renderStars }) => {
         setSelectedProduct(null);
     };
 
-    const handleVariantChange = (variant: any) => {
+    const handleVariantChange = (variant: Variant) => {
         setCurrentVariant(variant);
         console.log("Current Variant:", variant);
     };
 
     const handleAddToCart = async () => {
+        if (!selectedProduct || !currentVariant) {
+            toast.sendToast("Lỗi", "Vui lòng chọn variant và sản phẩm");
+            return;
+        }
+
         try {
             const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.sendToast("Lỗi", "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
+                return;
+            }
+
             const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    productId: selectedProduct.id.toString(),
+                    productId: selectedProduct?.id.toString(),
                     quantity: quantity,
                     currentVariant: currentVariant,
                 }),
@@ -178,4 +206,3 @@ export const ProductCard = ({ product, loading, renderStars }) => {
         </div>
     );
 };
-

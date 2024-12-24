@@ -8,7 +8,7 @@ interface LessonItemProps {
     id: number; // Lesson ID
     title: string; // Lesson Title
     thumbnail: string; // Thumbnail URL
-    courseId: string
+    courseId: number
 }
 
 const LectureItem: React.FC<LessonItemProps> = ({ courseId, isChoosen, id, title, thumbnail }) => {

@@ -23,4 +23,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<CategoryResponse> findCategoriesWithProducts();
 
     List<Category> getAllByStatus(EStatus status);
+
+    List<Category> findAllByStatus(EStatus status);
 }

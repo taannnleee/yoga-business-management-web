@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
-import {FaSpinner} from "react-icons/fa"; // Assuming you're using HeroIcons
+import { FaSpinner } from "react-icons/fa"; // Assuming you're using HeroIcons
 import { API_URL } from "@/config/url";
-import {setSelectedCategory, setSelectedSubCategory} from "@/redux/category/categorySlice";
-import {useDispatch} from "react-redux";
-import {useRouter} from "next/navigation";
+import { setSelectedCategory, setSelectedSubCategory } from "@/redux/category/categorySlice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 interface HoverDropdownProps {
     buttonText: string;
 }
@@ -52,7 +52,7 @@ const HoverDropdown: React.FC<HoverDropdownProps> = ({ buttonText }) => {
         fetchCategories();
     }, []);
 
-    if (loading) return <div><FaSpinner/></div>;
+    if (loading) return <div><FaSpinner /></div>;
 
     return (
         <div className="relative group">

@@ -30,5 +30,4 @@ Promotion toPromotion(PromotionRequest promotionRequest);
             return null; // Bạn có thể thay đổi trả về giá trị mặc định thay vì null
         }
     }
-//    void updateAddress(@MappingTarget Address address, AddressRequest addressRequest );
 }

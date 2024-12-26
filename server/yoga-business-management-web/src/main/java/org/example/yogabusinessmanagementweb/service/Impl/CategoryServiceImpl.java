@@ -75,11 +75,33 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public List<CategoryWithProductResponse> getCategoriesWithProducts() {
-        List<Category> categories = categoryRepository.findAll();  // Or any method returning List<Category>
+        // Lấy danh sách các Category có trạng thái ACTIVE
+        List<Category> categories = categoryRepository.findAllByStatus(EStatus.ACTIVE);
+
+        // Lọc danh sách categories, subcategories và products không hợp lệ
         return categories.stream()
-                .map(categoryMapper::toCategoryWithProductResponse)  // Map to CategoryWithProductResponse
+                .filter(category -> category.getStatus() == EStatus.ACTIVE)  // Lọc category ACTIVE
+                .map(category -> {
+                    // Lọc các SubCategory trong Category
+                    List<SubCategory> filteredSubCategories = category.getSubCategories().stream()
+                            .filter(subCategory -> subCategory.getStatus() == EStatus.ACTIVE)  // Lọc subcategory ACTIVE
+                            .map(subCategory -> {
+                                // Lọc các Product trong SubCategory
+                                List<Product> filteredProducts = subCategory.getProducts().stream()
+                                        .filter(product -> product.getStatus() == true)  // Lọc product có status TRUE
+                                        .collect(Collectors.toList());
+                                subCategory.setProducts(filteredProducts);  // Cập nhật lại list products
+                                return subCategory;
+                            })
+                            .collect(Collectors.toList());
+                    category.setSubCategories(filteredSubCategories);  // Cập nhật lại list subcategories
+                    return category;
+                })
+                .filter(category -> !category.getSubCategories().isEmpty())  // Lọc các category không có subcategory hợp lệ
+                .map(categoryMapper::toCategoryWithProductResponse)  // Ánh xạ thành CategoryWithProductResponse
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<CategoryResponseAndQuantityProduct> getAllCategoryAndQuantityProduct() {

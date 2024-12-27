@@ -69,14 +69,39 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> getAllCategory() {
-        List<Category> categoryList = categoryRepository.getAllByStatus(EStatus.ACTIVE);
-        List<CategoryResponse> list = Mappers.mapperEntityToDto (categoryList, CategoryResponse.class);
-        return list;
+        // Lấy danh sách các Category có trạng thái ACTIVE
+        List<Category> categories = categoryRepository.getAllByStatus(EStatus.ACTIVE);
+
+        // Lọc danh sách categories và subcategories không hợp lệ
+        return categories.stream()
+                .filter(category -> category.getStatus() == EStatus.ACTIVE)  // Lọc category ACTIVE
+                .map(category -> {
+                    // Lọc các SubCategory trong Category
+                    List<SubCategory> filteredSubCategories = category.getSubCategories().stream()
+                            .filter(subCategory -> subCategory.getStatus() == EStatus.ACTIVE)  // Lọc subcategory ACTIVE
+                            .collect(Collectors.toList());
+                    category.setSubCategories(filteredSubCategories);  // Cập nhật lại list subcategories
+                    return category;
+                })
+                .filter(category -> !category.getSubCategories().isEmpty())  // Lọc các category không có subcategory hợp lệ
+                .map(categoryMapper::toCategoryResponse)  // Ánh xạ thành CategoryResponse (tương tự như CategoryWithProductResponse)
+                .collect(Collectors.toList());
     }
+
+//    @Override
+//    public List<CategoryResponse> getAllCategory() {
+//        List<CategoryResponse> list = new ArrayList<>();
+//        List<Category> categoryList = categoryRepository.getAllByStatus(EStatus.ACTIVE);
+//        for(Category category : categoryList){
+//            CategoryResponse categoryResponse = categoryMapper.toCategoryResponse(category);
+//            list.add(categoryResponse);
+//        }
+//        return list;
+//    }
 
     public List<CategoryWithProductResponse> getCategoriesWithProducts() {
         // Lấy danh sách các Category có trạng thái ACTIVE
-        List<Category> categories = categoryRepository.findAllByStatus(EStatus.ACTIVE);
+        List<Category> categories = categoryRepository.getAllByStatus(EStatus.ACTIVE);
 
         // Lọc danh sách categories, subcategories và products không hợp lệ
         return categories.stream()
@@ -132,29 +157,37 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return subCategoryOptional.get();
     }
-    public void deleteSubCategoryWithStatus(String id) {
+    public void deleteSubCategoryWithStatus(String id,boolean status,EStatus statusSub) {
         SubCategory sub =  getSubCategoryById(id);
-        sub.setStatus(EStatus.INACTIVE);
+        sub.setStatus(statusSub);
         for(Product product : sub.getProducts()) {
-            product.setStatus(false);
+            product.setStatus(status);
         }
         subCategoryRepository.save(sub);
     }
 
     @Override
-    public void deleteCategoryWithStatus(String id) {
+    public void changeCategoryWithStatus(String id) {
         Optional<Category> categoryOptional  =  categoryRepository.findById(Long.parseLong(id));
         if(categoryOptional.isEmpty()){
             throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
         }
         Category category = categoryOptional.get();
-        category.setStatus(EStatus.INACTIVE);
+        if(category.getStatus() == EStatus.ACTIVE){
+            category.setStatus(EStatus.INACTIVE);
 
-        for(SubCategory subCategory : category.getSubCategories()){
-            subCategory.setStatus(EStatus.INACTIVE);
-            deleteSubCategoryWithStatus(String.valueOf(subCategory.getId()));
+            for(SubCategory subCategory : category.getSubCategories()){
+//                subCategory.setStatus(EStatus.INACTIVE);
+                deleteSubCategoryWithStatus(String.valueOf(subCategory.getId()),false,EStatus.INACTIVE);
+            }
+        }else {
+            category.setStatus(EStatus.ACTIVE);
+
+            for(SubCategory subCategory : category.getSubCategories()){
+//                subCategory.setStatus(EStatus.ACTIVE);
+                deleteSubCategoryWithStatus(String.valueOf(subCategory.getId()),true,EStatus.ACTIVE);
+            }
         }
-
         categoryRepository.save(category);
     }
 }

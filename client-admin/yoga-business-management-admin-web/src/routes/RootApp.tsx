@@ -15,6 +15,7 @@ import OrderManagement from '../pages/OrderManagement';
 import WebSocketDemo from '../pages/test';
 import TrendPrediction from '../pages/TrendPrediction';
 import PromotionManager from '../pages/PromotionManagement';
+import TrashStoreProductManagement from '../pages/Trash';
 
 export default function RootApp() {
   // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
@@ -40,6 +41,11 @@ export default function RootApp() {
       <Route path="/products-management">
         <ProductManagement />
       </Route>
+
+      <Route path="/trash">
+        <TrashStoreProductManagement />
+      </Route>
+
       <Route path="/store-management">
         <StoreMangement />
       </Route>
@@ -81,6 +87,8 @@ export default function RootApp() {
       <Route path="/promotion-management">
         <PromotionManager />
       </Route>
+
+
     </div>
   );
 }

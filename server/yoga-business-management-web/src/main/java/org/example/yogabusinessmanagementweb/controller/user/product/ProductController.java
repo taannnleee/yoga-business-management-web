@@ -45,7 +45,7 @@ public class ProductController {
             Pageable pageable = PageRequest.of(page - 1, size);
 
             // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
-            Page<ProductResponse> productPage = productService.searchProducts(keyword, pageable);
+            Page<ProductResponse> productPage = productService.searchProducts(true,keyword, pageable);
 
             return new ApiResponse<>(HttpStatus.OK.value(), "Get all products successfully", productPage);
         } catch (RuntimeException e) {

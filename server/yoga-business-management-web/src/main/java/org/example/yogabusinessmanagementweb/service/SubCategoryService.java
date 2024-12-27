@@ -16,5 +16,5 @@ public interface SubCategoryService {
 
     SubCategory getSubCategoryById(String id);
 
-    void deleteSubCategoryWithStatus(@Valid String id);
+    void changeSubCategoryWithStatus(@Valid String id);
 }

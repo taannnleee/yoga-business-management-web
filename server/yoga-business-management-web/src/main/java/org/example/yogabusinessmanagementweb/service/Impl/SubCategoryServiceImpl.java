@@ -82,11 +82,18 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public void deleteSubCategoryWithStatus(String id) {
+    public void changeSubCategoryWithStatus(String id) {
         SubCategory sub =  getSubCategoryById(id);
-        sub.setStatus(EStatus.INACTIVE);
-        for(Product product : sub.getProducts()) {
-            product.setStatus(false);
+        if(sub.getStatus()==EStatus.ACTIVE) {
+            sub.setStatus(EStatus.INACTIVE);
+            for(Product product : sub.getProducts()) {
+                product.setStatus(false);
+            }
+        }else {
+            sub.setStatus(EStatus.ACTIVE);
+            for(Product product : sub.getProducts()) {
+                product.setStatus(true);
+            }
         }
         subCategoryRepository.save(sub);
     }

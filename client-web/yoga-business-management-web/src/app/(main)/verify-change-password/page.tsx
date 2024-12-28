@@ -202,6 +202,7 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                             control={control}
                             label="Confirm password"
                             placeholder="Confirm password"
+                            mode="password"
                             rules={{ required: "Confirm password is required" }}
                         />
                         <Button

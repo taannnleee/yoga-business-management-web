@@ -241,7 +241,7 @@ const Checkout: React.FC = () => {
                                     </Box>
                                 ))}
                                 <Divider sx={{ marginBottom: "10px" }} />
-                                <Typography variant="h6">Giá gốc: {totalPrice.toLocaleString()} VND</Typography>
+                                <Typography variant="h6" className={"line-through"}>Giá gốc: {totalPrice.toLocaleString()} VND</Typography>
                                 <Typography variant="h6">Giá hiện tại: {totalPricePromotion.toLocaleString()} VND</Typography>
                                 <Typography>
                                     Giảm giá: {selectedPromotion?.discount} % / Tổng giá trị đơn hàng

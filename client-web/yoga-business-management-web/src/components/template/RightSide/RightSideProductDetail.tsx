@@ -187,21 +187,21 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : 'THÊM VÀO GIỎ'}
                 </Button>
-                <Button
-                    sx={{
-                        width: '230px',
-                        height: '40px',
-                        backgroundColor: '#d1d1d1',
-                        color: 'red',
-                        padding: '8px 16px',
-                        '&:hover': {
-                            backgroundColor: '#78B3CE',
-                        },
-                    }}
-                    onClick={handleAddToCart}
-                >
-                    MUA NGAY
-                </Button>
+                {/*<Button*/}
+                {/*    sx={{*/}
+                {/*        width: '230px',*/}
+                {/*        height: '40px',*/}
+                {/*        backgroundColor: '#d1d1d1',*/}
+                {/*        color: 'red',*/}
+                {/*        padding: '8px 16px',*/}
+                {/*        '&:hover': {*/}
+                {/*            backgroundColor: '#78B3CE',*/}
+                {/*        },*/}
+                {/*    }}*/}
+                {/*    onClick={handleAddToCart}*/}
+                {/*>*/}
+                {/*    MUA NGAY*/}
+                {/*</Button>*/}
 
             </div>
         </div>

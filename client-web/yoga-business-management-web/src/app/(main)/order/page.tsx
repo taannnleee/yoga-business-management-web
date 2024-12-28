@@ -268,11 +268,11 @@ const OrderPage: React.FC = () => {
                                                                 {getVariantValues(orderItem.currentVariant)}
                                                             </Typography>
                                                         </CardContent>
-                                                        <Box display="flex" justifyContent="flex-end" p={1}>
-                                                            <Button variant="contained" color="success" size="small">
-                                                                Mua lại
-                                                            </Button>
-                                                        </Box>
+                                                        {/*<Box display="flex" justifyContent="flex-end" p={1}>*/}
+                                                        {/*    <Button variant="contained" color="success" size="small">*/}
+                                                        {/*        Mua lại*/}
+                                                        {/*    </Button>*/}
+                                                        {/*</Box>*/}
                                                     </Box>
                                                 </Card>
 

@@ -133,16 +133,16 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           </Typography>
         </Box>
 
-        <Button variant="secondary">
-          <span>Sign in with Google </span>
-          <Image
-            alt="google-logo"
-            src={require("../../../assets/icons/google.png")}
-            width={20}
-            height={20}
-            style={{ marginLeft: "8px" }}
-          />
-        </Button>
+        {/*<Button variant="secondary">*/}
+        {/*  <span>Sign in with Google </span>*/}
+        {/*  <Image*/}
+        {/*    alt="google-logo"*/}
+        {/*    src={require("../../../assets/icons/google.png")}*/}
+        {/*    width={20}*/}
+        {/*    height={20}*/}
+        {/*    style={{ marginLeft: "8px" }}*/}
+        {/*  />*/}
+        {/*</Button>*/}
 
         <Divider sx={{ height: 4, width: "100%", margin: "4px 0" }} />
 

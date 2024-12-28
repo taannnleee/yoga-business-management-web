@@ -11,4 +11,9 @@ public interface CategoryMapper {
 
     @Mapping(target = "subCategories", source = "subCategories")
     CategoryWithProductResponse toCategoryWithProductResponse(Category category);
+
+    @Mapping(target = "subCategories", source = "subCategories")
+    CategoryResponse toCategoryResponse(Category category);
+
+
 }

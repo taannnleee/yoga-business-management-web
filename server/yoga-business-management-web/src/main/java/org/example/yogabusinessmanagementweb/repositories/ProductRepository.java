@@ -31,15 +31,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "LEFT JOIN sc.category c " +
             "WHERE (:subCategoryId IS NULL OR sc.id = :subCategoryId) " +
             "AND (:categoryId IS NULL OR c.id = :categoryId) " +
-            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', CAST(:keyword AS string), '%'))) ")
+            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', CAST(:keyword AS string), '%'))) " +
+            "AND (:status IS NULL OR p.status = :status) ")
     Page<Product> filterProducts(@Param("subCategoryId") Long subCategoryId,
                                  @Param("categoryId") Long categoryId,
                                  @Param("keyword") String keyword,
+                                 @Param("status") Boolean status,
                                  Pageable pageable);
+
 
     @Query(value = "SELECT * FROM product ORDER BY sold DESC LIMIT 10", nativeQuery = true)
     List<Product> findTop10BestSellingProducts();
 
-    @Query("SELECT p FROM Product p WHERE p.status = true")
-    Page<Product> findProductsWithStatusTrue(Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.status = :status")
+    Page<Product> findProductsWithStatus(@Param("status") Boolean status, Pageable pageable);
+
 }

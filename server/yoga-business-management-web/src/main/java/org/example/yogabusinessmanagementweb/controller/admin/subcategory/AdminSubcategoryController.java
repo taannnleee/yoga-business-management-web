@@ -39,11 +39,11 @@ public class AdminSubcategoryController {
         return new ApiResponse<>(HttpStatus.OK.value(), "get all subcategory successfully",list);
     }
 
-    @GetMapping("/delete-status-sub-category/{id}")
-    public ApiResponse<?> deleteSubCategoryWithStatus(@Valid @PathVariable String id){
+    @GetMapping("/change-status-sub-category/{id}")
+    public ApiResponse<?> changeSubCategoryWithStatus(@Valid @PathVariable String id){
         try{
-            subCategoryService.deleteSubCategoryWithStatus(id);
-            return new ApiResponse<>(HttpStatus.OK.value(), "delete subcategory successfully");
+            subCategoryService.changeSubCategoryWithStatus(id);
+            return new ApiResponse<>(HttpStatus.OK.value(), "change subcategory successfully");
         }catch (Exception e){
             return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());
         }

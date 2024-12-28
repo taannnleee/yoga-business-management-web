@@ -38,11 +38,11 @@ public class AdminCategoryController {
         return new ApiResponse<>(HttpStatus.OK.value(), "get all category and quantity product successfully",list);
     }
 
-    @GetMapping("/delete-status-category/{id}")
-    public ApiResponse<?> deleteCategoryWithStatus(@Valid @PathVariable String id){
+    @GetMapping("/change-status-category/{id}")
+    public ApiResponse<?> changeCategoryWithStatus(@Valid @PathVariable String id){
         try{
-            categoryService.deleteCategoryWithStatus(id);
-            return new ApiResponse<>(HttpStatus.OK.value(), "delete category successfully");
+            categoryService.changeCategoryWithStatus(id);
+            return new ApiResponse<>(HttpStatus.OK.value(), "change category successfully");
         }catch (Exception e){
             return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());
         }

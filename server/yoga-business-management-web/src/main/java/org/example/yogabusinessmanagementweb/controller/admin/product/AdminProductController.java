@@ -46,6 +46,7 @@ public class AdminProductController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = true) Boolean status,
             @RequestParam(defaultValue = "createdAt") String sortBy, // Field to sort by
             @RequestParam(defaultValue = "desc") String sortDir) { // Nhận từ khóa tìm kiếm từ request
         try {
@@ -57,7 +58,7 @@ public class AdminProductController {
 //            Pageable pageable = PageRequest.of(page - 1, size,Sort.by(sortBy).ascending());
 
             // Nếu có từ khóa tìm kiếm thì gọi phương thức searchProducts
-            Page<ProductResponse> productPage = productService.searchProducts(keyword, pageable);
+            Page<ProductResponse> productPage = productService.searchProducts(status,keyword, pageable);
 
             return new ApiResponse<>(HttpStatus.OK.value(), "Get all products successfully", productPage);
         } catch (RuntimeException e) {
@@ -96,11 +97,11 @@ public class AdminProductController {
     }
 
     // hàm xoá product bằng cách tắt trạng thái status
-    @GetMapping("/delete-status-product/{productId}")
+    @GetMapping("/change-status/{productId}")
     public ApiResponse<?> deleteProductWithStatus(@Valid @PathVariable String productId){;
         try{
-            productService.deleteProductWithStatus(productId);
-            return new ApiResponse<>(HttpStatus.OK.value(), "delete product  successfully");
+            productService.changeProductWithStatus(productId);
+            return new ApiResponse<>(HttpStatus.OK.value(), "change product successfully");
         }catch (Exception e){
             return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage());
         }

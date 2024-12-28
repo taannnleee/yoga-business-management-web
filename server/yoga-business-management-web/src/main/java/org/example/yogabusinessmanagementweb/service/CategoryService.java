@@ -21,5 +21,5 @@ public interface CategoryService {
 
     List<CategoryResponseAndQuantityProduct> getAllCategoryAndQuantityProduct();
 
-    void deleteCategoryWithStatus(@Valid String id);
+    void changeCategoryWithStatus(@Valid String id);
 }

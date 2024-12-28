@@ -18,12 +18,14 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import SelectComponent from '../../components/Select';
 import ImportProductForm from './ImportProducForm';
 import StoreProductForm from './StoreProductForm';
+import { useHistory } from 'react-router-dom';
 
 interface IStoreManagementProps {
   onChangeViewMode: (mode: 'tenant' | 'store') => void;
 }
 
 const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
+  const history = useHistory();
   const [deleteDisable, setDeleteDisable] = React.useState<boolean>(false);
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
 
@@ -49,7 +51,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${apiURL}/api/admin/get-all-product?page=${page}&size=10`,
+        `${apiURL}/api/admin/get-all-product?page=${page}&size=10&status=true`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -94,7 +96,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
     try {
       console.log("kkkkkkk")
       setActionLoading(true);
-      const response = await axios.get(`${apiURL}/api/admin/delete-status-product/${productId}`, {
+      const response = await axios.get(`${apiURL}/api/admin/change-status/${productId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -237,6 +239,16 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
                 <PlusIcon className="h-[20px] w-[20px] font-bold text-white" />
                 <p>Nhập sản phẩm</p>
               </button>
+
+              {/* Nút Thùng rác */}
+              <button
+                onClick={() => history.push('/trash')}  // Dùng một hàm để gọi history.push
+                className="flex h-[40px] w-fit items-center rounded-lg bg-red-500 px-3 py-1 font-bold text-white hover:opacity-80"
+              >
+                <span className="h-[20px] w-[20px]">🗑️</span>
+                <p>Thùng rác</p>
+              </button>
+
             </div>
 
             <div className="flex w-full flex-col gap-y-5 rounded-2xl bg-white shadow-xl">

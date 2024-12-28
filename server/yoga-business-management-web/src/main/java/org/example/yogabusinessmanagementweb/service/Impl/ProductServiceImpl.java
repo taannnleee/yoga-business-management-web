@@ -61,11 +61,11 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toProductResponse((getProductById(id)));
     }
     @Override
-    public Page<ProductResponse> searchProducts(String keyword, Pageable pageable) {
+    public Page<ProductResponse> searchProducts(Boolean status,String keyword, Pageable pageable) {
         Page<Product> productPage;
 
         if (keyword == null || keyword.isEmpty()) {
-            productPage = productRepository.findProductsWithStatusTrue(pageable); // Lấy tất cả sản phẩm
+            productPage = productRepository.findProductsWithStatus(status,pageable); // Lấy tất cả sản phẩm theo status
         } else {
             productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable); // Tìm kiếm theo từ khóa
         }
@@ -80,13 +80,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductWithStatus(String productId) {
+    public void changeProductWithStatus(String productId) {
         Optional<Product> product = productRepository.findById(Long.valueOf(productId));
         if (product.isEmpty()) {
            throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
         }
         Product productEntity = product.get();
-        productEntity.setStatus(false);
+        if(productEntity.getStatus()==true){
+            productEntity.setStatus(false);
+        }else {
+            productEntity.setStatus(true);
+        }
+
         productRepository.save(productEntity);
     }
 
@@ -154,7 +159,7 @@ public class ProductServiceImpl implements ProductService {
     }
     @Override
     public ListDto<List<ProductResponse>> filterProducts(Long subCategoryId, Long categoryId, String keyword, Pageable pageable) {
-        Page<Product> productPage = productRepository.filterProducts(subCategoryId, categoryId, keyword, pageable);
+        Page<Product> productPage = productRepository.filterProducts(subCategoryId, categoryId, keyword,true, pageable);
 
         // Map các sản phẩm sang ProductResponse
         List<ProductResponse> productResponses = productMapper.productsToProductResponses(productPage.getContent());

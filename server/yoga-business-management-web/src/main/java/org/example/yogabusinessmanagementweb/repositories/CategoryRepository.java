@@ -15,12 +15,13 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findById(Long id);
     Optional<Category> findByNameAndStatus(String name, EStatus status);
     Optional<Category> findByIdAndStatus(Long id, EStatus status);
-    @Query("SELECT new org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse(c.name, sc.name, p.id, p.title, p.price, p.imagePath) " +
-            "FROM Category c " +
-            "JOIN c.subCategories sc " +
-            "JOIN sc.products p " +
-            "WHERE c.status = 'ACTIVE' AND sc.status = 'ACTIVE'")
-    List<CategoryResponse> findCategoriesWithProducts();
+//    @Query("SELECT new org.example.yogabusinessmanagementweb.dto.response.category.CategoryResponse(c.name, sc.name, p.id, p.title, p.price, p.imagePath) " +
+//            "FROM Category c " +
+//            "JOIN c.subCategories sc " +
+//            "JOIN sc.products p " +
+//            "WHERE c.status = 'ACTIVE' AND sc.status = 'ACTIVE'")
+//    List<CategoryResponse> findCategoriesWithProducts();
 
     List<Category> getAllByStatus(EStatus status);
+
 }

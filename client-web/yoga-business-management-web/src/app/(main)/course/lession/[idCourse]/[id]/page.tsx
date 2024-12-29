@@ -215,7 +215,7 @@ const LessionPage: React.FC<any> = () => {
 
                             {/* Center Text */}
                             <span className="font-semibold text-sm md:text-base mx-4 whitespace-nowrap">
-                                Tập Yoga cơ bản ngay tại nhà với Nguyễn Hiếu
+                                Tập Yoga cơ bản ngay tại nhà
                             </span>
 
                             {/* Right Side - Next Lesson Button */}
@@ -266,7 +266,7 @@ const LessionPage: React.FC<any> = () => {
 
                     {/* Center Text */}
                     <span className="font-semibold text-sm md:text-base mx-4 whitespace-nowrap">
-                        Tập Yoga cơ bản ngay tại nhà với Nguyễn Hiếu
+                        Tập Yoga cơ bản ngay tại nhà
                     </span>
 
                     {/* Right Side - Next Lesson Button */}

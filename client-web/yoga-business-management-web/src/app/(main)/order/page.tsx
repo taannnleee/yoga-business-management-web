@@ -20,7 +20,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarRating from "@/components/molecules/StarRating";
 import { useToast } from "@/hooks/useToast";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // Các interface dữ liệu
 interface OrderItem {
@@ -268,11 +268,11 @@ const OrderPage: React.FC = () => {
                                                                 {getVariantValues(orderItem.currentVariant)}
                                                             </Typography>
                                                         </CardContent>
-                                                        <Box display="flex" justifyContent="flex-end" p={1}>
+                                                        {/* <Box display="flex" justifyContent="flex-end" p={1}>
                                                             <Button variant="contained" color="success" size="small">
                                                                 Mua lại
                                                             </Button>
-                                                        </Box>
+                                                        </Box> */}
                                                     </Box>
                                                 </Card>
 

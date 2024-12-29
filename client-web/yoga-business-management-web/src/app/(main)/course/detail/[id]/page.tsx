@@ -192,7 +192,7 @@ const CourseDetailPage: React.FC = () => {
             </div>
 
             {/* Content Section */}
-            <CourseContent sections={course.sections} />
+            <CourseContent sections={course.sections} courseId={courseId} />
 
         </div>
     );

@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
-import { Select, MenuItem } from "@mui/material";
+import { Select, MenuItem, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { API_URL } from "@/config/url";
 import {
     Box,
@@ -189,7 +190,10 @@ const Checkout: React.FC = () => {
         await handleSubmit(new Event("submit"));
         handleCloseConfirmDialog();
     };
-
+    const removePromotion = () => {
+        setSelectedPromotion(null); // Xóa mã giảm giá
+        setTotalPricePromotion(totalPrice); // Trở về giá gốc
+    };
 
     return (
         <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
@@ -244,7 +248,12 @@ const Checkout: React.FC = () => {
                                 <Typography variant="h6">Giá gốc: {totalPrice.toLocaleString()} VND</Typography>
                                 <Typography variant="h6">Giá hiện tại: {totalPricePromotion.toLocaleString()} VND</Typography>
                                 <Typography>
-                                    Giảm giá: {selectedPromotion?.discount} % / Tổng giá trị đơn hàng
+                                    Giảm giá: {selectedPromotion?.discount} % / Tổng giá trị
+                                    {selectedPromotion && (
+                                        <IconButton onClick={removePromotion} sx={{ marginLeft: "10px", color: "red" }}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    )}
                                     <PromotionSelection
                                         totalPrice={totalPrice}
                                         setTotalPricePromotion={setTotalPricePromotion}

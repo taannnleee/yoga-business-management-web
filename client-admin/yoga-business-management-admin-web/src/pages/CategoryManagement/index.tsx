@@ -193,7 +193,7 @@ const CategoryManagement: React.FC = () => {
     const accessToken = localStorage.getItem('accessToken');
     try {
 
-      const response = await axios.get(`${apiURL}/api/admin/delete-status-category/${rowData.id}`, {
+      const response = await axios.get(`${apiURL}/api/admin/change-status-category/${rowData.id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -233,7 +233,7 @@ const CategoryManagement: React.FC = () => {
     const accessToken = localStorage.getItem('accessToken');
     try {
 
-      const response = await axios.get(`${apiURL}/api/admin/delete-status-sub-category/${categoryId1}`, {
+      const response = await axios.get(`${apiURL}/api/admin/change-status-sub-category/${categoryId1}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

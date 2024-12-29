@@ -123,7 +123,7 @@ const WishList: React.FC = () => {
                                 {item.product.description}
                             </Typography> */}
                             <Typography variant="body1" color="textPrimary">
-                                Price: ${item.product.price.toFixed(2)}
+                                Price: {item.product.price.toFixed(2)}₫
                             </Typography>
 
                             <Button

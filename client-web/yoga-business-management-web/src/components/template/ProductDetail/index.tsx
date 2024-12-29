@@ -142,26 +142,26 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                     {isCommentVisible ? <FaChevronUp size={20}/> : <FaChevronDown size={20}/>}
                 </button>
             </div>
-            <div className="flex items-center justify-between w-[800px] space-x-8">
-                <Button
-                    className={`mt-4 ${activeButton === "Tất cả" ? "bg-black-500" : "bg-red-300"}`}
-                    onClick={() => handleButtonClick("Tất cả")}
-                >
-                    Tất cả
-                </Button>
-                <Button
-                    className={`mt-4 ${activeButton === "Bình luận" ? "bg-black-500" : "bg-red-300"}`}
-                    onClick={() => handleButtonClick("Bình luận")}
-                >
-                    Bình luận
-                </Button>
-                <Button
-                    className={`mt-4 ${activeButton === "Đánh giá" ? "bg-black-500" : "bg-red-300"}`}
-                    onClick={() => handleButtonClick("Đánh giá")}
-                >
-                    Đánh giá
-                </Button>
-            </div>
+            {/*<div className="flex items-center justify-between w-[800px] space-x-8">*/}
+            {/*    <Button*/}
+            {/*        className={`mt-4 ${activeButton === "Tất cả" ? "bg-black-500" : "bg-red-300"}`}*/}
+            {/*        onClick={() => handleButtonClick("Tất cả")}*/}
+            {/*    >*/}
+            {/*        Tất cả*/}
+            {/*    </Button>*/}
+            {/*    <Button*/}
+            {/*        className={`mt-4 ${activeButton === "Bình luận" ? "bg-black-500" : "bg-red-300"}`}*/}
+            {/*        onClick={() => handleButtonClick("Bình luận")}*/}
+            {/*    >*/}
+            {/*        Bình luận*/}
+            {/*    </Button>*/}
+            {/*    <Button*/}
+            {/*        className={`mt-4 ${activeButton === "Đánh giá" ? "bg-black-500" : "bg-red-300"}`}*/}
+            {/*        onClick={() => handleButtonClick("Đánh giá")}*/}
+            {/*    >*/}
+            {/*        Đánh giá*/}
+            {/*    </Button>*/}
+            {/*</div>*/}
             {isCommentVisible && (
                 <div className="my-4">
                     <CustomerComment className="mb-4" productDetail={product}/>

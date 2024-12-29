@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Box, TextField, Button, CircularProgress } from "@mui/material";
-import { apiURL } from "../../config/constanst";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Pagination } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, Button, CircularProgress } from '@mui/material';
+import { apiURL } from '../../config/constanst';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { Pagination } from '@mui/material';
 import UploadWidget from '../../designs/UploadWidget';
 
 interface IImportProductFormProps {
@@ -14,27 +14,24 @@ interface IImportProductFormProps {
   onImportSuccess: () => void;
 }
 
-
-
-
 const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   const { open, onClose, subId, onImportSuccess } = props;
 
   // Các state để lưu thông tin sản phẩm
-  const [title, setTitle] = useState<string>("");
-  const [imagePath, setImagePath] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [imagePath, setImagePath] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [averageRating, setAverageRating] = useState<number>(0);
   // const [code, setCode] = useState<string>("");
-  const [brand, setBrand] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [brand, setBrand] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [variants, setVariants] = useState<{ [key: string]: { [key: string]: string } }>({
     size: {},
     color: {},
     thin: {},
   });
 
-  const colors = ["#2196F3", "#FF5722", "#FFEB3B"];
+  const colors = ['#2196F3', '#FF5722', '#FFEB3B'];
   const [loading, setLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -47,23 +44,23 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   //upload ảnh
   const uploadImage = async (file: File, color: string) => {
     setLoading(true);
-    const accessToken = localStorage.getItem("accessToken");
-    console.log("kkkk2")
-    console.log(accessToken)
+    const accessToken = localStorage.getItem('accessToken');
+    console.log('kkkk2');
+    console.log(accessToken);
 
     try {
       const formData = new FormData();
-      formData.append("file", file); // Thêm file vào formData
+      formData.append('file', file); // Thêm file vào formData
 
       const response = await axios.post<{ data: { url: string } }>(
         `${apiURL}/api/image/upload`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       const uploadedImageUrl = response.data.data.url;
@@ -71,28 +68,23 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
         ...prev,
         color: {
           ...prev.color,
-          [color]: uploadedImageUrl,  // Lưu URL ảnh cho màu sắc tương ứng
+          [color]: uploadedImageUrl, // Lưu URL ảnh cho màu sắc tương ứng
         },
       }));
       setUploadedImages((prev) => ({ ...prev, [color]: uploadedImageUrl }));
-      toast.success("Tải ảnh lên thành công!");
-
+      toast.success('Tải ảnh lên thành công!');
     } catch (error) {
-      toast.error("Đã có lỗi khi tải ảnh lên.");
+      toast.error('Đã có lỗi khi tải ảnh lên.');
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
-
-
-
-
   const importProduct = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    console.log("kkkk2")
-    console.log(accessToken)
+    const accessToken = localStorage.getItem('accessToken');
+    console.log('kkkk2');
+    console.log(accessToken);
     try {
       const productData = {
         title,
@@ -106,27 +98,23 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
       };
 
       console.log(productData);
-      console.log(accessToken)
-      const response = await axios.post(
-        `${apiURL}/api/admin/add-product`,
-        productData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      console.log(accessToken);
+      const response = await axios.post(`${apiURL}/api/admin/add-product`, productData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       if (response?.data?.status === 200) {
-        toast.success("Sản phẩm đã được thêm vào cửa hàng!");
+        toast.success('Sản phẩm đã được thêm vào cửa hàng!');
         onClose();
         onImportSuccess();
       } else {
-        toast.error(response?.data?.message || "Lỗi khi thêm sản phẩm.");
+        toast.error(response?.data?.message || 'Lỗi khi thêm sản phẩm.');
       }
     } catch (error) {
-      console.error("Error adding product:", error);
-      toast.error("Có lỗi xảy ra khi thêm sản phẩm.");
+      console.error('Error adding product:', error);
+      toast.error('Có lỗi xảy ra khi thêm sản phẩm.');
     } finally {
       setLoading(false);
     }
@@ -165,6 +153,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
               value={averageRating}
               onChange={(e) => setAverageRating(Number(e.target.value))}
               margin="normal"
+              disabled={true}
             />
             {/* <TextField
               label="Mã sản phẩm"
@@ -191,12 +180,15 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
             <TextField
               label="Size (ví dụ: S, M, L)"
               fullWidth
-              value={Object.keys(variants.size).join(", ")}
+              value={Object.keys(variants.size).join(', ')}
               onChange={(e) => {
-                const newSize = e.target.value.split(",").reduce((acc, size) => {
-                  acc[size.trim()] = `https://example.com/size${size.trim()}`;
-                  return acc;
-                }, {} as { [key: string]: string });
+                const newSize = e.target.value.split(',').reduce(
+                  (acc, size) => {
+                    acc[size.trim()] = `https://example.com/size${size.trim()}`;
+                    return acc;
+                  },
+                  {} as { [key: string]: string },
+                );
                 setVariants((prev) => ({ ...prev, size: newSize }));
               }}
               margin="normal"
@@ -204,12 +196,15 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
             <TextField
               label="Thin (ví dụ: Thin, Medium, Thick)"
               fullWidth
-              value={Object.keys(variants.thin).join(", ")}
+              value={Object.keys(variants.thin).join(', ')}
               onChange={(e) => {
-                const newThin = e.target.value.split(",").reduce((acc, thin) => {
-                  acc[thin.trim()] = `https://example.com/thin${thin.trim()}`;
-                  return acc;
-                }, {} as { [key: string]: string });
+                const newThin = e.target.value.split(',').reduce(
+                  (acc, thin) => {
+                    acc[thin.trim()] = `https://example.com/thin${thin.trim()}`;
+                    return acc;
+                  },
+                  {} as { [key: string]: string },
+                );
                 setVariants((prev) => ({ ...prev, thin: newThin }));
               }}
               margin="normal"
@@ -218,11 +213,11 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
             {/* Các ô vuông màu */}
             <Box display="flex" gap={2} marginBottom={3}>
               {colors.map((color) => (
-                <div key={color} style={{ position: "relative" }}>
+                <div key={color} style={{ position: 'relative' }}>
                   <input
                     id={`upload-input-${color}`}
                     type="file"
-                    style={{ display: "none" }}
+                    style={{ display: 'none' }}
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
@@ -259,7 +254,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
               ))}
             </Box>
 
-            <div className="flex justify-end gap-x-2 mt-4">
+            <div className="mt-4 flex justify-end gap-x-2">
               <Button onClick={onClose} variant="outlined" color="secondary">
                 Hủy
               </Button>
@@ -269,7 +264,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
                 color="primary"
                 disabled={loading}
               >
-                {loading ? <CircularProgress size={24} /> : "Thêm vào cửa hàng"}
+                {loading ? <CircularProgress size={24} /> : 'Thêm vào cửa hàng'}
               </Button>
             </div>
           </div>

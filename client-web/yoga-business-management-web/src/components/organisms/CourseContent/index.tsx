@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { Button } from "@mui/material";
-
+import { useRouter } from 'next/navigation';
 interface Lecture {
     id: number;
     title: string;
@@ -16,13 +16,14 @@ interface Section {
     lectures: Lecture[];
 }
 interface CourseContentProps {
-    sections: Section[]; 
+    courseId: string;
+    sections: Section[];
 }
 
-const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
+const CourseContent: React.FC<CourseContentProps> = ({ sections,courseId }) => {
 
 
-
+    const router = useRouter();
     const [openPanel, setOpenPanel] = useState<number | null>(null);
 
     const togglePanel = (id: number) => {
@@ -42,16 +43,16 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
                         <h3 className="text-lg font-semibold">
                             {openPanel === section.id ? "- " : "+ "} {section.title}
                         </h3>
-                        <span className="text-gray-600">
-                            {/* Tính tổng duration của các bài học trong section */}
+                        {/* <span className="text-gray-600">
+                           
                             {section.lectures.length} bài học - {
                                 section.lectures.reduce((total, lecture) => {
-                                    // Chuyển đổi duration thành số (parseInt hoặc parseFloat nếu là số thập phân)
+                                   
                                     const duration = parseFloat(lecture.duration);
-                                    return total + (isNaN(duration) ? 0 : duration); // Nếu không phải số, tính là 0
+                                    return total + (isNaN(duration) ? 0 : duration); 
                                 }, 0).toFixed(2)
                             } phút
-                        </span>
+                        </span> */}
                     </div>
 
                     {/* Panel Content */}
@@ -71,7 +72,8 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
                                             <div>
                                                 <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
 
-                                                <Button variant="contained" color="primary" sx={{ marginLeft: "auto" }}>
+                                                <Button onClick={() => { router.push(`/course/lession/${courseId}/${lecture.id}`); }}
+                                                    variant="contained" color="primary" sx={{ marginLeft: "auto" }}>
                                                     Học thử
                                                 </Button>
 

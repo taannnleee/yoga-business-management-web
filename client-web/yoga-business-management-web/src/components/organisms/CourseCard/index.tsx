@@ -134,14 +134,16 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 {/*</Typography>*/}
 
                                 <Box mt={1}>
-                                    {renderStars(course.rating)}
+                                    {/* {renderStars(course.rating)} */}
+                                    {renderStars(5)}
                                     <Typography variant="body2" color="textSecondary">
                                         {/* ({Math.round(course.rating * 10)}) */}
                                     </Typography>
                                 </Box>
 
                                 <Typography variant="body2" className="text-red-500" mt={1}>
-                                    {course.price} VND
+                                    {/* {course.price} */}
+                                    0 VND
                                 </Typography>
                             </Box>
                         </Box>

@@ -92,6 +92,7 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
       headerName: 'Ngày tạo',
       width: 150,
       renderCell: (params: GridRenderCellParams<any>) => {
+        console.log('Ngày tạo', params);
         return <div>{(params.value as string).prettyDate()}</div>;
       },
     },
@@ -169,7 +170,6 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
       const response = await axios.delete(`${apiURL}/api/admin/delete-status-product/${id}/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-
         },
       });
       if (response?.data?.success) {

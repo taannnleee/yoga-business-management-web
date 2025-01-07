@@ -98,7 +98,17 @@ public class CategoryServiceImpl implements CategoryService {
 //        }
 //        return list;
 //    }
-
+    @Override
+    public List<CategoryResponse> getAllCategoryAdmin() {
+        List<CategoryResponse> categoryResponses = new ArrayList<>();
+        // Lấy danh sách các Category có trạng thái ACTIVE
+        List<Category> categories = categoryRepository.getAllByStatus(EStatus.ACTIVE);
+        for (Category category : categories) {
+            CategoryResponse categoryResponse =  categoryMapper.toCategoryResponse(category);
+            categoryResponses.add(categoryResponse);
+        }
+        return categoryResponses;
+    }
     public List<CategoryWithProductResponse> getCategoriesWithProducts() {
         // Lấy danh sách các Category có trạng thái ACTIVE
         List<Category> categories = categoryRepository.getAllByStatus(EStatus.ACTIVE);

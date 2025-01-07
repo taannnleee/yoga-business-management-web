@@ -22,4 +22,5 @@ public interface CategoryService {
     List<CategoryResponseAndQuantityProduct> getAllCategoryAndQuantityProduct();
 
     void changeCategoryWithStatus(@Valid String id);
+    public List<CategoryResponse> getAllCategoryAdmin();
 }

@@ -332,6 +332,7 @@ const AccountInfo: React.FC = () => {
                                 value={formData.email}
                                 onChange={handleInputChange}
                                 variant="outlined"
+                                disabled={true}
                                 fullWidth
                                 InputProps={{
                                     readOnly: true,  // Ngăn người dùng sửa email

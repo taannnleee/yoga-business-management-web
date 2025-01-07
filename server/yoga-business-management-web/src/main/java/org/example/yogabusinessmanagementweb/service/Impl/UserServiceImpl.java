@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(updateProfileRequest.getEmail());
         user.setPhone(updateProfileRequest.getPhone());
         user.setImagePath(updateProfileRequest.getImagePath());
-
+        user.setFullname(updateProfileRequest.getFirstName() + " " + updateProfileRequest.getLastName());
         String genderString = updateProfileRequest.getGender();
         if (genderString != null) {
             try {

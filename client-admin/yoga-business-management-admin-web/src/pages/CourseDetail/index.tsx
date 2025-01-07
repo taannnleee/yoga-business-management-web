@@ -98,7 +98,6 @@ function CourseEditor() {
     setShowChapterInfo(true);
     setShowNewChapterField(true);
     setShowVideoForm(false);
-
   };
 
   const fetchSections = async () => {
@@ -184,14 +183,13 @@ function CourseEditor() {
           idSection: currentSection.id,
           title: newLecture.title,
           content: newLecture.content,
-          videoPath: videoPath,  // Truyền videoPath vào đây
+          videoPath: videoPath, // Truyền videoPath vào đây
           duration: videoDuration,
           image: imagePath,
         }),
       });
-      console.log("kkk");
-      console.log(newLecture)
-
+      console.log('kkk');
+      console.log(newLecture);
 
       if (response.ok) {
         const result = await response.json();
@@ -209,7 +207,7 @@ function CourseEditor() {
         setOpenModal(false);
         setShowVideoForm(false);
         setNewLecture({ title: '', content: '', videoPath: '' }); // Reset the lecture form
-        setVideoPath("");
+        setVideoPath('');
       } else {
         console.error('Lỗi khi thêm bài giảng:', response.statusText);
       }
@@ -236,10 +234,10 @@ function CourseEditor() {
         {/* Tabs */}
         <Box display="flex" gap={4} mb={3}>
           <Button color="primary">Bài giảng</Button>
-          <Button color="inherit">Thông tin</Button>
-          <Button color="inherit">Giá bán</Button>
-          <Button color="inherit">Affiliate</Button>
-          <Button color="inherit">Xuất bản</Button>
+          {/*<Button color="inherit">Thông tin</Button>*/}
+          {/*<Button color="inherit">Giá bán</Button>*/}
+          {/*<Button color="inherit">Affiliate</Button>*/}
+          {/*<Button color="inherit">Xuất bản</Button>*/}
         </Box>
 
         <Divider />
@@ -392,7 +390,7 @@ function CourseEditor() {
               />
 
               <UploadVideoWidget
-                setThumbnailUploaded={(image: string) => setVideoPath(image)}  // Cập nhật đường dẫn video
+                setThumbnailUploaded={(image: string) => setVideoPath(image)} // Cập nhật đường dẫn video
                 thumbnailUploaded={videoPath} // Giá trị video đã tải lên
                 setVideoDuration={handleSetVideoDuration}
               />

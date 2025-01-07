@@ -46,8 +46,6 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-
-
   const isEditMode = !!course;
 
   useEffect(() => {
@@ -77,7 +75,9 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
       const data = await response.json();
       setTeachers(data.data || []);
     } catch (error) {
-      setError('Error fetching teachers: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      setError(
+        'Error fetching teachers: ' + (error instanceof Error ? error.message : 'Unknown error'),
+      );
     } finally {
       setLoadingTeachers(false);
     }
@@ -103,7 +103,9 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
       const data = await response.json();
       setTopics(data.data || []);
     } catch (error) {
-      setError('Error fetching topics: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      setError(
+        'Error fetching topics: ' + (error instanceof Error ? error.message : 'Unknown error'),
+      );
     } finally {
       setLoadingTeachers(false);
     }
@@ -243,7 +245,6 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-
         {/* Upload Image */}
         <UploadWidget
           setThumbnailUploaded={(image: string) => setImagePath(image)}
@@ -265,14 +266,14 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           thumbnailUploaded={videoPath}
           setVideoDuration={handleSetVideoDuration}
         />
-        <TextField
-          margin="dense"
-          label="Giá"
-          type="number"
-          fullWidth
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
+        {/*<TextField*/}
+        {/*  margin="dense"*/}
+        {/*  label="Giá"*/}
+        {/*  type="number"*/}
+        {/*  fullWidth*/}
+        {/*  value={price}*/}
+        {/*  onChange={(e) => setPrice(e.target.value)}*/}
+        {/*/>*/}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>

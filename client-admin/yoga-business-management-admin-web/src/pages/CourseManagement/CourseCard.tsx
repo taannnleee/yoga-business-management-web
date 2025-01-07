@@ -37,9 +37,9 @@ const CourseCard = ({ course }: { course: Course }) => {
         <CardContent sx={{ flex: 1 }} component={Link} to={`/course-detail/${course.id}`}>
           <Typography variant="h6">{course.name}</Typography>
           <Typography color="textSecondary">{course.description}</Typography>
-          <Typography variant="body2" color="textSecondary">
-            Thời lượng: {course.duration} phút
-          </Typography>
+          {/*<Typography variant="body2" color="textSecondary">*/}
+          {/*  Thời lượng: {course.duration} phút*/}
+          {/*</Typography>*/}
           <Typography variant="body2" color="textSecondary">
             Giá: {course.price ? `${course.price} VNĐ` : 'Miễn phí'}
           </Typography>

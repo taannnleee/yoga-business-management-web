@@ -119,10 +119,10 @@ export const RightSideGetAllProduct: React.FC = (props) => {
                             <MenuItem className="text-xs" value="">Mặc định</MenuItem>
                             <MenuItem className="text-xs" value="asc">A -{'>'} Z</MenuItem>
                             <MenuItem className="text-xs" value="desc">Z -{'>'} A</MenuItem>
-                            <MenuItem className="text-xs" value="priceAsc">Giá tăng dần</MenuItem>
-                            <MenuItem className="text-xs" value="priceDesc">Giá giảm dần</MenuItem>
+                            {/*<MenuItem className="text-xs" value="priceAsc">Giá tăng dần</MenuItem>*/}
+                            {/*<MenuItem className="text-xs" value="priceDesc">Giá giảm dần</MenuItem>*/}
                             <MenuItem className="text-xs" value="newest">Hàng mới nhất</MenuItem>
-                            <MenuItem className="text-xs" value="oldest">Hàng cũ nhất</MenuItem>
+                            {/*<MenuItem className="text-xs" value="oldest">Hàng cũ nhất</MenuItem>*/}
                         </Select>
                     </FormControl>
                 </div>

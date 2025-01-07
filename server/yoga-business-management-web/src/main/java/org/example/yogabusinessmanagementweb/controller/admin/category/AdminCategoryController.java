@@ -28,8 +28,8 @@ public class AdminCategoryController {
     }
 
     @GetMapping("/get-all-category")
-    public ApiResponse<?> getAllCategory() {
-        List<CategoryResponse> list = categoryService.getAllCategory();
+    public ApiResponse<?> getAllCategoryAdmin() {
+        List<CategoryResponse> list = categoryService.getAllCategoryAdmin();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all category  successfully",list);
     }
     @GetMapping("/get-all-category-and-quantity-product")

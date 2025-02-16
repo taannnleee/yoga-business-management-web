@@ -127,6 +127,7 @@ const LessionPage: React.FC<any> = () => {
     }, [lectureId]);
 
     return (
+
         <div className="flex flex-col items-center py-6 px-4 min-h-screen bg-white">
             <div className="w-full max-w-[750px]">
                 {/* Top Black Line */}
@@ -135,6 +136,15 @@ const LessionPage: React.FC<any> = () => {
                 {/* Bottom Black Line */}
                 <div className="border-b-2 border-black-500" />
             </div>
+            <div>
+                <br></br>
+            </div>
+            <Button
+                variant="primary"
+            // className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
+            >
+                Tập luyện với AI
+            </Button>
 
             <div className="flex flex-row justify-between w-full max-w-[750px] mt-6 p-4">
                 {/* Left Side - Video Information */}

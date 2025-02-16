@@ -46,3 +46,37 @@ payment:
     version: ${VERSION}
     command: ${COMMAND}
     orderType: ${ORDER_TYPE}
+
+log4j:
+  logger:
+    org:
+      hibernate:
+        SQL: debug
+        type: 'trace '
+  logging:
+    level:
+      org:
+        hibernate:
+          type:
+            descriptor:
+              sql:
+                BasicBinder: TRACE
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+          nodeValue: TRACE
+        SQL: DEBUG
+    root: INFO
+security:
+
+
+application:
+  security:
+    enabled: true
+    ignore:
+      paths: /swagger-ui,/v3/api-docs,/api/v1/auth

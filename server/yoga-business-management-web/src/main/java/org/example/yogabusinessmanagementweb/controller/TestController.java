@@ -14,13 +14,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/test")
+@RequestMapping()
 @Slf4j
 public class TestController {
     SimpMessagingTemplate messagingTemplate;
-    @GetMapping()
+    @GetMapping("/test")
     public String createCategory() {
         messagingTemplate.convertAndSend("/topic/admin", "Có sản phẩm mới được nhập shop với tên là: " + "Chưa biết");
         return "Test success";
+    }
+
+    @GetMapping("/api/auth/test")
+    public String test() {
+        return "Test success123";
     }
 }

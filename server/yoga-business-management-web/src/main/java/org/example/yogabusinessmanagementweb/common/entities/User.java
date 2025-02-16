@@ -57,8 +57,8 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     List<GroupHasUser> groupHasUsers;
 
 
-    @OneToMany()
-    List<UserHasYogaWorkout> yogaWorkouts;
+//    @OneToMany()
+//    List<UserHasYogaWorkout> yogaWorkouts;
 
 
     @Override

@@ -1,36 +1,29 @@
-# Stage 1: Build the application
-FROM --platform=linux/amd64 maven:3.8.3-openjdk-17 AS build
-WORKDIR /social-media
+# Build stage
+FROM maven:3-openjdk-17 AS build
+WORKDIR /app
 
-# Copy only the project definition files
-COPY pom.xml .
+# Copy all the files including the .env file
+COPY . .
 
-# Download dependencies and cache them
-RUN mvn dependency:go-offline -B
-
-COPY src ./src
+# Run the Maven build
 RUN mvn clean package -DskipTests
 
-# Stage 2: Set up the runtime environment
-FROM --platform=linux/amd64 openjdk:17-jdk-slim AS runtime
-WORKDIR /social-media
+# Run stage
+FROM openjdk:17-jdk-slim
+WORKDIR /app
 
-# Copy the built JAR file from the previous stage
-#COPY --from=build /api-service/target/api-service.jar .
-COPY --from=build /social-media/target/social-media.jar .
+# Copy the .war file from the build stage
+COPY --from=build /app/target/yoga-business-management-web.war yoga-business-management-web.war
 
-# Expose the port on which the application will run
+# Copy the .env file to the container (optional but useful for debugging)
+COPY .env .env
 
+# Expose the port 8080
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "social-media.jar"]
+# Optionally, set the environment variables (if needed)
+# For example, you can set individual variables here as needed
+# ENV SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/my_database
 
-#FROM openjdk:17
-#ARG FILE_JAR=target/social-media.jar
-#
-#ADD ${FILE_JAR} api-service.jar
-#
-#ENTRYPOINT ["java","-jar","api-service.jar"]\
-#
-#EXPOSE 8080
-
+# If you have a lot of variables in .env, it's better to use an entrypoint script
+ENTRYPOINT ["java", "-jar", "yoga-business-management-web.war"]

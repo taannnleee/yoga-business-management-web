@@ -6,20 +6,21 @@ import { useEffect, useState } from "react";
 import YogaExercise from "@/app/(main)/course/working-with-ai-test/YogaExercise";
 import DoneExercise from "@/app/(main)/course/working-with-ai-test/DoneExercise";
 import Collection from '@/app/(main)/course/working-with-ai-test/Collection'; // hoặc đường dẫn chính xác tới file Collection.jsx
+import { API_URL } from "@/config/url";
 
 const YogaPage = () => {
   const [yogaExercises, setYogaExercises] = useState([]);
 
   const fetchExercise = async () => {
-    const access_token = localStorage.getItem("access_token");
+    const accessToken = localStorage.getItem("accessToken");
     const res = await fetch(
-      `/api/v1/yoga-workouts`,
+      `${API_URL}/api/v1/yoga-workouts`,
       {
         method: "GET",
         headers: {
           Accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
@@ -45,15 +46,15 @@ const YogaPage = () => {
 
   const [practiceHistory, setPracticeHistory] = useState([]);
   const fetchPracticeHistory = async () => {
-    const access_token = localStorage.getItem("access_token");
+    const accessToken = localStorage.getItem("accessToken");
     const res = await fetch(
-      `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/yoga-workouts/history`,
+      `${API_URL}/api/v1/yoga-workouts/history`,
       {
         method: "GET",
         headers: {
           Accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
@@ -123,16 +124,16 @@ const YogaPage = () => {
   };
 
   const saveToHistory = async (exercise) => {
-    const access_token = localStorage.getItem("access_token");
+    const accessToken = localStorage.getItem("accessToken");
     const res = await fetch(
-      `${import.meta.env.VITE_PUBLIC_API_URL
+      `${API_URL
       }/api/v1/yoga-workouts/history/upsert`,
       {
         method: "POST",
         headers: {
           Accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           yogaWorkout: {

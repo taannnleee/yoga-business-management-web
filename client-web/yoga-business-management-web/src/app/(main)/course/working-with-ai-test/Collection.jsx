@@ -45,26 +45,32 @@ const SubCollection = ({
         >
           <Progress percent={getProgress()} />
         </Flex>
+
         {getProgress() == 100 ? (
           <Button
+
             className="flex items-center justify-between gap-2 bg-green-500 hover:bg-green-600 m-2  text-white font-bold"
             type="m-2"
             onClick={() => selectCollectionHandler(attr)}
           >
+
             <span>Practice again</span>
             <BsArrowRepeat />
           </Button>
         ) : (
           <Button
-            className="flex items-center justify-between gap-2  m-2  text-white font-bold"
-            type="primary m-2"
-            onClick={() => selectCollectionHandler(attr)}
-          >
-            <span>Practice now</span>
-            <BsPlay />
-          </Button>
+  className="flex items-center justify-between gap-2 m-2 text-#52c41a font-bold border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white"
+  type="primary m-2"
+  onClick={() => selectCollectionHandler(attr)}
+>
+  <span>Practice now</span>
+  <BsPlay />
+</Button>
+
         )}
+
       </div>
+
       <Divider />
       <div className="flex flex-wrap  gap-4 max-h-[500px] overflow-auto p-2">
         {data.map((item) => {

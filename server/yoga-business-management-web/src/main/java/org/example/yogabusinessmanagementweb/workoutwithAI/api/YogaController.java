@@ -1,6 +1,5 @@
-package org.example.yogabusinessmanagementweb.workoutwithAI.api;
+package org.example.yogabusinessmanagementweb.controller.yogawithai;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.example.yogabusinessmanagementweb.workoutwithAI.dto.ResponseDto;
 import org.example.yogabusinessmanagementweb.workoutwithAI.dto.yoga.WorkoutHistoryDto;
@@ -14,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/yoga-workouts")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 public class YogaController {
     private final YogaService yogaService;
 

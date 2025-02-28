@@ -19,7 +19,6 @@ import org.example.yogabusinessmanagementweb.workoutwithAI.repository.PrivilegeR
 import org.example.yogabusinessmanagementweb.workoutwithAI.repository.RoleRepository;
 import org.example.yogabusinessmanagementweb.workoutwithAI.repository.UserWorkoutRepository;
 import org.example.yogabusinessmanagementweb.workoutwithAI.repository.VerifyCodeRepository;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.EmailService;
 import org.example.yogabusinessmanagementweb.workoutwithAI.service.HealthyService;
 import org.example.yogabusinessmanagementweb.workoutwithAI.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static org.example.yogabusinessmanagementweb.workoutwithAI.utils.AuthUtils.SendVerifyCodeHandle;
+
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,6 @@ public class UserServiceWorkoutImpl implements UserService {
 
     private final VerifyCodeRepository verifyCodeRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
     @Value("${application.default-admin.email:admin@huuloc.id.vn}")
     private String defaultAdminEmail;
     @Value("${application.default-admin.password:admin}")
@@ -126,7 +124,7 @@ public class UserServiceWorkoutImpl implements UserService {
             return Map.of("message", "User is already enabled.");
         }
 
-        SendVerifyCodeHandle(user, emailService, verifyCodeRepository);
+//        SendVerifyCodeHandle(user, emailService, verifyCodeRepository);
 
         return Map.of("message", "Code has been sent to your email.");
     }

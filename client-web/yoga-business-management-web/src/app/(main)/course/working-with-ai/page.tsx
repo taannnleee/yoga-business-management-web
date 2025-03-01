@@ -1,14 +1,9 @@
-"use client";
-import React from "react";
-import Yoga from "./Yoga.mjs";
 
-const HelloWorld: React.FC = () => {
-    return (
-        <div className="flex items-center justify-center h-screen">
+import React from 'react'
 
-            <Yoga></Yoga>
-        </div>
-    );
-};
-
-export default HelloWorld;
+const page = () => {
+  return (
+    <div>page1111111111111111111111111111111111111111</div>
+  )
+}
+export default page;

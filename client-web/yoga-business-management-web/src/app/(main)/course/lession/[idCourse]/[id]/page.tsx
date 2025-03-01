@@ -139,8 +139,9 @@ const LessionPage: React.FC<any> = () => {
             <div>
                 <br></br>
             </div>
-            <Button
+            <Button onClick={() => router.push("/course/working-with-ai-test")}
                 variant="primary"
+
             // className="w-[182px] h-[44px] bg-[#78c1f6] text-white rounded-lg hover:bg-[#78c1f6] text-sm"
             >
                 Tập luyện với AI

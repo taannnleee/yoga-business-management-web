@@ -15,7 +15,6 @@ import org.example.yogabusinessmanagementweb.workoutwithAI.entity.key.WorkshopPa
 import org.example.yogabusinessmanagementweb.workoutwithAI.repository.UserWorkoutRepository;
 import org.example.yogabusinessmanagementweb.workoutwithAI.repository.WorkshopParticipantRepository;
 import org.example.yogabusinessmanagementweb.workoutwithAI.repository.WorkshopRepository;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.EmailService;
 import org.example.yogabusinessmanagementweb.workoutwithAI.service.WorkshopService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,6 @@ public class WorkshopServiceImpl implements WorkshopService {
     private final WorkshopRepository workshopRepository;
     private final WorkshopParticipantRepository workshopParticipantRepository;
     private final UserWorkoutRepository userRepository;
-    private final EmailService emailService;
 
     //Initialize new workshop response dto
     private WorkshopResponseDto newWorkshopResponseDto(Workshop workshop) {
@@ -121,9 +119,9 @@ public class WorkshopServiceImpl implements WorkshopService {
             }
             log.info("Send email to {}", participant.getId().getUser().getEmail());
 
-            emailService.sendEmail(participant.getId().getUser().getEmail(), "Workshop",
-                    "Workshop " + workshop.getName() + " will start at " + workshop.getStartTime());
-            participant.setSent(true);
+//            emailService.sendEmail(participant.getId().getUser().getEmail(), "Workshop",
+//                    "Workshop " + workshop.getName() + " will start at " + workshop.getStartTime());
+//            participant.setSent(true);
         }
         workshopParticipantRepository.saveAll(participantsToNotify);
     }

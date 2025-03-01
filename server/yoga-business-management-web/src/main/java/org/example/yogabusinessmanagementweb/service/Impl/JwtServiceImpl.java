@@ -60,18 +60,9 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateResetToken(User user) {
-        return generateResetToken(new HashMap<>(), user);
-    }
-
-    @Override
     public String extractUsername(String token,ETokenType tokenType) {
-//        if (!isValid(token, tokenType, userDetails)) {
-//            throw new ExpiredTokenException("Token has expired or is invalid.");
-//        }
         return extractClaim(token,tokenType, Claims::getSubject);
     }
-
 
     @Override
     public Boolean isValid(String token, ETokenType tokenType, UserDetails userDetails) {
@@ -115,13 +106,15 @@ public class JwtServiceImpl implements JwtService {
         return username.equals(userDetails.getUsername()) && !isTokenExpried(token, tokenType);
     }
 
-    private boolean isTokenExpried(String token, ETokenType tokenType) {
+    @Override
+    public boolean isTokenExpried(String token, ETokenType tokenType) {
         return  extractExpration(token,tokenType).before(new Date());
     }
 
-    private Date extractExpration(String token, ETokenType tokenType) {
+    public Date extractExpration(String token, ETokenType tokenType) {
         return  extractClaim(token, tokenType,Claims::getExpiration);
     }
+
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails){
         List<String> scopes = userDetails.getAuthorities().stream()
@@ -134,7 +127,8 @@ public class JwtServiceImpl implements JwtService {
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 1000 * 60 * 60*24*24))
+//        1000 * 60 * 60*24*24
+                .setExpiration(new Date(System.currentTimeMillis()+ 10000))
                 .signWith(getKey(ACCESSTOKEN), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -148,17 +142,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    public String generateResetToken(Map<String, Object> claims, UserDetails userDetails) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))  //60phuts
-                .signWith(getKey(RESETTOKEN), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-        private Key getKey(ETokenType tokenType){
+    private Key getKey(ETokenType tokenType){
         switch(tokenType){
             case ACCESSTOKEN -> {return Keys.hmacShaKeyFor( Decoders.BASE64.decode(secretKey));}
             case REFRESHTOKEN -> {return Keys.hmacShaKeyFor( Decoders.BASE64.decode(refreshkey));}

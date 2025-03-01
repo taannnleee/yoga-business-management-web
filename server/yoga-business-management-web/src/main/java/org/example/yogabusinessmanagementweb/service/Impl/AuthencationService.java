@@ -72,21 +72,14 @@ public class AuthencationService {
 
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
 
-        if(user.isStatus()==false){
+        if(!user.isStatus()){
             throw new AppException(ErrorCode.USER_NOT_ACTIVE);
         }
 
         String accessToken =  jwtService.generateToken(user);
         String refreshToken =  jwtService.generateRefreshToken(user);
 
-        saveUserToken(user, accessToken,refreshToken);
-
-        Token savedToken = Token.builder()
-                        .username(user.getUsername())
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .user(user)
-                        .build();
+        Token savedToken =  saveUserToken(user, accessToken,refreshToken);
 
         return TokenRespone.builder()
                 .accesstoken(savedToken.getAccessToken())
@@ -136,8 +129,6 @@ public class AuthencationService {
         String accessToken =  jwtService.generateToken(user);
         String refreshToken =  jwtService.generateRefreshToken(user);
 
-        //save token vào db và đông thời chỉnh lai trạng thái của các token phía trước
-//        revokeAllUserTokens(user);
         saveUserToken(user, accessToken,refreshToken);
 
         Token savedToken = Token.builder()
@@ -147,7 +138,6 @@ public class AuthencationService {
                 .user(user)
                 .build();
 
-
         return TokenRespone.builder()
                 .accesstoken(savedToken.getAccessToken())
                 .refreshtoken(savedToken.getRefreshToken())
@@ -156,31 +146,42 @@ public class AuthencationService {
     }
 
     public TokenRespone refresh(HttpServletRequest loginRequest) {
-        //validate xem token cos rỗng không
-        String refresh_token = loginRequest.getHeader("x-token");
-        if(StringUtils.isBlank(refresh_token)){
+        // 🔹 Lấy Refresh Token từ header
+        String refreshToken = loginRequest.getHeader("x-token");
+        if (StringUtils.isBlank(refreshToken)) {
             throw new AppException(ErrorCode.TOKEN_EMPTY);
         }
-        //extract user from token
-        final String userName = jwtService.extractUsername(refresh_token, REFRESHTOKEN);
 
-        //check it into db
-        User user =  userService.findByUserName(userName);
+        // 🔹 Giải mã lấy username từ token
+        String userName = jwtService.extractUsername(refreshToken, ETokenType.REFRESHTOKEN);
 
+        // 🔹 Kiểm tra user trong database
+        User user = userService.findByUserName(userName);
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
 
-        //validate xem token có hợp lệ không
-        if(!jwtService.isValidRefresh(refresh_token, REFRESHTOKEN,user)){
+        // 🔹 Kiểm tra token có hợp lệ không
+        if (!jwtService.isValidRefresh(refreshToken, ETokenType.REFRESHTOKEN, user)) {
             throw new AppException(ErrorCode.TOKEN_INVALID);
         }
 
-        String accessToken =  jwtService.generateToken(user);
+        // 🔹 Kiểm tra Refresh Token đã hết hạn chưa
+        if (jwtService.isTokenExpried (refreshToken, ETokenType.REFRESHTOKEN)) {
+            throw new AppException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+        }
 
-        // Lưu token mới vào cơ sở dữ liệu
-        saveUserToken(user, accessToken, refresh_token);
+        // 🔹 Tạo Access Token mới
+        String accessToken = jwtService.generateToken(user);
 
+
+        // 🔹 Lưu token mới vào database
+        saveUserToken(user, accessToken, refreshToken);
+
+        // 🔹 Trả về Access Token và Refresh Token mới
         return TokenRespone.builder()
                 .accesstoken(accessToken)
-                .refreshtoken(refresh_token)
+                .refreshtoken(refreshToken)
                 .userid(user.getId())
                 .build();
     }
@@ -237,26 +238,15 @@ public class AuthencationService {
         cartRepository.save(cart);
 
     }
-    private void saveUserToken(User user, String jwtToken,String refreshToken) {
-        var token = Token.builder()
+    private Token saveUserToken(User user, String jwtToken,String refreshToken) {
+        Token token = Token.builder()
                 .user(user)
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .expired(false)
                 .revoked(false)
                 .build();
-        tokenRepository.save(token);
-    }
-
-    private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(BigInteger.valueOf(user.getId()));
-        if (validUserTokens.isEmpty())
-            return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
+        return tokenRepository.save(token);
     }
 
     // đây là hàm su dụng cho tính năng quên mật khẩu

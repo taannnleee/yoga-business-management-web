@@ -44,7 +44,6 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     // Hàm gọi API để lấy giỏ hàng
     const fetchCart = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(`/api/cart/show-cart`);
 
             const data = response.data.data;

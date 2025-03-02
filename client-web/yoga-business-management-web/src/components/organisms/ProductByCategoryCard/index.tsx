@@ -60,18 +60,20 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ im
     const handleAddToCart = async () => {
         try {
             const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Gửi token để xác thực
-                },
-                body: JSON.stringify({
+            const response = await axios.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
                     productId: selectedProduct.id, // Truyền product.id vào API
                     quantity: quantity,
                     currentVariant: currentVariant
-                }),
-            });
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`, // Gửi token để xác thực
+                    },
+                }
+            );
 
             if (!response.ok) {
                 throw new Error("Failed to add product to cart");

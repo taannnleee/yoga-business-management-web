@@ -71,10 +71,9 @@ const NotificationPage: React.FC = () => {
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/notification/get-all-of-user`, {
-                method: 'GET',
+            const response = await axios.get(`${API_URL}/api/notification/get-all-of-user`, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
@@ -104,12 +103,11 @@ const NotificationPage: React.FC = () => {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(
+            const response = await axios.get(
                 `${API_URL}/api/notification/change-status/${notification.id}`,
                 {
-                    method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
                 }

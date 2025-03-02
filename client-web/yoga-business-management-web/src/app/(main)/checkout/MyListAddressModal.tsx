@@ -43,8 +43,7 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/address/get-address`, {
-                method: "GET",
+            const response = await axios.get(`${API_URL}/api/address/get-address`, {
                 headers: { "Authorization": `Bearer ${accessToken}` },
             });
             const data = await response.json();

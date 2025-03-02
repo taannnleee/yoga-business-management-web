@@ -89,8 +89,7 @@ const OrderPage: React.FC = () => {
             setLoading(true); // Bắt đầu tải dữ liệu
             try {
                 const token = localStorage.getItem("accessToken"); // Lấy token
-                const response = await fetch(`${API_URL}/api/order/get-all-order-by-status/${status}`, {
-                    method: "GET",
+                const response = await axios.get(`${API_URL}/api/order/get-all-order-by-status/${status}`, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -150,19 +149,21 @@ const OrderPage: React.FC = () => {
         try {
             const accessToken = localStorage.getItem("accessToken");
 
-            const commentResponse = await fetch(`${API_URL}/api/comment`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
+            const commentResponse = await axios.post(
+                `${API_URL}/api/comment`,
+                {
                     content: review,
                     ratePoint: rating,
-                    productId: orderItem.product.id, // Cập nhật theo ID sản phẩm nếu cần
+                    productId: orderItem.product.id,
                     currentVariant: orderItem.currentVariant,
-                }),
-            });
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
 
             const commentData = await commentResponse.json();
 
@@ -174,12 +175,15 @@ const OrderPage: React.FC = () => {
             const newCommentId = commentData.data.id;
 
             // Cập nhật đánh giá vào đơn hàng
-            const updateResponse = await fetch(
-                `${API_URL}/api/order/update-comment/${orderItem.id}?commentId=${newCommentId}`,
+            const updateResponse = await axios.put(
+                `${API_URL}/api/order/update-comment/${orderItem.id}`,
+                {},
                 {
-                    method: "PUT",
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
+                    },
+                    params: {
+                        commentId: newCommentId,
                     },
                 }
             );

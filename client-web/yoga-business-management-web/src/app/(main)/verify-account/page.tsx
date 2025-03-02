@@ -24,10 +24,14 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     const handlePressVerifyAccount = async (values: any) => {
         try {
             setLoading(true);
-            const response = await fetch(
-                `${API_URL}/api/auth/verifyOTP_register?OTP=${values.otp}&email=${email}`,
+            const response = await axios.post(
+                `${API_URL}/api/auth/verifyOTP_register`,
+                {},
                 {
-                    method: "POST",
+                    params: {
+                        OTP: values.otp,
+                        email: email,
+                    },
                     headers: {
                         "Content-Type": "application/json",
                     },

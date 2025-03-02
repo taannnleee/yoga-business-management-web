@@ -55,8 +55,7 @@ const TeacherDetailPage: React.FC = () => {
         const fetchTeacherInfo = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/teacher/get-teacher/${teacherId}`, {
-                    method: "GET",
+                const response = await axios.get(`${API_URL}/api/teacher/get-teacher/${teacherId}`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
@@ -84,8 +83,7 @@ const TeacherDetailPage: React.FC = () => {
         const fetchTeacherCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/course/all-teacher-courses/${teacherId}`, {
-                    method: "GET",
+                const response = await axios.get(`${API_URL}/api/course/all-teacher-courses/${teacherId}`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,

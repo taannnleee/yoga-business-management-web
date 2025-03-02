@@ -38,9 +38,12 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
             }
 
             // Fetch comments from the API
-            const response = await fetch(`${apiURL}/api/comment/by-product/${productDetail.id}?page=${page}&pageSize=${itemsPerPage}`, {
-                method: "GET", // Optional: Specify the method if needed (GET is the default)
-                headers: headers, // Include headers with authorization
+            const response = await axios.get(`${apiURL}/api/comment/by-product/${productDetail.id}`, {
+                params: {
+                    page: page,
+                    pageSize: itemsPerPage,
+                },
+                headers: headers,
             });
 
             // Handle the response
@@ -70,25 +73,27 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
         if (productDetail?.id) {
             getListComments();
         }
-    }, [page, productDetail,itemsPerPage]);
+    }, [page, productDetail, itemsPerPage]);
     // Handle new comment submission using fetch
     const handlePostComment = async () => {
         try {
             setIsPosting(true);
             const comment = watch("comment");
             if (comment?.length > 0) {
-                const response = await fetch(`${apiURL}/api/comment`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify({
+                const response = await axios.post(
+                    `${apiURL}/api/comment`,
+                    {
                         content: comment,
                         parentId: null,
                         productId: Number(productDetail?.id),
-                    }),
-                });
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
 
                 if (!response.ok) {
                     throw new Error("Failed to post comment");
@@ -133,7 +138,7 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
                                         commentMode="view"
                                         comment={comment}
                                         productDetail={productDetail}
-                                        onReplyingSuccess={getListComments}/>
+                                        onReplyingSuccess={getListComments} />
                                 );
                             })}
                             <BottomContent
@@ -154,14 +159,14 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
                                         control={control}
                                         label="Đăng bình luận"
                                         onPostComment={handleSubmit(handlePostComment)}
-                                        isPosting={isPosting}/>
+                                        isPosting={isPosting} />
                                 </div>
                             )}
                         </div>
                     ) : (
                         <div className="mt-4">
                             <div className="flex items-center gap-x-1">
-                                <InformationCircleIcon className="text-secondary-900 w-[20px] h-[20px]"/>
+                                <InformationCircleIcon className="text-secondary-900 w-[20px] h-[20px]" />
                                 <p className="text-secondary-900 font-bold italic text-sm">
                                     Sản phẩm chưa có bình luận nào
                                 </p>
@@ -176,7 +181,7 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
                                             control={control}
                                             label="Đăng bình luận"
                                             onPostComment={handleSubmit(handlePostComment)}
-                                            isPosting={isPosting}/>
+                                            isPosting={isPosting} />
                                     </div>
                                 </>
                             )}
@@ -188,8 +193,8 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
             </div>
         </>
 
-)
-    ;
+    )
+        ;
 };
 
 export default CustomerComment;

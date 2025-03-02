@@ -53,11 +53,10 @@ const HomePage: React.FC<IHomePageProps> = () => {
     const fetchProducts = async () => {
         try {
             // const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/category/with-products`, {
-                method: "GET",
+            const response = await axios.get(`${API_URL}/api/category/with-products`, {
                 headers: {
                     "Content-Type": "application/json",
-                    // "Authorization": `Bearer ${token}`,
+                    // Authorization: `Bearer ${token}`,
                 },
             });
 

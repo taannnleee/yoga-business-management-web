@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/useToast";
 import { Select, MenuItem, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 import {
     Box,
     Typography,
@@ -69,9 +70,11 @@ const Checkout: React.FC = () => {
     const fetchCart = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const response = await fetch(`${API_URL}/api/cart/show-cart`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
             });
 
             if (!response.ok) throw new Error("Failed to fetch cart");
@@ -108,14 +111,20 @@ const Checkout: React.FC = () => {
 
         try {
             // Send the request to initiate the VNPay payment and include the order data
-            const response = await fetch(`${API_URL}/api/payment/vn-pay?amount=${totalPricePromotion}&bankCode=NCB`, {
-                method: "POST",  // Change to POST to send data in the body
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json", // Ensure the request body is JSON
-                },
-                body: JSON.stringify(orderData),  // Pass the order data in the request body
-            });
+            const response = await axiosInstance.post(
+                `${API_URL}/api/payment/vn-pay`,
+                orderData,
+                {
+                    params: {
+                        amount: totalPricePromotion,
+                        bankCode: "NCB"
+                    },
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
             if (!response.ok) throw new Error("Failed to initiate VNPay payment");
 
@@ -146,13 +155,9 @@ const Checkout: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         setOrderLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/order/create-order`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axiosInstance.post(
+                `${API_URL}/api/order/create-order`,
+                {
                     totalPricePromotion,
                     addressId,
                     paymentMethod,
@@ -161,8 +166,14 @@ const Checkout: React.FC = () => {
                         quantity: product.quantity,
                         variant: product.currentVariant,
                     })),
-                }),
-            });
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (!response.ok) throw new Error("Failed to create order");
 

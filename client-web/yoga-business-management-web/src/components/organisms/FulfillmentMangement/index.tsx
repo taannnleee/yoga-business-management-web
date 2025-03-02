@@ -31,13 +31,12 @@ const FulfillmentManagement: React.FC = () => {
             const accessToken = localStorage.getItem("accessToken");
             const url = `${API_URL}/api/product/filter?page=1&pageSize=4&keyword=${searchTerm}`;
 
-            const response = await fetch(url, {
-                method: "GET",
+            const response = await axios.get(url, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                  "Content-Type": "application/json",
                 },
-            });
+              });
 
             if (!response.ok) {
                 throw new Error("Network response was not ok");

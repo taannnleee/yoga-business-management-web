@@ -32,8 +32,7 @@ const DisCoverPage: React.FC = () => {
         const fetchCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/course/all-course`, {
-                    method: "GET",
+                const response = await axios.get(`${API_URL}/api/course/all-course`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,

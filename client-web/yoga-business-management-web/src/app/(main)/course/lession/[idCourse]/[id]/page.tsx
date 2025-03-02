@@ -70,17 +70,12 @@ const LessionPage: React.FC<any> = () => {
         try {
             const token = localStorage.getItem("accessToken");
             // Thay thế URL này với API endpoint của bạn
-            const response = await fetch(
-                `${API_URL}/api/course/get-course/${courseId}`,
-
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await axios.get(`${API_URL}/api/course/get-course/${courseId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
 
             const data = await response.json();
             if (data.status === 200) {
@@ -97,16 +92,12 @@ const LessionPage: React.FC<any> = () => {
     const fetchLecture = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(
-                `${API_URL}/api/lecture/get-lecture/${lectureId}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await axios.get(`${API_URL}/api/lecture/get-lecture/${lectureId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
 
             const data = await response.json();
             if (data.status === 200) {

@@ -22,18 +22,20 @@ const PaymentResult = () => {
         const token = localStorage.getItem("accessToken");
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/order/create-order`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axios.post(
+                `${API_URL}/api/order/create-order`,
+                {
                     addressId: addressId,
                     paymentMethod: paymentMethod,
                     totalPricePromotion: vnp_Amount,
-                }),
-            });
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (!response.ok) throw new Error("Failed to create order");
 

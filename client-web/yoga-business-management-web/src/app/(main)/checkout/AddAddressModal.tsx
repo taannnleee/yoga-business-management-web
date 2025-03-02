@@ -61,13 +61,11 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 
         setLoading(true);
         try {
-            await fetch(`${API_URL}/api/address/create`, {
-                method: "POST",
+            await axios.post(`${API_URL}/api/address/create`, newAddress, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify(newAddress),
             });
             toast.sendToast("Success", "Thêm địa chỉ thành công");
             setIsModalOpen(false);  // Close the modal

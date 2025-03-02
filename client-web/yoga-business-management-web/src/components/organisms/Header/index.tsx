@@ -51,13 +51,16 @@ const HeaderV2: React.FC<IHeaderV2Props> = (props) => {
       }
 
       // Gọi API logout sử dụng fetch
-      const response = await fetch(`${API_URL}/api/auth/logout`, {
-        method: 'POST', // Phương thức POST
-        headers: {
-          'Authorization': `Bearer ${token}`, // Gửi token xác thực trong header
-          'Content-Type': 'application/json', // Đảm bảo body là JSON (mặc dù ở đây body rỗng)
-        },
-      });
+      const response = await axios.post(
+        `${API_URL}/api/auth/logout`,
+        {}, // Body rỗng
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log("hehehe")
       console.log(response)
 

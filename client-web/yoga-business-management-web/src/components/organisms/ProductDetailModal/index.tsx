@@ -49,12 +49,14 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         try {
             if (isFavorited) {
                 // Call API to remove from wishlist
-                const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct.id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                });
+                const response = await axios.delete(
+                    `${API_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
 
                 if (response.ok) {
                     setIsFavorited(false);
@@ -63,14 +65,16 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                 }
             } else {
                 // Call API to add to wishlist
-                const response = await fetch(`${API_URL}/api/wishlist/add-wishlist`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify({ productId: selectedProduct.id }),
-                });
+                const response = await axios.post(
+                    `${API_URL}/api/wishlist/add-wishlist`,
+                    { productId: selectedProduct.id },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
 
                 if (response.ok) {
                     setIsFavorited(true);
@@ -88,14 +92,16 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
     useEffect(() => {
         const checkWishlistStatus = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-exists`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify({ productId: selectedProduct.id }),
-                });
+                const response = await axios.post(
+                    `${API_URL}/api/wishlist/get-wishlist-exists`,
+                    { productId: selectedProduct.id },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
 
                 if (response.ok) {
                     const data = await response.json();

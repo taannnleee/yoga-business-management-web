@@ -85,18 +85,20 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
                 return;
             }
 
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axios.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
                     productId: selectedProduct?.id.toString(),
                     quantity: quantity,
                     currentVariant: currentVariant,
-                }),
-            });
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (!response.ok) {
                 throw new Error("Failed to add product to cart");

@@ -30,9 +30,11 @@ const PromotionSelection: React.FC<PromotionSelectionProps> = ({ totalPrice, set
     const fetchPromotions = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const response = await fetch(`${API_URL}/api/promotion/get-four-big-promotion`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            const response = await axios.get(`${API_URL}/api/promotion/get-four-big-promotion`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
             });
 
             if (!response.ok) throw new Error("Failed to fetch promotions");

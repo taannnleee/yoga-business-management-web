@@ -60,14 +60,16 @@ const UpdateAddressModal: React.FC<UpdateAddressModalProps> = ({
         };
 
         try {
-            const response = await fetch(`${API_URL}/api/address/update/${formData.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedAddress),
-            });
+            const response = await axios.put(
+                `${API_URL}/api/address/update/${formData.id}`,
+                updatedAddress,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (response.ok) {
 

@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/config/url";
 const token = localStorage.getItem("accessToken");
+import axiosInstance from "@/components/axiosClient";
+import axios from "axios";
 
 interface ILoginPageProps { }
 
@@ -23,43 +25,30 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
   const handlePressLogin = async (values: any) => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-
-        },
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-        }),
+      const response = await axiosInstance.post(`${API_URL}/api/auth/login`, {
+        username: values.username,
+        password: values.password,
       });
-
-      const result = await response.json();
-
-
-      if (response.ok && result.status === 200) {
+      if (response.status === 200) {
         setLoading(false);
         // Store tokens in local storage
-        localStorage.setItem("accessToken", result.data.accesstoken);
-        localStorage.setItem("refreshToken", result.data.refreshtoken);
+        localStorage.setItem("accessToken", response.data.accesstoken);
+        localStorage.setItem("refreshToken", response.data.refreshtoken);
 
         toast.sendToast("Success", "Login successfully");
 
         // Redirect to home page
         router.replace("/home");
-      } else if (result.status === 1013) {
+      } else if (response.status === 1013) {
         // Tài khoản chưa được kích hoạt, gọi API để lấy email
         toast.sendToast("Error", "Tài khoản chưa được kích hoạt", "error");
 
         // Gọi API để lấy email
-        const emailResponse = await fetch(
-          `${API_URL}/api/user/get-email-by-username?userName=${values.username}`,
+        const emailResponse = await axios.get(
+          `${API_URL}/api/user/get-email-by-username`,
           {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            params: { userName: values.username }, // Truyền params thay vì nối chuỗi
+            headers: { "Content-Type": "application/json" },
           }
         );
 
@@ -69,15 +58,9 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           const email = emailResult.data;
 
           // Gọi API để gửi OTP đến email
-          const otpResponse = await fetch(
-            `${API_URL}/api/auth/send-otp?email=${email}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const otpResponse = await axios.post(`${API_URL}/api/auth/send-otp`, null, {
+            params: { email },
+          });
 
           const otpResult = await otpResponse.json();
 
@@ -105,7 +88,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
       );
     }
   };
-  
+
   return (
     <div className="w-full h-auto flex justify-center items-center bg-white">
       <Box

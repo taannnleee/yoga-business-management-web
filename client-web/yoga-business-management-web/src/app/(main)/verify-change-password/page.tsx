@@ -28,10 +28,14 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     const handlePressVerifyAccount = async (values: any) => {
         try {
             setLoading(true);
-            const response = await fetch(
-                `${API_URL}/api/auth/check-otp-change-password?OTP=${values.otp}&email=${email}`,
+            const response = await axios.post(
+                `${API_URL}/api/auth/check-otp-change-password`,
+                {},
                 {
-                    method: "POST",
+                    params: {
+                        OTP: values.otp,
+                        email: email,
+                    },
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -90,12 +94,10 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                 confirmPassword: confirmpassword,
             };
 
-            const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
-                method: "POST",
+            const response = await axios.post(`${API_URL}/api/auth/forgot-password`, bodyData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(bodyData),
             });
 
             const result = await response.json();

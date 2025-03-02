@@ -30,12 +30,11 @@ const HoverDropdown: React.FC<HoverDropdownProps> = ({ buttonText }) => {
         const fetchCategories = async () => {
             try {
                 const accessToken = localStorage.getItem('accessToken');
-                const response = await fetch(`${API_URL}/api/category/with-sub-categories`, {
-                    method: 'GET',
+                const response = await axios.get(`${API_URL}/api/category/with-sub-categories`, {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`,
+                      Authorization: `Bearer ${accessToken}`,
                     },
-                });
+                  });
                 const data = await response.json();
                 if (data.status === 200) {
                     setCategories(data.data);

@@ -96,12 +96,11 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                 return;
             }
 
-            const response = await fetch(`${API_URL}/api/user/get-user-address-default`, {
-                method: "GET",
+            const response = await axios.get(`${API_URL}/api/user/get-user-address-default`, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`, // Pass the token in the Authorization header
-                    "Content-Type": "application/json"
-                }
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
             });
 
             const data = await response.json();

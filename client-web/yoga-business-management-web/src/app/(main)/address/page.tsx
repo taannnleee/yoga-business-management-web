@@ -51,8 +51,7 @@ const AddressList: React.FC = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/address/get-address`, {
-                method: "GET",
+            const response = await axios.get(`${API_URL}/api/address/get-address`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
@@ -129,14 +128,13 @@ const AddressList: React.FC = () => {
             };
 
             try {
-                await fetch(`${API_URL}/api/address/update/${selectedAddress.id}`, {
-                    method: "PUT",
+                await axios.put(`${API_URL}/api/address/update/${selectedAddress.id}`, updatedAddress, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
                     },
-                    body: JSON.stringify(updatedAddress),
                 });
+
                 await fetchAddresses();
                 handleClose();
             } catch (error) {
@@ -158,13 +156,11 @@ const AddressList: React.FC = () => {
         };
 
         try {
-            await fetch(`${API_URL}/api/address/create`, {
-                method: "POST",
+            await axios.post(`${API_URL}/api/address/create`, newAddress, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify(newAddress),
             });
             await fetchAddresses();
             handleClose();
@@ -177,8 +173,7 @@ const AddressList: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (selectedAddress) {
             try {
-                await fetch(`${API_URL}/api/address/delete/${selectedAddress.id}`, {
-                    method: "DELETE",
+                await axios.delete(`${API_URL}/api/address/delete/${selectedAddress.id}`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
@@ -204,8 +199,7 @@ const AddressList: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (address.status !== "DEFAULT") {
             try {
-                await fetch(`${API_URL}/api/address/set-default/${address.id}`, {
-                    method: "POST",
+                await axios.post(`${API_URL}/api/address/set-default/${address.id}`, {}, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,

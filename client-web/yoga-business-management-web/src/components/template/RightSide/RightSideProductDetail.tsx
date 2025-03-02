@@ -27,18 +27,20 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+            const response = await axios.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
+                  productId: product.id.toString(),
+                  quantity,
+                  currentVariant,
                 },
-                body: JSON.stringify({
-                    productId: product.id.toString(),
-                    quantity: quantity,
-                    currentVariant: currentVariant,
-                }),
-            });
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
 
             if (!response.ok) {
                 throw new Error("Failed to add product to cart");

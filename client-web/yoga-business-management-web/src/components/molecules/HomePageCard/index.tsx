@@ -25,17 +25,19 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
         setError(null);
         try {
             const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Gửi token để xác thực
+            const response = await axios.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
+                  productId: product.id,
+                  quantity: 1,
                 },
-                body: JSON.stringify({
-                    productId: product.id,
-                    quantity: 1, // Thêm 1 sản phẩm vào giỏ hàng
-                }),
-            });
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
 
             if (!response.ok) {
                 throw new Error("Failed to add product to cart");

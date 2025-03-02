@@ -30,21 +30,19 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
     const handlePressRegister = async (values: any) => {
         try {
             setLoading(true);
-            const response = await fetch(`${API_URL}/api/auth/register`, {
-                method: "POST",
+            const response = await axios.post(`${API_URL}/api/auth/register`, {
+                username: values.username,
+                fullName: `${values.firstName} ${values.lastName}`,
+                email: values.email,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                phone: values.phoneNumber,
+                password: values.password,
+                confirmPassword: values.confirmPassword,
+            }, {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    username: values.username, // Adjusted to match API field
-                    fullName: `${values.firstName} ${values.lastName}`,
-                    email: values.email,
-                    firstName: values.firstName,
-                    lastName: values.lastName,
-                    phone: values.phoneNumber, // Adjusted to match API field
-                    password: values.password,
-                    confirmPassword: values.confirmPassword, // Added confirmPassword field
-                }),
             });
 
             const responseData = await response.json();

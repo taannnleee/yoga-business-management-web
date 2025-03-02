@@ -16,9 +16,9 @@ import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
 import { API_URL } from "@/config/url";
-interface ProductByCategoryCardProps {}
+interface ProductByCategoryCardProps { }
 
-const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
+const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
     const toast = useToast();
     const [quantity, setQuantity] = useState(1);
     const [currentVariant, setCurrentVariant] = useState<any>({});
@@ -74,18 +74,20 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
     const handleAddToCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axios.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
                     productId: selectedProduct.id,
                     quantity: quantity,
                     currentVariant: currentVariant,
-                }),
-            });
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (!response.ok) {
                 throw new Error("Failed to add product to cart");
@@ -138,8 +140,8 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
         for (let i = 0; i < 5; i++) {
             stars.push(
                 <span key={i} className={i < Math.round(averageRating) ? "text-yellow-500" : "text-gray-300"}>
-          ★
-        </span>
+                    ★
+                </span>
             );
         }
         return stars;

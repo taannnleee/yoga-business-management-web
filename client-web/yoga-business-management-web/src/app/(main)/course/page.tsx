@@ -86,8 +86,7 @@ const CoursePage: React.FC = () => {
         const fetchInstructors = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/teacher/all-teachers`, {
-                    method: "GET",
+                const response = await axios.get(`${API_URL}/api/teacher/all-teachers`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,
@@ -117,8 +116,7 @@ const CoursePage: React.FC = () => {
         const fetchTeacherCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/course/get-outstanding-courses`, {
-                    method: "GET",
+                const response = await axios.get(`${API_URL}/api/course/get-outstanding-courses`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`,

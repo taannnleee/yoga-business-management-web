@@ -65,16 +65,12 @@ const CourseDetailPage: React.FC = () => {
                 try {
                     const token = localStorage.getItem("accessToken");
                     setLoading(true);
-                    const response = await fetch(
-                        `${API_URL}/api/course/get-course/${courseId}`,
-                        {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`,
-                            },
-                        }
-                    );
+                    const response = await axios.get(`${API_URL}/api/course/get-course/${courseId}`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
                     const data = await response.json();
 
                     if (data.status === 200) {

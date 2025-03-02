@@ -5,6 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useDebounce from "../../../hooks/useDebounce"; // Hook debounce
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface IProduct {
     id: string;
     title: string;
@@ -45,26 +46,20 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                 setLoadPrice(true);
                 try {
                     const token = localStorage.getItem("accessToken");
-                    const response = await fetch(`${API_URL}/api/cart/increase-to-cart`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({
-
+                    const response = await axiosInstance.post(
+                        `${API_URL}/api/cart/increase-to-cart`,
+                        {
                             id: cartItem.id,
                             productId: cartItem.product.id,
-                            quantity: debouncedChangedQuantity, // Gửi số lượng đã thay đổi (tăng)
-                        }),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Failed to increase product quantity");
-                    }
-
-                    const data = await response.json();
-                    console.log(data);
+                            quantity: debouncedChangedQuantity,
+                        },
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
                 } catch (err: any) {
                     setError(err.message);
                 } finally {
@@ -80,24 +75,20 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                 setLoadPrice(true);
                 try {
                     const token = localStorage.getItem("accessToken");
-                    const response = await fetch(`${API_URL}/api/cart/subtract-from-cart-item`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({
+                    const response = await axiosInstance.post(
+                        `${API_URL}/api/cart/subtract-from-cart-item`,
+                        {
                             id: cartItem.id,
-                            quantity: Math.abs(debouncedChangedQuantity), // Gửi số lượng đã thay đổi (giảm)
-                        }),
-                    });
+                            quantity: Math.abs(debouncedChangedQuantity),
+                        },
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
 
-                    if (!response.ok) {
-                        throw new Error("Failed to decrease product quantity");
-                    }
-
-                    const data = await response.json();
-                    console.log(data);
                 } catch (err: any) {
                     setError(err.message);
                 } finally {
@@ -133,23 +124,18 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
 
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/cart/remove-from-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+            const response = await axiosInstance.post(
+                `${API_URL}/api/cart/remove-from-cart`,
+                {
+                    productId: cartItem.product.id,
                 },
-                body: JSON.stringify({
-                    productId: cartItem.product.id, // Gửi productId để xóa sản phẩm
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to remove product from cart");
-            }
-
-            const data = await response.json();
-            console.log(data);
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             // Gọi hàm onRemove để cập nhật lại giỏ hàng
             onRemove(cartItem.product.id);

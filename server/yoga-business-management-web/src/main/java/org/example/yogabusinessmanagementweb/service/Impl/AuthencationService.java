@@ -103,11 +103,6 @@ public class AuthencationService {
         // Revoke quyền của accessToken
         jwtService.revokeToken(token, ACCESSTOKEN);
 
-        // Kiểm tra và xoóa token trong DB
-//        Token tokenCurrent = tokenService.getTokenByUsername(userName);
-//        if (tokenCurrent != null) {
-//            tokenService.delete(tokenCurrent);
-//        }
         return "Token revoked and deleted!";
     }
 
@@ -152,6 +147,11 @@ public class AuthencationService {
             throw new AppException(ErrorCode.TOKEN_EMPTY);
         }
 
+        // 🔹 Kiểm tra Refresh Token đã hết hạn chưa
+        if (jwtService.isTokenExpried(refreshToken, ETokenType.REFRESHTOKEN)) {
+            throw new AppException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+        }
+
         // 🔹 Giải mã lấy username từ token
         String userName = jwtService.extractUsername(refreshToken, ETokenType.REFRESHTOKEN);
 
@@ -164,11 +164,6 @@ public class AuthencationService {
         // 🔹 Kiểm tra token có hợp lệ không
         if (!jwtService.isValidRefresh(refreshToken, ETokenType.REFRESHTOKEN, user)) {
             throw new AppException(ErrorCode.TOKEN_INVALID);
-        }
-
-        // 🔹 Kiểm tra Refresh Token đã hết hạn chưa
-        if (jwtService.isTokenExpried (refreshToken, ETokenType.REFRESHTOKEN)) {
-            throw new AppException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
         // 🔹 Tạo Access Token mới

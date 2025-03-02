@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {Typography, Container, Grid, CssBaseline, Button, CircularProgress} from "@mui/material";
+import { Typography, Container, Grid, CssBaseline, Button, CircularProgress } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/components/checkToken";
+import axiosInstance from "@/components/axiosClient";
 import { API_URL } from "@/config/url";
-import {FaSpinner} from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
 
 interface IProduct {
     id: string;
@@ -45,7 +45,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`);
+            const response = await axiosInstance.get(`/api/cart/show-cart`);
 
             const data = response.data.data;
             const { totalPrice, totalItem, cartItem } = data;
@@ -132,7 +132,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                                 <Grid item>
                                     <Typography variant="h6" gutterBottom>
                                         Tổng tiền thanh toán: {loadPrice ? (
-                                            <FaSpinner className="animate-spin text-black w-6 h-6"/>
+                                            <FaSpinner className="animate-spin text-black w-6 h-6" />
                                         ) : (
                                             `${carts?.totalPrice ?? 0} đ`
                                         )}

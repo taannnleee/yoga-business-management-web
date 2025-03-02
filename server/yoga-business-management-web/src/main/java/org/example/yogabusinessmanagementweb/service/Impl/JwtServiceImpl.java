@@ -89,19 +89,6 @@ public class JwtServiceImpl implements JwtService {
     public Boolean isValidRefresh(String token, ETokenType tokenType, UserDetails userDetails) {
         final String username = extractUsername(token, tokenType);
 
-        // Tìm token từ DB
-        Token tokenEntity = tokenRepository.findByRefreshToken(token).orElse(null);
-
-        // Nếu token không tồn tại hoặc đã bị thu hồi/ hết hạn, trả về false
-        if (tokenEntity == null) {
-            return false;
-        }
-
-        // Kiểm tra xem token có bị thu hồi hoặc hết hạn không
-        if (tokenEntity.isRevoked() || tokenEntity.isExpired()) {
-            return false;  // Token đã bị thu hồi hoặc hết hạn
-        }
-
         // Kiểm tra username và hết hạn của token
         return username.equals(userDetails.getUsername()) && !isTokenExpried(token, tokenType);
     }
@@ -128,7 +115,7 @@ public class JwtServiceImpl implements JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
 //        1000 * 60 * 60*24*24
-                .setExpiration(new Date(System.currentTimeMillis()+ 10000))
+                .setExpiration(new Date(System.currentTimeMillis()+ 1000 ))
                 .signWith(getKey(ACCESSTOKEN), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -137,7 +124,7 @@ public class JwtServiceImpl implements JwtService {
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60*24*14))
+                .setExpiration(new Date(System.currentTimeMillis() + 20000 ))
                 .signWith(getKey(REFRESHTOKEN), SignatureAlgorithm.HS256)
                 .compact();
     }

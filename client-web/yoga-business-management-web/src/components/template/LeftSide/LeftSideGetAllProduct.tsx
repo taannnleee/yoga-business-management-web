@@ -6,7 +6,7 @@ import { FaSpinner } from 'react-icons/fa';
 import { setSelectedCategory, setSelectedSubCategory } from '@/redux/category/categorySlice';
 import { RootState } from "@/redux/store";
 import { API_URL } from "@/config/url";
-
+import axiosInstance from "@/components/axiosClient";
 interface SubCategory {
     id: number;
     name: string;
@@ -32,15 +32,10 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
         const fetchCategories = async () => {
             try {
                 const accessToken = localStorage.getItem('accessToken');
-                const response = await fetch(`${API_URL}/api/category/with-sub-categories`, {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-                const data = await response.json();
-                if (data.status === 200) {
-                    setCategories(data.data);
+                const response = await axiosInstance.get(`${API_URL}/api/category/with-sub-categories`
+                );
+                if (response.data.status === 200) {
+                    setCategories(response.data.data);
                 } else {
                     console.error('Failed to fetch categories');
                 }
@@ -90,8 +85,8 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
                                     key={subCategory.id}  // Added missing key prop
                                     onClick={() => handleSubCategoryClick(category, subCategory)}  // Pass both category and subcategory names
                                     className={`w-full text-sm py-1 transition-all duration-300 ease-in-out cursor-pointer ${subCategory.id == selectedSubCategory?.id && category.id == selectedCategory?.id
-                                            ? 'text-red-500 font-bold' // Highlight subcategory only if its parent category is selected
-                                            : 'hover:bg-gray-100 hover:text-orange-600'
+                                        ? 'text-red-500 font-bold' // Highlight subcategory only if its parent category is selected
+                                        : 'hover:bg-gray-100 hover:text-orange-600'
                                         }`}
                                 >
                                     {subCategory.name}

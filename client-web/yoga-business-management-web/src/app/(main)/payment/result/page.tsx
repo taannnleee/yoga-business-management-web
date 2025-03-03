@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Button from "@/components/atom/Button";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 const PaymentResult = () => {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
@@ -22,23 +23,16 @@ const PaymentResult = () => {
         const token = localStorage.getItem("accessToken");
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/order/create-order`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axiosInstance.post(
+                `${API_URL}/api/order/create-order`,
+                {
                     addressId: addressId,
                     paymentMethod: paymentMethod,
                     totalPricePromotion: vnp_Amount,
-                }),
-            });
+                }
+            );
 
-            if (!response.ok) throw new Error("Failed to create order");
-
-            const data = await response.json();
-            console.log("Order created successfully:", data);
+            console.log("Order created successfully:", response.data);
         } catch (error: any) {
             console.error("Error creating order:", error.message);
             setError(error.message);

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CourseCard from "@/components/organisms/CourseCard";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 // Define types for your courses and categories
 interface Course {
     id: number;
@@ -32,21 +33,15 @@ const DisCoverPage: React.FC = () => {
         const fetchCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/course/all-course`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-
-                if (response.ok && data.status === 200) {
+                const response = await axiosInstance.get(`${API_URL}/api/course/all-course`
+                    
+                );
+                
+                if (response.status===200 && response.data.status === 200) {
                     console.log("độ dài của mảng")
 
-                    console.log(data.data.length)
                     // Map the API data to the structure you need for your component
-                    const transformedData: Category[] = data.data.map((item: any) => ({
+                    const transformedData: Category[] = response.data.data.map((item: any) => ({
                         id: item.topicName, // Assuming topicName is the category name
                         name: item.topicName,
                         courses: item.course.map((course: any) => ({
@@ -61,8 +56,8 @@ const DisCoverPage: React.FC = () => {
                     setCategoryCourses(transformedData);
                 } else {
 
-                    console.error("Error fetching courses:", data.message);
-                    setError(data.message);
+                    console.error("Error fetching courses:", response.data.message);
+                    setError(response.data.message);
                 }
             } catch (error) {
                 console.error("Error fetching courses:", error);

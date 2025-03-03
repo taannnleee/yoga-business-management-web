@@ -4,6 +4,7 @@ import { Popover, TextField } from "@mui/material";
 import {API_URL} from "@/config/url";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
+import axiosInstance from "@/components/axiosClient";
 
 const FulfillmentManagement: React.FC = () => {
     const [openPopup, setOpenPopup] = useState<boolean>(false);
@@ -31,20 +32,9 @@ const FulfillmentManagement: React.FC = () => {
             const accessToken = localStorage.getItem("accessToken");
             const url = `${API_URL}/api/product/filter?page=1&pageSize=4&keyword=${searchTerm}`;
 
-            const response = await fetch(url, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await axiosInstance.get(url);
 
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-            setProducts(data.data.content);
+            setProducts(response.data.data.content);
         } catch (error) {
             console.error("Error fetching products:", error);
         } finally {

@@ -28,24 +28,27 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     const handlePressVerifyAccount = async (values: any) => {
         try {
             setLoading(true);
-            const response = await fetch(
-                `${API_URL}/api/auth/check-otp-change-password?OTP=${values.otp}&email=${email}`,
+            const response = await axios.post(
+                `${API_URL}/api/auth/check-otp-change-password`,
+                {},
                 {
-                    method: "POST",
+                    params: {
+                        OTP: values.otp,
+                        email: email,
+                    },
                     headers: {
                         "Content-Type": "application/json",
                     },
                 }
             );
 
-            const result = await response.json();
-            if (response.ok) {
+            if (response.status ===200) {
                 setLoading(false);
                 toast.sendToast("Success", "Verify user successfully");
                 setIsVerified(true); // Cập nhật trạng thái khi OTP đúng
             } else {
                 setLoading(false);
-                toast.sendToast("Error", result?.message || "Verification failed", "error");
+                toast.sendToast("Error", response?.data.message || "Verification failed", "error");
             }
         } catch (error) {
             setLoading(false);
@@ -90,23 +93,19 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                 confirmPassword: confirmpassword,
             };
 
-            const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
-                method: "POST",
+            const response = await axios.post(`${API_URL}/api/auth/forgot-password`, bodyData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(bodyData),
             });
 
-            const result = await response.json();
-
-            if (response.ok) {
+            if (response.status === 200) {
                 setLoading(false);
                 toast.sendToast("Success", "Password changed successfully");
                 router.replace(`/login`);
             } else {
                 setLoading(false);
-                toast.sendToast("Error", result?.message || "Password change failed", "error");
+                toast.sendToast("Error", response?.data.message || "Password change failed", "error");
             }
         } catch (error) {
             setLoading(false);

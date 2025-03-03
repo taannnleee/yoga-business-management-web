@@ -30,35 +30,31 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
     const handlePressRegister = async (values: any) => {
         try {
             setLoading(true);
-            const response = await fetch(`${API_URL}/api/auth/register`, {
-                method: "POST",
+            const response = await axios.post(`${API_URL}/api/auth/register`, {
+                username: values.username,
+                fullName: `${values.firstName} ${values.lastName}`,
+                email: values.email,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                phone: values.phoneNumber,
+                password: values.password,
+                confirmPassword: values.confirmPassword,
+            }, {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    username: values.username, // Adjusted to match API field
-                    fullName: `${values.firstName} ${values.lastName}`,
-                    email: values.email,
-                    firstName: values.firstName,
-                    lastName: values.lastName,
-                    phone: values.phoneNumber, // Adjusted to match API field
-                    password: values.password,
-                    confirmPassword: values.confirmPassword, // Added confirmPassword field
-                }),
             });
 
-            const responseData = await response.json();
-
-            if (response.ok) {
+            if (response.status === 200) {
                 // Successful response
                 setLoading(false);
-                toast.sendToast("Success", responseData.message || "Sign up successfully");
+                toast.sendToast("Success", response.data.message || "Sign up successfully");
                 router.replace(`/verify-account?email=${values.email}`);
 
             } else {
                 // Failed response
                 setLoading(false);
-                toast.sendToast("Error", responseData.message || "Sign up failed", "error");
+                toast.sendToast("Error", response.data.message || "Sign up failed", "error");
             }
         } catch (error) {
             setLoading(false);

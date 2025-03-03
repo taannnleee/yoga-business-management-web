@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux"; // Redux hooks
 import axios from "axios";
+import axiosInstance from "@/components/axiosClient";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice"; // Redux actions
 import { API_URL } from "@/config/url";
@@ -18,11 +19,9 @@ const CartButton = () => {
         const fetchCartData = async () => {
             try {
                 const accessToken = localStorage.getItem("accessToken");
-                const response = await axios.get(`${API_URL}/api/cart/show-cart`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
+                const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`
+                    
+                );
 
                 if (response.status === 200) {
                     dispatch(setTotalItems(response.data.data.totalItem)); // Dispatch action to update Redux state

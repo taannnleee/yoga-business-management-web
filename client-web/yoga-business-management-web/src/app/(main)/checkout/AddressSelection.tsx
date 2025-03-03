@@ -4,6 +4,8 @@ import { Button, Skeleton } from "@mui/material";
 import AddAddressModal from './AddAddressModal';
 import MyListAddressModal from "@/app/(main)/checkout/MyListAddressModal";
 import { API_URL } from "@/config/url";
+
+import axiosInstance from "@/components/axiosClient";
 interface Address {
     id: string;
     phoneNumberDelivery: string;
@@ -96,17 +98,13 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                 return;
             }
 
-            const response = await fetch(`${API_URL}/api/user/get-user-address-default`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`, // Pass the token in the Authorization header
-                    "Content-Type": "application/json"
-                }
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/user/get-user-address-default`
+        
+            );
 
-            const data = await response.json();
-            if (data.status === 200) {
-                const { id, houseNumber, street, district, city, nameDelivery, phoneNumberDelivery } = data.data;
+
+            if (response.status === 200) {
+                const { id, houseNumber, street, district, city, nameDelivery, phoneNumberDelivery } = response.data.data;
 
                 const address: Address = {
                     id,
@@ -127,7 +125,7 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
                 // Validate the address after setting the shipping info
                 validateAddress(address);
             } else {
-                console.error("Failed to fetch address:", data.message);
+                console.error("Failed to fetch address:", response.data.message);
             }
         } catch (error) {
             console.error("Error fetching address:", error);

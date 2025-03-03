@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import {FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaSpinner } from "react-icons/fa";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface LeftSideProps {
   product: any;
   currentVariant: any;
@@ -34,30 +35,23 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
     try {
       if (isFavorited) {
         // Call API to remove from wishlist
-        const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-by-product-id/${product.id}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axiosInstance.delete(
+          `${API_URL}/api/wishlist/delete-wishlist-by-product-id/${product.id}`
+        );
 
-        if (response.ok) {
+        if (response.status === 200) {
           setIsFavorited(false);
         } else {
           console.error("Failed to remove from wishlist");
         }
       } else {
         // Call API to add to wishlist
-        const response = await fetch(`${API_URL}/api/wishlist/add-wishlist`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ productId: product.id }),
-        });
+        const response = await axiosInstance.post(
+          `${API_URL}/api/wishlist/add-wishlist`,
+          { productId: product.id }
+        );
 
-        if (response.ok) {
+        if (response.status === 200) {
           setIsFavorited(true);
         } else {
           console.error("Failed to add to wishlist");
@@ -73,18 +67,13 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
   useEffect(() => {
     const checkWishlistStatus = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-exists`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ productId: product.id }),
-        });
+        const response = await axiosInstance.post(
+          `${API_URL}/api/wishlist/get-wishlist-exists`,
+          { productId: product.id }
+        );
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.status === 200) {
+        if (response.status === 200) {
+          if (response.data.status === 200) {
             setIsFavorited(true); // Set favorite status if the status is 200
           }
         } else {
@@ -116,37 +105,37 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
   return (
     <div>
       <button
-          className="flex top-0 right-0 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
-          onClick={handleFavoriteToggle}
-          disabled={loading} // Disable the button while loading
+        className="flex top-0 right-0 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transform transition-transform duration-200 hover:scale-110"
+        onClick={handleFavoriteToggle}
+        disabled={loading} // Disable the button while loading
       >
         {loading ? (
-            <FaSpinner className="animate-spin text-black w-6 h-6"/> // Show spinner while loading
+          <FaSpinner className="animate-spin text-black w-6 h-6" /> // Show spinner while loading
         ) : (
-            !isFavorited ? (
-                <FaRegHeart className="text-black w-6 h-6"/>
-            ) : (
-                <FaHeart className="text-red-500 w-6 h-6"/>
-            )
+          !isFavorited ? (
+            <FaRegHeart className="text-black w-6 h-6" />
+          ) : (
+            <FaHeart className="text-red-500 w-6 h-6" />
+          )
         )}
       </button>
 
       <Image
-          src={selectedImage}
-          alt={product?.title || ""}
-          width={390}
-          height={390}
-          className="rounded-md"
+        src={selectedImage}
+        alt={product?.title || ""}
+        width={390}
+        height={390}
+        className="rounded-md"
       />
 
       <div className="mt-4 flex space-x-4 overflow-x-auto">
         {product?.variants?.color &&
-            Object.entries(product.variants.color).map(([color, image], index) => (
-                <div key={index} className="flex flex-col items-center"
-                     onClick={() => handleVariantSelect('color', color, image)}>
-                  <Image
-                      src={image || '/path/to/fallback/image.jpg'}
-                      alt={`${color} image`}
+          Object.entries(product.variants.color).map(([color, image], index) => (
+            <div key={index} className="flex flex-col items-center"
+              onClick={() => handleVariantSelect('color', color, image)}>
+              <Image
+                src={image || '/path/to/fallback/image.jpg'}
+                alt={`${color} image`}
                 width={84}
                 height={84}
                 className={`rounded-md cursor-pointer ${image === selectedImageLeft ? "border-2 border-red-500" : ""}`}

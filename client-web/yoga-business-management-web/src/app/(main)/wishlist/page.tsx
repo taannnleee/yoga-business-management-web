@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
 const token = localStorage.getItem("accessToken");
+import axiosInstance from "@/components/axiosClient";
 // Define interfaces for the response data
 import { API_URL } from "@/config/url";
 interface Address {
@@ -54,22 +55,14 @@ const WishList: React.FC = () => {
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-of-user`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
+                const response = await axiosInstance.get(`${API_URL}/api/wishlist/get-wishlist-of-user`, {
 
-                const data = await response.json();
+                });
+                const data = response;
                 console.log("kkkk")
                 console.log(data.status)
                 if (data.status === 200) {
-                    setWishlist(data.data);
+                    setWishlist(response.data.data);
                     console.log("hihihi")
                     console.log(data.data)
 
@@ -85,15 +78,13 @@ const WishList: React.FC = () => {
     // Function to remove item from wishlist
     const removeFromWishlist = async (id: number) => {
         try {
-            const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-of-user/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.delete(`${API_URL}/api/wishlist/delete-wishlist-of-user/${id}`
 
-            if (response.ok) {
+            );
+
+            if (response.status === 200) {
                 // Update wishlist after removal
+                console.log("hihihi")
                 setWishlist(wishlist.filter((item) => item.id !== id));
                 console.log("Item removed successfully from wishlist");
             } else {

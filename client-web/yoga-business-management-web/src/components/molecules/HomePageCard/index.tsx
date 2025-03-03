@@ -3,6 +3,7 @@ import { Card, CardContent, CardMedia, Typography, Button, CardActions } from "@
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/config/url";
 // Định nghĩa interface cho product
+import axiosInstance from "@/components/axiosClient";
 interface Product {
     id: string;
     title: string;
@@ -24,25 +25,15 @@ const HomePageCard: React.FC<HomePageCardProps> = ({ product }) => {
         setLoading(true);
         setError(null);
         try {
-            const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Gửi token để xác thực
-                },
-                body: JSON.stringify({
+            const response = await axiosInstance.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
                     productId: product.id,
-                    quantity: 1, // Thêm 1 sản phẩm vào giỏ hàng
-                }),
-            });
+                    quantity: 1,
+                }
+            );
 
-            if (!response.ok) {
-                throw new Error("Failed to add product to cart");
-            }
-
-            const data = await response.json();
-            console.log("Product added to cart:", data); // Log kết quả
+            console.log("Product added to cart:", response.data.data); // Log kết quả
         } catch (err: any) {
             setError(err.message); // Xử lý lỗi nếu có
         } finally {

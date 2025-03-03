@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/useToast";
 import { Select, MenuItem, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 import {
     Box,
     Typography,
@@ -69,22 +70,19 @@ const Checkout: React.FC = () => {
     const fetchCart = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const response = await fetch(`${API_URL}/api/cart/show-cart`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`,
 
-            if (!response.ok) throw new Error("Failed to fetch cart");
+            );
 
-            const data = await response.json();
-            setProducts(data.data.cartItem.map((item: any) => ({
+
+            setProducts(response.data.data.cartItem.map((item: any) => ({
                 id: item.product.id,
                 title: item.product.title,
                 quantity: item.quantity,
                 price: item.product.price,
                 currentVariant: item.currentVariant,
             })));
-            setTotalPrice(data.data.totalPrice);
+            setTotalPrice(response.data.data.totalPrice);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -108,19 +106,21 @@ const Checkout: React.FC = () => {
 
         try {
             // Send the request to initiate the VNPay payment and include the order data
-            const response = await fetch(`${API_URL}/api/payment/vn-pay?amount=${totalPricePromotion}&bankCode=NCB`, {
-                method: "POST",  // Change to POST to send data in the body
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json", // Ensure the request body is JSON
-                },
-                body: JSON.stringify(orderData),  // Pass the order data in the request body
-            });
-
-            if (!response.ok) throw new Error("Failed to initiate VNPay payment");
-
-            const data = await response.json();
-            const paymentUrl = data.data.paymentUrl;
+            const response = await axiosInstance.post(
+                `${API_URL}/api/payment/vn-pay`,
+                orderData,
+                {
+                    params: {
+                        amount: totalPricePromotion,
+                        bankCode: "NCB"
+                    },
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            const paymentUrl = response.data.data.paymentUrl;
             setOrderLoading(false);
             // Redirect to the payment URL
             router.push(paymentUrl);
@@ -146,13 +146,9 @@ const Checkout: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         setOrderLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/order/create-order`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axiosInstance.post(
+                `${API_URL}/api/order/create-order`,
+                {
                     totalPricePromotion,
                     addressId,
                     paymentMethod,
@@ -161,13 +157,9 @@ const Checkout: React.FC = () => {
                         quantity: product.quantity,
                         variant: product.currentVariant,
                     })),
-                }),
-            });
+                }
+            );
 
-            if (!response.ok) throw new Error("Failed to create order");
-
-            const data = await response.json();
-            console.log("Order created successfully:", data);
             toast.sendToast("Success", "Đặt hàng thành công");
             router.replace("/status-order");
         } catch (error: any) {

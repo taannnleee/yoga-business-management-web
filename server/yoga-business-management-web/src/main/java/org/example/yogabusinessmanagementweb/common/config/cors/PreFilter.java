@@ -34,6 +34,15 @@ public class PreFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             log.info("------------------doFilterInternal------------");
 
+            //extract để khi hết hạn thì refreshToken sẽ không đi qua được filter
+            String refreshToken = request.getHeader("x-token");
+            if(StringUtils.isNotBlank(refreshToken)){
+                String username = jwtService.extractUsername(refreshToken, ETokenType.REFRESHTOKEN);
+                if (StringUtils.isBlank(username) || !jwtService.isValidRefresh(refreshToken, ETokenType.REFRESHTOKEN, userService.userDetailsService().loadUserByUsername(username))) {
+                    return;
+                }
+            }
+
             final String authen = request.getHeader("Authorization");
             log.info("authen: {}", authen);
 
@@ -45,23 +54,23 @@ public class PreFilter extends OncePerRequestFilter {
             final String token = authen.substring("Bearer ".length());
             log.info("token: {}", token);
 
-
             final String userName = jwtService.extractUsername(token, ETokenType.ACCESSTOKEN);
 
             if(StringUtils.isBlank(userName) || SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userName);
-                if(jwtService.isValid(token, ETokenType.ACCESSTOKEN,userDetails)) {
-                    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    securityContext.setAuthentication(authentication);
-
-                    SecurityContextHolder.setContext(securityContext);
+                if(jwtService.isValid(token, ETokenType.ACCESSTOKEN,userDetails) ) {
+                    setAuthentication(request, userDetails);
 
                 }
 
             }
             filterChain.doFilter(request, response);
+    }
+    private void setAuthentication(HttpServletRequest request, UserDetails userDetails) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 }

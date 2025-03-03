@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import { API_URL } from "@/config/url";
 import { useToast } from "@/hooks/useToast";
+import axiosInstance from "@/components/axiosClient";
 
 interface IPromotion {
     id: string;
@@ -30,19 +31,15 @@ const PromotionSelection: React.FC<PromotionSelectionProps> = ({ totalPrice, set
     const fetchPromotions = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const response = await fetch(`${API_URL}/api/promotion/get-four-big-promotion`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/promotion/get-four-big-promotion`
+                
+            );
 
-            if (!response.ok) throw new Error("Failed to fetch promotions");
-
-            const data = await response.json();
-            setPromotions(data.data);
+            setPromotions(response.data.data);
 
             // Set the first promotion as default when the component loads
-            setSelectedPromotion(data.data[0]);
-            handleSelectPromotion(data.data[0]);
+            setSelectedPromotion(response.data.data[0]);
+            handleSelectPromotion(response.data.data[0]);
         } catch (err: any) {
             console.error("Error fetching promotions:", err.message);
             setError(err.message);

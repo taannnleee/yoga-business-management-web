@@ -6,6 +6,7 @@ import CourseCard from "@/components/organisms/CourseCard"; // Đường dẫn t
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface Course {
     id: number;
     title: string;
@@ -55,17 +56,12 @@ const TeacherDetailPage: React.FC = () => {
         const fetchTeacherInfo = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/teacher/get-teacher/${teacherId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
+                const response = await axiosInstance.get(`${API_URL}/api/teacher/get-teacher/${teacherId}`
+                    
+                );
 
-                if (data.status === 200) {
-                    setTeacherInfo(data.data); // Lưu dữ liệu giáo viên vào state
+                if (response.data.status === 200) {
+                    setTeacherInfo(response.data.data); // Lưu dữ liệu giáo viên vào state
                 } else {
                     setError("Không thể tải thông tin giáo viên.");
                 }
@@ -83,18 +79,11 @@ const TeacherDetailPage: React.FC = () => {
     useEffect(() => {
         const fetchTeacherCourses = async () => {
             try {
-                const token = localStorage.getItem("accessToken");
-                const response = await fetch(`${API_URL}/api/course/all-teacher-courses/${teacherId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
+                const response = await axiosInstance.get(`${API_URL}/api/course/all-teacher-courses/${teacherId}`
+                );
 
-                if (data.status === 200) {
-                    setCourses(data.data); // Lưu các khóa học của giáo viên vào state
+                if (response.data.status === 200) {
+                    setCourses(response.data.data); // Lưu các khóa học của giáo viên vào state
                 } else {
                     setError("Không thể tải các khóa học.");
                 }

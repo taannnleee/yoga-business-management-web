@@ -16,9 +16,10 @@ import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
 import { API_URL } from "@/config/url";
-interface ProductByCategoryCardProps {}
+import axiosInstance from "@/components/axiosClient";
+interface ProductByCategoryCardProps { }
 
-const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
+const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
     const toast = useToast();
     const [quantity, setQuantity] = useState(1);
     const [currentVariant, setCurrentVariant] = useState<any>({});
@@ -41,14 +42,11 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
                     return;
                 }
 
-                const response = await axios.get(`${API_URL}/api/product/all`, {
+                const response = await axiosInstance.get(`${API_URL}/api/product/all`, {
                     params: {
                         page: 1,
                         size: 4,
-                    },
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    }
                 });
 
                 if (response.status === 200) {
@@ -74,25 +72,15 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
     const handleAddToCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const response = await axiosInstance.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
                     productId: selectedProduct.id,
                     quantity: quantity,
                     currentVariant: currentVariant,
-                }),
-            });
+                }
+            );
 
-            if (!response.ok) {
-                throw new Error("Failed to add product to cart");
-            }
-
-            const data = await response.json();
-            console.log("Product added to cart:", data);
             toast.sendToast("Success", "Product added to cart");
             setOpen(false);
         } catch (err: any) {
@@ -110,11 +98,8 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
                 return;
             }
 
-            const response = await axios.get(`${API_URL}/api/product/${product.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
+               );
 
             if (response.status === 200) {
                 setSelectedProduct(response.data.data);
@@ -138,8 +123,8 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({}) => {
         for (let i = 0; i < 5; i++) {
             stars.push(
                 <span key={i} className={i < Math.round(averageRating) ? "text-yellow-500" : "text-gray-300"}>
-          ★
-        </span>
+                    ★
+                </span>
             );
         }
         return stars;

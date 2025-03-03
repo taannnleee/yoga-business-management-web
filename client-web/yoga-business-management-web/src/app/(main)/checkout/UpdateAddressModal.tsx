@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface Address {
     id: string;
     phoneNumberDelivery: string;
@@ -60,16 +61,18 @@ const UpdateAddressModal: React.FC<UpdateAddressModalProps> = ({
         };
 
         try {
-            const response = await fetch(`${API_URL}/api/address/update/${formData.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedAddress),
-            });
+            const response = await axiosInstance.put(
+                `${API_URL}/api/address/update/${formData.id}`,
+                updatedAddress,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                }
+            );
 
-            if (response.ok) {
+            if (response.status === 200) {
 
                 toast.sendToast("Success", "Cập nhật địa chỉ thành công");
                 fetchDefaultAddress

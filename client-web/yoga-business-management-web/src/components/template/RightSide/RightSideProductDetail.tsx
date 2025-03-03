@@ -7,7 +7,7 @@ import { incrementTotalItems } from "@/redux/cart/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
-
+import axiosInstance from "@/components/axiosClient";
 interface RightSideProps {
     product: any;
     quantity: number;
@@ -26,26 +26,16 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
     const handleAddToCart = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem("accessToken");
-            const response = await fetch(`${API_URL}/api/cart/add-to-cart`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    productId: product.id.toString(),
-                    quantity: quantity,
-                    currentVariant: currentVariant,
-                }),
-            });
+            const response = await axiosInstance.post(
+                `${API_URL}/api/cart/add-to-cart`,
+                {
+                  productId: product.id.toString(),
+                  quantity,
+                  currentVariant,
+                }
+                
+              );
 
-            if (!response.ok) {
-                throw new Error("Failed to add product to cart");
-            }
-
-            const data = await response.json();
-            console.log("Product added to cart:", data);
             toast.sendToast("Thành công", "Đã thêm sản phẩm vào giỏ hàng");
             dispatch(incrementTotalItems());
         } catch (err: any) {

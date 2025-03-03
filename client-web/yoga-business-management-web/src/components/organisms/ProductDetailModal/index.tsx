@@ -7,6 +7,7 @@ import { FaRegHeart, FaHeart, FaSearchPlus, FaSpinner } from "react-icons/fa";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -49,30 +50,25 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         try {
             if (isFavorited) {
                 // Call API to remove from wishlist
-                const response = await fetch(`${API_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct.id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                });
+                const response = await axiosInstance.delete(
+                    `${API_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct.id}`
+                    
+                );
 
-                if (response.ok) {
+                if (response.status === 200) {
                     setIsFavorited(false);
                 } else {
                     console.error("Failed to remove from wishlist");
                 }
             } else {
                 // Call API to add to wishlist
-                const response = await fetch(`${API_URL}/api/wishlist/add-wishlist`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify({ productId: selectedProduct.id }),
-                });
+                const response = await axiosInstance.post(
+                    `${API_URL}/api/wishlist/add-wishlist`,
+                    { productId: selectedProduct.id }
+                    
+                );
 
-                if (response.ok) {
+                if (response.status === 200) {
                     setIsFavorited(true);
                 } else {
                     console.error("Failed to add to wishlist");
@@ -88,18 +84,13 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
     useEffect(() => {
         const checkWishlistStatus = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/wishlist/get-wishlist-exists`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify({ productId: selectedProduct.id }),
-                });
+                const response = await axiosInstance.post(
+                    `${API_URL}/api/wishlist/get-wishlist-exists`,
+                    { productId: selectedProduct.id }
+                );
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.status === 200) {
+                if (response.status === 200) {
+                    if (response.data.status === 200) {
                         setIsFavorited(true); // Set favorite status if the status is 200
                     }
                 } else {

@@ -3,6 +3,7 @@ import { Button, Skeleton } from "@mui/material";
 import UpdateAddressModal from "./UpdateAddressModal";
 import CachedIcon from '@mui/icons-material/Cached';
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface Address {
     id: string;
     phoneNumberDelivery: string;
@@ -38,21 +39,15 @@ const MyListAddressModal: React.FC<MyListAddressModalProps> = ({
 
     // Fetch addresses from the API
     const fetchAddresses = async () => {
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) return;
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/address/get-address`, {
-                method: "GET",
-                headers: { "Authorization": `Bearer ${accessToken}` },
-            });
-            const data = await response.json();
+            const response = await axiosInstance.get(`${API_URL}/api/address/get-address`);
 
-            if (data.status === 200) {
+            if (response.status === 200) {
 
 
-                const address: Address[] = data.data.map((address: any) => ({
+                const address: Address[] = response.data.data.map((address: any) => ({
                     id: address.id,
                     nameDelivery: address.nameDelivery || "",
                     phoneNumberDelivery: address.phoneNumberDelivery || "",

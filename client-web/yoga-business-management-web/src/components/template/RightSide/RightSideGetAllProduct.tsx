@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import {FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField} from '@mui/material';
-import {ProductCard} from '@/components/molecules/ProductCard'; // Import ProductCard
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { ProductCard } from '@/components/molecules/ProductCard'; // Import ProductCard
 import BottomContent from "@/components/molecules/BottomContent";
-import {ProductCardSkeleton} from "@/components/molecules/ProductCard/skeleton"; // Import BottomContent
+import { ProductCardSkeleton } from "@/components/molecules/ProductCard/skeleton"; // Import BottomContent
 import { API_URL } from "@/config/url";
-import {MagnifyingGlassCircleIcon} from "@heroicons/react/24/solid";
-import {Clear} from "@mui/icons-material";
+import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
+import { Clear } from "@mui/icons-material";
+import axiosInstance from "@/components/axiosClient";
 export const RightSideGetAllProduct: React.FC = (props) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
     const [selectedSort, setSelectedSort] = useState('');
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const { page, setPage, itemsPerPage, setItemsPerPage, totalItems, setTotalItems,searchTerm, setSearchTerm } = props;
+    const { page, setPage, itemsPerPage, setItemsPerPage, totalItems, setTotalItems, searchTerm, setSearchTerm } = props;
     // Pagination state
     const fetchProducts = async () => {
         setLoading(true);
@@ -31,21 +32,10 @@ export const RightSideGetAllProduct: React.FC = (props) => {
             if (searchTerm) {
                 url += `&keyword=${encodeURIComponent(searchTerm)}`;
             }
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.get(url);
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            setProducts(data.data.content);
-            setTotalItems(data.data.totalElements); // Update total items for pagination
+            setProducts(response.data.data.content);
+            setTotalItems(response.data.data.totalElements); // Update total items for pagination
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
@@ -56,7 +46,7 @@ export const RightSideGetAllProduct: React.FC = (props) => {
     // Call API on dependency changes
     useEffect(() => {
         fetchProducts();
-    }, [selectedSubCategory, selectedSort, page, itemsPerPage,searchTerm]);
+    }, [selectedSubCategory, selectedSort, page, itemsPerPage, searchTerm]);
 
     const handleSortChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setSelectedSort(event.target.value as string);
@@ -130,7 +120,7 @@ export const RightSideGetAllProduct: React.FC = (props) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-lg mt-8 mx-auto">
                 {loading ? (
-                    <ProductCardSkeleton/>
+                    <ProductCardSkeleton />
                 ) : products.length === 0 ? (
                     <div className="col-span-full text-center text-xl text-gray-500">
                         Shop chưa nhập loại sản phẩm này 😢 , vui lòng chọn loại sản phẩm khác

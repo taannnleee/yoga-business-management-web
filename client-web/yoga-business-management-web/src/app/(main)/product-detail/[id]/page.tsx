@@ -4,6 +4,7 @@ import ProductDetailTemplate from "@/components/template/ProductDetail";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 
 const ProductDetail: React.FC = () => {
   const params = useParams();
@@ -18,11 +19,7 @@ const ProductDetail: React.FC = () => {
       if (id) {
         try {
           const accessToken = localStorage.getItem("accessToken");
-          const response = await axios.get(`${API_URL}/api/product-detail/getProduct/${id}`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
+          const response = await axiosInstance.get(`${API_URL}/api/product-detail/getProduct/${id}`);
 
           if (response) {
             setProduct(response.data.data);

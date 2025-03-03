@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CourseCard from "@/components/organisms/CourseCard";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 // Định nghĩa interface cho dữ liệu giáo viên
 interface Teacher {
     id: number;
@@ -86,19 +87,14 @@ const CoursePage: React.FC = () => {
         const fetchInstructors = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await axios.get(`${API_URL}/api/teacher/all-teachers`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                if (data.status === 200) {
-                    setInstructors(data.data);
-                    console.log("kk")
-                    console.log(data.data)
+                const response = await axiosInstance.get(`${API_URL}/api/teacher/all-teachers`
+               
+                );
+                if (response.data.status === 200) {
+                    setInstructors(response.data.data);
+        
                 } else {
-                    console.error("Failed to fetch instructors:", data.message);
+                    console.error("Failed to fetch instructors:", response.data.message);
                 }
             } catch (error) {
                 console.error("Error fetching instructors:", error);
@@ -116,16 +112,12 @@ const CoursePage: React.FC = () => {
         const fetchTeacherCourses = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const response = await axios.get(`${API_URL}/api/course/get-outstanding-courses`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
+                const response = await axiosInstance.get(`${API_URL}/api/course/get-outstanding-courses`
+               
+                );
 
-                if (data.status === 200) {
-                    setCourses(data.data); // Lưu các khóa học của giáo viên vào state
+                if (response.data.status === 200) {
+                    setCourses(response.data.data); // Lưu các khóa học của giáo viên vào state
                 } else {
                     setError("Không thể tải các khóa học.");
                 }

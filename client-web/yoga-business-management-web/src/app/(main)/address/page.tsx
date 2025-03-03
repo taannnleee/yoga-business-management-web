@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 import {
     Box,
     Typography,
@@ -51,19 +52,11 @@ const AddressList: React.FC = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem("accessToken");
-            const response = await axios.get(`${API_URL}/api/address/get-address`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/address/get-address`);
 
-            if (!response.ok) {
-                throw new Error("Bạn chưa có địa chỉ nào. Bạn cần thêm địa chỉ mới");
-            }
-
-            const data = await response.json();
-            setAddresses(data.data || []);
+            console.log(response.status);
+            console.log(response.data.status);
+            setAddresses(response.data.data || []);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -128,12 +121,9 @@ const AddressList: React.FC = () => {
             };
 
             try {
-                await axios.put(`${API_URL}/api/address/update/${selectedAddress.id}`, updatedAddress, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
+                await axiosInstance.put(`${API_URL}/api/address/update/${selectedAddress.id}`, updatedAddress
+                   
+                );
 
                 await fetchAddresses();
                 handleClose();
@@ -156,12 +146,7 @@ const AddressList: React.FC = () => {
         };
 
         try {
-            await axios.post(`${API_URL}/api/address/create`, newAddress, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            await axiosInstance.post(`${API_URL}/api/address/create`, newAddress);
             await fetchAddresses();
             handleClose();
         } catch (error) {
@@ -173,12 +158,8 @@ const AddressList: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (selectedAddress) {
             try {
-                await axios.delete(`${API_URL}/api/address/delete/${selectedAddress.id}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
+                await axiosInstance.delete(`${API_URL}/api/address/delete/${selectedAddress.id}`               
+                );
                 await fetchAddresses();
                 handleCloseDeleteConfirm();
             } catch (error) {
@@ -196,15 +177,10 @@ const AddressList: React.FC = () => {
     };
 
     const handleSetDefaultStatus = async (address: Address) => {
-        const token = localStorage.getItem("accessToken");
         if (address.status !== "DEFAULT") {
             try {
-                await axios.post(`${API_URL}/api/address/set-default/${address.id}`, {}, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
+                await axiosInstance.post(`${API_URL}/api/address/set-default/${address.id}`, {}
+                );
                 await fetchAddresses();
             } catch (error) {
                 console.error("Error setting default address", error);

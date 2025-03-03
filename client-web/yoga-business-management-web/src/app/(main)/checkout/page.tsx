@@ -70,24 +70,19 @@ const Checkout: React.FC = () => {
     const fetchCart = async () => {
         const token = localStorage.getItem("accessToken");
         try {
-            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`,
 
-            if (!response.ok) throw new Error("Failed to fetch cart");
+            );
 
-            const data = await response.json();
-            setProducts(data.data.cartItem.map((item: any) => ({
+
+            setProducts(response.data.data.cartItem.map((item: any) => ({
                 id: item.product.id,
                 title: item.product.title,
                 quantity: item.quantity,
                 price: item.product.price,
                 currentVariant: item.currentVariant,
             })));
-            setTotalPrice(data.data.totalPrice);
+            setTotalPrice(response.data.data.totalPrice);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -125,11 +120,7 @@ const Checkout: React.FC = () => {
                     },
                 }
             );
-
-            if (!response.ok) throw new Error("Failed to initiate VNPay payment");
-
-            const data = await response.json();
-            const paymentUrl = data.data.paymentUrl;
+            const paymentUrl = response.data.data.paymentUrl;
             setOrderLoading(false);
             // Redirect to the payment URL
             router.push(paymentUrl);
@@ -166,19 +157,9 @@ const Checkout: React.FC = () => {
                         quantity: product.quantity,
                         variant: product.currentVariant,
                     })),
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
 
-            if (!response.ok) throw new Error("Failed to create order");
-
-            const data = await response.json();
-            console.log("Order created successfully:", data);
             toast.sendToast("Success", "Đặt hàng thành công");
             router.replace("/status-order");
         } catch (error: any) {

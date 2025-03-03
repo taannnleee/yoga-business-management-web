@@ -45,18 +45,16 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
                 },
             });
 
-            const responseData = await response.json();
-
-            if (response.ok) {
+            if (response.status === 200) {
                 // Successful response
                 setLoading(false);
-                toast.sendToast("Success", responseData.message || "Sign up successfully");
+                toast.sendToast("Success", response.data.message || "Sign up successfully");
                 router.replace(`/verify-account?email=${values.email}`);
 
             } else {
                 // Failed response
                 setLoading(false);
-                toast.sendToast("Error", responseData.message || "Sign up failed", "error");
+                toast.sendToast("Error", response.data.message || "Sign up failed", "error");
             }
         } catch (error) {
             setLoading(false);

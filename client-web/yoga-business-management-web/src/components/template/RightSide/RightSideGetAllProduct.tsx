@@ -8,6 +8,7 @@ import { ProductCardSkeleton } from "@/components/molecules/ProductCard/skeleton
 import { API_URL } from "@/config/url";
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 import { Clear } from "@mui/icons-material";
+import axiosInstance from "@/components/axiosClient";
 export const RightSideGetAllProduct: React.FC = (props) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
@@ -31,20 +32,10 @@ export const RightSideGetAllProduct: React.FC = (props) => {
             if (searchTerm) {
                 url += `&keyword=${encodeURIComponent(searchTerm)}`;
             }
-            const response = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await axiosInstance.get(url);
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            setProducts(data.data.content);
-            setTotalItems(data.data.totalElements); // Update total items for pagination
+            setProducts(response.data.data.content);
+            setTotalItems(response.data.data.totalElements); // Update total items for pagination
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {

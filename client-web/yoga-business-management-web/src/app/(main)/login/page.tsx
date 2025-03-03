@@ -25,21 +25,21 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
   const handlePressLogin = async (values: any) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post(`${API_URL}/api/auth/login`, {
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
         username: values.username,
         password: values.password,
       });
       if (response.status === 200) {
         setLoading(false);
         // Store tokens in local storage
-        localStorage.setItem("accessToken", response.data.accesstoken);
-        localStorage.setItem("refreshToken", response.data.refreshtoken);
+        localStorage.setItem("accessToken", response.data.data.accesstoken);
+        localStorage.setItem("refreshToken", response.data.data.refreshtoken);
 
         toast.sendToast("Success", "Login successfully");
 
         // Redirect to home page
         router.replace("/home");
-      } else if (response.status === 1013) {
+      } else if (response.data.status === 1013) {
         // Tài khoản chưa được kích hoạt, gọi API để lấy email
         toast.sendToast("Error", "Tài khoản chưa được kích hoạt", "error");
 
@@ -52,19 +52,15 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           }
         );
 
-        const emailResult = await emailResponse.json();
-
-        if (emailResponse.ok && emailResult.status === 200) {
-          const email = emailResult.data;
+        if (emailResponse.status === 200 && emailResponse.data.status === 200) {
+          const email = emailResponse.data.data;
 
           // Gọi API để gửi OTP đến email
           const otpResponse = await axios.post(`${API_URL}/api/auth/send-otp`, null, {
             params: { email },
           });
 
-          const otpResult = await otpResponse.json();
-
-          if (otpResponse.ok && otpResult.status === 200) {
+          if (otpResponse.data.status === 200 && otpResponse.status === 200) {
             // Nếu gửi OTP thành công, chuyển tới trang verify-account với email
             router.replace(`/verify-account?email=${email}`);
           } else {

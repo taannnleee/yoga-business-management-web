@@ -6,6 +6,7 @@ import { API_URL } from "@/config/url";
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useToast } from "@/hooks/useToast";
+import axiosInstance from "@/components/axiosClient";
 
 // Define data types
 interface User {
@@ -71,20 +72,10 @@ const NotificationPage: React.FC = () => {
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await axios.get(`${API_URL}/api/notification/get-all-of-user`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/notification/get-all-of-user`);
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch notifications');
-            }
-
-            const data = await response.json();
-            console.log('Fetched notifications:', data.data);
-            setNotifications(data.data);
+            console.log('Fetched notifications:', response.data.data);
+            setNotifications(response.data.data);
         } catch (err) {
             console.error('Error fetching notifications:', err);
             setError('Cannot load notifications. Please try again.');
@@ -103,20 +94,10 @@ const NotificationPage: React.FC = () => {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await axios.get(
+            const response = await axiosInstance.get(
                 `${API_URL}/api/notification/change-status/${notification.id}`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+              
             );
-
-            if (!response.ok) {
-                throw new Error('Failed to change notification status');
-            }
-
             setNotifications((prevNotifications) =>
                 prevNotifications.map((item) =>
                     item.id === notification.id ? { ...item, read: true } : item

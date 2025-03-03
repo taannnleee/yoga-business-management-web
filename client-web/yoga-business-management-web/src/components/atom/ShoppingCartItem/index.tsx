@@ -52,12 +52,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                             id: cartItem.id,
                             productId: cartItem.product.id,
                             quantity: debouncedChangedQuantity,
-                        },
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
-                            },
                         }
                     );
                 } catch (err: any) {
@@ -80,12 +74,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                         {
                             id: cartItem.id,
                             quantity: Math.abs(debouncedChangedQuantity),
-                        },
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
-                            },
                         }
                     );
 
@@ -128,12 +116,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                 `${API_URL}/api/cart/remove-from-cart`,
                 {
                     productId: cartItem.product.id,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
 

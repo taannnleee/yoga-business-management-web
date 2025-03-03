@@ -22,6 +22,8 @@ import ProductDetailModal from "@/components/organisms/ProductDetailModal";
 import { useDispatch } from "react-redux";
 import { incrementTotalItems, setTotalItems } from "@/redux/cart/cartSlice";
 import { setSelectedCategory } from "@/redux/category/categorySlice"; // Import axios
+import axiosInstance from "@/components/axiosClient";
+
 
 interface ProductByCategoryCardProps {
     category: any;
@@ -59,28 +61,16 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ im
 
     const handleAddToCart = async () => {
         try {
-            const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
-            const response = await axios.post(
+
+            const response = await axiosInstance.post(
                 `${API_URL}/api/cart/add-to-cart`,
                 {
                     productId: selectedProduct.id, // Truyền product.id vào API
                     quantity: quantity,
                     currentVariant: currentVariant
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`, // Gửi token để xác thực
-                    },
                 }
             );
 
-            if (!response.ok) {
-                throw new Error("Failed to add product to cart");
-            }
-
-            const data = await response.json();
-            console.log("Product added to cart:", data); // Log kết quả
             toast.sendToast("Thành công", "Đã thêm sản phẩm vào giỏ hàng");
             setOpen(false);
             dispatch(incrementTotalItems());
@@ -91,18 +81,11 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ im
     const handleOpenModal = async (product: any) => {
         setLoading(true); // Bắt đầu loading khi click vào icon
         try {
-            const token = localStorage.getItem("accessToken"); // Lấy accessToken từ localStorage
-            if (!token) {
-                console.error("Access token is missing.");
-                setLoading(false); // Dừng loading nếu không có token
-                return;
-            }
 
-            const response = await axios.get(`${API_URL}/api/product/${product.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+
+            const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
+
+            );
 
             if (response.status === 200) {
                 setSelectedProduct(response.data.data);
@@ -239,6 +222,7 @@ export const ProductByCategoryCard: React.FC<ProductByCategoryCardProps> = ({ im
                                                 <SearchIcon fontSize="large" />
                                             )}
                                         </IconButton>
+
                                         <Button
                                             sx={{
                                                 backgroundColor: '#f44336',

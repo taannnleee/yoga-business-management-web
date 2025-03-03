@@ -8,6 +8,7 @@ import Button from "@/components/atom/Button";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import LectureItem from "@/components/organisms/LessionItem"; // Đổi từ LessionItem thành LectureItem
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 interface Lecture {
     id: number;
     title: string;
@@ -70,16 +71,12 @@ const LessionPage: React.FC<any> = () => {
         try {
             const token = localStorage.getItem("accessToken");
             // Thay thế URL này với API endpoint của bạn
-            const response = await axios.get(`${API_URL}/api/course/get-course/${courseId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/course/get-course/${courseId}`
+              
+            );
 
-            const data = await response.json();
-            if (data.status === 200) {
-                setCourse(data.data);
+            if (response.data.status === 200) {
+                setCourse(response.data.data);
             }
         } catch (error) {
             console.error("Error fetching sections:", error);
@@ -92,17 +89,11 @@ const LessionPage: React.FC<any> = () => {
     const fetchLecture = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const response = await axios.get(`${API_URL}/api/lecture/get-lecture/${lectureId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-
-            const data = await response.json();
-            if (data.status === 200) {
-                setLecture(data.data); // Store the lecture data in state
-                console.log(data.data);
+            const response = await axiosInstance.get(`${API_URL}/api/lecture/get-lecture/${lectureId}`
+             
+            );
+            if (response.data.status === 200) {
+                setLecture(response.data.data); // Store the lecture data in state
             }
         } catch (error) {
             console.error("Error fetching lecture:", error);

@@ -5,6 +5,7 @@ import { API_URL } from "@/config/url";
 import { setSelectedCategory, setSelectedSubCategory } from "@/redux/category/categorySlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/components/axiosClient";
 interface HoverDropdownProps {
     buttonText: string;
 }
@@ -29,15 +30,11 @@ const HoverDropdown: React.FC<HoverDropdownProps> = ({ buttonText }) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const accessToken = localStorage.getItem('accessToken');
-                const response = await axios.get(`${API_URL}/api/category/with-sub-categories`, {
-                    headers: {
-                      Authorization: `Bearer ${accessToken}`,
-                    },
-                  });
-                const data = await response.json();
-                if (data.status === 200) {
-                    setCategories(data.data);
+
+                const response = await axiosInstance.get(`${API_URL}/api/category/with-sub-categories`
+                );
+                if (response.data.status === 200) {
+                    setCategories(response.data.data);
                 } else {
                     console.error('Failed to fetch categories');
                 }

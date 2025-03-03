@@ -62,7 +62,7 @@ const WishList: React.FC = () => {
                 console.log("kkkk")
                 console.log(data.status)
                 if (data.status === 200) {
-                    setWishlist(data.data);
+                    setWishlist(response.data.data);
                     console.log("hihihi")
                     console.log(data.data)
 
@@ -78,14 +78,13 @@ const WishList: React.FC = () => {
     // Function to remove item from wishlist
     const removeFromWishlist = async (id: number) => {
         try {
-            const response = await axiosInstance.delete(`${API_URL}/api/wishlist/delete-wishlist-of-user/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.delete(`${API_URL}/api/wishlist/delete-wishlist-of-user/${id}`
 
-            if (response.ok) {
+            );
+
+            if (response.status === 200) {
                 // Update wishlist after removal
+                console.log("hihihi")
                 setWishlist(wishlist.filter((item) => item.id !== id));
                 console.log("Item removed successfully from wishlist");
             } else {

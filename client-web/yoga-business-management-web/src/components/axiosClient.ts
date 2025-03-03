@@ -67,6 +67,12 @@ api.interceptors.response.use(
 
     // Nếu lỗi 401 và request chưa được thử lại
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Kiểm tra nếu đang ở trang /login thì KHÔNG refresh token
+      if (window.location.pathname === "/login") {
+        console.warn("401 tại /login, không refresh token.");
+        return Promise.reject(error);
+      }
+      
       if (isRefreshing) {
         return new Promise((resolve) => {
           refreshSubscribers.push((token) => {
@@ -95,9 +101,9 @@ api.interceptors.response.use(
       } catch (refreshError) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login"; // Chuyển về trang login
+        window.location.href = "/login";
         return Promise.reject(refreshError);
-      } finally {
+      } finally { 
         isRefreshing = false;
       }
     }

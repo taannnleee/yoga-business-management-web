@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import axiosInstance from "@/components/axiosClient";
 import {
     Box,
     RadioGroup,
@@ -87,27 +88,20 @@ const AccountInfo: React.FC = () => {
         }
 
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${API_URL}/api/user/change-password`,
                 {
                     password: passwordForm.currentPassword,
                     newPassword: passwordForm.newPassword,
                     confirmNewPassword: passwordForm.confirmNewPassword,
-                },
-                {
-                    headers: { "Authorization": `Bearer ${token}` },
                 }
             );
             toast.sendToast("Success", "Password changed successfully");
 
             // Gọi API đăng xuất
-            await axios.post(
+            await axiosInstance.post(
                 `${API_URL}/api/auth/logout`,
-                {},
-                {
-                    headers: { "Authorization": `Bearer ${token}` },
-
-                }
+                {}
             );
 
             // Xóa token sau khi đăng xuất
@@ -138,9 +132,8 @@ const AccountInfo: React.FC = () => {
             const token = localStorage.getItem("accessToken");
             try {
                 setLoading(true);
-                const response = await axios.get(`${API_URL}/api/user/get-profile`, {
-                    headers: { "Authorization": `Bearer ${token}` },
-                });
+                const response = await axiosInstance.get(`${API_URL}/api/user/get-profile`
+                    );
 
                 setProfileData(response.data.data);
 
@@ -179,20 +172,13 @@ const AccountInfo: React.FC = () => {
     };
 
     const handleImageUpload = async (file: File): Promise<string | null> => {
-        const accessToken = localStorage.getItem('accessToken');
         const formDataObj = new FormData();
         formDataObj.append('file', file);
 
         try {
-            const response = await axios.post<{ data: { url: string } }>(
+            const response = await axiosInstance.post<{ data: { url: string } }>(
                 `${API_URL}/api/image/upload`,
-                formDataObj,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
+                formDataObj
             );
             return response.data.data.url;
         } catch (error) {
@@ -228,12 +214,9 @@ const AccountInfo: React.FC = () => {
         }
 
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${API_URL}/api/user/update-profile`,
-                formData,
-                {
-                    headers: { "Authorization": `Bearer ${token}` },
-                }
+                formData
             );
 
             toast.sendToast("Success", "Profile updated successfully!");

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/components/axiosClient";
 import {
   Bars3Icon,
   ShoppingCartIcon,

@@ -9,6 +9,7 @@ import {formatDate} from "@/utils/dateUtils";
 import StarRating from "@/components/molecules/StarRating";
 import { CiCircleCheck } from "react-icons/ci";
 import Button from "@/components/atom/Button";
+import axiosInstance from "@/components/axiosClient";
 // Define types for props
 interface IProductCommentCardProps {
     comment: {
@@ -49,17 +50,12 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
         try {
             setIsReplying(true);
             if (watch("reply")?.length > 0) {
-                const response = await axios.post(
+                const response = await axiosInstance.post(
                     `${apiURL}/api/comment`,
                     {
                         content: watch("reply") || "",
                         parentCommentId:comment.id || null,
                         productId: productDetail.id,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
                     }
                 );
                 if (response?.data?.status === 201) {
@@ -87,13 +83,9 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
     const handleDeleteComment = async () => {
         try {
             setIsDeleting(true);
-            const response = await axios.delete(
+            const response = await axiosInstance.delete(
                 `${apiURL}/products/${productDetail?.id}/comments/${comment.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
+               
             );
             if (response?.data?.success) {
                 setIsDeleting(false);
@@ -115,17 +107,12 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
     const handleSubmitEdit = async () => {
         try {
             setIsCommenting(true);
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `${apiURL}/products/${productDetail?.id}/comments/${comment.id}`,
                 {
                     comment: watch("edit") || "",
                     parentId: null,
                     productId: productDetail?.id,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
                 }
             );
             if (response?.data?.success) {

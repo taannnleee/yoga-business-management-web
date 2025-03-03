@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/useToast";
 import { apiURL } from "@/constants";
 import Button from "@/components/atom/Button";
 import BottomContent from "@/components/molecules/BottomContent";
+import axiosInstance from "@/components/axiosClient";
 
 interface IProductCommentsProps {
     productDetail: any;
@@ -38,27 +39,19 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
             }
 
             // Fetch comments from the API
-            const response = await axios.get(`${apiURL}/api/comment/by-product/${productDetail.id}`, {
+            const response = await axiosInstance.get(`${apiURL}/api/comment/by-product/${productDetail.id}`, {
                 params: {
                     page: page,
                     pageSize: itemsPerPage,
-                },
-                headers: headers,
+                }
             });
 
-            // Handle the response
-            if (!response.ok) {
-                throw new Error("Failed to fetch comments");
-            }
-
-            const data = await response.json();
-
             // Check the response status and update state accordingly
-            if (data?.status === 200) {
-                setListComments(data?.data.content || []); // Set the comments data
-                setTotalItems(data.data.totalElements);
+            if (response?.status === 200) {
+                setListComments(response.data?.data.content || []); // Set the comments data
+                setTotalItems(response.data.data.totalElements);
             } else {
-                toast.sendToast("error", data?.message || "Lỗi khi tải bình luận", "error"); // Error handling for unsuccessful response
+                toast.sendToast("error", response.data?.message || "Lỗi khi tải bình luận", "error"); // Error handling for unsuccessful response
             }
         } catch (error) {
             console.error("Error fetching comments:", error);
@@ -80,28 +73,16 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
             setIsPosting(true);
             const comment = watch("comment");
             if (comment?.length > 0) {
-                const response = await axios.post(
+                const response = await axiosInstance.post(
                     `${apiURL}/api/comment`,
                     {
                         content: comment,
                         parentId: null,
                         productId: Number(productDetail?.id),
-                    },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${accessToken}`,
-                        },
                     }
                 );
 
-                if (!response.ok) {
-                    throw new Error("Failed to post comment");
-                }
-
-                const result = await response.json();
-                console.log("Post comment result:", result.status);
-                if (result?.status === 201) {
+                if (response?.data.status === 201) {
                     setValue("comment", "");
                     toast.sendToast("success", "Bình luận thành công");
                     getListComments(); // Refresh comments

@@ -9,7 +9,7 @@ import { ProductByCategoryCard } from "@/components/organisms/ProductByCategoryC
 import { API_URL } from "@/config/url";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/components/checkToken";
+import axios from "axios";
 interface IHomePageProps { }
 const imageUrls = [
     "https://bizweb.dktcdn.net/100/262/937/themes/813962/assets/slider_3.jpg?1720673795720",
@@ -56,17 +56,11 @@ const HomePage: React.FC<IHomePageProps> = () => {
             const response = await axios.get(`${API_URL}/api/category/with-products`, {
                 headers: {
                     "Content-Type": "application/json",
-                    // Authorization: `Bearer ${token}`,
+                    
                 },
             });
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const result = await response.json();
             // Assign the fetched categories to state
-            setCategories(result.data);
+            setCategories(response.data.data);
         } catch (err: any) {
             setError(err.message);
         } finally {

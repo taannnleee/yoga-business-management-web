@@ -9,6 +9,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/useToast";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
+import axiosInstance from "@/components/axiosClient";
 
 // Định nghĩa kiểu cho variant và product
 interface Variant {
@@ -46,11 +47,9 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
                 return;
             }
 
-            const response = await axios.get(`${API_URL}/api/product/${product.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
+                
+            );
 
             if (response.status === 200) {
                 setSelectedProduct(response.data.data);
@@ -85,27 +84,15 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
                 return;
             }
 
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${API_URL}/api/cart/add-to-cart`,
                 {
                     productId: selectedProduct?.id.toString(),
                     quantity: quantity,
                     currentVariant: currentVariant,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
 
-            if (!response.ok) {
-                throw new Error("Failed to add product to cart");
-            }
-
-            const data = await response.json();
-            console.log("Product added to cart:", data);
             toast.sendToast("Thành công", "Đã thêm sản phẩm vào giỏ hàng");
             setOpen(false);
             dispatch(incrementTotalItems());

@@ -3,7 +3,7 @@ import { Button, Skeleton } from "@mui/material";
 import UpdateAddressModal from "./UpdateAddressModal";
 import CachedIcon from '@mui/icons-material/Cached';
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Address {
     id: string;
     phoneNumberDelivery: string;

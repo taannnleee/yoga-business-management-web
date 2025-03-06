@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 import {
     Box,
     RadioGroup,
@@ -133,7 +133,7 @@ const AccountInfo: React.FC = () => {
             try {
                 setLoading(true);
                 const response = await axiosInstance.get(`${API_URL}/api/user/get-profile`
-                    );
+                );
 
                 setProfileData(response.data.data);
 

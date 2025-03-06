@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaRegHeart, FaHeart, FaSpinner } from "react-icons/fa";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface LeftSideProps {
   product: any;
   currentVariant: any;

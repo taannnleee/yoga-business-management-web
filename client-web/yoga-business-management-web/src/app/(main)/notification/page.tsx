@@ -6,7 +6,7 @@ import { API_URL } from "@/config/url";
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useToast } from "@/hooks/useToast";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 
 // Define data types
 interface User {
@@ -96,7 +96,7 @@ const NotificationPage: React.FC = () => {
             const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(
                 `${API_URL}/api/notification/change-status/${notification.id}`,
-              
+
             );
             setNotifications((prevNotifications) =>
                 prevNotifications.map((item) =>

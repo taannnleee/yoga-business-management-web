@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Container, Grid, CssBaseline, Button, CircularProgress } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 import { API_URL } from "@/config/url";
 import { FaSpinner } from "react-icons/fa";
 

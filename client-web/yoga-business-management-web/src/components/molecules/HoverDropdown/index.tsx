@@ -5,7 +5,7 @@ import { API_URL } from "@/config/url";
 import { setSelectedCategory, setSelectedSubCategory } from "@/redux/category/categorySlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface HoverDropdownProps {
     buttonText: string;
 }

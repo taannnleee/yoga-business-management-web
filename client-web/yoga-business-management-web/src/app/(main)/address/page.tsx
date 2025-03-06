@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 import {
     Box,
     Typography,
@@ -122,7 +122,7 @@ const AddressList: React.FC = () => {
 
             try {
                 await axiosInstance.put(`${API_URL}/api/address/update/${selectedAddress.id}`, updatedAddress
-                   
+
                 );
 
                 await fetchAddresses();
@@ -158,7 +158,7 @@ const AddressList: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (selectedAddress) {
             try {
-                await axiosInstance.delete(`${API_URL}/api/address/delete/${selectedAddress.id}`               
+                await axiosInstance.delete(`${API_URL}/api/address/delete/${selectedAddress.id}`
                 );
                 await fetchAddresses();
                 handleCloseDeleteConfirm();

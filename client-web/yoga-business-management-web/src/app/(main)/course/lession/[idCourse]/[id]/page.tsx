@@ -8,7 +8,7 @@ import Button from "@/components/atom/Button";
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import LectureItem from "@/components/organisms/LessionItem"; // Đổi từ LessionItem thành LectureItem
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Lecture {
     id: number;
     title: string;
@@ -72,7 +72,7 @@ const LessionPage: React.FC<any> = () => {
             const token = localStorage.getItem("accessToken");
             // Thay thế URL này với API endpoint của bạn
             const response = await axiosInstance.get(`${API_URL}/api/course/get-course/${courseId}`
-              
+
             );
 
             if (response.data.status === 200) {
@@ -90,7 +90,7 @@ const LessionPage: React.FC<any> = () => {
         try {
             const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(`${API_URL}/api/lecture/get-lecture/${lectureId}`
-             
+
             );
             if (response.data.status === 200) {
                 setLecture(response.data.data); // Store the lecture data in state

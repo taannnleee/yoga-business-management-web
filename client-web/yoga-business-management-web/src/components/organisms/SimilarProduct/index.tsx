@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { useToast } from "@/hooks/useToast";
 import ProductDetailModal from "@/components/organisms/ProductDetailModal"; // Import axios
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface ProductByCategoryCardProps { }
 
 const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
@@ -99,7 +99,7 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
             }
 
             const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
-               );
+            );
 
             if (response.status === 200) {
                 setSelectedProduct(response.data.data);

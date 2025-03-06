@@ -6,9 +6,9 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux"; // Redux hooks
 import axios from "axios";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
-import {incrementTotalItems, setTotalItems} from "@/redux/cart/cartSlice"; // Redux actions
+import { incrementTotalItems, setTotalItems } from "@/redux/cart/cartSlice"; // Redux actions
 import { API_URL } from "@/config/url";
 const CartButton = () => {
     const totalItems = useSelector((state) => state.cart.totalItems); // Access Redux state
@@ -20,7 +20,7 @@ const CartButton = () => {
             try {
                 const accessToken = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`
-                    
+
                 );
 
                 if (response.status === 200) {

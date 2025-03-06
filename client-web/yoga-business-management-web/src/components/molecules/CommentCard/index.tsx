@@ -5,11 +5,11 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/useToast";
 import ConfirmDialog from "@/components/molecules/ConfirmDialog";
 import { apiURL } from "../../../constants";
-import {formatDate} from "@/utils/dateUtils";
+import { formatDate } from "@/utils/dateUtils";
 import StarRating from "@/components/molecules/StarRating";
 import { CiCircleCheck } from "react-icons/ci";
 import Button from "@/components/atom/Button";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 // Define types for props
 interface IProductCommentCardProps {
     comment: {
@@ -17,7 +17,7 @@ interface IProductCommentCardProps {
         ratePoint: number;
         content: string;
         user: {
-            id:string;
+            id: string;
             fullname: string;
             imagePath: string;
         };
@@ -32,10 +32,10 @@ interface IProductCommentCardProps {
 type ICommentMode = "view" | "edit";
 
 const CommentCard: React.FC<IProductCommentCardProps> = ({
-                                                             comment,
-                                                             productDetail,
-                                                             onReplyingSuccess,
-                                                         }) => {
+    comment,
+    productDetail,
+    onReplyingSuccess,
+}) => {
     const { register, control, handleSubmit, setValue, watch } = useForm();
     const [isReplying, setIsReplying] = useState<boolean>(false);
     const [isTurningOnReply, setIsTurningOnReply] = useState<boolean>(false);
@@ -54,7 +54,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                     `${apiURL}/api/comment`,
                     {
                         content: watch("reply") || "",
-                        parentCommentId:comment.id || null,
+                        parentCommentId: comment.id || null,
                         productId: productDetail.id,
                     }
                 );
@@ -85,7 +85,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
             setIsDeleting(true);
             const response = await axiosInstance.delete(
                 `${apiURL}/products/${productDetail?.id}/comments/${comment.id}`,
-               
+
             );
             if (response?.data?.success) {
                 setIsDeleting(false);
@@ -170,14 +170,14 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                                     </p>
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1">
                                         {comment.ratePoint !== null &&
-                                            <StarRating rating={comment.ratePoint}/>}
+                                            <StarRating rating={comment.ratePoint} />}
                                     </p>
                                     <p className="text-black-500 text-[14px] font-bold tablet:text-xs text-sm tablet:ml-1 mt-5">
                                         {comment.ratePoint !== null && (
                                             <>
                                                 {`vào lúc ${formatDate(comment.createdAt)} | Phân loại hàng: ${getVariantString(comment.currentVariant)} `}
                                                 <div className={"flex items-center space-x-2"}>
-                                                    <CiCircleCheck className={"text-blue-500 w-6 h-6"}/>
+                                                    <CiCircleCheck className={"text-blue-500 w-6 h-6"} />
                                                     <div className={"text-blue-500 "}>Đã mua hàng tại cửa hàng của chúng tôi</div>
                                                 </div>
                                             </>

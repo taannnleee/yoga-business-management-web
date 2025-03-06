@@ -3,7 +3,7 @@ import { Card, CardContent, CardMedia, Typography, Button, CardActions } from "@
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/config/url";
 // Định nghĩa interface cho product
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Product {
     id: string;
     title: string;

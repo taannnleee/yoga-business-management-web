@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import CourseCard from "@/components/organisms/CourseCard";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 // Định nghĩa interface cho dữ liệu giáo viên
 interface Teacher {
     id: number;
@@ -88,11 +88,11 @@ const CoursePage: React.FC = () => {
             try {
                 const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/teacher/all-teachers`
-               
+
                 );
                 if (response.data.status === 200) {
                     setInstructors(response.data.data);
-        
+
                 } else {
                     console.error("Failed to fetch instructors:", response.data.message);
                 }
@@ -113,7 +113,7 @@ const CoursePage: React.FC = () => {
             try {
                 const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/course/get-outstanding-courses`
-               
+
                 );
 
                 if (response.data.status === 200) {

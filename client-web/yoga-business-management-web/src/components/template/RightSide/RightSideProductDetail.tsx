@@ -7,7 +7,7 @@ import { incrementTotalItems } from "@/redux/cart/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface RightSideProps {
     product: any;
     quantity: number;
@@ -29,12 +29,12 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
             const response = await axiosInstance.post(
                 `${API_URL}/api/cart/add-to-cart`,
                 {
-                  productId: product.id.toString(),
-                  quantity,
-                  currentVariant,
+                    productId: product.id.toString(),
+                    quantity,
+                    currentVariant,
                 }
-                
-              );
+
+            );
 
             toast.sendToast("Thành công", "Đã thêm sản phẩm vào giỏ hàng");
             dispatch(incrementTotalItems());
@@ -59,7 +59,7 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                             {product?.averageRating?.toFixed(1)}
                         </span>
                         <span className="text-yellow-500">
-                            {Array.from({length: 5}, (_, index) => {
+                            {Array.from({ length: 5 }, (_, index) => {
                                 if (product?.averageRating > index + 0.5) {
                                     return "⭐"; // Full star
                                 } else if (product?.averageRating > index) {

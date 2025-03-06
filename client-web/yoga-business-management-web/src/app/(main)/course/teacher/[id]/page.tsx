@@ -6,7 +6,7 @@ import CourseCard from "@/components/organisms/CourseCard"; // Đường dẫn t
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Course {
     id: number;
     title: string;
@@ -57,7 +57,7 @@ const TeacherDetailPage: React.FC = () => {
             try {
                 const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/teacher/get-teacher/${teacherId}`
-                    
+
                 );
 
                 if (response.data.status === 200) {

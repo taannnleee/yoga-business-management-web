@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, TextField, CircularProgress } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Address {
     id?: string;
     phoneNumberDelivery: string;
@@ -63,7 +63,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
         setLoading(true);
         try {
             await axiosInstance.post(`${API_URL}/api/address/create`, newAddress
-                
+
             );
             toast.sendToast("Success", "Thêm địa chỉ thành công");
             setIsModalOpen(false);  // Close the modal

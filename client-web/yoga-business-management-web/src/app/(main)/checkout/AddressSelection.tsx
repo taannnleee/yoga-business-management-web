@@ -5,7 +5,7 @@ import AddAddressModal from './AddAddressModal';
 import MyListAddressModal from "@/app/(main)/checkout/MyListAddressModal";
 import { API_URL } from "@/config/url";
 
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Address {
     id: string;
     phoneNumberDelivery: string;
@@ -99,7 +99,7 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
             }
 
             const response = await axiosInstance.get(`${API_URL}/api/user/get-user-address-default`
-        
+
             );
 
 

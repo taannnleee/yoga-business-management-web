@@ -6,7 +6,7 @@ import { FaSpinner } from 'react-icons/fa';
 import { setSelectedCategory, setSelectedSubCategory } from '@/redux/category/categorySlice';
 import { RootState } from "@/redux/store";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface SubCategory {
     id: number;
     name: string;

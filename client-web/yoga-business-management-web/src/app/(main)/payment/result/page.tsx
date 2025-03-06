@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Button from "@/components/atom/Button";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 const PaymentResult = () => {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');

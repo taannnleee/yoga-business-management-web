@@ -9,7 +9,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/useToast";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 
 // Định nghĩa kiểu cho variant và product
 interface Variant {
@@ -48,7 +48,7 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
             }
 
             const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
-                
+
             );
 
             if (response.status === 200) {

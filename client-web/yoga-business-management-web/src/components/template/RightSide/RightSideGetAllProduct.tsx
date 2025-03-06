@@ -8,7 +8,7 @@ import { ProductCardSkeleton } from "@/components/molecules/ProductCard/skeleton
 import { API_URL } from "@/config/url";
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 import { Clear } from "@mui/icons-material";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 export const RightSideGetAllProduct: React.FC = (props) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);

@@ -20,7 +20,7 @@ import { useToast } from "@/hooks/useToast";
 import CartButton from "@/components/molecules/CartButton";
 import HoverDropdown from "@/components/molecules/HoverDropdown";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface IHeaderV2Props { }
 
 const HeaderV2: React.FC<IHeaderV2Props> = (props) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Address {
     id: string;
     phoneNumberDelivery: string;

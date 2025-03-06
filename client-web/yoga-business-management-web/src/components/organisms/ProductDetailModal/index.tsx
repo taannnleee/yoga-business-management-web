@@ -7,7 +7,7 @@ import { FaRegHeart, FaHeart, FaSearchPlus, FaSpinner } from "react-icons/fa";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -52,7 +52,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                 // Call API to remove from wishlist
                 const response = await axiosInstance.delete(
                     `${API_URL}/api/wishlist/delete-wishlist-by-product-id/${selectedProduct.id}`
-                    
+
                 );
 
                 if (response.status === 200) {
@@ -65,7 +65,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                 const response = await axiosInstance.post(
                     `${API_URL}/api/wishlist/add-wishlist`,
                     { productId: selectedProduct.id }
-                    
+
                 );
 
                 if (response.status === 200) {

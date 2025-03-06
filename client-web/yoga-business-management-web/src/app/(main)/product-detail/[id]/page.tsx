@@ -4,7 +4,7 @@ import ProductDetailTemplate from "@/components/template/ProductDetail";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 
 const ProductDetail: React.FC = () => {
   const params = useParams();

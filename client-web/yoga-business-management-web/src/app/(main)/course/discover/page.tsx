@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CourseCard from "@/components/organisms/CourseCard";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 // Define types for your courses and categories
 interface Course {
     id: number;
@@ -34,10 +34,10 @@ const DisCoverPage: React.FC = () => {
             try {
                 const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/course/all-course`
-                    
+
                 );
-                
-                if (response.status===200 && response.data.status === 200) {
+
+                if (response.status === 200 && response.data.status === 200) {
                     console.log("độ dài của mảng")
 
                     // Map the API data to the structure you need for your component

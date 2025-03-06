@@ -22,7 +22,7 @@ import ProductDetailModal from "@/components/organisms/ProductDetailModal";
 import { useDispatch } from "react-redux";
 import { incrementTotalItems, setTotalItems } from "@/redux/cart/cartSlice";
 import { setSelectedCategory } from "@/redux/category/categorySlice"; // Import axios
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 
 
 interface ProductByCategoryCardProps {

@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/useToast";
 import { Select, MenuItem, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 import {
     Box,
     Typography,

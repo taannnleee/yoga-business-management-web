@@ -5,7 +5,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CourseContent from "@/components/organisms/CourseContent";
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface Section {
     id: number;
     title: string;
@@ -67,7 +67,7 @@ const CourseDetailPage: React.FC = () => {
                     const token = localStorage.getItem("accessToken");
                     setLoading(true);
                     const response = await axiosInstance.get(`${API_URL}/api/course/get-course/${courseId}`
-                        
+
                     );
 
                     if (response.data.status === 200) {

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/config/url";
 const token = localStorage.getItem("accessToken");
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 import axios from "axios";
 
 interface ILoginPageProps { }

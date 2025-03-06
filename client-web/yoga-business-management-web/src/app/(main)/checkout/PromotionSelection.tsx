@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 import { API_URL } from "@/config/url";
 import { useToast } from "@/hooks/useToast";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 
 interface IPromotion {
     id: string;
@@ -32,7 +32,7 @@ const PromotionSelection: React.FC<PromotionSelectionProps> = ({ totalPrice, set
         const token = localStorage.getItem("accessToken");
         try {
             const response = await axiosInstance.get(`${API_URL}/api/promotion/get-four-big-promotion`
-                
+
             );
 
             setPromotions(response.data.data);

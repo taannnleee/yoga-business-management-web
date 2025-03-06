@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useDebounce from "../../../hooks/useDebounce"; // Hook debounce
 import { API_URL } from "@/config/url";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 interface IProduct {
     id: string;
     title: string;

@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/useToast";
 import { apiURL } from "@/constants";
 import Button from "@/components/atom/Button";
 import BottomContent from "@/components/molecules/BottomContent";
-import axiosInstance from "@/components/axiosClient";
+import axiosInstance from "@/utils/axiosClient";
 
 interface IProductCommentsProps {
     productDetail: any;

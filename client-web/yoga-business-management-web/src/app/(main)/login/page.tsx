@@ -39,7 +39,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
 
         // Redirect to home page
         router.replace("/home");
-      } else if (response.data.status === 1013) {
+      } else if (response.status === 500) {
         // Tài khoản chưa được kích hoạt, gọi API để lấy email
         toast.sendToast("Error", "Tài khoản chưa được kích hoạt", "error");
 
@@ -73,9 +73,12 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         setLoading(false);
       } else {
         setLoading(false);
+        console.log("11111111111211111111111111");
         toast.sendToast("Error", "Login failed", "error");
       }
     } catch (error: any) {
+      console.log("eeeeeeeeeeeeeeeeee");
+      console.log(error);
       setLoading(false);
       toast.sendToast(
         "Error",

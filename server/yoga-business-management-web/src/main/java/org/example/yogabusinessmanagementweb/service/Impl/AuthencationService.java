@@ -73,6 +73,7 @@ public class AuthencationService {
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
 
         if(!user.isStatus()){
+            System.out.println("User is inactive: " + user.getUsername());
             throw new AppException(ErrorCode.USER_NOT_ACTIVE);
         }
 

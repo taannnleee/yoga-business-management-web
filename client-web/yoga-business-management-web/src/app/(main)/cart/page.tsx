@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Typography, Container, Grid, CssBaseline, Button, CircularProgress } from "@mui/material";
+import {Typography, Container, Grid, CssBaseline, Button, CircularProgress, IconButton} from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosClient";
 import { API_URL } from "@/config/url";
 import { FaSpinner } from "react-icons/fa";
+import {MagnifyingGlassCircleIcon} from "@heroicons/react/24/solid";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CountUp from "react-countup";
 
 interface IProduct {
     id: string;
@@ -40,6 +43,12 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const [loadPrice, setLoadPrice] = useState(false); // State để theo dõi trạng thái đang tải
     const [error, setError] = useState<string | null>(null); // Lưu lỗi nếu có
     const router = useRouter();
+    const [isMultiple, setIsMultiple] = useState(false);
+// Thêm state lưu giá trị trước đó
+    const [prevTotalPrice, setPrevTotalPrice] = useState(0);
+    const [selectedIds, setSelectedIds] = useState([]);
+
+
 
     // Hàm gọi API để lấy giỏ hàng
     const fetchCart = async () => {
@@ -83,10 +92,33 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     // Hàm xử lý khi xóa sản phẩm khỏi giỏ hàng
     const handleRemoveProduct = (productId: string) => {
         if (carts) {
+            setLoadPrice(true);
             setCarts((prevCarts) => {
                 const updatedCartItems = prevCarts.cartItem.filter((item) => item.product.id !== productId);
                 return { ...prevCarts, cartItem: updatedCartItems };
             });
+        }
+    };
+    // Hàm xoá nhiều sản phẩm khỏi giỏ hàng
+    const handleDeleteMultiple = async () => {
+        setLoadPrice(true);
+        if (selectedIds.length === 0) return;
+
+        try {
+            setLoading(true);
+            const response = await axiosInstance.post('/api/cart/remove-multiple', {
+                cartItemIds: selectedIds,
+            });
+
+            console.log('Xoá thành công:', response.data);
+            // Sau khi xoá gọi lại fetchCart để cập nhật danh sách
+            await fetchCart();
+        } catch (error) {
+            console.error('Lỗi khi xoá:', error);
+        } finally {
+            setLoading(false);
+            setLoadPrice(false);
+            setSelectedIds([]); // clear sau khi xoá
         }
     };
 
@@ -99,9 +131,35 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
         <React.Fragment>
             <CssBaseline />
             <Container fixed>
-                <Typography variant="h4" gutterBottom>
-                    Giỏ hàng của bạn
-                </Typography>
+                <div className={"flex justify-between "}>
+                    <Typography variant="h4" gutterBottom>
+                        Giỏ hàng của bạn
+                    </Typography>
+                    <button>
+                        <MagnifyingGlassCircleIcon className="w-10 h-10 text-gray-600 mr-1"/>
+                    </button>
+                    <button>
+                        {!isMultiple ? (
+                            <IconButton size={"small"} color="error" disabled={loading} onClick={() => setIsMultiple(true)}>
+                                Xoá nhiều sản phẩm
+                            </IconButton>
+                        ) : (
+                            <>
+                                <IconButton color="error" size={"small"} disabled={loading} onClick={() => setIsMultiple(false)}>
+                                    Xoá từng sản phẩm
+                                </IconButton>
+                                <IconButton
+                                    color="error"
+                                    disabled={loading || selectedIds.length === 0}
+                                    onClick={handleDeleteMultiple}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </>
+                        )}
+                    </button>
+                </div>
+
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} md={7} lg={12}>
                         <Grid container spacing={3}>
@@ -113,42 +171,50 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                                 carts.cartItem.map((cartItem) => (
                                     <Grid item xs={12} key={cartItem.id}>
                                         <ShoppingCartItem
+                                            isMultiple={isMultiple}
+                                            cart={carts}
+                                            setPrevTotalPrice={setPrevTotalPrice}
                                             cartItem={cartItem}
-                                            onRemove={handleRemoveProduct} // Truyền hàm xóa sản phẩm
-                                            fetchCart={fetchCart} // Truyền hàm load lại giỏ hàng
-                                            setLoadPrice={setLoadPrice} // Truyền state để theo dõi trạng thái đang tải
+                                            onRemove={handleRemoveProduct}
+                                            fetchCart={fetchCart}
+                                            setLoadPrice={setLoadPrice}
+                                            selectedIds={selectedIds}
+                                            setSelectedIds={setSelectedIds}
                                         />
                                     </Grid>
+
                                 ))
                             ) : (
                                 <Typography>No products in cart.</Typography>
                             )}
                         </Grid>
 
-                        {/* Tổng tiền */}
-                        <Grid item xs={12} sm={12} md={12} lg={12}>
-                            <Grid container spacing={2} alignItems="center" justifyContent="flex-end">
-                                <Grid item>
-                                    <Typography variant="h6" gutterBottom>
-                                        Tổng tiền thanh toán: {loadPrice ? (
-                                            <FaSpinner className="animate-spin text-black w-6 h-6" />
-                                        ) : (
-                                            `${carts?.totalPrice ?? 0} đ`
-                                        )}
-                                    </Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        style={{ marginLeft: 16 }}
-                                        onClick={() => router.replace("/checkout")}
-                                    >
-                                        Tiến hành thanh toán
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                        {/* Sticky Tổng tiền */}
+                        <div className="sticky bottom-0 bg-white z-10 w-full py-4 px-4 shadow-md flex justify-end">
+                            <div className="flex items-center gap-4">
+                                <Typography variant="h6" gutterBottom>
+                                    Tổng tiền thanh toán: {loadPrice ? (
+                                    <FaSpinner className="animate-spin text-black w-6 h-6 inline-block" />
+                                ) : (
+                                    <CountUp
+                                        start={prevTotalPrice}
+                                        end={carts?.totalPrice ?? 0}
+                                        duration={1.5}
+                                        separator=","
+                                        suffix=" đ"
+                                    />
+                                )}
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => router.replace("/checkout")}
+                                    disabled={loadPrice}
+                                >
+                                    Tiến hành thanh toán
+                                </Button>
+                            </div>
+                        </div>
                     </Grid>
                 </Grid>
             </Container>

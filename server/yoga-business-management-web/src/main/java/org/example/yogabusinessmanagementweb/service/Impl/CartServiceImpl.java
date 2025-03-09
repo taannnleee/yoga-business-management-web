@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.mapper.CartItemMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
+import org.example.yogabusinessmanagementweb.dto.request.cart.CartDeleteMultipleRequest;
 import org.example.yogabusinessmanagementweb.dto.request.cart.CartDeleteRequest;
 import org.example.yogabusinessmanagementweb.dto.request.cart.CartItemCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.cart.CartItemResponse;
@@ -134,6 +135,48 @@ public class CartServiceImpl implements CartService {
         // Trả về response
         List<CartItemResponse> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemResponse.class);
 
+        CartResponse response = Mappers.convertToDto(cart, CartResponse.class);
+        response.setCartItem(itemDTOS);
+        return response;
+    }
+
+    @Override
+    public CartResponse removeMultiple(HttpServletRequest request, CartDeleteMultipleRequest cartDeleteMultipleRequest) {
+        User user = jwtUtil.getUserFromRequest(request);
+
+        Optional<Cart> cartOptional = cartRepository.findCartByUser(user);
+        if (cartOptional.isEmpty()) {
+            throw new AppException(ErrorCode.CART_NOT_FOUND);
+        }
+        Cart cart = cartOptional.get();
+
+        // Danh sách các CartItem cần xóa
+        List<CartItem> itemsToRemove = new ArrayList<>();
+
+        for (CartItem item : cart.getCartItems()) {
+            if (cartDeleteMultipleRequest.getCartItemIds().contains(item.getId().toString())) {
+                itemsToRemove.add(item);
+            }
+        }
+
+        if (!itemsToRemove.isEmpty()) {
+            cart.getCartItems().removeAll(itemsToRemove);
+            cartItemRepository.deleteAllInBatch(itemsToRemove); // Xóa 1 lần hiệu quả hơn
+
+            // Cập nhật lại totalItem và totalPrice
+            cart.setTotalItem(cart.getCartItems().size());
+
+            BigDecimal totalPrice = BigDecimal.ZERO;
+            for (CartItem item : cart.getCartItems()) {
+                totalPrice = totalPrice.add(item.getTotalPrice());
+            }
+            cart.setTotalPrice(totalPrice);
+            cartRepository.save(cart);
+        } else {
+            throw new RuntimeException("Không tìm thấy CartItem cần xóa");
+        }
+
+        List<CartItemResponse> itemDTOS = Mappers.mapperEntityToDto(cart.getCartItems(), CartItemResponse.class);
         CartResponse response = Mappers.convertToDto(cart, CartResponse.class);
         response.setCartItem(itemDTOS);
         return response;

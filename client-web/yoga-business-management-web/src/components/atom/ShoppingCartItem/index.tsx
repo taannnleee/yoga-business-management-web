@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CardMedia, Typography, Box, Grid, IconButton, Divider, Button } from "@mui/material";
+import {CardMedia, Typography, Box, Grid, IconButton, Divider, Button, Checkbox} from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,7 +14,12 @@ interface IProduct {
     variants: any;  // Thay đổi kiểu từ string sang any hoặc một kiểu phù hợp
     subCategory: string;
 }
-
+interface ICart {
+    id: string;
+    totalPrice: number;
+    totalItem: number;
+    cartItem: ICartItem[];
+}
 interface ICartItem {
     id: string;
     quantity: string;
@@ -24,20 +29,34 @@ interface ICartItem {
     imagePath: string;
 }
 interface IInputProps {
+    isMultiple: boolean;
     cartItem: ICartItem;
+    cart: ICart;
     onRemove: (productId: string) => void;
     fetchCart: () => void;
+    setPrevTotalPrice: (number: number) => void;
     setLoadPrice: (b: boolean) => void;
+    selectedIds: string[]; // <-- Thêm: danh sách ID được chọn
+    setSelectedIds: (selectedIds: (prev: string[]) => string[]) => void;
 }
 
-const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart, setLoadPrice }) => {
+
+const ShoppingCartItem: React.FC<IInputProps> = ({isMultiple, cart,setPrevTotalPrice,cartItem, onRemove, fetchCart, setLoadPrice,selectedIds,setSelectedIds}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(cartItem.quantity); // Tổng số lượng hiện tại
     const [changedQuantity, setChangedQuantity] = useState(0); // Số lượng thay đổi
     const debouncedChangedQuantity = useDebounce(changedQuantity, 1000); // Debounce số lượng thay đổi
 
+    const handleCheckboxChange = (id: string) => {
+        setSelectedIds((prev: string[]) =>
+            prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+        );
+    };
+
+
     useEffect(() => {
+        setPrevTotalPrice(cart?.totalPrice ?? 0);
         const updateCart = async () => {
             if (debouncedChangedQuantity > 0) { // Chỉ gọi API khi số lượng tăng
                 console.log('Tăng số lượng sản phẩm:', cartItem.product.id, debouncedChangedQuantity);
@@ -109,7 +128,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
     const handleDelete = async () => {
         setLoading(true);
         setError(null);
-
+        setLoadPrice(true);
         try {
             const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.post(
@@ -125,6 +144,7 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
             setError(err.message);
         } finally {
             setLoading(false);
+            setLoadPrice(false);
             fetchCart()
         }
     };
@@ -156,6 +176,13 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
     return (
         <Box sx={{ padding: '10px 0', width: '1200px' }}>
             <Grid container alignItems="center" spacing={2}>
+                {isMultiple && (
+                    <Checkbox
+                        checked={selectedIds.includes(cartItem.id)}
+                        onChange={() => handleCheckboxChange(cartItem.id)}
+                    />
+                )}
+
                 {/* Hình ảnh sản phẩm */}
                 <Grid item xs={2}>
                     <CardMedia
@@ -207,13 +234,14 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ cartItem, onRemove, fetchCart
                         {(quantity * cartItem.product.price).toLocaleString('vi-VN')} đ {/* Định dạng số tiền với dấu '.' cách 3 số */}
                     </Typography>
                 </Grid>
-
-                {/* Nút xóa */}
-                <Grid item xs={1}>
-                    <IconButton color="error" onClick={handleDelete} disabled={loading}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Grid>
+                {!isMultiple && (
+                    // Nút xóa
+                    <Grid item xs={1}>
+                        <IconButton color="error" onClick={handleDelete} disabled={loading}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Grid>
+                )}
             </Grid>
             <Divider sx={{ marginTop: '10px' }} /> {/* Đường kẻ chia sản phẩm */}
         </Box>

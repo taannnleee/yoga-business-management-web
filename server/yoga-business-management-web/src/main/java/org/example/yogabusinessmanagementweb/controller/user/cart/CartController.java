@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.CartItem;
 import org.example.yogabusinessmanagementweb.dto.request.cart.CartCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.request.cart.CartDeleteMultipleRequest;
 import org.example.yogabusinessmanagementweb.dto.request.cart.CartDeleteRequest;
 import org.example.yogabusinessmanagementweb.dto.request.cart.CartItemCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
@@ -49,6 +50,11 @@ public class CartController {
     @PostMapping("/remove-from-cart")
     public ApiResponse<?> removeFromCart(HttpServletRequest request,@Valid @RequestBody CartDeleteRequest cartDeleteRequest) {
         CartResponse cartResponse =  cartService.removeFromCart(request,cartDeleteRequest);
+        return new ApiResponse<>(HttpStatus.OK.value(), "remove from cart item success",cartResponse);
+    }
+    @PostMapping("/remove-multiple")
+    public ApiResponse<?> removeMultiple(HttpServletRequest request,@Valid @RequestBody CartDeleteMultipleRequest cartDeleteMultipleRequest) {
+        CartResponse cartResponse =  cartService.removeMultiple(request,cartDeleteMultipleRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "remove from cart item success",cartResponse);
     }
 

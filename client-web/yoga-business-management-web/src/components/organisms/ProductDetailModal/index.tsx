@@ -25,7 +25,6 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
     const [selectedImage, setSelectedImage] = useState(selectedImageLeft || selectedImageRight);
     const [currentVariant, setCurrentVariant] = useState<any>({});
     const [isFavorited, setIsFavorited] = useState(false);
-    const accessToken = localStorage.getItem("accessToken");
 
     console.log("kkkk");
     console.log("currentVariant", currentVariant);

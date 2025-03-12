@@ -61,6 +61,8 @@ public class AuthencationService {
     TokenRepository tokenRepository;
     private final JwtUtil jwtUtil;
 
+    RedisTokenService redisTokenService;
+
 
     public TokenRespone authentication(LoginRequest loginRequest){
         try {
@@ -103,6 +105,9 @@ public class AuthencationService {
 
         // Revoke quyền của accessToken
         jwtService.revokeToken(token, ACCESSTOKEN);
+
+        // áp dụng redis
+//        redisTokenService.addToBlacklist(refreshToken, 1440);
 
         return "Token revoked and deleted!";
     }

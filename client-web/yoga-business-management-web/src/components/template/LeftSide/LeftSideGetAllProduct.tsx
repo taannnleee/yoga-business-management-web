@@ -21,17 +21,21 @@ interface CategoryView {
     id: number;
     name: string;
 }
-export const LeftSideGetAllProduct: React.FC = (props) => {
+
+interface LeftSideCategoryProps {
+    setPage: (page: number) => void;
+    setTotalItems: (totalItems: number) => void;
+}
+export const LeftSideGetAllProduct: React.FC<LeftSideCategoryProps> = ({ setPage, setTotalItems }) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const dispatch = useDispatch();
-    const { setPage, setTotalItems } = props;
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const accessToken = localStorage.getItem('accessToken');
                 const response = await axiosInstance.get(`${API_URL}/api/category/with-sub-categories`
                 );
                 if (response.data.status === 200) {
@@ -52,7 +56,7 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
     const handleCategoryClick = (category: CategoryView) => {
         const categoryData = { id: category.id, name: category.name };
         dispatch(setSelectedCategory(categoryData)); // Passing both id and name for the category
-        dispatch(setSelectedSubCategory(null)); // Clear selected subcategory when category is clicked
+        // dispatch(setSelectedSubCategory(null));
         setPage(1); // Reset page to 1 when category is clicked
         setTotalItems(1); // Reset total items to 1 when category is clicked
     };
@@ -71,9 +75,10 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
         <div className="w-64 bg-white shadow-lg p-4 space-y-4">
             <div>
                 {[...categories, { id: undefined, name: 'Tất cả sản phẩm', subCategories: [] }].map((category) => (
+
                     <div key={category.id} className="space-y-2">
                         <div
-                            onClick={() => handleCategoryClick(category)}  // Pass category name
+                            onClick={() => handleCategoryClick(category as CategoryView)}
                             className={`px-4 py-2 transition-all duration-300 ease-in-out cursor-pointer ${category.id == selectedCategory?.id ? 'text-red-500 font-bold' : 'hover:bg-gray-200 hover:text-orange-600'
                                 }`}
                         >
@@ -83,7 +88,7 @@ export const LeftSideGetAllProduct: React.FC = (props) => {
                             {category.subCategories.map((subCategory) => (
                                 <li
                                     key={subCategory.id}  // Added missing key prop
-                                    onClick={() => handleSubCategoryClick(category, subCategory)}  // Pass both category and subcategory names
+                                    onClick={() => handleSubCategoryClick(category as CategoryView, subCategory)}  // Pass both category and subcategory names
                                     className={`w-full text-sm py-1 transition-all duration-300 ease-in-out cursor-pointer ${subCategory.id == selectedSubCategory?.id && category.id == selectedCategory?.id
                                         ? 'text-red-500 font-bold' // Highlight subcategory only if its parent category is selected
                                         : 'hover:bg-gray-100 hover:text-orange-600'

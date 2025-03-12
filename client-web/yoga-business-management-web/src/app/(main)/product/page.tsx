@@ -9,7 +9,7 @@ const ProductPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(4); // Default items per page
     const [totalItems, setTotalItems] = useState(1); // Total number of items
-    const [searchTerm,setSearchTerm] = useState(useParams().keyword || '');
+    const [searchTerm, setSearchTerm] = useState(useParams().keyword || '');
     // Simulating data fetching and setting initial states
     useEffect(() => {
         const fetchData = async () => {

@@ -34,7 +34,6 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           validateStatus: (status) => true, // Chấp nhận tất cả status code
         }
       );
-      console.log("fffffffffffffffffffffff")
       console.log(response);
       if (response.status === 200) {
         setLoading(false);

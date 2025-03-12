@@ -23,6 +23,8 @@ const ProductDetail: React.FC = () => {
 
           if (response) {
             setProduct(response.data.data);
+
+            console.log("yyyyyyyyyyyyyyyyyyy", response.data.data)
           } else {
             setError("Product not found");
           }

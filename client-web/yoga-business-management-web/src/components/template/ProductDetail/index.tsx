@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {LeftSideProductDetail} from "../LeftSide/LeftSideProductDetail";
-import {RightSideProductDetail} from "../RightSide/RightSideProductDetail";
+import { LeftSideProductDetail } from "../LeftSide/LeftSideProductDetail";
+import { RightSideProductDetail } from "../RightSide/RightSideProductDetail";
 import CustomerBenefits from "@/components/organisms/CustomerBenefits";
 import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { FaArrowAltCircleUp, FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -14,7 +14,7 @@ interface IProductDetailTemplateProps {
 
 const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product }) => {
     const [currentVariant, setCurrentVariant] = useState(() => {
-        const initialVariant = {};
+        const initialVariant: Record<string, { value: string; image: string; type: string }> = {};
         if (product?.variants) {
             Object.entries(product.variants).forEach(([variantType, variantValues]) => {
                 // @ts-ignore
@@ -26,6 +26,7 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                 };
             });
         }
+        console.log("abcddd", initialVariant)
         return initialVariant;
     });
     const [selectedImage, setSelectedImage] = useState(product?.imagePath || "");
@@ -139,7 +140,7 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                     className="flex items-center text-gray-500 hover:text-gray-700"
                     onClick={toggleComment}
                 >
-                    {isCommentVisible ? <FaChevronUp size={20}/> : <FaChevronDown size={20}/>}
+                    {isCommentVisible ? <FaChevronUp size={20} /> : <FaChevronDown size={20} />}
                 </button>
             </div>
             {/*<div className="flex items-center justify-between w-[800px] space-x-8">*/}
@@ -164,14 +165,14 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
             {/*</div>*/}
             {isCommentVisible && (
                 <div className="my-4">
-                    <CustomerComment className="mb-4" productDetail={product}/>
+                    <CustomerComment className="mb-4" productDetail={product} />
                 </div>
             )}
 
             <div className="border-t-2 border-gray-300 pt-4 pb-2 flex justify-between items-center mt-12">
                 <h3 className="font-bold text-xl mx-auto text-red-500">Có thể bạn thích</h3>
             </div>
-            <SimilarProduct/>
+            <SimilarProduct />
 
         </div>
     );

@@ -61,6 +61,8 @@ public class AuthencationService {
     TokenRepository tokenRepository;
     private final JwtUtil jwtUtil;
 
+    RedisTokenService redisTokenService;
+
 
     public TokenRespone authentication(LoginRequest loginRequest){
         try {
@@ -73,6 +75,7 @@ public class AuthencationService {
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
 
         if(!user.isStatus()){
+            System.out.println("User is inactive: " + user.getUsername());
             throw new AppException(ErrorCode.USER_NOT_ACTIVE);
         }
 
@@ -102,6 +105,9 @@ public class AuthencationService {
 
         // Revoke quyền của accessToken
         jwtService.revokeToken(token, ACCESSTOKEN);
+
+        // áp dụng redis
+//        redisTokenService.addToBlacklist(refreshToken, 1440);
 
         return "Token revoked and deleted!";
     }

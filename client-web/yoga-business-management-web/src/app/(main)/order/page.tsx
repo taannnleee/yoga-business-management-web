@@ -263,7 +263,7 @@ const OrderPage: React.FC = () => {
                                                 </Card>
 
                                                 {/* Xử lý phần đánh giá */}
-                                                {selectedTab === 3 && !orderItem?.comment && (
+                                                {(selectedTab === 3 || selectedTab === 0) && !orderItem?.comment && (
                                                     <>
                                                         <InputBase
                                                             value={review}
@@ -290,7 +290,7 @@ const OrderPage: React.FC = () => {
                                                     </>
                                                 )}
 
-                                                {selectedTab === 3 && orderItem?.comment && (
+                                                {(selectedTab === 3 || selectedTab === 0) && orderItem?.comment && (
                                                     <>
                                                         <Typography variant="h6" sx={{ mt: 2 }}>
                                                             {orderItem.comment.content}

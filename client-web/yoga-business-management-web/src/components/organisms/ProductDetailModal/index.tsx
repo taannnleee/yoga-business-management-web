@@ -8,6 +8,8 @@ import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
+
+
 interface Props {
     selectedProduct: any;
     quantity: number;
@@ -25,7 +27,6 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
     const [selectedImage, setSelectedImage] = useState(selectedImageLeft || selectedImageRight);
     const [currentVariant, setCurrentVariant] = useState<any>({});
     const [isFavorited, setIsFavorited] = useState(false);
-    const accessToken = localStorage.getItem("accessToken");
 
     console.log("kkkk");
     console.log("currentVariant", currentVariant);

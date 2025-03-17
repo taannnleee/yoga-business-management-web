@@ -28,7 +28,13 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
       const response = await axios.post(`${API_URL}/api/auth/login`, {
         username: values.username,
         password: values.password,
-      });
+      }
+        ,
+        {
+          validateStatus: (status) => true, // Chấp nhận tất cả status code
+        }
+      );
+      console.log(response);
       if (response.status === 200) {
         setLoading(false);
         // Store tokens in local storage
@@ -76,6 +82,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         toast.sendToast("Error", "Login failed", "error");
       }
     } catch (error: any) {
+      console.log(error);
       setLoading(false);
       toast.sendToast(
         "Error",

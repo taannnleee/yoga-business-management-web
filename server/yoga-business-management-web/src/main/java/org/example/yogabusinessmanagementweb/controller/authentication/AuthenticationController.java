@@ -14,6 +14,7 @@ import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.token.TokenRespone;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
+import org.example.yogabusinessmanagementweb.service.Impl.RedisTokenService;
 import org.example.yogabusinessmanagementweb.service.Impl.WebSocketService;
 import org.example.yogabusinessmanagementweb.service.UserService;
 import org.example.yogabusinessmanagementweb.service.EmailService;
@@ -34,6 +35,7 @@ public class AuthenticationController {
     EmailService emailService;
     AuthencationService authencationService;
     WebSocketService webSocketService;
+    RedisTokenService  redisTokenService;
 
     @PostMapping("/register")
     public ApiResponse<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
@@ -51,6 +53,11 @@ public class AuthenticationController {
 
     @PostMapping("/refresh")
     public ApiResponse<TokenRespone> refreshToken(HttpServletRequest request) {
+
+//        if (redisTokenService.isBlacklisted("refreshToken")) {
+//            return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Refresh token không hợp lệ hoặc đã bị thu hồi.");
+//        }
+
         return new ApiResponse<>(HttpStatus.OK.value(), "Refresh token success", authencationService.refresh(request));
     }
 

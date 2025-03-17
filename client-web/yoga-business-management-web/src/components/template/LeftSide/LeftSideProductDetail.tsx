@@ -11,6 +11,16 @@ interface LeftSideProps {
   setSelectedImage: (image: string) => void;
 }
 
+interface Variant {
+  value: string;
+  image: string;
+}
+
+interface CurrentVariant {
+  [key: string]: Variant;
+}
+
+
 export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrentVariant, selectedImage, setSelectedImage }) => {
   const [selectedImageLeft, setSelectedImageLeft] = useState(selectedImage || "");
   const [isFavorited, setIsFavorited] = useState(false);
@@ -91,11 +101,16 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
     if (product?.variants?.color) {
       const firstColor = Object.entries(product.variants.color)[0];
       if (firstColor) {
-        const [value, image] = firstColor;
+        const [value, image] = firstColor as [string, string];
+        console.log("valueeeeeeeeeeee", firstColor);
+
+
+
         setSelectedImageLeft(image);
         setSelectedImage(image);
-        setCurrentVariant((prev) => ({
+        setCurrentVariant((prev: CurrentVariant) => ({
           ...prev,
+
           color: { value, image },
         }));
       }
@@ -132,9 +147,9 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
         {product?.variants?.color &&
           Object.entries(product.variants.color).map(([color, image], index) => (
             <div key={index} className="flex flex-col items-center"
-              onClick={() => handleVariantSelect('color', color, image)}>
+              onClick={() => handleVariantSelect('color', color, image as string)}>
               <Image
-                src={image || '/path/to/fallback/image.jpg'}
+                src={image as string || '/path/to/fallback/image.jpg'}
                 alt={`${color} image`}
                 width={84}
                 height={84}

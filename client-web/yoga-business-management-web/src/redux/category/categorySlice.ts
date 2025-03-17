@@ -21,11 +21,11 @@ const categorySlice = createSlice({
     name: 'category',
     initialState,
     reducers: {
-        setSelectedCategory: (state, action: PayloadAction<Category>) => { // Category object as payload
+        setSelectedCategory: (state, action: PayloadAction<Category | null>) => { // Category object as payload
             state.selectedCategory = action.payload;
             state.selectedSubCategory = null; // Reset subcategory when a new category is selected
         },
-        setSelectedSubCategory: (state, action: PayloadAction<Category>) => { // Category object as payload
+        setSelectedSubCategory: (state, action: PayloadAction<Category | null>) => { // Category object as payload
             state.selectedSubCategory = action.payload;
         },
     },

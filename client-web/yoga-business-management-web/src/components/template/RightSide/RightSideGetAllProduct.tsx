@@ -9,20 +9,43 @@ import { API_URL } from "@/config/url";
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 import { Clear } from "@mui/icons-material";
 import axiosInstance from "@/utils/axiosClient";
-export const RightSideGetAllProduct: React.FC = (props) => {
+import { SelectChangeEvent } from "@mui/material";
+
+interface RightSideGetAllProductProps {
+    searchTerm: string;
+    setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+
+    page: number;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
+    itemsPerPage: number;
+    setItemsPerPage: React.Dispatch<React.SetStateAction<number>>;
+    totalItems: number;
+    setTotalItems: React.Dispatch<React.SetStateAction<number>>;
+
+}
+
+export const RightSideGetAllProduct: React.FC<RightSideGetAllProductProps> = ({
+    page,
+    setPage,
+    itemsPerPage,
+    setItemsPerPage,
+    totalItems,
+    setTotalItems,
+    searchTerm,
+    setSearchTerm,
+}) => {
     const selectedCategory = useSelector((state: RootState) => state.category.selectedCategory);
     const selectedSubCategory = useSelector((state: RootState) => state.category.selectedSubCategory);
     const [selectedSort, setSelectedSort] = useState('');
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const { page, setPage, itemsPerPage, setItemsPerPage, totalItems, setTotalItems, searchTerm, setSearchTerm } = props;
+    console.log("selectedCategory:", selectedCategory);
+    console.log("selectedSubCategory:", selectedSubCategory);
     // Pagination state
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const accessToken = localStorage.getItem('accessToken');
             let url = `${API_URL}/api/product/filter?page=${page}&pageSize=${itemsPerPage}&sortBy=title&sortDir=${selectedSort || 'asc'}`;
-
             if (selectedSubCategory?.id) {
                 url += `&subCategoryId=${selectedSubCategory.id}`;
             }
@@ -33,6 +56,7 @@ export const RightSideGetAllProduct: React.FC = (props) => {
                 url += `&keyword=${encodeURIComponent(searchTerm)}`;
             }
             const response = await axiosInstance.get(url);
+            console.log("url", url)
 
             setProducts(response.data.data.content);
             setTotalItems(response.data.data.totalElements); // Update total items for pagination
@@ -46,10 +70,10 @@ export const RightSideGetAllProduct: React.FC = (props) => {
     // Call API on dependency changes
     useEffect(() => {
         fetchProducts();
-    }, [selectedSubCategory, selectedSort, page, itemsPerPage, searchTerm]);
+    }, [selectedCategory, selectedSubCategory, selectedSort, page, itemsPerPage, searchTerm]);
 
-    const handleSortChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setSelectedSort(event.target.value as string);
+    const handleSortChange = (event: SelectChangeEvent<string>) => {
+        setSelectedSort(event.target.value);
     };
 
     const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -153,4 +177,4 @@ export const RightSideGetAllProduct: React.FC = (props) => {
             />
         </div>
     );
-};
+}

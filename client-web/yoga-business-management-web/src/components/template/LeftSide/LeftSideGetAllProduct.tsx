@@ -7,6 +7,7 @@ import { setSelectedCategory, setSelectedSubCategory } from '@/redux/category/ca
 import { RootState } from "@/redux/store";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
+import { Category } from '@mui/icons-material';
 interface SubCategory {
     id: number;
     name: string;
@@ -56,7 +57,8 @@ export const LeftSideGetAllProduct: React.FC<LeftSideCategoryProps> = ({ setPage
     const handleCategoryClick = (category: CategoryView) => {
         const categoryData = { id: category.id, name: category.name };
         dispatch(setSelectedCategory(categoryData)); // Passing both id and name for the category
-        // dispatch(setSelectedSubCategory(null));
+        dispatch(setSelectedSubCategory(null));
+
         setPage(1); // Reset page to 1 when category is clicked
         setTotalItems(1); // Reset total items to 1 when category is clicked
     };
@@ -66,6 +68,7 @@ export const LeftSideGetAllProduct: React.FC<LeftSideCategoryProps> = ({ setPage
         const subCategoryData = { id: subCategory.id, name: subCategory.name }; // Passing both id and name for the subcategory
         dispatch(setSelectedCategory(categoryData)); // Ensure the parent category is selected
         dispatch(setSelectedSubCategory(subCategoryData)); // Set selected subcategory
+        
         setPage(1); // Reset page to 1 when category is clicked
         setTotalItems(1); // Reset total items to 1 when category is clicked
     };

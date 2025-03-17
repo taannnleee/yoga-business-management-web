@@ -326,19 +326,6 @@ const DietPage = () => {
             >
               Save and get recommendation
             </Button>
-
-            <div className="pt-6">
-              <p className="flex flex-row text-base font-semibold text-blue-500 items-center pb-2">
-                <IoIosInformationCircleOutline
-                  style={{ width: "40px", height: "20px" }}
-                />
-                Be awakeness!
-              </p>
-              <p>
-                CareX is only tool for recommendation. We need more time to
-                upgrade our system to meet healthcare standard in the future.
-              </p>
-            </div>
           </div>
           <div className="right-side pl-10 w-3/6 pt-8">
             <div>

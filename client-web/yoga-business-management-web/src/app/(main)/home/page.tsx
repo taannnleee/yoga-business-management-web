@@ -155,7 +155,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
             {fetchingProducts ? (
                 // Show skeleton loader while fetching products
                 <div>
-                    <ProductByCategoryCardSkeleton /> {/* Show skeleton when fetching */}
+                    <ProductByCategoryCardSkeleton /> 
                     <ProductByCategoryCardSkeleton />
                     <ProductByCategoryCardSkeleton />
                 </div>

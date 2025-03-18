@@ -4,16 +4,7 @@ import * as tf from '@tensorflow/tfjs';
 import React, { useRef, useState, useEffect } from 'react'
 import backend from '@tensorflow/tfjs-backend-webgl'
 import Webcam from 'react-webcam'
-
-
-
-
-
-
 import './Yoga.css'
-
-
-
 import { drawPoint, drawSegment } from '../../../../utils/helper';
 
 import { POINTS, keypointConnections } from '../../../../utils/data';
@@ -21,7 +12,6 @@ import { POINTS, keypointConnections } from '../../../../utils/data';
 import Instructions from '../../../../components/Instrctions/Instructions.mjs';
 import DropDown from '../../../../components/DropDown/DropDown.mjs';
 let skeletonColor = 'rgb(255,255,255)'
-
 export const poseImages = {
   Tree: "/pose_images/tree.jpg",
   Cobra: "/pose_images/cobra.jpg",
@@ -29,12 +19,13 @@ export const poseImages = {
   Warrior: "/pose_images/warrior.jpg",
   Chair: "/pose_images/chair.jpg",
   Traingle: "/pose_images/traingle.jpg",
-  Shoulderstand: "/pose_images/shoulderstand.jpg"
+  Shoulderstand: "/pose_images/shoulderstand.jpg",
+  Half_Frog: "/pose_images/halffrog.png"
 };
 
 let poseList = [
-  'Tree', 'Chair', 'Cobra', 'Warrior', 'Dog',
-  'Shoulderstand', 'Traingle'
+  'Chair', 'Cobra', 'Dog',
+  'Shoulderstand', 'Traingle', 'Tree', 'Warrior', 'Half_Frog'
 ]
 
 let interval
@@ -53,7 +44,7 @@ function Yoga() {
   const [currentTime, setCurrentTime] = useState(0)
   const [poseTime, setPoseTime] = useState(0)
   const [bestPerform, setBestPerform] = useState(0)
-  const [currentPose, setCurrentPose] = useState('Tree')
+  const [currentPose, setCurrentPose] = useState('Chair')
   const [isStartPose, setIsStartPose] = useState(false)
 
 
@@ -83,6 +74,8 @@ function Yoga() {
     Traingle: 5,
     Tree: 6,
     Warrior: 7,
+    Half_Frog: 8
+
   }
 
   function get_center_point(landmarks, left_bodypart, right_bodypart) {
@@ -135,7 +128,7 @@ function Yoga() {
   const runMovenet = async () => {
     const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER };
     const detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
-    const poseClassifier = await tf.loadLayersModel('/model-ml/model.json');
+    const poseClassifier = await tf.loadLayersModel('/ml/model.json');
     const countAudio = new Audio('/music/count.wav');
     countAudio.loop = true
     interval = setInterval(() => {
@@ -223,9 +216,6 @@ function Yoga() {
     clearInterval(interval)
   }
 
-  console.log("hiiiiiiiii")
-  console.log(poseImages[currentPose])
-
   if (isStartPose) {
     return (
       <div className="yoga-container">
@@ -295,7 +285,7 @@ function Yoga() {
       <button
         onClick={startYoga}
         className="secondary-btn"
-      >Start Pose</button>
+      >Pratice nơw</button>
     </div>
   )
 }

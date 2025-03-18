@@ -1,55 +1,54 @@
 export const poseInstructions = {
     Tree: [
-        'Get into position. Tree pose often starts from mountain pose (or Tadasana), with both feet planted firmly on the ground and your weight adequately distributed so that you are balanced.',
-        'Bend one leg at the knee. Choose the leg you are going to fold in first. If your left leg is your standing leg, keep your left foot planted on the ground, and slowly bend in your right leg at the right knee so that the sole of your right foot rests against your left inner thigh (known as the half-lotus position in Bikram yoga). Point the knee of your bent leg outward, away from your body.',
-        'Lengthen your body. Clasp your hands together in Anjali Mudra (also called the “prayer position”)',
-        'Hold and repeat. Hold the pose for as long as necessary, making sure to breathe properly. When you’re ready to switch legs, exhale, and return to mountain pose to start again.'
-        ],
+        'Vào tư thế. Tư thế Cây thường bắt đầu từ tư thế Núi (Tadasana), với cả hai chân đặt chắc chắn trên mặt đất và trọng lượng phân bổ đều để bạn giữ thăng bằng.',
+        'Gập một chân ở đầu gối. Chọn chân bạn sẽ gập trước. Nếu chân trụ là chân trái, giữ bàn chân trái trên mặt đất và từ từ gập chân phải ở đầu gối sao cho lòng bàn chân phải đặt vào đùi trong của chân trái (được gọi là tư thế nửa hoa sen trong yoga Bikram). Hướng đầu gối của chân gập ra ngoài, xa khỏi cơ thể.',
+        'Kéo dài cơ thể. Chắp hai tay lại trong tư thế Anjali Mudra (còn gọi là tư thế cầu nguyện).',
+        'Giữ và lặp lại. Giữ tư thế trong khoảng thời gian cần thiết, đảm bảo thở đúng cách. Khi sẵn sàng đổi chân, thở ra và trở về tư thế Núi để bắt đầu lại.'
+    ],
     Cobra: [
-        'Lie prone on the floor. Stretch your legs back, tops of the feet on the floor. Spread your hands on the floor under your shoulders. Hug the elbows back into your body.',
-        'On an inhalation, begin to straighten the arms to lift the chest off the floor, going only to the height at which you can maintain a connection through your pubis to your legs. Press the tailbone toward the pubis and lift the pubis toward the navel. Narrow the hip points. Firm but don’t harden the buttocks.',
-        'Firm the shoulder blades against the back, puffing the side ribs forward. Lift through the top of the sternum but avoid pushing the front ribs forward, which only hardens the lower back. Distribute the backbend evenly throughout the entire spine.',    
-        'Hold the pose anywhere from 15 to 30 seconds, breathing easily. Release back to the floor with an exhalation.',
-        'Source: Yoga Journal - https://www.yogajournal.com/poses/types/cobra-pose-2/'
+        'Nằm sấp trên sàn. Duỗi chân về phía sau, mu bàn chân chạm sàn. Đặt hai tay xuống sàn dưới vai, kéo khuỷu tay về phía cơ thể.',
+        'Hít vào, bắt đầu duỗi thẳng tay để nâng ngực khỏi sàn, nâng lên mức độ bạn có thể giữ được sự kết nối từ xương mu đến chân. Đẩy xương cụt về phía xương mu và nâng xương mu về phía rốn. Khép hông lại. Siết chắc cơ mông nhưng không quá căng cứng.',
+        'Đẩy xương bả vai vào lưng, mở rộng xương sườn bên. Nâng cao đỉnh xương ức nhưng tránh đẩy xương sườn trước về phía trước, điều này có thể làm cứng lưng dưới. Phân bổ lực uốn cong đều trên toàn bộ cột sống.',
+        'Giữ tư thế từ 15 đến 30 giây, thở nhẹ nhàng. Thả lỏng trở lại sàn khi thở ra.'
     ],
     Dog: [
-        'Come onto your hands and knees, with your hands a tiny bit in front of your shoulders and your knees directly below your hips. Spread your palms, rooting down through all four corners of your hands, and turn your toes under.',
-        'Exhale and lift your knees from the floor, at first keeping your knees slightly bent and your heels lifted off the floor. Lengthen your tailbone away from the back of your pelvis, lift the sitting bones toward the ceiling, and draw your inner legs from your inner ankles up through your groins.',
-        'On an exhalation, push your top thighs back and stretch your heels toward the floor. Straighten your knees without locking them.',
-        'Firm your outer arms and press the bases of your index fingers actively into the floor. Lift along your inner arms from the wrists to the tops of the shoulders. Firm your shoulder blades against your back, then widen them and draw them toward your tailbone. Keep your head between your upper arms.',
-        'Stay in the pose for 10 or more breaths, then bend your knees on an exhalation and lower yourself into Child’s Pose',
-        'Source: Yoga Journal - https://www.yogajournal.com/poses/types/downward-facing-dog/'
-    
+        'Vào tư thế quỳ, đặt hai tay hơi trước vai và đầu gối thẳng hàng dưới hông. Xòe bàn tay, đặt chắc chắn trên mặt đất, và xoay các ngón chân xuống.',
+        'Thở ra và nhấc đầu gối khỏi sàn, ban đầu giữ đầu gối hơi cong và gót chân nhấc khỏi mặt đất. Kéo dài xương cụt ra xa khỏi lưng, nâng xương ngồi lên trần nhà.',
+        'Thở ra, đẩy đùi trên về phía sau và duỗi gót chân xuống mặt đất. Duỗi thẳng đầu gối mà không khóa khớp.',
+        'Siết chặt cánh tay ngoài và ấn mạnh gốc ngón trỏ xuống sàn. Nâng từ cổ tay lên đến vai. Giữ đầu giữa hai cánh tay trên.',
+        'Giữ tư thế trong 10 nhịp thở hoặc hơn, sau đó gập đầu gối khi thở ra và hạ xuống tư thế Trẻ Em.'
     ],
     Chair: [
-        'Stand straight and tall with your feet slightly wider than hip­-width apart and your arms at your sides.',
-        'Inhale and lift your arms next to your ears, stretching them straight and parallel with wrists and fingers long. Keep your shoulders down and spine neutral.',
-        'Exhale as you bend your knees, keeping your thighs and knees parallel. Lean your torso forward to create a right angle with the tops of your thighs. Keep your neck and head in line with your torso and arms. Hold for 30 seconds to 1 minute.',
-        'Source: classpass - https://classpass.com/movements/chair-pose'
+        'Đứng thẳng với hai chân rộng hơn hông một chút, hai tay đặt bên hông.',
+        'Hít vào, nâng tay lên ngang tai, duỗi thẳng và song song với nhau, cổ tay và ngón tay thẳng. Giữ vai thả lỏng và cột sống thẳng.',
+        'Thở ra, gập đầu gối, giữ đùi và đầu gối song song. Nghiêng thân trên về phía trước để tạo góc vuông với đùi trên. Giữ cổ và đầu thẳng hàng với thân và cánh tay. Giữ từ 30 giây đến 1 phút.'
     ],
     Warrior: [
-        'Begin in lunge with your front knee bent, your back leg straight and your back heel lifted. Your hips and chest should be squared to front of the mat. Raise your arms above your head.',
-        'Move your hands to your heart, with palms pressed against each other in a prayer position. Lean forward until your back leg extends straight back, even with your hips. Keep your foot flexed and your gaze downward.',
-        'Make sure your standing leg is strong and straight, but not locked at knee. Reach your arms forward so your body forms a “T” shape.',
-        'Source classpass - https://classpass.com/movements/warrior-3-pose'
+        'Bắt đầu ở tư thế chùng chân với đầu gối trước gập, chân sau duỗi thẳng và gót sau nhấc khỏi mặt đất. Hông và ngực hướng về phía trước. Nâng hai tay lên trên đầu.',
+        'Đưa hai tay về phía ngực, lòng bàn tay ép vào nhau trong tư thế cầu nguyện. Nghiêng người về phía trước cho đến khi chân sau duỗi thẳng ngang hông. Giữ bàn chân linh hoạt và mắt nhìn xuống.',
+        'Đảm bảo chân trụ vững chắc và thẳng, nhưng không khóa khớp gối. Duỗi tay về phía trước để tạo thành hình chữ "T".'
     ],
     Traingle: [
-        'Begin standing, then lightly jump your feet apart to a wide position about three to four feet apart. Turn your left foot out and turn to face that direction. Take a slight bend in your left leg and raise your arms out on your sides, forming a “T” shape.',
-        'Straighten through your left leg, then hinge and reach your torso over your left leg as your hips jut back. Rotate your left palm so it faces the ceiling, and gaze out over your left arm.',
-        'Maintain a long, straight spine as you reach your left hand to the mat, placing it in front of your left foot. If you feel off balance, bring in your back leg closer to shorten your stance. Gaze towards your right arm, which should be extended overhead. Hold and repeat on the other side.',
-        'Source classpass - https://classpass.com/movements/triangle-pose'
+        'Bắt đầu đứng thẳng, sau đó bước chân ra xa khoảng 3 đến 4 bước. Xoay chân trái ra ngoài và quay người theo hướng đó. Gập nhẹ đầu gối trái và nâng hai tay tạo thành hình chữ “T”.',
+        'Duỗi thẳng chân trái, nghiêng người về phía trước qua chân trái khi hông đẩy về phía sau. Xoay lòng bàn tay trái hướng lên và nhìn qua cánh tay trái.',
+        'Giữ lưng thẳng, đặt tay trái xuống thảm trước chân trái. Nếu cảm thấy mất thăng bằng, thu chân sau lại để rút ngắn khoảng cách. Nhìn lên cánh tay phải duỗi thẳng trên đầu. Giữ và lặp lại ở bên còn lại.'
     ],
     Shoulderstand: [
-        'Start with a stack of two folded blankets. Lay down on your mat aligning shoulders onto the blankets. With legs bent and feet on the floor (as if setting up for bridge pose) begin to walk your shoulders underneath your upper back feeling the chest gently rising.',
-        'Lift your hips off of the mat coming into bridge pose and extend your arms onto the ground, palms facing down as if your hands could touch your heels. Press firmly into the palms using them as leverage to lift onto the balls of the feet and extend one leg up. Bend at the elbows, place your hands on your low back creating a shelf, and then extend the next leg up.',
-        "Once you raise the legs, don't turn your head to the side to look around the room, since you can injure your neck. Keep your gaze upward and your neck straight.",
-        "Lift up through the balls of your feet. Walk your hands further up the back for more stability. Feel the chest reaching towards the chin to support opening the upper back.",
-        "Move your hips toward the front of the room and your feet toward the back of the room to straighten the body. The correct alignment is with the hips over the shoulders and feet over the hips. Ask your teacher or a friend to help you determine if your legs are perpendicular to the floor.",
-        "Stay in the pose for up to 10 breaths",
-        'Source: verywellfit - https://www.verywellfit.com/shoulderstand-salamba-sarvangasana-3567115'
+        'Chuẩn bị một tấm thảm gấp làm đệm. Nằm xuống, đặt vai lên thảm. Gập đầu gối, đặt bàn chân trên sàn (giống tư thế Cầu) và bắt đầu di chuyển vai vào trong để nâng nhẹ ngực lên.',
+        'Nâng hông lên khỏi thảm vào tư thế Cầu, duỗi thẳng cánh tay trên sàn, lòng bàn tay úp xuống. Dùng lực cánh tay để nâng lên, gập khuỷu tay, đặt tay vào lưng dưới làm điểm tựa, sau đó duỗi thẳng từng chân lên.',
+        'Khi nâng chân, không quay đầu để nhìn xung quanh vì có thể gây chấn thương cổ. Giữ mắt nhìn lên và cổ thẳng.',
+        'Đẩy lên qua lòng bàn chân. Di chuyển tay lên lưng để tạo độ vững chắc hơn. Để ngực hướng về cằm để mở phần trên lưng.',
+        'Di chuyển hông về phía trước và chân về phía sau để cơ thể thẳng. Hông thẳng trên vai, chân thẳng trên hông. Có thể nhờ giáo viên hoặc bạn giúp kiểm tra sự thẳng hàng.',
+        'Giữ tư thế trong 10 nhịp thở.'
+    ],
+    Half_Frog: [
+        "Nằm sấp trên thảm, chống khuỷu tay xuống sàn, nâng ngực lên vào tư thế Sphinx.",
+        "Gập một đầu gối, đưa gót chân về phía mông. Dùng tay cùng bên hoặc đối diện để nắm lấy cổ chân.",
+        "Nhẹ nhàng kéo chân về phía hông, đồng thời mở rộng ngực và giữ vai thư giãn.",
+        "Giữ tư thế trong 5-10 nhịp thở, sau đó đổi bên."
     ]
-    
-}
+
+};
 
 
 export const tutorials = [
@@ -64,26 +63,26 @@ export const fixCamera = [
     'Solution 1. Make sure you have allowed the permission of camera, if you have denined the permission, go to setting of your browser to allow the access of camera to the application.',
     'Solution 2. Make sure no any other application is not accessing camera at that time, if yes, close that application',
     'Solution 3. Try to close all the other opened broswers'
-] 
+]
 
 export const POINTS = {
-    NOSE : 0,
-    LEFT_EYE : 1,
-    RIGHT_EYE : 2,
-    LEFT_EAR : 3,
-    RIGHT_EAR : 4,
-    LEFT_SHOULDER : 5,
-    RIGHT_SHOULDER : 6,
-    LEFT_ELBOW : 7,
-    RIGHT_ELBOW : 8,
-    LEFT_WRIST : 9,
-    RIGHT_WRIST : 10,
-    LEFT_HIP : 11,
-    RIGHT_HIP : 12,
-    LEFT_KNEE : 13,
-    RIGHT_KNEE : 14,
-    LEFT_ANKLE : 15,
-    RIGHT_ANKLE : 16,
+    NOSE: 0,
+    LEFT_EYE: 1,
+    RIGHT_EYE: 2,
+    LEFT_EAR: 3,
+    RIGHT_EAR: 4,
+    LEFT_SHOULDER: 5,
+    RIGHT_SHOULDER: 6,
+    LEFT_ELBOW: 7,
+    RIGHT_ELBOW: 8,
+    LEFT_WRIST: 9,
+    RIGHT_WRIST: 10,
+    LEFT_HIP: 11,
+    RIGHT_HIP: 12,
+    LEFT_KNEE: 13,
+    RIGHT_KNEE: 14,
+    LEFT_ANKLE: 15,
+    RIGHT_ANKLE: 16,
 }
 
 export const keypointConnections = {

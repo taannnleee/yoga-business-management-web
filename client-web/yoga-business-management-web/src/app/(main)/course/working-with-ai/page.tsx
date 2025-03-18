@@ -1,9 +1,9 @@
 
 import React from 'react'
-
+import Yoga from "@/app/(main)/course/working-with-ai/Yoga.mjs"
 const page = () => {
   return (
-    <div>page1111111111111111111111111111111111111111</div>
+    <Yoga></Yoga>
   )
 }
 export default page;

@@ -12,7 +12,8 @@ export const poseImages = {
     Warrior: "/pose_images/warrior.jpg",
     Chair: "/pose_images/chair.jpg",
     Traingle: "/pose_images/traingle.jpg",
-    Shoulderstand: "/pose_images/shoulderstand.jpg"
+    Shoulderstand: "/pose_images/shoulderstand.jpg",
+    Half_Frog: "/pose_images/halffrog.png"
 };
 export default function Instructions({ currentPose }) {
 

@@ -42,7 +42,7 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
 
   return (
     <>
-      <div className="w-full shadow-lg pb-4  bg-white laptop:pb-0 border-b border-gray-200">
+      <div className="fixed w-full shadow-lg pb-4  bg-white laptop:pb-0 border-b border-gray-200 z-50">
         <div className="w-full flex space-x-4  tablet:space-x-6 laptop:space-x-6 desktop:space-x-8 items-center px-4 py-4  justify-between laptop:justify-around">
           <div className="flex laptop:hidden  w-1/3 laptop:w-0">
             <button

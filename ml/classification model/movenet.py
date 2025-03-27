@@ -40,9 +40,13 @@ class Movenet(object):
 
   # Configure how confidence the model should be on the detected keypoints to
   # proceed with using smart cropping logic.
-  _MIN_CROP_KEYPOINT_SCORE = 0.2
-  _TORSO_EXPANSION_RATIO = 1.9
-  _BODY_EXPANSION_RATIO = 1.2
+ # _MIN_CROP_KEYPOINT_SCORE: Ngưỡng tối thiểu cho điểm tin cậy của keypoint (điểm trên cơ thể) để quyết định có cắt ảnh thông minh hay không.
+#_TORSO_EXPANSION_RATIO: Tỉ lệ mở rộng vùng thân trên.
+#_BODY_EXPANSION_RATIO: Tỉ lệ mở rộng vùng cơ thể.
+
+  _MIN_CROP_KEYPOINT_SCORE = 0.2 #điểm tin cậy tối thiểu để xác định một điểm cơ thể hơp lệ
+  _TORSO_EXPANSION_RATIO = 1.9 #hệ số mở rộng vùng thân trên
+  _BODY_EXPANSION_RATIO = 1.2  #hệ số mở rộng vùng cơ thể
 
   def __init__(self, model_name: str) -> None:
     """Initialize a MoveNet pose estimation model.
@@ -57,17 +61,17 @@ class Movenet(object):
       model_name += '.tflite'
 
     # Initialize model
-    interpreter = Interpreter(model_path=model_name, num_threads=4)
-    interpreter.allocate_tensors()
+    interpreter = Interpreter(model_path=model_name, num_threads=4) #sử dụng 4 luồng
+    interpreter.allocate_tensors() #Cấp phát bộ nhớ cho các tensor đầu vào và đầu ra // Load mô hình vào bộ nhớ
 
-    self._input_index = interpreter.get_input_details()[0]['index']
+    self._input_index = interpreter.get_input_details()[0]['index']  #Lấy vị trí index của tensor đầu vào
     self._output_index = interpreter.get_output_details()[0]['index']
 
     self._input_height = interpreter.get_input_details()[0]['shape'][1]
     self._input_width = interpreter.get_input_details()[0]['shape'][2]
 
     self._interpreter = interpreter
-    self._crop_region = None
+    self._crop_region = None  
 
   def init_crop_region(self, image_height: int,
                        image_width: int) -> Dict[(str, float)]:
@@ -84,6 +88,11 @@ class Movenet(object):
     Returns:
       crop_region (dict): The default crop region.
     """
+    
+    #Giữ nguyên chiều rộng (box_width = 1.0).
+#Cắt trên & dưới để biến ảnh thành hình vuông.
+#y_min được tính để giữ ảnh nằm giữa.
+#Ví dụ: Nếu ảnh có kích thước 1000x500, cần đệm 250 px trên và 250 px dưới để thành 1000x1000.
     if image_width > image_height:
       x_min = 0.0
       box_width = 1.0
@@ -106,6 +115,7 @@ class Movenet(object):
         'width': box_width
     }
 
+  #kiểm tra xem có đủ keypoint của phần thân trên hay không (có ít nhất 1 vai và 1 hong là đủ)
   def _torso_visible(self, keypoints: np.ndarray) -> bool:
     """Checks whether there are enough torso keypoints.
 
@@ -131,6 +141,7 @@ class Movenet(object):
     return ((left_hip_visible or right_hip_visible) and
             (left_shoulder_visible or right_shoulder_visible))
 
+  #xác định khoảng cách giữa các bộ phân trọng cơ thể
   def _determine_torso_and_body_range(self, keypoints: np.ndarray,
                                       target_keypoints: Dict[(str, float)],
                                       center_y: float,
@@ -210,16 +221,24 @@ class Movenet(object):
       ]
 
     # Calculate crop region if the torso is visible.
-    if self._torso_visible(keypoints):
+    if self._torso_visible(keypoints):#kiểm tra phần thân trên có hiện diện không(4 điểm chính)
+      #tìm trung điểm giữa hong trái và hong phải
       center_y = (target_keypoints[BodyPart.LEFT_HIP][0] +
                   target_keypoints[BodyPart.RIGHT_HIP][0]) / 2
       center_x = (target_keypoints[BodyPart.LEFT_HIP][1] +
                   target_keypoints[BodyPart.RIGHT_HIP][1]) / 2
 
+
+      #hàm _determine_torso_and_body_range tính toán khoảng cách tối đa từ các điểm trên cơ thể đến tâm (hông).
+ #     max_torso_yrange, max_torso_xrange: Khoảng cách lớn nhất từ tâm đến vai/hông.
+#max_body_yrange, max_body_xrange: Khoảng cách lớn nhất từ tâm đến các điểm khác trên cơ thể.
       (max_torso_yrange, max_torso_xrange, max_body_yrange,
        max_body_xrange) = self._determine_torso_and_body_range(
            keypoints, target_keypoints, center_y, center_x)
 
+#xác định kích thước của vùng cắt:
+#Movenet._TORSO_EXPANSION_RATIO: Hệ số mở rộng để đảm bảo vùng cắt đủ rộng chứa toàn bộ thân trên.
+#Movenet._BODY_EXPANSION_RATIO: Hệ số mở rộng cho toàn bộ cơ thể.
       crop_length_half = np.amax([
           max_torso_xrange * Movenet._TORSO_EXPANSION_RATIO,
           max_torso_yrange * Movenet._TORSO_EXPANSION_RATIO,
@@ -228,6 +247,8 @@ class Movenet(object):
       ])
 
       # Adjust crop length so that it is still within the image border
+      #Đảm bảo vùng cắt không lớn hơn khoảng cách từ trung tâm đến biên ảnh.
+      #crop_length_half sẽ bị giới hạn để không vượt quá kích thước ảnh.
       distances_to_border = np.array(
           [center_x, image_width - center_x, center_y, image_height - center_y])
       crop_length_half = np.amin(
@@ -240,6 +261,10 @@ class Movenet(object):
       else:
         crop_length = crop_length_half * 2
       crop_corner = [center_y - crop_length_half, center_x - crop_length_half]
+
+
+      #Xác định vùng cắt tọa độ (y_min, x_min, y_max, x_max) dưới dạng tỉ lệ (0-1).
+      #height và width tính toán kích thước vùng cắt.
       return {
           'y_min':
               crop_corner[0] / image_height,
@@ -254,28 +279,36 @@ class Movenet(object):
       }
     # Return the initial crop regsion if the torso isn't visible.
     else:
+      #sử dụng vùng căt mặt định là toàn bộ ảnh
       return self.init_crop_region(image_height, image_width)
 
   def _crop_and_resize(
-      self, image: np.ndarray, crop_region: Dict[(str, float)],
-      crop_size: (int, int)) -> np.ndarray:
+      self, image: np.ndarray, crop_region: Dict[(str, float)],   #ví dụ crop_region (y_min=200, x_min=100, y_max=800, x_max=700)
+      crop_size: (int, int)) -> np.ndarray:                       #crop_size : (1000 x 800)
     """Crops and resize the image to prepare for the model input."""
     y_min, x_min, y_max, x_max = [
         crop_region['y_min'], crop_region['x_min'], crop_region['y_max'],
         crop_region['x_max']
     ]
 
-    crop_top = int(0 if y_min < 0 else y_min * image.shape[0])
+#xác định biên trên dưới trái phải của vùng cắt
+#y_min và x_min nhỏ hơn 0: vùng cắt nằm ngoài ảnh (cần xử lý padding).
+#y_max và x_max lớn hơn 1: vùng cắt vượt quá kích thước ảnh (cũng cần padding).
+    crop_top = int(0 if y_min < 0 else y_min * image.shape[0])              #*image.shape[0] : quy đổi về pixel
     crop_bottom = int(image.shape[0] if y_max >= 1 else y_max * image.shape[0])
     crop_left = int(0 if x_min < 0 else x_min * image.shape[1])
     crop_right = int(image.shape[1] if x_max >= 1 else x_max * image.shape[1])
 
+
+#Nếu vùng cắt nằm ngoài ảnh, cần thêm padding để không làm mất dữ liệu.
+#Ví dụ: Nếu y_min = -0.1 (vượt lên trên 10% so với ảnh gốc), thì padding_top sẽ bằng 0 - (-0.1 * image.shape[0]), tức là 10% chiều cao ảnh.
     padding_top = int(0 - y_min * image.shape[0] if y_min < 0 else 0)
     padding_bottom = int((y_max - 1) * image.shape[0] if y_max >= 1 else 0)
     padding_left = int(0 - x_min * image.shape[1] if x_min < 0 else 0)
     padding_right = int((x_max - 1) * image.shape[1] if x_max >= 1 else 0)
 
     # Crop and resize image
+    #Cắt ảnh từ crop_top → crop_bottom theo chiều cao, crop_left → crop_right theo chiều rộng.
     output_image = image[crop_top:crop_bottom, crop_left:crop_right]
     output_image = cv2.copyMakeBorder(output_image, padding_top, padding_bottom,
                                       padding_left, padding_right,
@@ -307,12 +340,13 @@ class Movenet(object):
 
     self._interpreter.set_tensor(self._input_index,
                                  np.expand_dims(input_image, axis=0))
-    self._interpreter.invoke()
+    self._interpreter.invoke() # chạy mô hình để nhận diện key point
 
-    keypoints_with_scores = self._interpreter.get_tensor(self._output_index)
-    keypoints_with_scores = np.squeeze(keypoints_with_scores)
+    keypoints_with_scores = self._interpreter.get_tensor(self._output_index)  #Lấy kết quả đầu ra từ mô hình. # Lấy kết quả dự đoán
+    keypoints_with_scores = np.squeeze(keypoints_with_scores)  #Loại bỏ các chiều đơn lẻ để giữ lại mảng [17, 3]
 
     # Update the coordinates.
+    #Đoạn code này cập nhật tọa độ của các điểm trên cơ thể (keypoints) từ hệ quy chiếu của ảnh đã cắt về hệ quy chiếu của ảnh gốc.
     for idx in range(len(BodyPart)):
       keypoints_with_scores[idx, 0] = crop_region[
           'y_min'] + crop_region['height'] * keypoints_with_scores[idx, 0]

@@ -14,14 +14,15 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 const RootLayoutClient = ({ children }: { children: React.ReactNode }) => {
     return (
+
         <ThemeProvider theme={theme}>
             <AppRouterCacheProvider>
                 <CssBaseline />
                 <Provider store={store}> {/* Wrap Redux store here */}
                     <ToastProvider>
-                    <HeaderSwitcher /> {/* Your header component */}
+                        <HeaderSwitcher /> {/* Your header component */}
 
-                        <div style={{ minHeight: "70vh", backgroundColor: "white" }}>
+                        <div style={{ minHeight: "70vh", backgroundColor: "white", paddingTop: "80px" }}>
                             {children} {/* Render the page content */}
                         </div>
                     </ToastProvider>

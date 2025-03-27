@@ -133,7 +133,7 @@ function Yoga() {
     countAudio.loop = true
     interval = setInterval(() => {
       detectPose(detector, poseClassifier, countAudio)
-    }, 100)
+    }, 100) // 100ms chạy 1 lần
   }
 
   const detectPose = async (detector, poseClassifier, countAudio) => {
@@ -143,8 +143,8 @@ function Yoga() {
       webcamRef.current.video.readyState === 4
     ) {
       let notDetected = 0
-      const video = webcamRef.current.video
-      const pose = await detector.estimatePoses(video)
+      const video = webcamRef.current.video  // lấy khung hình từ webcam
+      const pose = await detector.estimatePoses(video) // dự đoán tư thế
       const ctx = canvasRef.current.getContext('2d')
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       try {
@@ -185,7 +185,7 @@ function Yoga() {
           if (data[0][classNo] > 0.97) {
 
             if (!flag) {
-              countAudio.play()
+              // countAudio.play()
               setStartingTime(new Date(Date()).getTime())
               flag = true
             }
@@ -264,7 +264,7 @@ function Yoga() {
         </div>
         <button
           onClick={stopPose}
-          className="secondary-btn"
+          className="secondary-btn z-50"
         >Stop Pose</button>
       </div>
     )

@@ -4,10 +4,10 @@ import '../globals.css'; // Your global styles
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-      <Provider store={store}>
-        <html lang="en">
+    <Provider store={store}>
+      <html lang="en">
         <body>{children}</body>
-        </html>
-      </Provider>
+      </html>
+    </Provider>
   );
 }

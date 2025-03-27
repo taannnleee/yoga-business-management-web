@@ -83,6 +83,7 @@ const UserDropdownMenu: React.FC<IProps> = ({ isHovered }) => {
                 {accessToken ? (
                     <div className="space-y-2 w-28 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
                         <p className="cursor-pointer w-full" onClick={() => router.push("/address")}>Địa chỉ</p>
+                        <p className="cursor-pointer w-full" onClick={() => router.push("/bmi")}>Chỉ số BMI</p>
                         <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của bạn</p>
                         <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
                         <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
@@ -104,7 +105,7 @@ const UserDropdownMenu: React.FC<IProps> = ({ isHovered }) => {
                         <p className="cursor-pointer">Facebook</p>
                         <p className="cursor-pointer">Google</p>
                     </div>
-                
+
                 )}
             </div>
         )

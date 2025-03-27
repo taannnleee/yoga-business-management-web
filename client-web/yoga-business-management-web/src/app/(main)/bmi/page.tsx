@@ -155,12 +155,11 @@ const DietPage = () => {
   const [mealsPerDay, setMealsPerDay] = useState(3);
 
   return (
-    //<DefaultLayout>
     <>
       <section>
         <h1 className="text-xl font-bold w-full">Diet Recommediation</h1>
         <div className="flex flex-row gap-3">
-          <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6">
+          <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6  ml-10">
             <div className="flex flex-col gap-2 ">
               <div className="flex gap-2 items-center">
                 <p>Birthdate</p>

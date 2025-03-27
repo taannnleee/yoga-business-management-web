@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import RadioGroup from '@/app/(main)/bmi/RadioGroup'; // hoặc đường dẫn chính xác tới file Collection.jsx
+import RadioGroup from '@/app/(main)/bmi/RadioGroup';
 import { DatePicker, Space, Button, Select, Divider, Collapse } from "antd";
 import CustomSlider from "./CustomSlider";
 import dayjs from "dayjs";
@@ -24,10 +24,7 @@ const DietPage = () => {
       label: "Chỉ số BMI là gì? - Định nghĩa chỉ số cơ thể BMI",
       children: (
         <p>
-          Chỉ số khối cơ thể (BMI) là phép đo trọng lượng của một người tương
-          ứng với chiều cao của người đó. Chỉ số BMI có thể cho thấy bạn đang có
-          mức cân nặng bình thường so với chiều cao hay béo phì, thừa cân, thiếu
-          cân hay suy dinh dưỡng.
+          Chỉ số BMI (Body Mass Index) là một chỉ số dùng để đánh giá tình trạng cơ thể của một người dựa trên cân nặng và chiều cao. Chỉ số BMI giúp phân loại mức độ béo phì, gầy hay cân đối của cơ thể.
         </p>
       ),
     },
@@ -66,12 +63,11 @@ const DietPage = () => {
       label: "Tại sao bạn nên biết về chỉ số BMI",
       children: (
         <p>
-          Biết được chỉ số BMI của bạn cho phép bạn kiểm soát tỷ lệ chất béo
-          trong cơ thể tương quan với chiều cao, cũng như biết được nguy cơ hình
-          thành một số vấn đề sức khỏe liên quan. Chỉ số BMI cao có thể dẫn đến
-          nguy cơ thừa cân, trong đó không loại trừ khả năng mắc bệnh tiểu đường
-          type 2, bệnh tim và tăng huyết áp. Hiểu về chỉ số BMI cho phép bạn và
-          chuyên gia y tế chăm sóc sức khỏe của bạn tốt hơn.
+          Đánh giá tình trạng cơ thể: BMI là một công cụ đơn giản để xác định liệu bạn có đang ở trong phạm vi cân nặng khỏe mạnh hay không. Nó giúp bạn nhận biết liệu mình có thừa cân, thiếu cân, hay đang ở mức bình thường.
+
+          Ngăn ngừa các bệnh lý liên quan đến cân nặng: BMI có thể giúp bạn nhận diện các nguy cơ sức khỏe liên quan đến thừa cân hoặc béo phì, chẳng hạn như bệnh tim mạch, tiểu đường, cao huyết áp, và nhiều bệnh mãn tính khác. Việc theo dõi chỉ số BMI sẽ giúp bạn chủ động phòng ngừa các vấn đề này.
+
+          Dễ dàng theo dõi sự thay đổi sức khỏe: Khi bạn theo dõi chỉ số BMI của mình theo thời gian, bạn có thể dễ dàng nhận biết được sự thay đổi trong tình trạng cơ thể, chẳng hạn như sự tăng cân hoặc giảm cân, từ đó có thể đưa ra những điều chỉnh cần thiết trong chế độ ăn uống và tập luyện.
         </p>
       ),
     },
@@ -79,11 +75,7 @@ const DietPage = () => {
       label: "Chỉ số BMI cao có gây nguy hiểm nghiêm trọng đến sức khỏe không?",
       children: (
         <p>
-          Đo BMI có thể là một công cụ sàng lọc nhưng không dùng chẩn đoán tình
-          trạng béo phì hoặc sức khỏe cá nhân. Để xác định chỉ số BMI có tiềm ẩn
-          một nguy cơ ảnh hưởng sức khỏe hay không, bác sĩ hay các chuyên gia y
-          tế sẽ cần thực hiện thêm những đánh giá khác như đo độ dày nếp gấp da,
-          đánh giá chế độ ăn uống, hoạt động thể chất và tiền sử gia đình.
+          Chỉ số BMI cao, đặc biệt là khi nằm trong phạm vi thừa cân (25–29.9) hoặc béo phì (30 trở lên), có thể gây nguy hiểm nghiêm trọng đến sức khỏe nếu không được kiểm soát. Dưới đây là một số lý do tại sao BMI cao có thể ảnh hưởng xấu đến sức khỏe
         </p>
       ),
     },
@@ -91,59 +83,21 @@ const DietPage = () => {
       label: "Những nguy cơ gây béo phì bạn cần nắm",
       children: (
         <p>
-          Nếu bạn có chỉ số BMI từ 30,0 trở lên, kết quả này được phân loại là
-          béo phì. Béo phì có ảnh hưởng đến cơ thể và những người béo phì có
-          nguy cơ tử vong cao hơn bình thường do dễ mắc một số tình trạng sức
-          khỏe như:
-          <br />– Bệnh tiểu đường type 2
-          <br />– Cholesterol LDL cao, cholesterol HDL thấp hoặc mức lipid máu
-          không tốt cho sức khỏe (mỡ trong máu)
-          <br />– Bệnh tim mạch vành
-          <br />– Đột quỵ
-          <br />– Bệnh túi mật
+          Béo phì là một tình trạng sức khỏe phức tạp và có thể gây ra nhiều vấn đề nghiêm trọng cho cơ thể. Dưới đây là những nguy cơ chính có thể dẫn đến béo phì mà bạn cần nắm:
+          <br />– Chế độ ăn uống không lành mạnh
+          <br />– Lối sống ít vận động
+          <br />– Rối loạn nội tiết
+          <br />– Căng thẳng và yếu tố tâm lý
+          <br />– Tuổi tác
           <br />– Viêm xương khớp
           <br />– Ngưng thở khi ngủ và các vấn đề về hô hấp
           <br />– Tình trạng viêm mãn tính và tăng stress oxy hóa
-          <br />– Ung thư
+          <br />– Thuốc và các vấn đề y tế khác
           <br />– Trầm cảm, rối loạn lo âu và các tình trạng sức khỏe tâm thần
           khác
         </p>
       ),
-    },
-    {
-      label: "Những nguy cơ gây thiếu cân bạn cần nắm",
-      children: (
-        <p>
-          Nếu chỉ số BMI của bạn dưới 18,5, bạn đang thiếu cân so với chiều cao
-          của mình. Khi mức cân nặng thấp hơn nhiều so với trọng lượng lý tưởng,
-          bạn cũng có nguy cơ mắc các bệnh khác do thiếu dinh dưỡng và hệ miễn
-          dịch kém, chẳng hạn như:
-          <br />– Suy dinh dưỡng
-          <br />– Thiếu máu
-          <br />– Loãng xương do thiếu canxi và vitamin D
-          <br />– Các vấn đề về khả năng sinh sản do chu kỳ kinh nguyệt không
-          đều
-          <br />– Nguy cơ biến chứng hậu phẫu thuật cao hơn
-          <br />– Thấp còi và các vấn đề về phát triển khác ở trẻ em và thanh
-          thiếu niên
-        </p>
-      ),
-    },
-    {
-      label:
-        "Chỉ số BMI có phải là một chỉ số tốt để đánh giá lượng mỡ trong cơ thể?",
-      children: (
-        <p>
-          Mặc dù chỉ số BMI và lượng mỡ có thể có mối tương quan chặt chẽ nhưng
-          không có nghĩa 2 người cùng chỉ số BMI sẽ có cùng lượng mỡ trong cơ
-          thể. Sự khác biệt có thể phụ thuộc vào tạng người, tuổi tác, giới tính
-          và mức độ hoạt động thể chất. Ngay cả ở cùng một chỉ số BMI, các vận
-          động viên sẽ có lượng mỡ cơ thể ít hơn những người không phải là vận
-          động viên; người lớn tuổi sẽ có lượng mỡ nhiều hơn những người trẻ
-          tuổi; phụ nữ thường có lượng mỡ nhiều hơn nam giới.
-        </p>
-      ),
-    },
+    }
   ];
 
   const [selectGoal, setSelectGoal] = useState("Maintain weight");
@@ -157,15 +111,12 @@ const DietPage = () => {
   return (
     <>
       <section>
-        <h1 className="text-xl font-bold w-full">Diet Recommediation</h1>
+        <h1 className="text-xl font-bold w-full">Nhập vào thông tin của bạn</h1>
         <div className="flex flex-row gap-3">
           <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6  ml-10">
             <div className="flex flex-col gap-2 ">
               <div className="flex gap-2 items-center">
                 <p>Birthdate</p>
-                <span className="p-2 border-[1px] text-white bg-blue-600 rounded-xl">
-                  {"hihihi"} years old
-                </span>
               </div>
 
               <div className="w-full flex justify-center items-center">
@@ -174,7 +125,7 @@ const DietPage = () => {
 
                     style={{ width: "100%" }}
                     format="YYYY-MM-DD"
-                    defaultValue={dayjs()} // Hiển thị ngày hiện tại mặc định
+                    defaultValue={dayjs()}
                   />
                 </Space>
               </div>
@@ -266,7 +217,7 @@ const DietPage = () => {
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <p>Tell CareX your goal</p>
+              <p>Your goal</p>
               <div className="flex  flex-row">
                 <Select
                   style={{
@@ -323,17 +274,16 @@ const DietPage = () => {
                 // navigate("/bmiresult");
               }}
             >
-              Save and get recommendation
+              Submit
             </Button>
           </div>
           <div className="right-side pl-10 w-3/6 pt-8">
             <div>
-              <p className="flex flex-row justify-center items-center text-base font-semibold text-blue-500">
+              <p className="flex flex-row justify-start items-center text-base font-semibold text-blue-500">
                 <IoIosInformationCircleOutline
                   style={{ width: "40px", height: "20px" }}
                 />
-                Information (sources collection from many platform by CareX
-                team)
+                Thông tin
               </p>
               <div>
                 <Collapse

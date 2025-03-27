@@ -342,3 +342,4 @@ UI-Yoga/node_modules/*
 ml/classification model/movenet_thunder.tflite
 ml/classification model/yoga_poses/**
 ml/classification model/node_modules
+UI-Yoga/frontend/node_modules/

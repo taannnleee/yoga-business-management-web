@@ -37,7 +37,7 @@ interface IInputProps {
     setPrevTotalPrice: (number: number) => void;
     setLoadPrice: (b: boolean) => void;
     selectedIds: string[]; // <-- Thêm: danh sách ID được chọn
-    setSelectedIds: (selectedIds: (prev: string[]) => string[]) => void;
+    setSelectedIds: () => void;
 }
 
 

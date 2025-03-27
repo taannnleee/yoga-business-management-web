@@ -93,8 +93,8 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const handleRemoveProduct = (productId: string) => {
         if (carts) {
             setLoadPrice(true);
-            setCarts((prevCarts) => {
-                const updatedCartItems = prevCarts.cartItem.filter((item) => item.product.id !== productId);
+            setCarts((prevCarts:any) => {
+                const updatedCartItems = prevCarts.cartItem.filter((item: { product: { id: string; }; }) => item.product.id !== productId);
                 return { ...prevCarts, cartItem: updatedCartItems };
             });
         }

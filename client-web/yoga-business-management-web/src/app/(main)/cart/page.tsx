@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {Typography, Container, Grid, CssBaseline, Button, CircularProgress, IconButton} from "@mui/material";
+import { Typography, Container, Grid, CssBaseline, Button, CircularProgress, IconButton } from "@mui/material";
 import ShoppingCartItem from "../../../../src/components/atom/ShoppingCartItem";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosClient";
 import { API_URL } from "@/config/url";
 import { FaSpinner } from "react-icons/fa";
-import {MagnifyingGlassCircleIcon} from "@heroicons/react/24/solid";
+import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CountUp from "react-countup";
 
@@ -44,7 +44,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const [error, setError] = useState<string | null>(null); // Lưu lỗi nếu có
     const router = useRouter();
     const [isMultiple, setIsMultiple] = useState(false);
-// Thêm state lưu giá trị trước đó
+    // Thêm state lưu giá trị trước đó
     const [prevTotalPrice, setPrevTotalPrice] = useState(0);
     const [selectedIds, setSelectedIds] = useState([]);
 
@@ -93,7 +93,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const handleRemoveProduct = (productId: string) => {
         if (carts) {
             setLoadPrice(true);
-            setCarts((prevCarts:any) => {
+            setCarts((prevCarts: any) => {
                 const updatedCartItems = prevCarts.cartItem.filter((item: { product: { id: string; }; }) => item.product.id !== productId);
                 return { ...prevCarts, cartItem: updatedCartItems };
             });
@@ -136,7 +136,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                         Giỏ hàng của bạn
                     </Typography>
                     <button>
-                        <MagnifyingGlassCircleIcon className="w-10 h-10 text-gray-600 mr-1"/>
+                        <MagnifyingGlassCircleIcon className="w-10 h-10 text-gray-600 mr-1" />
                     </button>
                     <button>
                         {!isMultiple ? (
@@ -194,16 +194,16 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                             <div className="flex items-center gap-4">
                                 <Typography variant="h6" gutterBottom>
                                     Tổng tiền thanh toán: {loadPrice ? (
-                                    <FaSpinner className="animate-spin text-black w-6 h-6 inline-block" />
-                                ) : (
-                                    <CountUp
-                                        start={prevTotalPrice}
-                                        end={carts?.totalPrice ?? 0}
-                                        duration={1.5}
-                                        separator=","
-                                        suffix=" đ"
-                                    />
-                                )}
+                                        <FaSpinner className="animate-spin text-black w-6 h-6 inline-block" />
+                                    ) : (
+                                        <CountUp
+                                            start={prevTotalPrice}
+                                            end={carts?.totalPrice ?? 0}
+                                            duration={1.5}
+                                            separator=","
+                                            suffix=" đ"
+                                        />
+                                    )}
                                 </Typography>
                                 <Button
                                     variant="contained"

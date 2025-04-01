@@ -19,7 +19,7 @@ const BMIResult = () => {
     const generateMeals = async () => {
         setIsLoadingMeals(true);
         const res = await fetch(
-            `${import.meta.env.VITE_PUBLIC_ML_API_URL}/bmi/recommend`,
+            `api/`,
             {
                 method: "POST",
                 headers: {
@@ -40,7 +40,7 @@ const BMIResult = () => {
         (async () => {
             setIsLoadingCalories(true);
             const res = await fetch(
-                `${import.meta.env.VITE_PUBLIC_ML_API_URL}/bmi/calories`,
+                `bmi/calories`,
                 {
                     method: "POST",
                     headers: {
@@ -55,7 +55,7 @@ const BMIResult = () => {
             setIsLoadingCalories(false);
             setBmiData(data);
             setBMI(data.bmi);
-            setHealthInfo(data);
+            // setHealthInfo(data);
             generateMeals();
         })();
     }, [person]);
@@ -100,7 +100,8 @@ const BMIResult = () => {
                             <p className="text-3xl font-bold">
                                 Your BMI index is{" "}
                                 <span className="text-blue-500 font-bold">
-                                    {bmiData?.bmi} kg/m²
+                                    {/* {bmiData?.bmi}  */}
+                                    kg/m²
                                 </span>
                                 <br />
                                 <p className="text-center text-base ">

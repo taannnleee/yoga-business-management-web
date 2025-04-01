@@ -59,13 +59,13 @@ const SubCollection = ({
           </Button>
         ) : (
           <Button
-  className="flex items-center justify-between gap-2 m-2 text-#52c41a font-bold border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white"
-  type="primary m-2"
-  onClick={() => selectCollectionHandler(attr)}
->
-  <span>Practice now</span>
-  <BsPlay />
-</Button>
+            className="flex items-center justify-between gap-2 m-2 text-#52c41a font-bold border border-blue-500 bg-transparent hover:bg-blue-500 hover:text-white"
+            type="primary m-2"
+            onClick={() => selectCollectionHandler(attr)}
+          >
+            <span>Practice now</span>
+            <BsPlay />
+          </Button>
 
         )}
 
@@ -76,7 +76,7 @@ const SubCollection = ({
         {data.map((item) => {
           if (item.description == "NO_DESCRIPTION") return null;
           return (
-            <Card
+            <Card key={item.id}
               hoverable
               style={{
                 width: 320,

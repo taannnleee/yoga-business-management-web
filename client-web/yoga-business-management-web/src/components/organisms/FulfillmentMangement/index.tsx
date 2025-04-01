@@ -142,8 +142,8 @@ const FulfillmentManagement: React.FC = () => {
 
                                 ))}
                             </div>
-                            <div className={"cursor-pointer text-center underline text-sm"} onClick={handleNavigateProductPage}>
-                                Hiển thị tất cả kết quả cho "{searchTerm}"
+                            <div className="cursor-pointer text-center underline text-sm" onClick={handleNavigateProductPage}>
+                                {`Hiển thị tất cả kết quả cho "${searchTerm}"`}
                             </div>
                         </>
                     )}

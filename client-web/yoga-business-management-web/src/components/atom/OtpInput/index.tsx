@@ -31,14 +31,12 @@ const OTPInput: React.FC<IInputProps> = (props) => {
     control,
     onChangeValue,
   } = props;
-
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   return (
     <Controller
       control={control}
       name={name}
       render={({ formState: { errors }, field: { value, onChange } }) => {
-        const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
-
         const handleChange = (
           e: ChangeEvent<HTMLInputElement>,
           index: number

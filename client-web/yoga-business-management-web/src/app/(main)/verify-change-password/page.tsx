@@ -42,7 +42,7 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                 }
             );
 
-            if (response.status ===200) {
+            if (response.status === 200) {
                 setLoading(false);
                 toast.sendToast("Success", "Verify user successfully");
                 setIsVerified(true); // Cập nhật trạng thái khi OTP đúng
@@ -217,9 +217,7 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
 
                 <Box>
                     <Typography sx={{ fontSize: "14px", color: "GrayText" }}>
-                        By verifying your account, you agree to Market Floor's Terms of
-                        Service and Privacy Policy, as well as the Cookie Policy. This helps
-                        us ensure the security and integrity of our platform.
+                        {"By verifying your account, you agree to Market Floor's Terms of Service and Privacy Policy, as well as the Cookie Policy. This helps us ensure the security and integrity of our platform."}
                     </Typography>
                 </Box>
                 <Divider sx={{ height: 4, width: "100%" }} />
@@ -233,7 +231,7 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                             columnGap: "2px",
                         }}
                     >
-                        Didn't receive one-time password?
+                        {"Didn't receive one-time password?"}
                         <Typography
                             style={{
                                 marginLeft: "4px",

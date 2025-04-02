@@ -3,7 +3,7 @@ import { FaStar, FaRegStar } from 'react-icons/fa'; // Import icons from react-i
 
 interface StarRatingProps {
     rating: number;
-    onRatingChange: (rating: number) => void;
+    onRatingChange?: (rating: number) => void;
 }
 
 const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange }) => {
@@ -11,8 +11,11 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange }) => {
 
     // Function to handle the star click
     const handleStarPress = (index: number) => {
-        setCurrentRating(index + 1); // Update the rating
-        onRatingChange(index + 1); // Notify parent component about the rating change
+        const newRating = index + 1;
+        setCurrentRating(newRating); // Update the rating
+        if (onRatingChange) {
+            onRatingChange(newRating); // Notify parent component about the rating change, if provided
+        }
     };
 
     // Render 5 stars
@@ -22,7 +25,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange }) => {
                 <button
                     key={index}
                     onClick={() => handleStarPress(index)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight:20 , width: 10, height: 10}}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 20, width: 10, height: 10 }}
                 >
                     {index < currentRating ? (
                         <FaStar size={30} color="#FFD700" />

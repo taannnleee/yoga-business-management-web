@@ -18,11 +18,12 @@ interface IProduct {
     price: number;
     variants: string;
     subCategory: string;
+    imagePath: string;
 }
 
 interface ICartItem {
     id: string;
-    quantity: string;
+    quantity: number;
     totalPrice: number;
     product: IProduct;
     currentVariant: string;
@@ -46,7 +47,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
     const [isMultiple, setIsMultiple] = useState(false);
     // Thêm state lưu giá trị trước đó
     const [prevTotalPrice, setPrevTotalPrice] = useState(0);
-    const [selectedIds, setSelectedIds] = useState([]);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
 
 

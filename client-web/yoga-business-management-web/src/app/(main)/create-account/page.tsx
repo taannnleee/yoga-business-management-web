@@ -56,7 +56,7 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
                 setLoading(false);
                 toast.sendToast("Error", response.data.message || "Sign up failed", "error");
             }
-        } catch (error) {
+        } catch (error: string | any) {
             setLoading(false);
             toast.sendToast(
                 "Error",

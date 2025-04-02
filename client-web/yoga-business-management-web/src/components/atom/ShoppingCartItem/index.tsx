@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {CardMedia, Typography, Box, Grid, IconButton, Divider, Button, Checkbox} from "@mui/material";
+import { CardMedia, Typography, Box, Grid, IconButton, Divider, Button, Checkbox } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,8 +11,9 @@ interface IProduct {
     title: string;
     quantity: number;
     price: number;
-    variants: any;  // Thay đổi kiểu từ string sang any hoặc một kiểu phù hợp
+    variants: any;
     subCategory: string;
+    imagePath: string;
 }
 interface ICart {
     id: string;
@@ -22,11 +23,10 @@ interface ICart {
 }
 interface ICartItem {
     id: string;
-    quantity: string;
+    quantity: number;
     totalPrice: number;
     product: IProduct;
     currentVariant: string;
-    imagePath: string;
 }
 interface IInputProps {
     isMultiple: boolean;
@@ -37,22 +37,31 @@ interface IInputProps {
     setPrevTotalPrice: (number: number) => void;
     setLoadPrice: (b: boolean) => void;
     selectedIds: string[]; // <-- Thêm: danh sách ID được chọn
-    setSelectedIds: () => void;
+    setSelectedIds: (ids: string[]) => void;
 }
 
 
-const ShoppingCartItem: React.FC<IInputProps> = ({isMultiple, cart,setPrevTotalPrice,cartItem, onRemove, fetchCart, setLoadPrice,selectedIds,setSelectedIds}) => {
+const ShoppingCartItem: React.FC<IInputProps> = ({ isMultiple, cart, setPrevTotalPrice, cartItem, onRemove, fetchCart, setLoadPrice, selectedIds, setSelectedIds }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [quantity, setQuantity] = useState(cartItem.quantity); // Tổng số lượng hiện tại
+    const [quantity, setQuantity] = useState(cartItem.quantity);
     const [changedQuantity, setChangedQuantity] = useState(0); // Số lượng thay đổi
     const debouncedChangedQuantity = useDebounce(changedQuantity, 1000); // Debounce số lượng thay đổi
 
+    // const handleCheckboxChange = (id: string) => {
+    //     setSelectedIds((prev: string[]) =>
+    //         prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    //     );
+    // };
+
     const handleCheckboxChange = (id: string) => {
-        setSelectedIds((prev: string[]) =>
-            prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
-        );
+        const updatedIds = selectedIds.includes(id)
+            ? selectedIds.filter((itemId) => itemId !== id)
+            : [...selectedIds, id];
+
+        setSelectedIds(updatedIds);
     };
+
 
 
     useEffect(() => {

@@ -46,7 +46,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
     const toast = useToast();
     const accessToken = localStorage.getItem("accessToken");
 
-    const handlePostReply = async (comment) => {
+    const handlePostReply = async (comment :any) => {
         try {
             setIsReplying(true);
             if (watch("reply")?.length > 0) {
@@ -72,12 +72,12 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
             setIsReplying(false);
         }
     };
-    const getVariantString = (currentVariant) => {
+    const getVariantString = (currentVariant :any) => {
         if (!currentVariant) return ""; // Nếu không có currentVariant, trả về chuỗi rỗng
 
         // Lấy tất cả các `value` trong currentVariant
         return Object.values(currentVariant)
-            .map((variant) => variant.value) // Chỉ lấy giá trị của từng variant
+            .map((variant : any) => variant.value) // Chỉ lấy giá trị của từng variant
             .join(", "); // Nối chúng lại bằng dấu phẩy
     };
     const handleDeleteComment = async () => {
@@ -170,7 +170,7 @@ const CommentCard: React.FC<IProductCommentCardProps> = ({
                                     </p>
                                     <p className="text-secondary-800 text-[10px] tablet:text-xs text-sm tablet:ml-1">
                                         {comment.ratePoint !== null &&
-                                            <StarRating rating={comment.ratePoint} />}
+                                            <StarRating rating={comment.ratePoint}/>}
                                     </p>
                                     <p className="text-black-500 text-[14px] font-bold tablet:text-xs text-sm tablet:ml-1 mt-5">
                                         {comment.ratePoint !== null && (

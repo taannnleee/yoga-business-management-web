@@ -178,8 +178,6 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
                     {product.price.toLocaleString()}₫
                 </Typography>
             </div>
-
-            {console.log("tan2222", selectedProduct)}
             <Dialog open={open} onClose={handleCloseModal} maxWidth={"lg"}>
 
                 <ProductDetailModal

@@ -47,6 +47,7 @@ interface Order {
 }
 
 interface Product {
+    id: string;
     imagePath: string;
 }
 
@@ -62,7 +63,7 @@ const OrderPage: React.FC = () => {
     const [orderData, setOrderData] = useState<Order[]>([]); // Trạng thái chứa danh sách đơn hàng
     const [loading, setLoading] = useState(false); // Trạng thái tải dữ liệu
     const [review, setReview] = useState(""); // Trạng thái cho nội dung đánh giá
-    const [rating, setRating] = useState(0); // Trạng thái cho xếp hạng sao
+    const [rating, setRating] = useState(0); 
 
     // Hàm thay đổi tab
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -295,7 +296,7 @@ const OrderPage: React.FC = () => {
                                                         <Typography variant="h6" sx={{ mt: 2 }}>
                                                             {orderItem.comment.content}
                                                         </Typography>
-                                                        <StarRating rating={orderItem.comment.ratePoint} />
+                                                        <StarRating rating={orderItem.comment.ratePoint} onRatingChange={setRating} />
                                                     </>
                                                 )}
                                             </div>

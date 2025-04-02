@@ -132,8 +132,8 @@ const Checkout: React.FC = () => {
     };
 
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        // e.preventDefault();
 
         if (paymentMethod === "vnpay") {
             await handlePaymentVNPay();
@@ -179,7 +179,7 @@ const Checkout: React.FC = () => {
     const handleCloseConfirmDialog = () => setOpenConfirmDialog(false);
 
     const handleConfirmOrder = async () => {
-        await handleSubmit(new Event("submit"));
+        await handleSubmit();
         handleCloseConfirmDialog();
     };
     const removePromotion = () => {

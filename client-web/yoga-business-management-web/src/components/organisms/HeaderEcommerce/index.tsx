@@ -20,7 +20,6 @@ import UserDropdownMenu from "@/components/organisms/UserDropdownMenu";
 interface IHeaderV2Props { }
 
 const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
-  const dropdownItems = ['Sản phẩm 1', 'Sản phẩm 2', 'Sản phẩm 3'];
   const router = useRouter();
   const toast = useToast();
   const [openLogin, setOpenLogin] = useState<boolean>(false);
@@ -36,8 +35,6 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
   const clickInsideDropdown = useRef(false);
   // Handle the hover modal visibility
   const [isHovered, setIsHovered] = useState(false);
-  // Check if the access token exists
-  const accessToken = localStorage.getItem("accessToken");
 
 
   return (
@@ -61,7 +58,7 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
               Giới thiệu
             </a>
 
-            <HoverDropdown buttonText="Sản phẩm" items={dropdownItems} />
+            <HoverDropdown buttonText="Sản phẩm" />
 
 
             {/* Tư vấn dropdown */}

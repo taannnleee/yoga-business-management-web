@@ -116,7 +116,6 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
                                 return (
                                     <CommentCard
                                         key={index}
-                                        commentMode="view"
                                         comment={comment}
                                         productDetail={productDetail}
                                         onReplyingSuccess={getListComments} />

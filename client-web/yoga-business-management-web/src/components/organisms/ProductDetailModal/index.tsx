@@ -233,12 +233,13 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                                                         {variantType === 'color' ? (
                                                             <>
                                                                 <Image
-                                                                    src={image || '/path/to/fallback/image.jpg'}
+                                                                    src={`${image}` || `/path/to/fallback/image.jpg`}
                                                                     alt={`${value} color`}
                                                                     width={40}
                                                                     height={40}
                                                                     className={`rounded-md cursor-pointer ${image === currentVariant.color?.image ? 'border-2 border-red-500' : ''}`}
                                                                 />
+                                                          
                                                                 <Typography variant="caption" className="text-center mt-1 mr-8">
                                                                     {value}
                                                                 </Typography>

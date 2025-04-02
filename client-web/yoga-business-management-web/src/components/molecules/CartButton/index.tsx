@@ -10,15 +10,15 @@ import axiosInstance from "@/utils/axiosClient";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { incrementTotalItems, setTotalItems } from "@/redux/cart/cartSlice"; // Redux actions
 import { API_URL } from "@/config/url";
+import { RootState } from "@/redux/store";
 const CartButton = () => {
-    const totalItems = useSelector((state) => state.cart.totalItems); // Access Redux state
+    const totalItems = useSelector((state: RootState) => state.cart.totalItems);
     const dispatch = useDispatch();
     const router = useRouter();
 
     useEffect(() => {
         const fetchCartData = async () => {
             try {
-                const accessToken = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`
 
                 );

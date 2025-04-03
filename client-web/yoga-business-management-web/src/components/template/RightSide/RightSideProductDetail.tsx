@@ -12,13 +12,13 @@ interface RightSideProps {
     product: any;
     quantity: number;
     setQuantity: (quantity: React.SetStateAction<any>) => void;
-    handleAddToCart: () => void;
     currentVariant: any;
+    selectedImage: string;
     handleVariantSelect: (variantType: string, value: string, image: string) => void;
 }
 
 export const RightSideProductDetail: React.FC<RightSideProps> = ({
-    product, quantity, setQuantity, currentVariant, handleVariantSelect
+    product, quantity, setQuantity, currentVariant, selectedImage, handleVariantSelect
 }) => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
@@ -107,13 +107,12 @@ export const RightSideProductDetail: React.FC<RightSideProps> = ({
                                     {variantType.charAt(0).toUpperCase() + variantType.slice(1)}
                                 </Typography>
                                 <div className="flex items-center space-x-4">
-                                    {Object.entries(variantValues).map(([value, image], index) => (
+                                    {Object.entries(variantValues as { [key: string]: string }).map(([value, image], index) => (
                                         <div
                                             key={index}
                                             className={"flex items-center justify-evenly mr-4"}
                                             onClick={() => {
-                                                console.log("Variant Type (on click):", variantType);
-                                                console.log("Variant Value (on click):", value);
+
                                                 handleVariantSelect(variantType, value, image);
                                             }}
                                         >

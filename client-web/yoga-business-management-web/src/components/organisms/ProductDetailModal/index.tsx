@@ -8,6 +8,7 @@ import RichTextDisplay from "@/components/organisms/RichTextDisplay";
 import { useDispatch } from "react-redux";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
+import { any } from '@tensorflow/tfjs-core';
 
 
 interface Props {
@@ -27,9 +28,6 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
     const [selectedImage, setSelectedImage] = useState(selectedImageLeft || selectedImageRight);
     const [currentVariant, setCurrentVariant] = useState<any>({});
     const [isFavorited, setIsFavorited] = useState(false);
-
-    console.log("kkkk");
-    console.log("currentVariant", currentVariant);
 
     const handleVariantSelect = (variantType: string, value: string, image: string) => {
         const updatedVariant = {
@@ -111,15 +109,17 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         const defaultVariants: any = {};
 
         // Duyệt qua các variant và chọn cái đầu tiên
+        console.log("heheheeh", selectedProduct?.variants)
         if (selectedProduct?.variants) {
             Object.entries(selectedProduct.variants).forEach(([variantType, variantValues]) => {
-                const firstValue = Object.entries(variantValues)[0];
+                console.log("kkkkkk", variantValues)
+                const firstValue = Object.entries(variantValues as { [key: string]: string })[0];
                 if (firstValue) {
                     const [value, image] = firstValue;
                     defaultVariants[variantType] = { value, image };
                     if (variantType === 'color') {
-                        setSelectedImageLeft(image);  // Set ảnh màu đầu tiên
-                        setSelectedImage(image);      // Chọn ảnh đầu tiên làm ảnh hiện tại
+                        setSelectedImageLeft(image);
+                        setSelectedImage(image);
                     }
                 }
             });
@@ -138,7 +138,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
             setLoading(false);  // Set loading state to false after action completes (example with timeout)
         }, 4000);  // Simulate a delay for the action (e.g., network request)
     };
-    const handleImageRightClick = (image: unknown) => {
+    const handleImageRightClick = (image: any) => {
         setSelectedImageRight(image);
         setSelectedImage(image);
     };
@@ -221,7 +221,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                                         {variantType.charAt(0).toUpperCase() + variantType.slice(1)} {/* Hiển thị tên variant như 'Color', 'Size',... */}
                                     </Typography>
                                     <div className="flex items-center space-x-4">
-                                        {Object.entries(variantValues).map(([value, image], index) => (
+                                        {Object.entries(variantValues as { [key: string]: string }).map(([value, image], index) => (
                                             <div
                                                 key={index}
                                                 className={"flex items-center justify-evenly mr-4"}
@@ -239,7 +239,7 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
                                                                     height={40}
                                                                     className={`rounded-md cursor-pointer ${image === currentVariant.color?.image ? 'border-2 border-red-500' : ''}`}
                                                                 />
-                                                          
+
                                                                 <Typography variant="caption" className="text-center mt-1 mr-8">
                                                                     {value}
                                                                 </Typography>

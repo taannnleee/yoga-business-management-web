@@ -72,7 +72,7 @@ api.interceptors.response.use(
         console.warn("401 tại /login, không refresh token.");
         return Promise.reject(error);
       }
-      
+
       if (isRefreshing) {
         return new Promise((resolve) => {
           refreshSubscribers.push((token) => {
@@ -103,7 +103,7 @@ api.interceptors.response.use(
         localStorage.removeItem("refreshToken");
         window.location.href = "/login";
         return Promise.reject(refreshError);
-      } finally { 
+      } finally {
         isRefreshing = false;
       }
     }

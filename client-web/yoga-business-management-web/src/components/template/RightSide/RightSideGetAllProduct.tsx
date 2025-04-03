@@ -158,8 +158,7 @@ export const RightSideGetAllProduct: React.FC<RightSideGetAllProductProps> = ({
                             renderStars={(rating) => (
                                 <div>{'⭐'.repeat(rating)}</div>
                             )}
-                            handleOpenModal={() => {
-                            }}
+                            
                         />
                     ))
                 )}

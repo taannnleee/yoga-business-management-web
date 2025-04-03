@@ -26,7 +26,6 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                 };
             });
         }
-        console.log("abcddd", initialVariant)
         return initialVariant;
     });
     const [selectedImage, setSelectedImage] = useState(product?.imagePath || "");
@@ -48,7 +47,8 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
         }
     };
     const handleVariantSelect = (variantType: string, value: string, image: string) => {
-        const updatedVariant = {
+
+        const updatedVariant: any = {
             ...currentVariant,
             [variantType]: { value, image },
         };
@@ -81,7 +81,7 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    }, [selectedImage]);
 
     // Hàm để chuyển trạng thái ẩn/hiện phần mô tả sản phẩm
     const toggleDescription = () => {
@@ -109,7 +109,11 @@ const ProductDetailTemplate: React.FC<IProductDetailTemplateProps> = ({ product 
                         quantity={quantity}
                         setQuantity={setQuantity}
                         currentVariant={currentVariant}
+
+                        selectedImage={selectedImage}
                         handleVariantSelect={handleVariantSelect}
+
+                        
                     />
                 </div>
                 <div className="flex-[0.2]">

@@ -22,10 +22,8 @@ interface CurrentVariant {
 
 
 export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, currentVariant, setCurrentVariant, selectedImage, setSelectedImage }) => {
-  const [selectedImageLeft, setSelectedImageLeft] = useState(selectedImage || "");
   const [isFavorited, setIsFavorited] = useState(false);
   const [loading, setLoading] = useState(false); // State to track loading
-  const accessToken = localStorage.getItem("accessToken");
 
   const handleVariantSelect = (variantType: string, value: string, image: string) => {
     const updatedVariant = {
@@ -35,7 +33,6 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
     setCurrentVariant(updatedVariant);
 
     if (variantType === 'color') {
-      setSelectedImageLeft(image);
       setSelectedImage(image);
     }
   };
@@ -102,11 +99,6 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
       const firstColor = Object.entries(product.variants.color)[0];
       if (firstColor) {
         const [value, image] = firstColor as [string, string];
-        console.log("valueeeeeeeeeeee", firstColor);
-
-
-
-        setSelectedImageLeft(image);
         setSelectedImage(image);
         setCurrentVariant((prev: CurrentVariant) => ({
           ...prev,
@@ -115,7 +107,7 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
         }));
       }
     }
-  }, [product.id, product.variants.color, setCurrentVariant, setSelectedImage, accessToken]);
+  }, [product.id]);
 
   return (
     <div>
@@ -146,6 +138,7 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
       <div className="mt-4 flex space-x-4 overflow-x-auto">
         {product?.variants?.color &&
           Object.entries(product.variants.color).map(([color, image], index) => (
+
             <div key={index} className="flex flex-col items-center"
               onClick={() => handleVariantSelect('color', color, image as string)}>
               <Image
@@ -153,7 +146,7 @@ export const LeftSideProductDetail: React.FC<LeftSideProps> = ({ product, curren
                 alt={`${color} image`}
                 width={84}
                 height={84}
-                className={`rounded-md cursor-pointer ${image === selectedImageLeft ? "border-2 border-red-500" : ""}`}
+                className={`rounded-md cursor-pointer ${image === selectedImage ? "border-2 border-red-500" : ""}`}
               />
             </div>
           ))}

@@ -1,49 +1,59 @@
-version: '3.8'
 
+version: '3'
 services:
-  # MySQL service
-  mysql:
-    image: mysql/mysql-server:latest
-    container_name: mysql-container
+  social-media-volume-db:
+    container_name: social-media-db
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw  # Lấy từ .env
-      MYSQL_DATABASE: my_database         # Tên cơ sở dữ liệu của bạn
-      MYSQL_USER: user          # Lấy từ .env
-      MYSQL_PASSWORD: user_password      # Lấy từ .env
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE= yogabusinessmanagementweb
+      - MYSQL_ROOT_HOST=%
     ports:
-      - "3307:3306"  # Mở cổng MySQL ra ngoài để kết nối từ máy chủ
+      - "3307:3306"
     volumes:
-      - mysql-data:/var/lib/mysql  # Dung lượng dữ liệu sẽ được lưu trữ ngoài container
-    restart: always  # Đảm bảo container luôn chạy lại nếu nó dừng
-
-  # Spring Boot Backend (BE) service
-  backend:
-    build:
-      context: ../yoga-business-management-web  # Đảm bảo rằng đường dẫn này đúng với vị trí của Dockerfile
-    container_name: spring-boot-backend
-    ports:
-      - "8080:8080"  # Mở cổng 8080 cho ứng dụng Spring Boot
-    env_file:
-      - .env  # Chỉ định file .env để Docker Compose có thể sử dụng các biến trong đó
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/my_database
-      SPRING_DATASOURCE_USERNAME: user  # Lấy từ .env
-      SPRING_DATASOURCE_PASSWORD: user_password  # Lấy từ .env
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update  # Đảm bảo Hibernate tự động cập nhật schema nếu cần
-      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}  # Lấy từ .env
-      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}  # Lấy từ .env
-      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}  # Lấy từ .env
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}  # Lấy từ .env
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}  # Lấy từ .env
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}  # Lấy từ .env
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}  # Lấy từ .env
-      JWT_REFRESH_KEY: ${JWT_REFRESH_KEY}  # Lấy từ .env
-      JWT_RESET_KEY: ${JWT_RESET_KEY}  # Lấy từ .env
-      JWT_EXPIRY_TIME: ${JWT_EXPIRY_TIME}  # Lấy từ .env
-    depends_on:
-      - mysql  # Đảm bảo MySQL khởi động trước backend
-    restart: always  # Đảm bảo backend luôn chạy lại nếu nó dừng
+      - social-media-volume-db:/var/lib/mysql
 
 volumes:
-  mysql-data:
-    driver: local  # Đảm bảo dữ liệu sẽ được lưu trữ trên đĩa của máy chủ
+  social-media-volume-db:
+
+#version: '3.9'
+#
+#services:
+#  api-service-test:
+#    container_name: social-media
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    ports:
+#      - '8080:8080'
+#    networks:
+#      - backend
+#    depends_on:
+#      - mysql-db
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/yogabusinessmanagementweb
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: root
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#      SPRING_JPA_SHOW_SQL: true
+#      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+#      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+#
+#  mysql-db:
+#    build:
+#      context: ./mysql
+#      dockerfile: Dockerfile
+#    container_name: social-media-db
+#    ports:
+#      - "3307:3306"
+#    volumes:
+#      - code-solution-data:/var/lib/mysql
+#    networks:
+#      - backend
+#
+#networks:
+#  backend:
+#    driver: bridge
+#
+#volumes:
+#  code-solution-data:

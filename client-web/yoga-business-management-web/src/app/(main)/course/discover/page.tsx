@@ -32,7 +32,6 @@ const DisCoverPage: React.FC = () => {
         // Fetch the courses from the API
         const fetchCourses = async () => {
             try {
-                const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/course/all-course`
 
                 );

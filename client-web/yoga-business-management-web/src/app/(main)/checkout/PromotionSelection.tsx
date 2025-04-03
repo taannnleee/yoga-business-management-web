@@ -29,7 +29,6 @@ const PromotionSelection: React.FC<PromotionSelectionProps> = ({ totalPrice, set
 
     // Fetch promotions from the API
     const fetchPromotions = async () => {
-        const token = localStorage.getItem("accessToken");
         try {
             const response = await axiosInstance.get(`${API_URL}/api/promotion/get-four-big-promotion`
 

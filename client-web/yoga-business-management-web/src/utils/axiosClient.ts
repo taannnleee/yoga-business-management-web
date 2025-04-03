@@ -16,31 +16,42 @@ let refreshSubscribers: ((token: string) => void)[] = [];
 
 // Hàm lưu token vào localStorage hoặc SecureStore
 const saveToken = (accessToken: string) => {
-  localStorage.setItem("accessToken", accessToken);
+  if (typeof window !== "undefined") {
+    // Chỉ lưu token khi ở client-side
+    localStorage.setItem("accessToken", accessToken);
+  }
 };
 
 // Hàm lấy token từ localStorage hoặc SecureStore
 const getToken = () => {
-  return localStorage.getItem("accessToken");
+  if (typeof window !== "undefined") {
+    // Chỉ lấy token khi ở client-side
+    return localStorage.getItem("accessToken");
+  }
+  return null; // Trả về null nếu chạy trên server
 };
 
 // Hàm gọi API refresh token
 const refreshAccessToken = async () => {
   try {
-    const refreshToken = localStorage.getItem("refreshToken"); // Lấy refresh token từ storage
-    if (!refreshToken) throw new Error("No refresh token");
+    if (typeof window !== "undefined") {
+      const refreshToken = localStorage.getItem("refreshToken"); // Lấy refresh token từ storage
+      if (!refreshToken) throw new Error("No refresh token");
 
-    const response = await axios.post(
-      `${API_URL}/api/auth/refresh`,
-      {},
-      { headers: { "x-token": refreshToken } }
-    );
+      const response = await axios.post(
+        `${API_URL}/api/auth/refresh`,
+        {},
+        { headers: { "x-token": refreshToken } }
+      );
 
-    const newAccessToken = response.data.data.accesstoken;
-    saveToken(newAccessToken);
+      const newAccessToken = response.data.data.accesstoken;
+      saveToken(newAccessToken);
 
 
-    return newAccessToken;
+      return newAccessToken;
+    }
+    return null;
+
   } catch (error) {
     console.error("Refresh token failed:", error);
     return null;

@@ -18,7 +18,6 @@ const ProductDetail: React.FC = () => {
     const fetchProductData = async () => {
       if (id) {
         try {
-          const accessToken = localStorage.getItem("accessToken");
           const response = await axiosInstance.get(`${API_URL}/api/product-detail/getProduct/${id}`);
 
           if (response) {

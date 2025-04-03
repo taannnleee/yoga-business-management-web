@@ -86,7 +86,6 @@ const CoursePage: React.FC = () => {
     useEffect(() => {
         const fetchInstructors = async () => {
             try {
-                const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/teacher/all-teachers`
 
                 );
@@ -111,7 +110,6 @@ const CoursePage: React.FC = () => {
     useEffect(() => {
         const fetchTeacherCourses = async () => {
             try {
-                const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/course/get-outstanding-courses`
 
                 );

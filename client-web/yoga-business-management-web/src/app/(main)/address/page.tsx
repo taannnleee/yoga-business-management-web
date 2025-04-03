@@ -51,7 +51,6 @@ const AddressList: React.FC = () => {
     const fetchAddresses = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(`${API_URL}/api/address/get-address`);
 
             console.log(response.status);
@@ -108,7 +107,6 @@ const AddressList: React.FC = () => {
     };
 
     const handleUpdateAddress = async () => {
-        const token = localStorage.getItem("accessToken");
         if (selectedAddress) {
             const updatedAddress = {
                 ...selectedAddress,
@@ -134,7 +132,6 @@ const AddressList: React.FC = () => {
     };
 
     const handleCreateAddress = async () => {
-        const token = localStorage.getItem("accessToken");
         const newAddress = {
             houseNumber,
             street,
@@ -155,7 +152,6 @@ const AddressList: React.FC = () => {
     };
 
     const handleDeleteAddress = async () => {
-        const token = localStorage.getItem("accessToken");
         if (selectedAddress) {
             try {
                 await axiosInstance.delete(`${API_URL}/api/address/delete/${selectedAddress.id}`

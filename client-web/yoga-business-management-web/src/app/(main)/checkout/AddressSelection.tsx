@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { Button, Skeleton } from "@mui/material";
@@ -39,7 +40,7 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isListModalOpen, setIsListModalOpen] = useState(false);
     const [shippingInfo, setShippingInfoState] = useState<Address | null>(null);
-
+    const [accessToken, setAccessToken] = useState<string | null>(null);
 
 
     const validateAddress = (address: Address) => {
@@ -92,7 +93,6 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
     };
     const fetchDefaultAddress = async () => {
         try {
-            const accessToken = localStorage.getItem("accessToken"); // Get token from localStorage
             if (!accessToken) {
                 console.error("No access token found.");
                 return;
@@ -134,6 +134,13 @@ const AddressSelection: React.FC<AddressSelectionProps> = ({
     // Fetch the default address when component mounts
     useEffect(() => {
         fetchDefaultAddress();
+    }, []);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem("accessToken");
+            setAccessToken(token);
+        }
     }, []);
 
     return (

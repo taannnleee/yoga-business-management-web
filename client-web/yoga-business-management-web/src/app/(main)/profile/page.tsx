@@ -57,11 +57,7 @@ const AccountInfo: React.FC = () => {
     };
 
     const handleChangePassword = async () => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.sendToast("Error", "Access token is missing.", "error");
-            return;
-        }
+
 
         // Kiểm tra nếu mật khẩu hiện tại và mật khẩu mới giống nhau
         if (passwordForm.currentPassword === passwordForm.newPassword) {
@@ -105,8 +101,10 @@ const AccountInfo: React.FC = () => {
             );
 
             // Xóa token sau khi đăng xuất
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
+            if (typeof window !== "undefined") {
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+            }
 
             // Đưa người dùng trở lại trang đăng nhập (hoặc redirect)
             window.location.href = "/login"; // Thay đổi trang theo yêu cầu của bạn
@@ -129,7 +127,6 @@ const AccountInfo: React.FC = () => {
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const token = localStorage.getItem("accessToken");
             try {
                 setLoading(true);
                 const response = await axiosInstance.get(`${API_URL}/api/user/get-profile`
@@ -200,11 +197,7 @@ const AccountInfo: React.FC = () => {
     };
 
     const handleUpdateProfile = async () => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.sendToast("Error", "Access token is missing.", "error");
-            return;
-        }
+
         // Kiểm tra số điện thoại
         if (!isPhoneValid(formData.phone)) {
             setPhoneError("Phone number is invalid. It must be a 10-digit number.");

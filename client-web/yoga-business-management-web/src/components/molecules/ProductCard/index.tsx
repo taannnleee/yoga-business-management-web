@@ -73,11 +73,6 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
         }
 
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.sendToast("Lỗi", "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
-                return;
-            }
 
             const response = await axiosInstance.post(
                 `${API_URL}/api/cart/add-to-cart`,

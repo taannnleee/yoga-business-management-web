@@ -21,7 +21,8 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
     const [listComments, setListComments] = useState<any[]>([]);
     const [isPosting, setIsPosting] = useState<boolean>(false);
     const toast = useToast();
-    const accessToken = localStorage.getItem("accessToken");
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+
     const { register, handleSubmit, watch, setValue, control } = useForm();
     const [totalItems, setTotalItems] = useState<number>(0);
     const [itemsPerPage, setItemsPerPage] = useState<number>(4);
@@ -29,8 +30,6 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
     // Fetch comments list using fetch
     const getListComments = async () => {
         try {
-            // Retrieve the accessToken from localStorage
-            const accessToken = localStorage.getItem("accessToken");
 
             // Prepare headers, adding the Authorization header with the Bearer token if it exists
             const headers: HeadersInit = {};
@@ -68,6 +67,12 @@ const CustomerComment: React.FC<IProductCommentsProps> = ({ productDetail, class
         }
     }, [page, productDetail, itemsPerPage]);
     // Handle new comment submission using fetch
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem("accessToken");
+            setAccessToken(token);
+        }
+    }, []);
     const handlePostComment = async () => {
         try {
             setIsPosting(true);

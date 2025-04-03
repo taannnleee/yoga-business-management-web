@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/config/url";
-const token = localStorage.getItem("accessToken");
 import axiosInstance from "@/utils/axiosClient";
 import axios from "axios";
 
@@ -37,8 +36,10 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
       if (response.status === 200) {
         setLoading(false);
         // Store tokens in local storage
-        localStorage.setItem("accessToken", response.data.data.accesstoken);
-        localStorage.setItem("refreshToken", response.data.data.refreshtoken);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("accessToken", response.data.data.accesstoken);
+          localStorage.setItem("refreshToken", response.data.data.refreshtoken);
+        }
 
         toast.sendToast("Success", "Login successfully");
 

@@ -55,7 +55,6 @@ const TeacherDetailPage: React.FC = () => {
     useEffect(() => {
         const fetchTeacherInfo = async () => {
             try {
-                const token = localStorage.getItem("accessToken");
                 const response = await axiosInstance.get(`${API_URL}/api/teacher/get-teacher/${teacherId}`
 
                 );

@@ -1,34 +1,48 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from "react";
 import Button from "@/components/atom/Button";
+import { Typography, Box, CircularProgress, Divider } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
+
 const PaymentResult = () => {
-    const searchParams = useSearchParams();
-    const status = searchParams.get('status');
-    const transactionId = searchParams.get('transactionId');
-    const addressId = searchParams.get('addressId');
-    const paymentMethod = searchParams.get('paymentMethod');
-    const vnp_Amount = searchParams.get('vnp_Amount');
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [isOrderCreated, setIsOrderCreated] = useState(false); // Guard variable
+    const [error, setError] = useState("");
+    const [status, setStatus] = useState<string | null>(null);
+    const [transactionId, setTransactionId] = useState<string | null>(null);
+    const [addressId, setAddressId] = useState<string | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+    const [vnpAmount, setVnpAmount] = useState<string | null>(null);
+
+    const [isOrderCreated, setIsOrderCreated] = useState(false);
+
+    // Get query parameters from URL using useRouter
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            setStatus(urlParams.get("status"));
+            setTransactionId(urlParams.get("transactionId"));
+            setAddressId(urlParams.get("addressId"));
+            setPaymentMethod(urlParams.get("paymentMethod"));
+            setVnpAmount(urlParams.get("vnp_Amount"));
+        }
+    }, []);
 
     const createOrder = async () => {
-        if (isOrderCreated) return; // Prevent duplicate calls
-        setIsOrderCreated(true); // Set flag to true
-
-        const token = localStorage.getItem("accessToken");
+        if (isOrderCreated) return;
+        setIsOrderCreated(true);
         setLoading(true);
+
         try {
             const response = await axiosInstance.post(
                 `${API_URL}/api/order/create-order`,
                 {
-                    addressId: addressId,
-                    paymentMethod: paymentMethod,
-                    totalPricePromotion: vnp_Amount,
+                    addressId,
+                    paymentMethod,
+                    totalPricePromotion: vnpAmount,
                 }
             );
 
@@ -42,19 +56,17 @@ const PaymentResult = () => {
     };
 
     useEffect(() => {
-        if (status === 'success') {
+        if (status === "success" && !isOrderCreated) {
             createOrder();
         }
     }, [status]);
 
     return (
         <div className="max-w-2xl mx-auto p-6 border rounded-lg shadow-lg">
-            <h2 className={`text-2xl font-semibold mb-4 ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-                {status === 'success' ? 'Giao dịch được thực hiện thành công' : 'Giao dịch thất bại'}
+            <h2 className={`text-2xl font-semibold mb-4 ${status === "success" ? "text-green-600" : "text-red-600"}`}>
+                {status === "success" ? "Giao dịch được thực hiện thành công" : "Giao dịch thất bại"}
             </h2>
-            {status === 'success' && (
-                <p className="mb-6">Cảm ơn quý khách đã sử dụng dịch vụ.</p>
-            )}
+            {status === "success" && <p className="mb-6">Cảm ơn quý khách đã sử dụng dịch vụ.</p>}
 
             <table className="min-w-full table-auto border-collapse">
                 <tbody>
@@ -76,7 +88,7 @@ const PaymentResult = () => {
                     </tr>
                     <tr className="border-b">
                         <td className="px-4 py-2 font-medium">Amount</td>
-                        <td className="px-4 py-2">{vnp_Amount}</td>
+                        <td className="px-4 py-2">{vnpAmount}</td>
                     </tr>
                     <tr className="border-b">
                         <td className="px-4 py-2 font-medium">Currency</td>
@@ -102,14 +114,13 @@ const PaymentResult = () => {
             </table>
 
             {/* Render different buttons based on status */}
-            {status === 'success' ? (
+            {status === "success" ? (
                 <Button>
                     <a href="/status-order">Tiếp tục</a>
                 </Button>
             ) : (
                 <div className="flex space-x-4">
                     <Button className={"bg-red-500 text-white"}>
-
                         <a href="/checkout">Thử lại</a>
                     </Button>
                     <Button>

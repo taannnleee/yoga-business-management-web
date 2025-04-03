@@ -39,17 +39,17 @@ const UserDropdownMenu: React.FC<IProps> = ({ isHovered }) => {
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [openSearchDropDown, setOpenSearchDropdown] = useState<boolean>(false);
     const clickInsideDropdown = useRef(false);
-    // Check if the access token exists
-    const accessToken = localStorage.getItem("accessToken");
+    const [accessToken, setAccessToken] = useState<string | null>(null);
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem("accessToken");
+            setAccessToken(token);
+        }
+    }, []);
     // Hàm logout sẽ gọi API và xử lý đăng xuất
     const logout = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                return;
-            }
-
             // Gọi API logout sử dụng fetch
             const response = await axiosInstance.post(
                 `${API_URL}/api/auth/logout`,

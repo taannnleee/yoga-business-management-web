@@ -36,11 +36,6 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const token = localStorage.getItem("accessToken"); // Get token from localStorage
-                if (!token) {
-                    console.error("Access token is missing.");
-                    return;
-                }
 
                 const response = await axiosInstance.get(`${API_URL}/api/product/all`, {
                     params: {
@@ -71,7 +66,6 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
 
     const handleAddToCart = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.post(
                 `${API_URL}/api/cart/add-to-cart`,
                 {
@@ -91,13 +85,6 @@ const SimilarProduct: React.FC<ProductByCategoryCardProps> = ({ }) => {
     const handleOpenModal = async (product: any) => {
         setLoading(true);
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                console.error("Access token is missing.");
-                setLoading(false);
-                return;
-            }
-
             const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
             );
 

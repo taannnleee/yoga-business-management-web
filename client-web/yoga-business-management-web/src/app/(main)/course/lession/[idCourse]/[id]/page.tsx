@@ -69,7 +69,6 @@ const LessionPage: React.FC<any> = () => {
     // Function to fetch section data
     const fetchSections = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
             // Thay thế URL này với API endpoint của bạn
             const response = await axiosInstance.get(`${API_URL}/api/course/get-course/${courseId}`
 
@@ -88,7 +87,6 @@ const LessionPage: React.FC<any> = () => {
     // Function to fetch lecture data
     const fetchLecture = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(`${API_URL}/api/lecture/get-lecture/${lectureId}`
 
             );

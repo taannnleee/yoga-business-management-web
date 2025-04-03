@@ -3,25 +3,37 @@
 import Button from "@/components/atom/Button";
 import { Typography, Box, Divider, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import OTPInput from "@/components/atom/OtpInput";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { API_URL } from "@/config/url";
 import axios from "axios";
+
 interface ILoginPageProps { }
 
-const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
+const VerifyAccount: React.FC<ILoginPageProps> = () => {
     const { control, handleSubmit } = useForm();
-    const [loading, setLoading] = React.useState(false);
-    const [isResendingOtp, setIsResendingOtp] = React.useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isResendingOtp, setIsResendingOtp] = useState(false);
+    const [email, setEmail] = useState<string | null>(null); // State to store email
     const toast = useToast();
-    const searchParams = useSearchParams();
     const router = useRouter();
 
-    const email = searchParams.get("email");
+    // UseEffect to get the email from URL query params
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailFromUrl = urlParams.get("email");
+            setEmail(emailFromUrl);
+        }
+    }, []);
 
     const handlePressVerifyAccount = async (values: any) => {
+        if (!email) {
+            toast.sendToast("Error", "Email is missing", "error");
+            return;
+        }
         try {
             setLoading(true);
             const response = await axios.post(
@@ -52,8 +64,12 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     };
 
     const handleResendOTP = async () => {
+        if (!email) {
+            toast.sendToast("Error", "Email is missing", "error");
+            return;
+        }
         try {
-            setIsResendingOtp(true); // Bắt đầu loading
+            setIsResendingOtp(true); // Start loading
             const response = await axios.post(
                 `${API_URL}/api/auth/send-otp?email=${email}`,
                 {
@@ -62,12 +78,11 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                     },
                 }
             );
-
             toast.sendToast("Success", response.data.message);
         } catch (error) {
             toast.sendToast("Error", "Verification failed", "error");
         } finally {
-            setIsResendingOtp(false); // Kết thúc loading
+            setIsResendingOtp(false); // End loading
         }
     };
 
@@ -126,7 +141,6 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
                 </form>
 
                 <Box>
-
                     <Typography sx={{ fontSize: "14px", color: "GrayText" }}>
                         {"By verifying your account, you agree to Market Floor's Terms of Service and Privacy Policy, as well as the Cookie Policy. This helps us ensure the security and integrity of our platform."}
                     </Typography>

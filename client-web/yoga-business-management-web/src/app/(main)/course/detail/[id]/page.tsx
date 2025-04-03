@@ -64,7 +64,6 @@ const CourseDetailPage: React.FC = () => {
         if (courseId) {
             const fetchCourseData = async () => {
                 try {
-                    const token = localStorage.getItem("accessToken");
                     setLoading(true);
                     const response = await axiosInstance.get(`${API_URL}/api/course/get-course/${courseId}`
 

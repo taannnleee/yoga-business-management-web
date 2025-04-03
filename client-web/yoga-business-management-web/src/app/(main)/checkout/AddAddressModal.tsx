@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Button, TextField, CircularProgress } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
@@ -49,7 +50,6 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
     };
 
     const handleCreateAddress = async () => {
-        const token = localStorage.getItem("accessToken");
         const newAddress = {
             houseNumber: formData.houseNumber,
             street: formData.street,

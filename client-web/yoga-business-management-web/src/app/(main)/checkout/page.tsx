@@ -22,7 +22,7 @@ import {
     CircularProgress, // Import CircularProgress
 } from "@mui/material";
 import AddressSelection from "@/app/(main)/checkout/AddressSelection";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import PromotionSelection from "./PromotionSelection";
 
 interface IProduct {
@@ -43,7 +43,6 @@ interface IPromotion {
 
 const Checkout: React.FC = () => {
     const [isAddressValid, setIsAddressValid] = useState(true);
-    const searchParams = useSearchParams();
     const router = useRouter();
     const [addressId, setAddressId] = useState<string>(""); // Lưu id địa chỉ
     const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -68,7 +67,6 @@ const Checkout: React.FC = () => {
     };
 
     const fetchCart = async () => {
-        const token = localStorage.getItem("accessToken");
         try {
             const response = await axiosInstance.get(`${API_URL}/api/cart/show-cart`,
 
@@ -91,7 +89,6 @@ const Checkout: React.FC = () => {
     };
 
     const handlePaymentVNPay = async () => {
-        const token = localStorage.getItem("accessToken");
         setOrderLoading(true);
         // Prepare the order data to send with the payment request
         const orderData = {
@@ -113,11 +110,12 @@ const Checkout: React.FC = () => {
                     params: {
                         amount: totalPricePromotion,
                         bankCode: "NCB"
-                    },
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
+                    }
+                    // ,
+                    // headers: {
+                    //     "Authorization": `Bearer ${token}`,
+                    //     "Content-Type": "application/json",
+                    // },
                 }
             );
             const paymentUrl = response.data.data.paymentUrl;
@@ -143,7 +141,6 @@ const Checkout: React.FC = () => {
     };
 
     const createOrder = async () => {
-        const token = localStorage.getItem("accessToken");
         setOrderLoading(true);
         try {
             const response = await axiosInstance.post(

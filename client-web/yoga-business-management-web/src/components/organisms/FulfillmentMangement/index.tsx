@@ -29,7 +29,6 @@ const FulfillmentManagement: React.FC = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const accessToken = localStorage.getItem("accessToken");
             const url = `${API_URL}/api/product/filter?page=1&pageSize=4&keyword=${searchTerm}`;
 
             const response = await axiosInstance.get(url);

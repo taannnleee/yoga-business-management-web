@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
@@ -48,7 +49,6 @@ const UpdateAddressModal: React.FC<UpdateAddressModalProps> = ({
 
     const handleUpdateAddress = async () => {
         setLoading(true); // Set loading to true at the start of the API call
-        const token = localStorage.getItem("accessToken");
 
         const updatedAddress = {
             houseNumber: formData.houseNumber,
@@ -63,13 +63,7 @@ const UpdateAddressModal: React.FC<UpdateAddressModalProps> = ({
         try {
             const response = await axiosInstance.put(
                 `${API_URL}/api/address/update/${formData.id}`,
-                updatedAddress,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                }
+                updatedAddress
             );
 
             if (response.status === 200) {

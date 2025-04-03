@@ -71,7 +71,6 @@ const NotificationPage: React.FC = () => {
 
     const fetchNotifications = async () => {
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(`${API_URL}/api/notification/get-all-of-user`);
 
             console.log('Fetched notifications:', response.data.data);
@@ -93,7 +92,6 @@ const NotificationPage: React.FC = () => {
         setIsModalVisible(true);
 
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.get(
                 `${API_URL}/api/notification/change-status/${notification.id}`,
 

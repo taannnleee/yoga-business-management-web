@@ -1,31 +1,42 @@
 "use client";
+
 import Input from "@/components/atom/Input";
 import Button from "@/components/atom/Button";
-import { Typography, Box, Divider } from "@mui/material";
+import { Typography, Box, Divider, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import OTPInput from "@/components/atom/OtpInput";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { API_URL } from "@/config/url";
 import axios from "axios";
-import { CircularProgress } from "@mui/material";
 
 interface ILoginPageProps { }
 
-const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
-    const { control, handleSubmit, watch } = useForm();
-    const [loading, setLoading] = React.useState(false);
-    const [isResendingOtp, setIsResendingOtp] = React.useState(false); // Thêm state cho loading toàn màn hình
-    const [isVerified, setIsVerified] = React.useState(false); // Trạng thái xác thực OTP thành công
+const VerifyAccount: React.FC<ILoginPageProps> = () => {
+    const { control, handleSubmit } = useForm();
+    const [loading, setLoading] = useState(false);
+    const [isResendingOtp, setIsResendingOtp] = useState(false); // State cho loading toàn màn hình
+    const [isVerified, setIsVerified] = useState(false); // Trạng thái xác thực OTP thành công
     const toast = useToast();
-    const searchParams = useSearchParams();
     const router = useRouter();
 
-    const email = searchParams.get("email");
-    const OTP = searchParams.get("OTP");
+    const [email, setEmail] = useState<string | null>(null); // State cho email
+
+    // Lấy email từ query parameters trong URL
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailFromUrl = urlParams.get("email");
+            setEmail(emailFromUrl);
+        }
+    }, []);
 
     const handlePressVerifyAccount = async (values: any) => {
+        if (!email) {
+            toast.sendToast("Error", "Email is missing", "error");
+            return;
+        }
         try {
             setLoading(true);
             const response = await axios.post(
@@ -57,6 +68,10 @@ const VerifyAccount: React.FC<ILoginPageProps> = (props) => {
     };
 
     const handlePressSendOtp = async () => {
+        if (!email) {
+            toast.sendToast("Error", "Email is missing", "error");
+            return;
+        }
         try {
             setIsResendingOtp(true); // Bắt đầu loading
             const response = await axios.post(

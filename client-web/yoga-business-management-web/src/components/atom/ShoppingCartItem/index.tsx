@@ -73,7 +73,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ isMultiple, cart, setPrevTota
                 setError(null);
                 setLoadPrice(true);
                 try {
-                    const token = localStorage.getItem("accessToken");
                     const response = await axiosInstance.post(
                         `${API_URL}/api/cart/increase-to-cart`,
                         {
@@ -96,7 +95,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ isMultiple, cart, setPrevTota
                 setError(null);
                 setLoadPrice(true);
                 try {
-                    const token = localStorage.getItem("accessToken");
                     const response = await axiosInstance.post(
                         `${API_URL}/api/cart/subtract-from-cart-item`,
                         {
@@ -139,7 +137,6 @@ const ShoppingCartItem: React.FC<IInputProps> = ({ isMultiple, cart, setPrevTota
         setError(null);
         setLoadPrice(true);
         try {
-            const token = localStorage.getItem("accessToken");
             const response = await axiosInstance.post(
                 `${API_URL}/api/cart/remove-from-cart`,
                 {

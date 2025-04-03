@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Grid, Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
-const token = localStorage.getItem("accessToken");
 import axiosInstance from "@/utils/axiosClient";
 // Define interfaces for the response data
 import { API_URL } from "@/config/url";

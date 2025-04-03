@@ -90,7 +90,6 @@ const OrderPage: React.FC = () => {
         const fetchOrderData = async (status: string) => {
             setLoading(true); // Bắt đầu tải dữ liệu
             try {
-                const token = localStorage.getItem("accessToken"); // Lấy token
                 const response = await axiosInstance.get(`${API_URL}/api/order/get-all-order-by-status/${status}`
 
                 );

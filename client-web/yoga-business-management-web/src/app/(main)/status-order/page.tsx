@@ -2,9 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Confetti from "react-confetti";
-import { toast } from "react-toastify"; // Bạn cần cài thư viện react-toastify
 import { Parallax } from "react-parallax";
-import AudioPlayer from "react-audio-player"; // Cài đặt react-audio-player
 import { FaMusic } from "react-icons/fa"; // Thêm thư viện react-icons để dùng icon âm nhạc
 
 const StatusOrder = () => {
@@ -12,8 +10,8 @@ const StatusOrder = () => {
     const router = useRouter();
     const [showConfetti, setShowConfetti] = useState(false);
     const [userName, setUserName] = useState("Nguyễn Minh Quang"); // Giả sử đây là tên người dùng, có thể thay đổi từ API hoặc props
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+    // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    // const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
     useEffect(() => {
         setShowConfetti(true);
@@ -22,8 +20,8 @@ const StatusOrder = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-            setWindowHeight(window.innerHeight);
+            // setWindowWidth(window.innerWidth);
+            // setWindowHeight(window.innerHeight);
         };
 
         window.addEventListener("resize", handleResize);
@@ -50,8 +48,8 @@ const StatusOrder = () => {
 
             {/* Hiệu ứng Confetti */}
             <Confetti
-                width={windowWidth}
-                height={windowHeight}
+                // width={windowWidth}
+                // height={windowHeight}
                 recycle={false}
                 numberOfPieces={500}
                 run={showConfetti}

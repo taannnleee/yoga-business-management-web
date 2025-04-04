@@ -1,10 +1,10 @@
 package org.example.yogabusinessmanagementweb.workoutwithAI.api;
 
 import lombok.RequiredArgsConstructor;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.ResponseDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.yoga.WorkoutHistoryDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.yoga.YogaDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.YogaService;
+import org.example.yogabusinessmanagementweb.dto.workout.ResponseDto;
+import org.example.yogabusinessmanagementweb.dto.workout.yoga.WorkoutHistoryDto;
+import org.example.yogabusinessmanagementweb.dto.workout.yoga.YogaDto;
+import org.example.yogabusinessmanagementweb.service.YogaService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 

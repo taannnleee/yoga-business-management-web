@@ -3,12 +3,12 @@ package org.example.yogabusinessmanagementweb.workoutwithAI.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.ResponseDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.request.post.PostLikeRequestDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.request.post.PostRequestDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.response.post.PostLikeResponseDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.response.post.PostResponseDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.PostService;
+import org.example.yogabusinessmanagementweb.dto.workout.ResponseDto;
+import org.example.yogabusinessmanagementweb.dto.workout.request.post.PostLikeRequestDto;
+import org.example.yogabusinessmanagementweb.dto.workout.request.post.PostRequestDto;
+import org.example.yogabusinessmanagementweb.dto.workout.response.post.PostLikeResponseDto;
+import org.example.yogabusinessmanagementweb.dto.workout.response.post.PostResponseDto;
+import org.example.yogabusinessmanagementweb.service.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;

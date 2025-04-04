@@ -2,10 +2,10 @@ package org.example.yogabusinessmanagementweb.workoutwithAI.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.ResponseDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.dto.user.HealthyInfoDto;
-import org.example.yogabusinessmanagementweb.workoutwithAI.entity.WeightPlan;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.HealthyService;
+import org.example.yogabusinessmanagementweb.dto.workout.ResponseDto;
+import org.example.yogabusinessmanagementweb.dto.workout.user.HealthyInfoDto;
+import org.example.yogabusinessmanagementweb.common.entities.workout.WeightPlan;
+import org.example.yogabusinessmanagementweb.service.HealthyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;

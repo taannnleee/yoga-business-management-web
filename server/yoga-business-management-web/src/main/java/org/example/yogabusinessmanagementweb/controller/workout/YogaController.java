@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.workoutwithAI.api;
+package org.example.yogabusinessmanagementweb.controller.workout;
 
 import lombok.RequiredArgsConstructor;
 import org.example.yogabusinessmanagementweb.dto.workout.ResponseDto;

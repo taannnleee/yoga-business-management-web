@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.yogabusinessmanagementweb.workoutwithAI.constant.ResponseConstants;
+import org.example.yogabusinessmanagementweb.common.constant.ResponseConstants;
 
 @Data
 @Builder

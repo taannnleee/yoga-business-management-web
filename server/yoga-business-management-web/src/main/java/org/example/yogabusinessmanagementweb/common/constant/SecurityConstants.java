@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.workoutwithAI.constant;
+package org.example.yogabusinessmanagementweb.common.constant;
 
 import lombok.experimental.UtilityClass;
 

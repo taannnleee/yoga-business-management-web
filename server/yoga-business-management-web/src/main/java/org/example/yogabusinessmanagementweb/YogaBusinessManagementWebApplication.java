@@ -23,9 +23,9 @@ public class YogaBusinessManagementWebApplication {
                              HealthyService healthyService) {
         return args -> {
 
-//            healthyService.createWeightPlanData();
-//            yogaService.createData();
-//            postService.createPost();
+            healthyService.createWeightPlanData();
+            yogaService.createData();
+            postService.createPost();
         };
     }
 }

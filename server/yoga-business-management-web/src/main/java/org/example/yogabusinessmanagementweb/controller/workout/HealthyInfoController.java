@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.workoutwithAI.api;
+package org.example.yogabusinessmanagementweb.controller.workout;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

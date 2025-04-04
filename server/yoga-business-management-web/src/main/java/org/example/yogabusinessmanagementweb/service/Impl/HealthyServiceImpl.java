@@ -10,7 +10,7 @@ import org.example.yogabusinessmanagementweb.exception.BadRequestException;
 import org.example.yogabusinessmanagementweb.repositories.HealthyInfoRepository;
 import org.example.yogabusinessmanagementweb.repositories.WeightPlanRepository;
 import org.example.yogabusinessmanagementweb.service.HealthyService;
-import org.example.yogabusinessmanagementweb.workoutwithAI.utils.HealthyUtils;
+import org.example.yogabusinessmanagementweb.common.util.HealthyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

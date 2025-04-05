@@ -129,22 +129,18 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                     {course.name}
                                 </Typography>
 
-                                {/*<Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>*/}
-                                {/*    {course.author}*/}
-                                {/*</Typography>*/}
+                                <Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>
+                                    {course.price === 0 ? "Miễn phí" : `${course.price} VND`}
+                                    {renderStars(course.rating)}
+                                </Typography>
 
                                 <Box mt={1}>
-                                    {/* {renderStars(course.rating)} */}
+
                                     {renderStars(5)}
                                     <Typography variant="body2" color="textSecondary">
-                                        {/* ({Math.round(course.rating * 10)}) */}
+                                        ({Math.round(course.rating * 10)})
                                     </Typography>
                                 </Box>
-
-                                <Typography variant="body2" className="text-red-500" mt={1}>
-                                    {/* {course.price} */}
-                                    0 VND
-                                </Typography>
                             </Box>
                         </Box>
                     ))}
@@ -168,9 +164,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft: "120px", color: "red" }}>
                                 Xem chi tiết
                             </Typography>
-                            <Button variant="contained" color="primary" style={{ marginTop: "42px", marginLeft: "120px" }}>
+                            {/* <Button variant="contained" color="primary" style={{ marginTop: "42px", marginLeft: "120px" }}>
                                 Tham gia
-                            </Button>
+                            </Button> */}
                         </Box>
                         {/* Right - Course details */}
                         <Box flex={2} ml={2}>

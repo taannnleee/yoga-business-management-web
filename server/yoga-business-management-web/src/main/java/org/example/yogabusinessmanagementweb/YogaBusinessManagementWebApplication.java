@@ -1,9 +1,9 @@
 package org.example.yogabusinessmanagementweb;
 
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.HealthyService;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.PostService;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.UserService;
-import org.example.yogabusinessmanagementweb.workoutwithAI.service.YogaService;
+import org.example.yogabusinessmanagementweb.service.UserService;
+import org.example.yogabusinessmanagementweb.service.HealthyService;
+import org.example.yogabusinessmanagementweb.service.PostService;
+import org.example.yogabusinessmanagementweb.service.YogaService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +24,6 @@ public class YogaBusinessManagementWebApplication {
         return args -> {
 
             healthyService.createWeightPlanData();
-            userService.createData();
             yogaService.createData();
             postService.createPost();
         };

@@ -5,20 +5,19 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EGender;
-import org.example.yogabusinessmanagementweb.common.Enum.ERole;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.example.yogabusinessmanagementweb.common.entities.workout.HealthyInfo;
+import org.example.yogabusinessmanagementweb.common.entities.workout.Post;
+import org.example.yogabusinessmanagementweb.common.entities.workout.WorkoutHistory;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
-import javax.print.attribute.standard.Media;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -57,8 +56,22 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     List<GroupHasUser> groupHasUsers;
 
 
-//    @OneToMany()
-//    List<UserHasYogaWorkout> yogaWorkouts;
+    @ColumnDefault(value = "0")
+    private BigDecimal point;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER
+            , cascade = CascadeType.ALL)
+    private HealthyInfo healthyInfo;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Post> posts;
+
+    @ManyToMany(mappedBy = "likes", fetch = FetchType.LAZY)
+    private List<Post> likedPosts;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<WorkoutHistory> workoutHistories;
+
 
 
     @Override
@@ -86,4 +99,6 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(roles)); // Chuyển đổi Role thành GrantedAuthority
     }
+
+
 }

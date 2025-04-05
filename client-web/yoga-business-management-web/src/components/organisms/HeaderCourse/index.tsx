@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosClient";
-import CartCourseButton from "@/components/molecules/CartCourseButton";
+import WishListCourseButton from "@/components/molecules/WishListCourseButton";
 import {
   Bars3Icon,
   ShoppingCartIcon,
@@ -84,7 +84,7 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
                 <UserDropdownMenu isHovered={isHovered} />
 
               </div>
-              <CartCourseButton />
+              <WishListCourseButton />
             </div>
           </div>
         </div>

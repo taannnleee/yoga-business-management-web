@@ -1,28 +1,28 @@
-// pages/course/CartCourse.tsx
+// pages/course/WishListCourse.tsx
 import React from 'react';
-import CartItemCourse from '@/app/(main)/course/cart-course/CartItemCourse';
+import WishListCourseItem from '@/app/(main)/course/wishlistcourse/WishListCourseItem';
 
-// Khai báo kiểu dữ liệu cho sản phẩm trong giỏ hàng
-interface CartItem {
+// Khai báo kiểu dữ liệu cho sản phẩm trong danh sách yêu thích
+interface WishListItem {
     id: number;
     name: string;
     price: number;
     quantity: number;
 }
 
-const CartCourse = () => {
-    // Giả sử có dữ liệu mẫu cho giỏ hàng
-    const cartItems: CartItem[] = [
+const WishListCourse = () => {
+    // Giả sử có dữ liệu mẫu cho danh sách yêu thích
+    const wishListItems: WishListItem[] = [
         { id: 1, name: 'Yoga Beginner Course', price: 25, quantity: 1 },
         { id: 2, name: 'Advanced Yoga Course', price: 40, quantity: 2 },
     ];
 
-    // Tính tổng số tiền giỏ hàng
-    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    // Tính tổng số tiền danh sách yêu thích
+    const total = wishListItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     return (
         <div className="max-w-4xl mx-auto py-8 px-4">
-            <h1 className="text-3xl font-bold text-center text-gray-900">Giỏ Hàng</h1>
+            <h1 className="text-3xl font-bold text-center text-gray-900">Danh Sách Yêu Thích</h1>
 
             <div className="mt-6">
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -36,8 +36,8 @@ const CartCourse = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {cartItems.map((item) => (
-                                <CartItemCourse
+                            {wishListItems.map((item) => (
+                                <WishListCourseItem
                                     key={item.id}
                                     id={item.id}
                                     name={item.name}
@@ -60,4 +60,4 @@ const CartCourse = () => {
     );
 };
 
-export default CartCourse;
+export default WishListCourse;

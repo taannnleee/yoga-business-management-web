@@ -1,15 +1,15 @@
-// components/CartItemCourse.tsx
+// components/WishListCourseItem.tsx
 import React from 'react';
 
-// Khai báo kiểu dữ liệu cho một sản phẩm trong giỏ hàng
-interface CartItemCourseProps {
+// Khai báo kiểu dữ liệu cho một sản phẩm trong danh sách yêu thích
+interface WishListCourseItemProps {
   id: number;
   name: string;
   price: number;
   quantity: number;
 }
 
-const CartItemCourse: React.FC<CartItemCourseProps> = ({ id, name, price, quantity }) => {
+const WishListCourseItem: React.FC<WishListCourseItemProps> = ({ id, name, price, quantity }) => {
   return (
     <tr key={id}>
       <td className="px-4 py-2">{name}</td>
@@ -20,4 +20,4 @@ const CartItemCourse: React.FC<CartItemCourseProps> = ({ id, name, price, quanti
   );
 };
 
-export default CartItemCourse;
+export default WishListCourseItem;

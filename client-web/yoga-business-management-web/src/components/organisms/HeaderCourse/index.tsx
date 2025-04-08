@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosClient";
 import WishListCourseButton from "@/components/molecules/WishListCourseButton";
+import CourseCartButton from "@/components/molecules/CourseCartButton";
 import {
   Bars3Icon,
   ShoppingCartIcon,
@@ -85,6 +86,7 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
 
               </div>
               <WishListCourseButton />
+              <CourseCartButton />
             </div>
           </div>
         </div>

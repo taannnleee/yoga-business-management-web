@@ -13,7 +13,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { setAccessToken, setUser } from '../../redux/slices/auth';
+import { setAccessToken, setUser } from '../../store/slices/auth';
 import { useHistory } from 'react-router-dom';
 
 export default function UserMenu() {

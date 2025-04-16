@@ -12,6 +12,8 @@ import { apiURL } from '../../config/constanst';
 import BaseInput from '../../components/BaseInput';
 import { toast } from 'react-toastify';
 import StoreMap from './StoreMap'; // Import the dialog
+import axiosInstance from 'utils/axiosClient';
+
 interface IStoreFormValue {
   id: number | null;
   name: string;
@@ -55,7 +57,7 @@ const UpdateStoreForm: React.FC<IStoreFormProps> = ({
     try {
       console.log('ID store iS: ', currentStore?.id);
       // Call the API
-      await axios.patch(`${apiURL}/store/${currentStore?.id}`, {
+      await axiosInstance.patch(`${apiURL}/store/${currentStore?.id}`, {
         name: values.name,
         supportPickup: values.supportPickup,
         supportDelivery: values.supportDelivery,

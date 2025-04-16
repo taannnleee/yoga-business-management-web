@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useAppSelector } from "../../../hooks/useRedux";
-import { IRootState } from "../../../redux";
+import React, { useEffect } from 'react';
+import { useAppSelector } from '../../../hooks/useRedux';
+import { IRootState } from '../../../store';
 export function withAuthorization<T>(
-  Component: React.FC<T>
+  Component: React.FC<T>,
   //   authorizations: string[],
   //   Placeholder?: React.FC
 ) {

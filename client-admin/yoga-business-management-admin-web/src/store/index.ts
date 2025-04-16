@@ -1,7 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./rootReducers";
-import storage from "redux-persist/lib/storage";
-import createFilter from "redux-persist-transform-filter";
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './rootReducers';
+import storage from 'redux-persist/lib/storage';
+import createFilter from 'redux-persist-transform-filter';
 import {
   persistStore,
   persistReducer,
@@ -11,19 +11,15 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
+} from 'redux-persist';
 
-const saveSubsetAuthReducer = createFilter("auth", [
-  "accessToken",
-  "user",
-  "tokenExpiredTime",
-]);
+const saveSubsetAuthReducer = createFilter('auth', ['accessToken', 'user', 'tokenExpiredTime']);
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage,
   transforms: [saveSubsetAuthReducer],
-  whitelist: ["auth"],
+  whitelist: ['auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -35,12 +31,13 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }) as any,
 });
 
 let persistor = persistStore(store);
 
-export type IRootState = ReturnType<typeof store.getState>;
+export type IRootState = ReturnType<typeof rootReducer>;
+
 export type IStoreDispatch = typeof store.dispatch;
 
 export { store, persistor };

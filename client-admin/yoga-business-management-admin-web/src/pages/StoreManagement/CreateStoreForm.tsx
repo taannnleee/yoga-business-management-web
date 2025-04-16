@@ -13,6 +13,8 @@ import BaseInput from '../../components/BaseInput';
 import { toast } from 'react-toastify';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import StoreMap from './StoreMap'; // Import the dialog
+import axiosInstance from 'utils/axiosClient';
+
 interface IStoreFormValue {
   name: string;
   storeCode: string; // Changed to string
@@ -44,7 +46,7 @@ const CreateStoreForm: React.FC<IStoreFormProps> = ({ onClose, loading, onConfir
   const handleSubmit = async (values: IStoreFormValue) => {
     try {
       // Call the API
-      await axios.post(`${apiURL}/store`, {
+      await axiosInstance.post(`/store`, {
         name: values.name,
         supportPickup: values.supportPickup,
         supportDelivery: values.supportDelivery,

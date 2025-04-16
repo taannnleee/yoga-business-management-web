@@ -9,6 +9,7 @@ import CourseCard from './CourseCard';
 import FormDialog from './FormDialog';
 import CourseFilter from './CourseFilter';
 import { Course } from '../../types/course';
+import axiosInstance from 'utils/axiosClient';
 
 const CourseManagement = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -24,12 +25,7 @@ const CourseManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await axios.get(`${apiURL}/api/admin/all-course`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/all-course`);
       setCourses(response.data.data);
     } catch (error) {
       setError('Error fetching courses');

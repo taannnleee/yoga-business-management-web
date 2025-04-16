@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Pagination } from '@mui/material';
 import UploadWidget from '../../designs/UploadWidget';
+import axiosInstance from 'utils/axiosClient';
 
 interface IImportProductFormProps {
   open: boolean;
@@ -44,23 +45,15 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   //upload ảnh
   const uploadImage = async (file: File, color: string) => {
     setLoading(true);
-    const accessToken = localStorage.getItem('accessToken');
     console.log('kkkk2');
-    console.log(accessToken);
 
     try {
       const formData = new FormData();
       formData.append('file', file); // Thêm file vào formData
 
-      const response = await axios.post<{ data: { url: string } }>(
+      const response = await axiosInstance.post<{ data: { url: string } }>(
         `${apiURL}/api/image/upload`,
         formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
       );
 
       const uploadedImageUrl = response.data.data.url;
@@ -82,9 +75,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
   };
 
   const importProduct = async () => {
-    const accessToken = localStorage.getItem('accessToken');
     console.log('kkkk2');
-    console.log(accessToken);
     try {
       const productData = {
         title,
@@ -98,12 +89,7 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
       };
 
       console.log(productData);
-      console.log(accessToken);
-      const response = await axios.post(`${apiURL}/api/admin/add-product`, productData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.post(`/api/admin/add-product`, productData);
 
       if (response?.data?.status === 200) {
         toast.success('Sản phẩm đã được thêm vào cửa hàng!');

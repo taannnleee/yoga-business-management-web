@@ -34,6 +34,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import Header from '../../components/Header';
 import FooterSection from '../../components/FooterSection';
+import axiosInstance from 'utils/axiosClient';
 
 interface Params {
   id: string;
@@ -102,19 +103,10 @@ function CourseEditor() {
 
   const fetchSections = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/get-all-section-by-id-course/${id}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setSections(result.data);
-        console.log('Dữ liệu sections:', result.data);
+      const response = await axiosInstance.get(`/api/admin/get-all-section-by-id-course/${id}`);
+      if (response.status === 200) {
+        setSections(response.data.data);
+        console.log('Dữ liệu sections:', response.data.data);
       } else {
         console.error('Lỗi khi lấy danh sách sections:', response.statusText);
       }
@@ -129,23 +121,14 @@ function CourseEditor() {
 
   const saveChapter = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/add-section`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idCourse: id,
-          title: inputValue,
-        }),
+      const response = await axiosInstance.post(`/api/admin/add-section`, {
+        idCourse: id,
+        title: inputValue,
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200) {
+        const result = response.data;
         console.log('Thêm chương thành công:', result);
-
         setSections((prevSections) => [
           ...prevSections,
           { id: result.data.id, title: inputValue, lectures: [] },
@@ -172,27 +155,17 @@ function CourseEditor() {
 
   const saveLecture = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/add-lecture`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idSection: currentSection.id,
-          title: newLecture.title,
-          content: newLecture.content,
-          videoPath: videoPath, // Truyền videoPath vào đây
-          duration: videoDuration,
-          image: imagePath,
-        }),
+      const response = await axiosInstance.post(`/api/admin/add-lecture`, {
+        idSection: currentSection.id,
+        title: newLecture.title,
+        content: newLecture.content,
+        videoPath: videoPath, // Truyền videoPath vào đây
+        duration: videoDuration,
+        image: imagePath,
       });
-      console.log('kkk');
-      console.log(newLecture);
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200) {
+        const result = response.data;
         console.log('Thêm bài giảng thành công:', result);
 
         // Update the sections state with the new lecture

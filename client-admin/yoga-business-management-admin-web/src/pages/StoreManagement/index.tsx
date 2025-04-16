@@ -4,7 +4,7 @@ import MainLayout from '../../components/SIdeBar';
 import { Pagination } from '@mui/material';
 import axios from 'axios';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IRootState } from '../../redux';
+import { IRootState } from '../../store';
 import { apiURL } from '../../config/constanst';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import Spinner from '../../components/Spinner';
@@ -14,6 +14,7 @@ import CreateStoreForm from './CreateStoreForm';
 import CustomDialog from '../../components/CustomDialog';
 import { toast } from 'react-toastify';
 import UpdateStoreForm from './UpdateStoreForm'; // Import the dialog
+import axiosInstance from 'utils/axiosClient';
 
 interface IStoreProps {
   id: number;
@@ -48,11 +49,7 @@ const StoreMangement = () => {
   const getAllStores = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${apiURL}/store?page=${page}&pageSize=10`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/store?page=${page}&pageSize=10`);
       if (response?.data?.success) {
         setStores(response?.data?.data?.results || []);
         setTotalPage(Math.ceil(response?.data?.data?.total / 10));

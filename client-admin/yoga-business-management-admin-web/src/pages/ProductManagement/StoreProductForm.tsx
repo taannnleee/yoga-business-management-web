@@ -1,22 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { XMarkIcon } from "@heroicons/react/20/solid";
-import { Formik } from "formik";
-import * as yup from "yup";
-import InputText from "../../designs/InputText";
-import Button from "../../designs/Button";
-import RichTextInput from "../../designs/RichTextInput";
-import InputNumber from "../../designs/InputNumber";
-import BaseInput from "../../components/BaseInput";
-import { useAppSelector } from "../../hooks/useRedux";
-import { useAuth } from "../../hooks/useAuth";
-import axios from "axios";
-import SelectComponent from "../../components/Select";
-import { apiURL } from "../../config/constanst";
-import UploadWidget from "../../designs/UploadWidget";
-import UploadMultipleWidget from "../../designs/UploadMultipleWidget";
+import { XMarkIcon } from '@heroicons/react/20/solid';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import InputText from '../../designs/InputText';
+import Button from '../../designs/Button';
+import RichTextInput from '../../designs/RichTextInput';
+import InputNumber from '../../designs/InputNumber';
+import BaseInput from '../../components/BaseInput';
+import { useAppSelector } from '../../hooks/useRedux';
+import { useAuth } from '../../hooks/useAuth';
+import axios from 'axios';
+import SelectComponent from '../../components/Select';
+import { apiURL } from '../../config/constanst';
+import UploadWidget from '../../designs/UploadWidget';
+import UploadMultipleWidget from '../../designs/UploadMultipleWidget';
+import axiosInstance from 'utils/axiosClient';
 
-interface IFormValue extends Omit<IProduct, "id"> {}
+interface IFormValue extends Omit<IProduct, 'id'> {}
 interface IProductFormProps {
   currentProduct: IProduct | null;
   onClose: () => void;
@@ -27,27 +28,21 @@ interface IProductFormProps {
 const StoreProductForm: React.FC<IProductFormProps> = (props) => {
   const { currentProduct, onClose, loading, onConfirm } = props;
   const [initialValues, setInitialValues] = React.useState<IFormValue | null>(
-    currentProduct || null
+    currentProduct || null,
   );
-  const [listCategory, setListCategory] = React.useState<IProductCategory[]>(
-    []
-  );
-  const { accessToken } = useAppSelector((state) => state.auth);
-  const [selectedCategory, setSelectedCategory] =
-    React.useState<IProductCategory | null>(null);
-  const [thumbnailSelected, setThumbnailSelected] = React.useState<string>("");
+  const [listCategory, setListCategory] = React.useState<IProductCategory[]>([]);
+  const [selectedCategory, setSelectedCategory] = React.useState<IProductCategory | null>(null);
+  const [thumbnailSelected, setThumbnailSelected] = React.useState<string>('');
   const [images, setImagesSelected] = React.useState<string[]>([]);
 
-  const validationSchema = yup
-    .object()
-    .shape<{ [k in keyof IFormValue]: any }>({
-      name: yup.string().required("Vui lòng điền tên sản phẩm"),
-      upc: yup.string().required("Vui lòng nhập mã sản phẩm"),
-      price: yup.object().shape<{ [k in keyof ProductPrice]: any }>({
-        price: yup.number().required("Vui lòng nhập giá sản phẩm"),
-        displayPrice: yup.string().required("Vui lòng nhập giá sản phẩm"),
-      }),
-    });
+  const validationSchema = yup.object().shape<{ [k in keyof IFormValue]: any }>({
+    name: yup.string().required('Vui lòng điền tên sản phẩm'),
+    upc: yup.string().required('Vui lòng nhập mã sản phẩm'),
+    price: yup.object().shape<{ [k in keyof ProductPrice]: any }>({
+      price: yup.number().required('Vui lòng nhập giá sản phẩm'),
+      displayPrice: yup.string().required('Vui lòng nhập giá sản phẩm'),
+    }),
+  });
 
   const handleSubmit = async (values: IFormValue) => {
     onConfirm({
@@ -63,16 +58,12 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
 
   const getAllCategories = async () => {
     try {
-      const response = await axios.get(`${apiURL}/category`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/category`);
       if (response?.data.success) {
         setListCategory(response?.data?.data?.data);
       }
     } catch (error) {
-      console.log("GET PRODUCT CATEGORY ERROR", error);
+      console.log('GET PRODUCT CATEGORY ERROR', error);
     } finally {
     }
   };
@@ -88,7 +79,7 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
         category: (currentProduct.category as any).id,
       });
       setSelectedCategory(currentProduct.category as any);
-      setThumbnailSelected(currentProduct.thumbnail || "");
+      setThumbnailSelected(currentProduct.thumbnail || '');
       setImagesSelected(currentProduct.images || []);
     }
   }, [currentProduct]);
@@ -104,7 +95,7 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
         return (
           <div className="flex flex-col space-y-10">
             <div className="flex flex-col space-y-5">
-              <div className="grid grid-cols-1 tablet:grid-cols-2 gap-x-2 gap-y-5 items-center justify-between">
+              <div className="grid grid-cols-1 items-center justify-between gap-x-2 gap-y-5 tablet:grid-cols-2">
                 <BaseInput
                   type="text"
                   name="name"
@@ -121,7 +112,7 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 tablet:grid-cols-2 gap-x-2 gap-y-5 items-center justify-between">
+              <div className="grid grid-cols-1 items-center justify-between gap-x-2 gap-y-5 tablet:grid-cols-2">
                 <BaseInput
                   type="number"
                   mode="text"
@@ -146,7 +137,7 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
                 thumbnailUploaded={images}
                 setThumbnailUploaded={(images) => setImagesSelected(images)}
               />
-              <div className="grid grid-cols-1 tablet:grid-cols-2 gap-x-2 gap-y-5 items-center justify-between">
+              <div className="grid grid-cols-1 items-center justify-between gap-x-2 gap-y-5 tablet:grid-cols-2">
                 <SelectComponent
                   name="category"
                   label="Danh mục"
@@ -157,7 +148,7 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
                   options={listCategory}
                   onSelect={(option) => {
                     setSelectedCategory(option);
-                    setFieldValue("category", option.id);
+                    setFieldValue('category', option.id);
                   }}
                 />
               </div>
@@ -169,14 +160,10 @@ const StoreProductForm: React.FC<IProductFormProps> = (props) => {
                 placeholder="Mô tả sản phẩm"
               />
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <div></div>
               <div className="flex items-center">
-                <Button
-                  variant="secondary"
-                  onClick={() => onClose()}
-                  title="Đóng"
-                />
+                <Button variant="secondary" onClick={() => onClose()} title="Đóng" />
                 <Button
                   type="submit"
                   title="Xác nhận"

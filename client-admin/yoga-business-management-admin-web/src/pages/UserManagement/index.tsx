@@ -4,12 +4,13 @@ import MainLayout from '../../components/SIdeBar';
 import { Button, Pagination, TablePagination } from '@mui/material';
 import axios from 'axios';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IRootState } from '../../redux';
+import { IRootState } from '../../store';
 import { apiURL } from '../../config/constanst';
 
 import ActionMenu from './ActionMenu';
 import { toast } from 'react-toastify';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
+import axiosInstance from 'utils/axiosClient';
 
 interface IUser {
   id: string;
@@ -41,7 +42,6 @@ const UserManagement = () => {
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
   const [users, setUsers] = React.useState<IUser[]>([]);
 
-  const { user, accessToken } = useAppSelector((state: IRootState) => state.auth);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(1);
   const [totalPage, setTotalPage] = React.useState<number>(0);
@@ -119,11 +119,7 @@ const UserManagement = () => {
             const payload = {
               isActive: false,
             };
-            const response = await axios.put(`${apiURL}/profiles/${id}`, payload, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            });
+            const response = await axiosInstance.put(`/profiles/${id}`, payload);
 
             if (response?.data?.success == true) {
               toast.success('Vô hiệu hóa tài khoản thành công');
@@ -140,11 +136,7 @@ const UserManagement = () => {
             const payload = {
               isActive: true,
             };
-            const response = await axios.put(`${apiURL}/profiles/${id}`, payload, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            });
+            const response = await axiosInstance.put(`/profiles/${id}`, payload);
 
             if (response?.data?.success == true) {
               toast.success('Kích hoạt tài khoản thành công');
@@ -180,16 +172,9 @@ const UserManagement = () => {
     const { addLoadingEffect } = params || {};
     try {
       addLoadingEffect && setLoading(true);
-      const accessToken = localStorage.getItem('accessToken'); // Retrieve token from localStorage
 
-      const response = await fetch('http://localhost:8080/api/admin/getAllUser', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`, // Add Bearer token
-        },
-      });
-      const result = await response.json();
+      const response = await axiosInstance.get('/api/admin/getAllUser');
+      const result = await response;
       console.log('response user', result.data);
       if (response) {
         setUsers(result.data);

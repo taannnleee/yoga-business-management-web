@@ -7,6 +7,7 @@
     "@chakra-ui/react": "^3.1.0",
     "@cloudinary/react": "^1.13.0",
     "@cloudinary/url-gen": "^1.19.0",
+    "@craco/craco": "^7.1.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@heroicons/react": "^2.0.12",
@@ -14,7 +15,7 @@
     "@mui/material": "^5.10.8",
     "@mui/x-data-grid": "^5.17.6",
     "@mui/x-date-pickers": "^5.0.10",
-    "@reduxjs/toolkit": "^1.9.1",
+    "@reduxjs/toolkit": "^2.7.0",
     "@stomp/stompjs": "^7.0.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -48,6 +49,7 @@
     "react-router-dom": "5.3.3",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.1",
+    "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-persist-transform-filter": "^0.0.22",
     "sockjs-client": "^1.6.1",
@@ -59,9 +61,9 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

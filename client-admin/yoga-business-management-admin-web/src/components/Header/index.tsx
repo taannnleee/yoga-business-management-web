@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../hooks/useAuth';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IRootState } from '../../redux';
-import { setAccessToken, setUser } from '../../redux/slices/auth';
+import { IRootState } from '../../store';
 import LogoutConfirmDialog from '../LogoutConfirmDialog';
 import { useHistory } from 'react-router-dom';
-import { Client, StompSubscription } from "@stomp/stompjs";
+import { Client, StompSubscription } from '@stomp/stompjs';
+import axiosInstance from 'utils/axiosClient';
+
 interface IHeaderProps {
   title: string;
 }
@@ -19,39 +20,21 @@ const Header: React.FC<IHeaderProps> = (props) => {
   const [open, setOpen] = useState<boolean>(false);
   const logOut = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        return;
-      }
-      console.log("hehehe")
+      const response = await axiosInstance.post(`/auth/logout`);
 
-      // Gọi API logout sử dụng fetch
-      const response = await fetch(`http://localhost:8080/api/auth/logout`, {
-        method: 'POST', // Phương thức POST
-        headers: {
-          'Authorization': `Bearer ${token}`, // Gửi token xác thực trong header
-          'Content-Type': 'application/json', // Đảm bảo body là JSON (mặc dù ở đây body rỗng)
-        },
-      });
-      console.log("hehehe")
-      console.log(response)
-
-      // Kiểm tra nếu logout thành công
-      if (response.ok) {
+      if (response.status === 200) {
         // Xóa token khỏi localStorage
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
 
-        toast.success('Đăng xuất thành công')
+        toast.success('Đăng xuất thành công');
         history.push('/login');
       } else {
-        // Xử lý trường hợp logout không thành công
-        toast.error("Đăng xuất thất bại, vui lòng thử lại.");
+        toast.error('Đăng xuất thất bại, vui lòng thử lại.');
       }
     } catch (error) {
-      // Xử lý lỗi trong quá trình gọi API
-      console.error("Logout error", error);
-      toast.error("Đăng xuất thất bại, vui lòng thử lại.");
+      console.error('Logout error', error);
+      toast.error('Đăng xuất thất bại, vui lòng thử lại.');
     }
   };
 

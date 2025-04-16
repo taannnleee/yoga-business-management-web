@@ -4,7 +4,7 @@ import MainLayout from '../../components/SIdeBar';
 import { Button, Dialog, Pagination, Skeleton, TablePagination } from '@mui/material';
 import axios from 'axios';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IRootState } from '../../redux';
+import { IRootState } from '../../store';
 import Spinner from '../../components/Spinner';
 import { apiURL } from '../../config/constanst';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import CustomDialog from '../../components/CustomDialog';
 import ProductForm from './ProductForm';
 import { EyeDropperIcon, EyeIcon, EyeSlashIcon, PlusIcon } from '@heroicons/react/24/outline';
+import axiosInstance from 'utils/axiosClient';
 
 interface ITenantProductManagementProps {
   onChangeViewMode: (mode: 'tenant' | 'store') => void;
@@ -30,16 +31,11 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
   const [selectedRow, setSelectedRow] = React.useState<string | number>('');
   const [selectedItem, setSelectedItem] = React.useState<IProduct | null>(null);
   const [openUpdateModal, setOpenUpdateModal] = React.useState<boolean>(false);
-  const accessToken = localStorage.getItem('accessToken');
 
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${apiURL}/api/home/getAllProduct?&page=${page}&size=10`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/home/getAllProduct?&page=${page}&size=10`);
 
       if (response) {
         console.log('GET PRODUCT RESPONSE', response);
@@ -144,11 +140,7 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
     try {
       setActionLoading(true);
       setSelectedRow(id);
-      const response = await axios.put(`${apiURL}/products/${id}/`, values, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.put(`/products/${id}/`, values);
       if (response?.data?.success) {
         setActionLoading(false);
         getAllProducts();
@@ -167,11 +159,9 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
     try {
       setActionLoading(true);
       setSelectedRow(id);
-      const response = await axios.delete(`${apiURL}/api/admin/delete-status-product/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.delete(
+        `${apiURL}/api/admin/delete-status-product/${id}/`,
+      );
       if (response?.data?.success) {
         setActionLoading(false);
         getAllProducts();
@@ -188,11 +178,7 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
   const createProduct = async (values: Omit<IProduct, 'id'>) => {
     try {
       setActionLoading(true);
-      const response = await axios.post(`${apiURL}/products/`, values, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.post(`/products/`, values);
       if (response?.data?.success) {
         setActionLoading(false);
         getAllProducts();

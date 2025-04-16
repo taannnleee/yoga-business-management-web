@@ -8,6 +8,7 @@ import ActionMenu from '../../components/ActionMenu';
 import { apiURL } from '../../config/constanst';
 import Spinner from '../../components/Spinner';
 import MainLayout from '../../components/SIdeBar';
+import axiosInstance from 'utils/axiosClient';
 
 const TrashStoreProductManagement = () => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
@@ -19,19 +20,15 @@ const TrashStoreProductManagement = () => {
   const [productToRestore, setProductToRestore] = React.useState<IProduct | null>(null);
   const [openRestoreConfirmModal, setOpenRestoreConfirmModal] = React.useState<boolean>(false);
 
-  const accessToken = localStorage.getItem('accessToken');
-
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${apiURL}/api/admin/get-all-product?page=${page}&size=10&status=false`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(
+        `/api/admin/get-all-product?page=${page}&size=10&status=false`,
+      );
 
       if (response?.data?.status === 200) {
-        console.log("tanle")
+        console.log('tanle');
         console.log(response.data.data.content);
         setProducts(response.data.data.content);
         setTotalPages(response.data.data.totalPages);
@@ -50,15 +47,11 @@ const TrashStoreProductManagement = () => {
   const restoreProduct = async (productId: string | number) => {
     try {
       setActionLoading(true);
-      const response = await axios.get(`${apiURL}/api/admin/change-status/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/change-status/${productId}`);
 
       if (response?.data?.status === 200) {
         toast.success('Khôi phục sản phẩm thành công');
-        getAllProducts();  // Reload products list
+        getAllProducts(); // Reload products list
       } else {
         toast.error('Khôi phục sản phẩm không thành công');
       }
@@ -122,11 +115,7 @@ const TrashStoreProductManagement = () => {
             onActionSuccess: () => getAllProducts(),
           },
         ];
-        return actionLoading ? (
-          <Spinner size={20} />
-        ) : (
-          <ActionMenu options={options} />
-        );
+        return actionLoading ? <Spinner size={20} /> : <ActionMenu options={options} />;
       },
     },
   ];
@@ -159,11 +148,7 @@ const TrashStoreProductManagement = () => {
               style={{ height: 500, width: '100%' }}
               className="custom-data-grid"
             />
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={(e, page) => setPage(page)}
-            />
+            <Pagination count={totalPages} page={page} onChange={(e, page) => setPage(page)} />
           </>
         }
       />

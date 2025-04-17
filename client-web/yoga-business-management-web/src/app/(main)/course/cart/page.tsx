@@ -99,7 +99,12 @@ const CartPage: React.FC = () => {
                     <div className="text-sm text-gray-500 line-through mb-2">{totalSelectedFormatted}</div>
                     {/* <div className="text-green-600 font-medium mb-6">Giảm 82%</div> */}
 
-                    <button onClick={() => createOrder()} className="w-full bg-purple-600 text-white py-3 rounded hover:bg-purple-700 transition">
+                    <button
+                        disabled={selectedItems.length === 0}
+                        onClick={() => createOrder()}
+                        className={`w-full text-white py-3 rounded transition
+        ${selectedItems.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'}`}
+                    >
                         Tiến hành thanh toán
                     </button>
 

@@ -11,5 +11,4 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class OrderCourseCreationRequest {
     List<String> courseCartId;
-
 }

@@ -95,6 +95,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                 toast.sendToast("Error", "Khóa học đã có trong giỏ hàng của bạn", "error");
             } else {
                 toast.sendToast("Success", "Đặt hàng thành công");
+                handleCloseModal();
             }
 
 

@@ -13,6 +13,7 @@ import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequ
 import org.example.yogabusinessmanagementweb.dto.request.orderCourse.OrderCourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.ListDto;
+import org.example.yogabusinessmanagementweb.dto.response.cart.CartResponse;
 import org.example.yogabusinessmanagementweb.dto.response.coursecart.CourseCartResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
@@ -44,5 +45,11 @@ public class OrderCourseController {
     public ApiResponse<?> createOrderCourse(@RequestBody OrderCourseCreationRequest orderCourseCreationRequest) {
         orderCourseService.createOrderCourse(orderCourseCreationRequest);
         return new ApiResponse<>(HttpStatus.OK.value(), "create course order success");
+    }
+
+    @GetMapping("/show-order")
+    public ApiResponse<?> showOrder(HttpServletRequest request) {
+        List<OrderCourseResponse> orderCourseResponses = orderCourseService.showOrder(request);
+        return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderCourseResponses);
     }
 }

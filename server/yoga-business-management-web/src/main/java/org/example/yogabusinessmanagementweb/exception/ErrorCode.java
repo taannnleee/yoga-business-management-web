@@ -60,9 +60,10 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND(1037, "Comment not found",HttpStatus.NOT_FOUND),
 
     PASS_WORD_INCORRECT(1038, "Pass word incorrect",HttpStatus.BAD_REQUEST),
-    REFRESH_TOKEN_EXPIRED(1039, "Refresh token expired",HttpStatus.BAD_REQUEST);
+    REFRESH_TOKEN_EXPIRED(1039, "Refresh token expired",HttpStatus.BAD_REQUEST),
     // MODULE ERROR
-
+    PURCHASES_COURSE(1040, "Purchased course",HttpStatus.BAD_REQUEST),
+    COURSE_CART_NOT_FOUND(1025, "Course cart not found",HttpStatus.NOT_FOUND);
     // CLASS ERROR
 
     // TRAINING PROGRAM ERROR

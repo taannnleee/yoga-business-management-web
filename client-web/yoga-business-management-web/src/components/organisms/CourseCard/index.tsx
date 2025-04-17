@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import axiosInstance from "@/utils/axiosClient";
+import { useToast } from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
 import {
     Box,
     Typography,
@@ -14,7 +17,6 @@ import {
 import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { CheckCircleIcon } from "@heroicons/react/16/solid";
-import { useRouter } from "next/navigation"; // Import useRouter
 interface Course {
     id: number;
     name: string;
@@ -33,11 +35,13 @@ interface CourseCardProps {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
+    const toast = useToast();
+    const router = useRouter()
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-    const router = useRouter(); // Initialize router
     const itemsPerPage = 5;
+    ;
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) =>
@@ -75,6 +79,30 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     const navigateToDetail = (id: number) => {
         router.push(`/course/detail/${id}`);
     };
+    const addToCart = async () => {
+        try {
+            const response = await axiosInstance.post(`/api/course/cart/add-to-cart`, {
+                courseId: selectedCourse?.id,
+
+            }
+                ,
+                {
+                    validateStatus: (status) => true, // Chấp nhận tất cả status code
+                }
+            );
+            const data = response.data.status;
+            if (data === 1040) {
+                toast.sendToast("Error", "Khóa học đã có trong giỏ hàng của bạn", "error");
+            } else {
+                toast.sendToast("Success", "Đặt hàng thành công");
+            }
+
+
+        } catch (error) {
+            toast.sendToast("Error", "Đặt hàng thất bại", "error");
+            console.error("Error fetching cart data:", error);
+        }
+    }
     return (
         <Box mt={2} p={2} ml={4} mr={4}>
             <Box display="flex" alignItems="center" overflow="hidden">
@@ -164,9 +192,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft: "120px", color: "red" }}>
                                 Xem chi tiết
                             </Typography>
-                            {/* <Button variant="contained" color="primary" style={{ marginTop: "42px", marginLeft: "120px" }}>
-                                Tham gia
-                            </Button> */}
+
+                            <Button onClick={() => addToCart()} variant="contained" color="primary" style={{ marginTop: "10px", marginLeft: "90px" }}>
+                                Thêm vào giỏ hàng
+                            </Button>
                         </Box>
                         {/* Right - Course details */}
                         <Box flex={2} ml={2}>

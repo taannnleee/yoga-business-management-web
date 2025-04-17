@@ -1,23 +1,24 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.Enum.EStatusOrder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "CourseCart")
+@Table(name = "OrderCourse")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class CourseCart extends AbstractEntity<Long>{
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class OrderCourse extends AbstractEntity<Long> implements Serializable {
     BigDecimal totalPrice;
 
     @ManyToOne()

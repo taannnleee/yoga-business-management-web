@@ -8,6 +8,27 @@ import tensorflow as tf
 
 tfjs_model_dir = 'model'
 
+# Body part mapping
+BODY_PARTS = {
+    0: "mũi",
+    1: "mắt trái",
+    2: "mắt phải",
+    3: "tai trái",
+    4: "tai phải",
+    5: "vai trái",
+    6: "vai phải",
+    7: "khuỷu tay trái",
+    8: "khuỷu tay phải",
+    9: "cổ tay trái",
+    10: "cổ tay phải",
+    11: "hông trái",
+    12: "hông phải",
+    13: "đầu gối trái",
+    14: "đầu gối phải",
+    15: "mắt cá chân trái",
+    16: "mắt cá chân phải",
+}
+
 
 # loading final csv file
 def load_csv(csv_path):
@@ -99,7 +120,18 @@ def landmarks_to_embedding(landmarks_and_scores):
     # Flatten the normalized landmark coordinates into a vector
     embedding = keras.layers.Flatten()(landmarks)
     return embedding
+def compare_landmarks(user_landmarks, correct_landmarks, threshold=0.1):
+    diffs = tf.norm(user_landmarks - correct_landmarks, axis=1)
+    wrong_points = tf.where(diffs > threshold)
+    return tf.gather(wrong_points, 0)
 
+def suggest_corrections(wrong_points):
+    messages = []
+    for i in wrong_points.numpy():
+        part = BODY_PARTS.get(i, f"điểm {i}")
+        msg = f"👉 Hãy kiểm tra lại vị trí của {part} – có thể bạn đang giữ sai tư thế hoặc đặt không đúng vị trí."
+        messages.append(msg)
+    return messages
 
 def preprocess_data(X_train):
     processed_X_train = []
@@ -108,6 +140,18 @@ def preprocess_data(X_train):
         processed_X_train.append(tf.reshape(embedding, (34)))
     return tf.convert_to_tensor(processed_X_train)
 
+def check_pose_errors(user_input, correct_input):
+    """
+    Nhận vào 2 landmark (1 sample mỗi cái), chuẩn hóa và so sánh lỗi.
+    """
+    user_landmarks = tf.reshape(tf.convert_to_tensor(user_input), (1, 17, 3))
+    correct_landmarks = tf.reshape(tf.convert_to_tensor(correct_input), (1, 17, 3))
+
+    user_landmarks = normalize_pose_landmarks(user_landmarks)[0]
+    correct_landmarks = normalize_pose_landmarks(correct_landmarks)[0]
+
+    wrong_points = compare_landmarks(user_landmarks, correct_landmarks)
+    return suggest_corrections(wrong_points)
 
 X, y, class_names = load_csv('train_data.csv')
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.15)
@@ -158,6 +202,23 @@ print('-----------------EVAUATION----------------')
 loss, accuracy = model.evaluate(processed_X_test, y_test)
 print('LOSS: ', loss)
 print("ACCURACY: ", accuracy)
+# Lấy mẫu đầu tiên từ test set để kiểm tra lỗi tư thế
+# (có thể thay đổi index nếu muốn)
+sample_index = 0
+predicted_class = tf.argmax(model.predict(tf.expand_dims(processed_X_test[sample_index], axis=0)), axis=1).numpy()[0]
+
+# Lọc mẫu đúng tương ứng class (tư thế mẫu chuẩn)
+correct_index = y_test[:, predicted_class].argmax()
+correct_raw_input = X_test.iloc[correct_index]
+user_raw_input = X_test.iloc[sample_index]
+
+print("\n------------------GỢI Ý SỬA TƯ THẾ------------------")
+suggestions = check_pose_errors(user_raw_input, correct_raw_input)
+if suggestions:
+    for s in suggestions:
+        print(s)
+else:
+    print("✅ Tư thế của bạn đã đúng!")
 
 
 # tfjs.converters.save_keras_model(model, tfjs_model_dir)

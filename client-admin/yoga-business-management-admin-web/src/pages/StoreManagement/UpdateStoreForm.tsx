@@ -57,7 +57,7 @@ const UpdateStoreForm: React.FC<IStoreFormProps> = ({
     try {
       console.log('ID store iS: ', currentStore?.id);
       // Call the API
-      await axiosInstance.patch(`${apiURL}/store/${currentStore?.id}`, {
+      await axiosInstance.patch(`/store/${currentStore?.id}`, {
         name: values.name,
         supportPickup: values.supportPickup,
         supportDelivery: values.supportDelivery,

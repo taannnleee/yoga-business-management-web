@@ -89,8 +89,8 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
   const handleCreateCourse = async () => {
     try {
       const url = isEditMode
-        ? `${apiURL}/api/admin/update-course/${course?.id}`
-        : `${apiURL}/api/admin/add-course`;
+        ? `/api/admin/update-course/${course?.id}`
+        : `/api/admin/add-course`;
       const method = isEditMode ? 'PUT' : 'POST';
 
       const response = await axiosInstance({

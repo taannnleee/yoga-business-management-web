@@ -29,7 +29,7 @@ export const registerService = async (username: string, email: string, password:
 export const isExistedEmail = async (email: string) => {
   try {
     const isExisted = await axiosInstance.post(
-      `${apiURL}/auth/checkemail`,
+      `/auth/checkemail`,
 
       {
         email: email,

@@ -160,7 +160,7 @@ const TenantProductManagement: React.FC<ITenantProductManagementProps> = (props)
       setActionLoading(true);
       setSelectedRow(id);
       const response = await axiosInstance.delete(
-        `${apiURL}/api/admin/delete-status-product/${id}/`,
+        `/api/admin/delete-status-product/${id}/`,
       );
       if (response?.data?.success) {
         setActionLoading(false);

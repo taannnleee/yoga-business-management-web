@@ -51,6 +51,16 @@ function Yoga() {
   const [bestPerform, setBestPerform] = useState(0);
   const [currentPose, setCurrentPose] = useState("Chair");
   const [isStartPose, setIsStartPose] = useState(false);
+  const [expectedPose, setExpectedPose] = useState(null);
+
+  useEffect(() => {
+    const loadPoseData = async () => {
+      const response = await fetch("/expected_pose_points.json");
+      const data = await response.json();
+      setExpectedPose(data);
+    };
+    loadPoseData();
+  }, []);
 
   useEffect(() => {
     const timeDiff = (currentTime - startingTime) / 1000;
@@ -173,21 +183,29 @@ function Yoga() {
   }
   function calculatePoseError(expectedPose, actualPose) {
     const errors = {};
+
     for (let key in expectedPose) {
       if (expectedPose.hasOwnProperty(key)) {
-        const expectedPoint = expectedPose[key];
-        const actualPoint = actualPose[key];
-        const error = euclideanDistance(
-          expectedPoint.x,
-          expectedPoint.y,
-          actualPoint.x,
-          actualPoint.y
-        );
+        const expectedPoint = expectedPose[key]; // [x, y]
+        const actualPoint = actualPose[key]; // { x: ..., y: ... }
+
+        if (!actualPoint || !Array.isArray(expectedPoint)) {
+          errors[key] = Infinity; // nếu không có điểm thì gán lỗi lớn
+          continue;
+        }
+
+        const [expectedX, expectedY] = expectedPoint;
+        const { x: actualX, y: actualY } = actualPoint;
+
+        const error = euclideanDistance(expectedX, expectedY, actualX, actualY);
+
         errors[key] = error;
       }
     }
+
     return errors;
   }
+
   function findMaxErrorPoint(errors) {
     let maxError = 0;
     let maxErrorPoint = null;
@@ -222,7 +240,14 @@ function Yoga() {
       RIGHT_EAR: "Hãy di chuyển tai phải cho đúng!",
     };
 
-    return suggestions[maxErrorPoint] || "Điều chỉnh tư thế cho đúng nhé!";
+    if (suggestions[maxErrorPoint]) {
+      return suggestions[maxErrorPoint];
+    }
+
+    
+    const allSuggestions = Object.values(suggestions);
+    const randomIndex = Math.floor(Math.random() * allSuggestions.length);
+    return allSuggestions[randomIndex];
   }
 
   const detectPose = async (detector, poseClassifier, countAudio) => {
@@ -296,7 +321,7 @@ function Yoga() {
             if (maxErrorPoint) {
               const suggestion = suggestCorrectionBasedOnError(maxErrorPoint);
               console.log(`Suggestion: ${suggestion}`);
-              toast.sendToast("Error", `${suggestion}`, "error");
+              toast.error(suggestion);
             }
           }
         });

@@ -103,7 +103,7 @@ const TeacherManagement: React.FC = () => {
 
       try {
         const response = await axiosInstance.post<{ data: { url: string } }>(
-          `${apiURL}/api/image/upload`,
+          `/api/image/upload`,
           formDataObj,
         );
         return response.data.data.url;
@@ -131,6 +131,8 @@ const TeacherManagement: React.FC = () => {
       };
 
       try {
+        console.log('Teacher data:', teacherData); // Log the teacher data
+        // Send the teacher data to the server
         const response = await axiosInstance.post(`/api/admin/add-teacher`, teacherData);
         toast.success('Tạo Giáo Viên thành công!');
         setFormData({
@@ -158,7 +160,7 @@ const TeacherManagement: React.FC = () => {
   const handleDelete = async (id: string) => {
     setLoading(true);
     try {
-      await axiosInstance.delete(`${apiURL}/api/admin/delete-teacher/${id}`);
+      await axiosInstance.delete(`/api/admin/delete-teacher/${id}`);
       toast.success('Xóa giáo viên thành công!');
       fetchTeachers();
     } catch (error) {
@@ -199,7 +201,7 @@ const TeacherManagement: React.FC = () => {
       };
 
       try {
-        await axiosInstance.put(`${apiURL}/api/admin/update-teacher/${selectedTeacher.id}`);
+        await axiosInstance.put(`/api/admin/update-teacher/${selectedTeacher.id}`);
         toast.success('Cập nhật giáo viên thành công!');
         fetchTeachers();
         setEditDialogOpen(false);

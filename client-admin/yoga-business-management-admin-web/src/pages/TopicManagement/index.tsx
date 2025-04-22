@@ -62,7 +62,7 @@ const TopicManagement = () => {
   // Fetch all topics from API
   const fetchTopics = async () => {
     try {
-      const response = await axiosInstance.get(`${apiURL}/api/admin/all-topic`);
+      const response = await axiosInstance.get(`/api/admin/all-topic`);
 
       if (response?.data?.status === 200 && response?.data?.data) {
         setTopics(response.data.data);

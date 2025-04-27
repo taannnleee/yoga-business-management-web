@@ -66,7 +66,7 @@ public class AppConfig {
       };
     }
 
-    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test","/ws/**","/api/category/with-products","api/user/get-email-by-username"};
+    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test","/ws/**","/api/category/with-products","api/user/get-email-by-username","api/bmi/**"};
 
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};
 

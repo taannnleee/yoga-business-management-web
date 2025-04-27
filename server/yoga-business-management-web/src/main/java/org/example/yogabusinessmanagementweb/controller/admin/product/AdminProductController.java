@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +40,11 @@ public class AdminProductController {
         Product addProductResponse = productService.addProduct(productCreationRequest);
         messagingTemplate.convertAndSend("/topic/notification", addProductResponse.getId());
         return new ApiResponse<>(HttpStatus.OK.value(), "create product  successfully",addProductResponse);
+    }
+    @PostMapping("/import-products-excel")
+    public ApiResponse<?> importProductsByExcel(@RequestParam("file") MultipartFile file) {
+        productService.importProductsByExcel(file);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Import products successfully");
     }
 
     @GetMapping("/get-all-product")

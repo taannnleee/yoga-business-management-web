@@ -1,10 +1,12 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import RadioGroup from '@/app/(main)/bmi/RadioGroup';
+import RadioGroup from "@/app/(main)/bmi/RadioGroup";
 import { DatePicker, Space, Button, Select, Divider, Collapse } from "antd";
 import CustomSlider from "./CustomSlider";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import { useDietStore } from "@/app/(main)/bmi_resullt/diet";
 const DietPage = () => {
   let activities = [
     "Little/no exercise",
@@ -24,7 +26,9 @@ const DietPage = () => {
       label: "Chỉ số BMI là gì? - Định nghĩa chỉ số cơ thể BMI",
       children: (
         <p>
-          Chỉ số BMI (Body Mass Index) là một chỉ số dùng để đánh giá tình trạng cơ thể của một người dựa trên cân nặng và chiều cao. Chỉ số BMI giúp phân loại mức độ béo phì, gầy hay cân đối của cơ thể.
+          Chỉ số BMI (Body Mass Index) là một chỉ số dùng để đánh giá tình trạng
+          cơ thể của một người dựa trên cân nặng và chiều cao. Chỉ số BMI giúp
+          phân loại mức độ béo phì, gầy hay cân đối của cơ thể.
         </p>
       ),
     },
@@ -63,11 +67,18 @@ const DietPage = () => {
       label: "Tại sao bạn nên biết về chỉ số BMI",
       children: (
         <p>
-          Đánh giá tình trạng cơ thể: BMI là một công cụ đơn giản để xác định liệu bạn có đang ở trong phạm vi cân nặng khỏe mạnh hay không. Nó giúp bạn nhận biết liệu mình có thừa cân, thiếu cân, hay đang ở mức bình thường.
-
-          Ngăn ngừa các bệnh lý liên quan đến cân nặng: BMI có thể giúp bạn nhận diện các nguy cơ sức khỏe liên quan đến thừa cân hoặc béo phì, chẳng hạn như bệnh tim mạch, tiểu đường, cao huyết áp, và nhiều bệnh mãn tính khác. Việc theo dõi chỉ số BMI sẽ giúp bạn chủ động phòng ngừa các vấn đề này.
-
-          Dễ dàng theo dõi sự thay đổi sức khỏe: Khi bạn theo dõi chỉ số BMI của mình theo thời gian, bạn có thể dễ dàng nhận biết được sự thay đổi trong tình trạng cơ thể, chẳng hạn như sự tăng cân hoặc giảm cân, từ đó có thể đưa ra những điều chỉnh cần thiết trong chế độ ăn uống và tập luyện.
+          Đánh giá tình trạng cơ thể: BMI là một công cụ đơn giản để xác định
+          liệu bạn có đang ở trong phạm vi cân nặng khỏe mạnh hay không. Nó giúp
+          bạn nhận biết liệu mình có thừa cân, thiếu cân, hay đang ở mức bình
+          thường. Ngăn ngừa các bệnh lý liên quan đến cân nặng: BMI có thể giúp
+          bạn nhận diện các nguy cơ sức khỏe liên quan đến thừa cân hoặc béo
+          phì, chẳng hạn như bệnh tim mạch, tiểu đường, cao huyết áp, và nhiều
+          bệnh mãn tính khác. Việc theo dõi chỉ số BMI sẽ giúp bạn chủ động
+          phòng ngừa các vấn đề này. Dễ dàng theo dõi sự thay đổi sức khỏe: Khi
+          bạn theo dõi chỉ số BMI của mình theo thời gian, bạn có thể dễ dàng
+          nhận biết được sự thay đổi trong tình trạng cơ thể, chẳng hạn như sự
+          tăng cân hoặc giảm cân, từ đó có thể đưa ra những điều chỉnh cần thiết
+          trong chế độ ăn uống và tập luyện.
         </p>
       ),
     },
@@ -75,7 +86,10 @@ const DietPage = () => {
       label: "Chỉ số BMI cao có gây nguy hiểm nghiêm trọng đến sức khỏe không?",
       children: (
         <p>
-          Chỉ số BMI cao, đặc biệt là khi nằm trong phạm vi thừa cân (25–29.9) hoặc béo phì (30 trở lên), có thể gây nguy hiểm nghiêm trọng đến sức khỏe nếu không được kiểm soát. Dưới đây là một số lý do tại sao BMI cao có thể ảnh hưởng xấu đến sức khỏe
+          Chỉ số BMI cao, đặc biệt là khi nằm trong phạm vi thừa cân (25–29.9)
+          hoặc béo phì (30 trở lên), có thể gây nguy hiểm nghiêm trọng đến sức
+          khỏe nếu không được kiểm soát. Dưới đây là một số lý do tại sao BMI
+          cao có thể ảnh hưởng xấu đến sức khỏe
         </p>
       ),
     },
@@ -83,7 +97,9 @@ const DietPage = () => {
       label: "Những nguy cơ gây béo phì bạn cần nắm",
       children: (
         <p>
-          Béo phì là một tình trạng sức khỏe phức tạp và có thể gây ra nhiều vấn đề nghiêm trọng cho cơ thể. Dưới đây là những nguy cơ chính có thể dẫn đến béo phì mà bạn cần nắm:
+          Béo phì là một tình trạng sức khỏe phức tạp và có thể gây ra nhiều vấn
+          đề nghiêm trọng cho cơ thể. Dưới đây là những nguy cơ chính có thể dẫn
+          đến béo phì mà bạn cần nắm:
           <br />– Chế độ ăn uống không lành mạnh
           <br />– Lối sống ít vận động
           <br />– Rối loạn nội tiết
@@ -97,7 +113,7 @@ const DietPage = () => {
           khác
         </p>
       ),
-    }
+    },
   ];
 
   const [selectGoal, setSelectGoal] = useState("Maintain weight");
@@ -107,7 +123,16 @@ const DietPage = () => {
   const [currentHeight, setCurrentHeight] = useState<number>(170);
   const [currentWeight, setCurrentWeight] = useState<number>(65);
   const [mealsPerDay, setMealsPerDay] = useState(3);
-
+  const router = useRouter();
+  const { person, setPerson } = useDietStore((state: any) => state);
+  useEffect(() => {
+    if (!person) return;
+    setCurrentWeight(parseInt(person.weight) || 65);
+    setCurrentHeight(parseInt(person.height) || 170);
+    setMealsPerDay(parseInt(person.meals_calories_perc || 3));
+    setSelectActivity(person.activity);
+    setSelectGoal(person.weight_loss);
+  }, [person]);
   return (
     <>
       <section>
@@ -122,7 +147,6 @@ const DietPage = () => {
               <div className="w-full flex justify-center items-center">
                 <Space direction="vertical" style={{ width: "100%" }}>
                   <DatePicker
-
                     style={{ width: "100%" }}
                     format="YYYY-MM-DD"
                     defaultValue={dayjs()}
@@ -152,9 +176,7 @@ const DietPage = () => {
               <input
                 defaultValue={150}
                 value={currentHeight}
-                onChange={
-                  (e) => setCurrentHeight(Number(e.target.value))
-                }
+                onChange={(e) => setCurrentHeight(Number(e.target.value))}
                 type="number"
                 className="border border-gray-300 p-2 rounded-md"
               />
@@ -180,7 +202,7 @@ const DietPage = () => {
                   onChange={(value) => {
                     setSelectActivity(value);
                   }}
-                  placeholder="Give CareX your activity level"
+                  placeholder="Give The yoga your activity level"
                   dropdownRender={(menu) => (
                     <>
                       {menu}
@@ -267,11 +289,11 @@ const DietPage = () => {
                 };
 
                 // Save to store
-                //Tạo ra đối tượng persion để set 
-                // setPerson(data);
+                //Tạo ra đối tượng persion để set
+                setPerson(data);
 
                 // chuyên trang
-                // navigate("/bmiresult");
+                router.push("/bmi_resullt");
               }}
             >
               Submit

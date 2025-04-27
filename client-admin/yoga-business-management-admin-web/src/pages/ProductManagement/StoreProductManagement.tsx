@@ -20,6 +20,7 @@ import ImportProductForm from './ImportProducForm';
 import StoreProductForm from './StoreProductForm';
 import { useHistory } from 'react-router-dom';
 import axiosInstance from 'utils/axiosClient';
+import ImportExcelProduct from 'pages/ProductManagement/ImportExcelProduct';
 
 interface IStoreManagementProps {
   onChangeViewMode: (mode: 'tenant' | 'store') => void;
@@ -45,6 +46,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
   const [storeLoading, setStoreLoading] = React.useState<boolean>(false);
   const [openDeleteConfirmModal, setOpenDeleteConfirmModal] = React.useState<boolean>(false); // Modal xác nhận xóa
   const [productToDelete, setProductToDelete] = React.useState<IProduct | null>(null); // Sản phẩm cần xóa
+  const [openImportExcelModal, setOpenImportExcelModal] = React.useState<boolean>(false);
 
   // Hàm lấy tất cả sản phẩm
   const getAllProducts = async () => {
@@ -227,6 +229,18 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
                 <p>Nhập sản phẩm</p>
               </button>
 
+              {/* Nút import excel sản phẩm */}
+              <button
+                onClick={() => {
+                  setOpenImportExcelModal(true);
+                  setSelectedItem(null);
+                }}
+                className="flex h-[40px] w-fit items-center rounded-lg bg-gray-500 px-3 py-1 font-bold text-white hover:opacity-80"
+              >
+                <PlusIcon className="h-[20px] w-[20px] font-bold text-white" />
+                <p>Nhập excel</p>
+              </button>
+
               {/* Nút Thùng rác */}
               <button
                 onClick={() => history.push('/trash')} // Dùng một hàm để gọi history.push
@@ -331,6 +345,16 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             </Button>
           </DialogActions>
         </Dialog>
+      )}
+      {/* Modal Import Excel */}
+      {openImportExcelModal && (
+        <CustomDialog
+          title="Nhập Excel sản phẩm"
+          maxWidth="sm"
+          open={openImportExcelModal}
+          onClose={() => setOpenImportExcelModal(false)}
+          children={<ImportExcelProduct />}
+        />
       )}
     </>
   );

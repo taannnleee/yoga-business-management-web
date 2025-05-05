@@ -15,6 +15,8 @@ const nextConfig = {
             'bizweb.dktcdn.net',
             'encrypted-tbn0.gstatic.com',
             'dotapyogatot.com',
+            'thamyoga.vn',
+            'pos.nvncdn.com',
         ],
         dangerouslyAllowSVG: true,
     },

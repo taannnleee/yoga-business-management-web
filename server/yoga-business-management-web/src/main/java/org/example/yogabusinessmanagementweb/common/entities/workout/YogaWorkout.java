@@ -19,6 +19,7 @@ public class YogaWorkout extends BaseEntity {
 
     private String name;
 
+    @Column(length = 500)
     private String description;
 
     private String imageUrl;

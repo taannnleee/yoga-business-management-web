@@ -20,6 +20,7 @@ public class WeightPlan {
 
     private String name;
 
+    @Column(length = 500)
     private String description;
 
 

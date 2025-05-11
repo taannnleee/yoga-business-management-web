@@ -22,6 +22,8 @@ interface IProduct {
   thumbnail?: string;
   category?: IProductCategory;
   properties?: { [key: string]: string | number | boolean };
+  title?: string;
+  imagePath?: string;
 }
 
 interface IStoreProduct {

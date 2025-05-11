@@ -61,4 +61,14 @@ public class LecturesServiceImpl  implements LecturesService {
         Lectures lectures = lecturesOptional.get();
         return lectureMapper.toLectureResponse(lectures);
     }
+
+    @Override
+    public Lectures getLectureEntityById(String id) {
+        Optional<Lectures> lecturesOptional = lecturesRepository.findById(Long.valueOf(id));
+        if(lecturesOptional.isEmpty()) {
+            throw new AppException(ErrorCode.LECTURE_NOT_FOUND);
+        }
+        Lectures lectures = lecturesOptional.get();
+        return lectures;
+    }
 }

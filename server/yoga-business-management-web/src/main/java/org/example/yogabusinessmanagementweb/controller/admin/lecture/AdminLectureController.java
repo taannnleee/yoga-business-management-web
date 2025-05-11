@@ -5,11 +5,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.dto.request.course.CourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureProductAdDTO;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
 import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureResponse;
 import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
 import org.example.yogabusinessmanagementweb.service.CoursesService;
+import org.example.yogabusinessmanagementweb.service.LectureProductAdService;
 import org.example.yogabusinessmanagementweb.service.LecturesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ import java.util.List;
 @Slf4j
 public class AdminLectureController {
     LecturesService lecturesService;
+    LectureProductAdService adService;
 
     @PostMapping("/add-lecture")
     public ApiResponse<?> createLecture(@RequestBody LectureCreationRequest lectureCreationRequest) {
@@ -34,5 +37,10 @@ public class AdminLectureController {
     public ApiResponse<?> getAllLectureByIdSection(@PathVariable String id) {
         List<LectureResponse> lectureResponse = lecturesService.getAllLectureByIdSection(id);
         return new ApiResponse<>(HttpStatus.OK.value(), "get lecture by id section successfully",lectureResponse);
+    }
+    @PostMapping("/ads/lecture/add")
+    public ApiResponse<?> addLectureProductAd(@RequestBody LectureProductAdDTO dto) {
+        adService.addLectureProductAds(dto);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Saved successfully", null);
     }
 }

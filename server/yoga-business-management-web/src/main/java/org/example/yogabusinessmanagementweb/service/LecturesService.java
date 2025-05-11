@@ -1,6 +1,9 @@
 package org.example.yogabusinessmanagementweb.service;
 
+import org.example.yogabusinessmanagementweb.common.entities.Lectures;
+import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureProductAdDTO;
 import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureCreationRequest;
+import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureProductAdResponse;
 import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureResponse;
 
 import java.util.List;
@@ -11,4 +14,6 @@ public interface LecturesService {
     List<LectureResponse> getAllLectureByIdSection(String id);
 
     LectureResponse getLectureById(String id);
+    Lectures getLectureEntityById(String id);
+
 }

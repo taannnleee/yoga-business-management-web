@@ -40,10 +40,12 @@ import java.util.List;
 public class OrderCourseController {
 
     OrderCourseService orderCourseService;
+    MembershipService membershipService;
 
     @PostMapping("/create")
-    public ApiResponse<?> createOrderCourse(@RequestBody OrderCourseCreationRequest orderCourseCreationRequest) {
+    public ApiResponse<?> createOrderCourse(HttpServletRequest request,@RequestBody OrderCourseCreationRequest orderCourseCreationRequest) {
         orderCourseService.createOrderCourse(orderCourseCreationRequest);
+        membershipService.updateMembershipTypeByTotal(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "create course order success");
     }
 

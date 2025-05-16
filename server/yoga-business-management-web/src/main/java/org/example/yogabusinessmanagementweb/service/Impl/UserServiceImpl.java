@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
 import org.example.yogabusinessmanagementweb.common.Enum.EGender;
+import org.example.yogabusinessmanagementweb.common.entities.MembershipType;
 import org.example.yogabusinessmanagementweb.common.entities.Wishlist;
 import org.example.yogabusinessmanagementweb.common.mapper.AddressMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.UserMapper;
@@ -125,6 +126,10 @@ public class UserServiceImpl implements UserService {
         user.setRoles(ERole.USER.name() );
 
         user.setAddresses(arrayList);
+
+        MembershipType membershipType = new MembershipType();
+        membershipType.setId(1L); // Hoặc 2 tùy giá trị
+        user.setMembershipType(membershipType);
 
         //tạo ra một wish list cho người dùng
 //        Wishlist wishlist = new Wishlist();

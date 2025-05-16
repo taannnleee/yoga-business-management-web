@@ -19,7 +19,19 @@ import Image from "next/image";
 import LogoCourse from "@/components/atom/LogoCourse";
 import ButtonShop from "@/components/atom/ButtonShop";
 import UserDropdownMenu from "@/components/organisms/UserDropdownMenu";
+import { RootState } from "@/redux/store";
+
+import { useSelector, useDispatch } from "react-redux"; // Redux hooks
 interface IHeaderV2Props { }
+
+interface Medal {
+  id: number;
+  name: number;
+  description: string;
+  price: number;
+  durationInDays: number;
+  url: string;
+}
 
 const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
   const router = useRouter();
@@ -38,7 +50,21 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
   const [isHovered, setIsHovered] = useState(false);
   const clickInsideDropdown = useRef(false);
 
+  const [medal, setMedal] = useState<Medal>();
+  const medal1 = useSelector((state: RootState) => state.membership.medal);
+  const fetchMedal = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/membership/type`);
+      const data = response.data.data;
+      setMedal(data);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchMedal();
+  }, []);
 
   return (
     <>
@@ -87,6 +113,12 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
               </div>
               <WishListCourseButton />
               <CourseCartButton />
+
+              <div>
+                <img src={medal?.url} alt="Yoga Image" />
+                {/* {medal1 && <span className="badge">{medal1}</span>} */}
+              </div>
+
             </div>
           </div>
         </div>

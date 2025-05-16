@@ -72,7 +72,9 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<WorkoutHistory> workoutHistories;
 
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "membership_type_id")
+    private MembershipType membershipType;
 
     @Override
     public boolean isAccountNonExpired() {

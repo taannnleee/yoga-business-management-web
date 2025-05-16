@@ -63,7 +63,6 @@ const CartPage: React.FC = () => {
     const totalSelectedFormatted = totalSelected.toLocaleString("vi-VN") + " VNĐ";
 
     const createOrder = async () => {
-        console.log("tannnnnnnn")
         try {
             const response = await axiosInstance.post(
                 `${API_URL}/api/order-course/create`,
@@ -74,7 +73,10 @@ const CartPage: React.FC = () => {
             );
 
             toast.sendToast("Success", "Đặt hàng thành công");
-            router.replace("/status-order");
+            router.replace("/course/status-order");
+            setTimeout(() => {
+                location.reload();
+            }, 100); // Delay nhẹ để đảm bảo route đã thay đổi trước khi reload
         } catch (error: any) {
             console.error("Error creating order:", error.message);
             toast.sendToast("Error", "Error creating order", "error");

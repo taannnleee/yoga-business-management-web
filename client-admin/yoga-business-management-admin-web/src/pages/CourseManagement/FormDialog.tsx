@@ -88,9 +88,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
 
   const handleCreateCourse = async () => {
     try {
-      const url = isEditMode
-        ? `/api/admin/update-course/${course?.id}`
-        : `/api/admin/add-course`;
+      const url = isEditMode ? `/api/admin/update-course/${course?.id}` : `/api/admin/add-course`;
       const method = isEditMode ? 'PUT' : 'POST';
 
       const response = await axiosInstance({
@@ -235,6 +233,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           setThumbnailUploaded={(image: string) => setVideoPath(image)}
           thumbnailUploaded={videoPath}
           setVideoDuration={handleSetVideoDuration}
+          videoDuration={duration}
         />
         {/*<TextField*/}
         {/*  margin="dense"*/}

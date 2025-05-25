@@ -1,7 +1,9 @@
-package org.example.yogabusinessmanagementweb.dto.request.roadmap;
+package org.example.yogabusinessmanagementweb.dto.response.roadmap;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.entities.TopicRoadMap_Course;
+import org.example.yogabusinessmanagementweb.common.entities.TopicRoadmap;
 
 import java.util.List;
 
@@ -12,7 +14,6 @@ public class RoadmapResponse {
     Long id;
     String title;        // Ví dụ: "Giảm cân", "Dẻo dai", "Thư giãn"
     String description;
-    List<Long> topicRoadmapIds;
-
+    List<TopicRoadMapResponse> topicRoadmapsResponse;
 
 }

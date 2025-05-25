@@ -1,30 +1,23 @@
 package org.example.yogabusinessmanagementweb.common.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
-@Table(name = "PersonalizedRoadmap")
+@Table(name = "TopicRoadmap")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class PersonalizedLesson extends AbstractEntity<Long> implements Serializable {
+public class TopicRoadmap extends AbstractEntity<Long> implements Serializable {
     String title;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    Courses course;
-
-    @ManyToOne
-    @JoinColumn(name = "personalized_lesson_id")
-    PersonalizedLesson personalized_lesson;
+    @Column(columnDefinition = "TEXT")
+    String content;
 }

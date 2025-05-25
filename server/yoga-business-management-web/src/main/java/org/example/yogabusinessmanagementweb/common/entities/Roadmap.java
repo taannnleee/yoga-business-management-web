@@ -8,19 +8,18 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "Goal")
+@Table(name = "Roadmap")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class Goal extends AbstractEntity<Long> implements Serializable {
-    String name;        // Ví dụ: "Giảm cân", "Dẻo dai", "Thư giãn"
+public class Roadmap extends AbstractEntity<Long> implements Serializable {
+    String title;        // Ví dụ: "Giảm cân", "Dẻo dai", "Thư giãn"
     String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "personalized_roadmaps_id")
-    List<PersonalizedRoadmap> personalizedRoadmaps;
-
+    @JoinColumn(name = "topic_roadmap_id")
+    List<TopicRoadmap> topicRoadmaps;
 }

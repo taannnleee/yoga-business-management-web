@@ -63,8 +63,11 @@ public enum ErrorCode {
     REFRESH_TOKEN_EXPIRED(1039, "Refresh token expired",HttpStatus.BAD_REQUEST),
     // MODULE ERROR
     PURCHASES_COURSE(1040, "Purchased course",HttpStatus.BAD_REQUEST),
-    COURSE_CART_NOT_FOUND(1025, "Course cart not found",HttpStatus.NOT_FOUND);
+    COURSE_CART_NOT_FOUND(1041, "Course cart not found",HttpStatus.NOT_FOUND),
     // CLASS ERROR
+
+    ROAD_MAP_NOT_FOUND(1042, "Roadmap not found",HttpStatus.NOT_FOUND),
+    TOPIC_ROADMAP_NOT_FOUND(1043, "Topic roadmap not found",HttpStatus.NOT_FOUND);
 
     // TRAINING PROGRAM ERROR
     int code;

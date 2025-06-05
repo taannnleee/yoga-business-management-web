@@ -50,6 +50,7 @@ const DisCoverPage: React.FC = () => {
                 imagePath: course.imagePath, // Changed to match API response
                 instruction: course.instruction, // Assuming 'instruction' is the author
                 rating: 4.0, // Defaulting rating for now (can be updated based on data or requirements)
+                price: course.price, // Assuming 'price' is available in the course object
               })),
             })
           );
@@ -97,6 +98,8 @@ const DisCoverPage: React.FC = () => {
       ))}
     </div>
   );
+
+  
 };
 
 export default DisCoverPage;

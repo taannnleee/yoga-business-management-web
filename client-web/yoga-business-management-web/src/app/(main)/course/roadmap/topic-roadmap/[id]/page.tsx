@@ -99,7 +99,9 @@ const TopicRoadmapPage: React.FC = () => {
                                             )}
                                         </div>
                                         <p className="text-sm text-gray-700 mb-3">{course.description}</p>
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition text-sm">
+                                        <button onClick={()=>{
+                                            router.push(`/course/detail/${course.id}`);
+                                        }} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition text-sm">
                                             XEM KHÓA HỌC
                                         </button>
                                     </div>

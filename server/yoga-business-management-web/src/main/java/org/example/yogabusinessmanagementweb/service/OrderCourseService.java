@@ -9,4 +9,5 @@ import java.util.List;
 public interface OrderCourseService {
     boolean createOrderCourse(OrderCourseCreationRequest orderCourseCreationRequest);
     List<OrderCourseResponse> showOrder(HttpServletRequest request);
+    boolean checkOrderCourse(String userId, String courseId);
 }

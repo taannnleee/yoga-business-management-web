@@ -18,7 +18,7 @@ import useDebounce from "@/hooks/useDebounce";
 import Image from "next/image";
 import LogoCourse from "@/components/atom/LogoCourse";
 import ButtonShop from "@/components/atom/ButtonShop";
-import UserDropdownMenu from "@/components/organisms/UserDropdownMenu";
+import CourseUserDropdownMenu from "@/components/organisms/CourseUserDropdownMenu";
 import { RootState } from "@/redux/store";
 
 import { useSelector, useDispatch } from "react-redux"; // Redux hooks
@@ -57,6 +57,7 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
       const response = await axiosInstance.get(`/api/membership/type`);
       const data = response.data.data;
       setMedal(data);
+      console.log("Medal data fetcheddd:", response.data.data);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
@@ -68,7 +69,7 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
 
   return (
     <>
-      <div className="fixed w-full shadow-lg pb-4  bg-white laptop:pb-0 border-b border-gray-200">
+      <div className="fixed w-full shadow-lg pb-4  bg-white laptop:pb-0 border-b border-gray-200 z-[10000]">
         <div className="w-full flex space-x-4  tablet:space-x-6 laptop:space-x-6 desktop:space-x-8 items-center px-4 py-4  justify-between laptop:justify-around">
           <div className="flex laptop:hidden  w-1/3 laptop:w-0">
             <button
@@ -80,17 +81,17 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
           </div>
           <LogoCourse />
           <nav className="hidden laptop:flex space-x-6">
-            <a href="/" className="text-gray-600 hover:text-orange-600">
-              Nhận ưu đãi
+            <a href="/course" className="text-gray-600 hover:text-orange-600">
+              Trang chủ
             </a>
-            <a href="/" className="text-gray-600 hover:text-orange-600">
-              Kích hoạt thẻ
+            <a href="/course/roadmap" className="text-gray-600 hover:text-orange-600">
+              Lộ trình học
             </a>
-            <a href="/" className="text-gray-600 hover:text-orange-600">
+            <a href="/course/trending" className="text-gray-600 hover:text-orange-600">
               Khám phá
             </a>
-            <a href="/" className="text-gray-600 hover:text-orange-600">
-              Luyện tập
+            <a href="/course/working-with-ai" className="text-gray-600 hover:text-orange-600">
+              Luyện tập với AI
             </a>
             <ButtonShop className={"mt-[-14px]"} />
           </nav>
@@ -108,16 +109,15 @@ const HeaderV2Course: React.FC<IHeaderV2Props> = (props) => {
                 >
                   <UserIcon className="w-8 h-8 text-gray-600" />
                 </button>
-                <UserDropdownMenu isHovered={isHovered} />
+                <CourseUserDropdownMenu isHovered={isHovered} />
 
               </div>
-              <WishListCourseButton />
+
               <CourseCartButton />
-
-              <div>
+              <div className="w-10 h-10">
                 <img src={medal?.url} alt="Yoga Image" />
-                {/* {medal1 && <span className="badge">{medal1}</span>} */}
               </div>
+
 
             </div>
           </div>

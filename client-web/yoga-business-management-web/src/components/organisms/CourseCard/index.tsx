@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosInstance from "@/utils/axiosClient";
 import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
     Box,
     Typography,
@@ -34,6 +35,15 @@ interface CourseCardProps {
     courses: Course[];
 }
 
+interface CourseOrderProps {
+    id: number;
+    idCourse: number;
+    totalPrice: number
+    imagePath: string;
+    name: string
+}
+
+
 const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     const toast = useToast();
     const router = useRouter()
@@ -41,7 +51,23 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     const [open, setOpen] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const itemsPerPage = 5;
-    ;
+    const [courseOrder, setCourseOrder] = useState<CourseOrderProps[]>([]);
+
+    const fetchCourseOrder = async () => {
+        try {
+            const response = await axiosInstance.get(`/api/order-course/show-order`);
+            const data = response.data.data;
+            setCourseOrder(data);
+            console.log("Course Order Data:", data);
+        } catch (error) {
+            console.error("Error fetching cart data:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourseOrder();
+    }, []);
+
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) =>
@@ -79,6 +105,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     const navigateToDetail = (id: number) => {
         router.push(`/course/detail/${id}`);
     };
+
     const addToCart = async () => {
         try {
             const response = await axiosInstance.post(`/api/course/cart/add-to-cart`, {
@@ -107,72 +134,74 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     return (
         <Box mt={2} p={2} ml={4} mr={4}>
             <Box display="flex" alignItems="center" overflow="hidden">
-                <Box display="flex" justifyContent="space-between" overflow="hidden" mx={2}>
-                    {courses.slice(currentIndex, currentIndex + itemsPerPage).map((course) => (
-                        <Box
-                            key={course.id}
-                            position="relative"
-                            mx={2}
-                            className="w-56 h-72 flex flex-col items-center justify-between hover:cursor-pointer"
-                        >
-                            <Image
-                                src={course.imagePath}
-                                alt={course.name}
-                                width={245} // Image width
-                                height={240} // Image height
-                                layout="responsive" // Changed to responsive
-                            />
+                <Box display="flex" alignItems="center" overflow="hidden">
+
+                    <Box display="flex" flexWrap="wrap" justifyContent="flex-start" mx={2} gap={5}>
+                        {courses.slice(currentIndex, currentIndex + itemsPerPage).map((course) => (
 
                             <Box
-                                className="product-hover absolute left-0 w-full h-full flex flex-col justify-center items-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100"
+                                key={course.id}
+                                position="relative"
+                                mx={2}
+                                className="w-1/4 p-2 flex flex-col items-center justify-between hover:cursor-pointer " style={{ width: 'calc(25% - 10px)', minWidth: '200px' }}
                             >
-                                <IconButton
-                                    color="secondary"
-                                    className="top-[-80px]"
-                                    onClick={() => handleOpenModal(course)}
+                                <Image
+                                    src={course.imagePath}
+                                    alt={course.name}
+                                    width={245} // Image width
+                                    height={240} // Image height
+                                    layout="responsive" // Changed to responsive
+                                    objectFit="cover"
+                                />
+
+                                <Box
+                                    className="product-hover absolute left-0 w-full h-full flex flex-col justify-center items-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100"
                                 >
-                                    <SearchIcon fontSize="large" className={"hover:bg-red-500 rounded-full w-[46px]"} />
-                                </IconButton>
-                            </Box>
+                                    <IconButton
+                                        color="secondary"
+                                        className="top-[-80px]"
+                                        onClick={() => handleOpenModal(course)}
+                                    >
+                                        <SearchIcon fontSize="large" className={"hover:bg-red-500 rounded-full w-[46px]"} />
+                                    </IconButton>
+                                </Box>
 
-                            <Box textAlign="center" mt={1}>
-                                <Typography
-                                    onClick={() => navigateToDetail(course.id)}
-                                    variant="subtitle1"
-                                    component="a"
-                                    href="#"
-                                    className="no-underline cursor-pointer"
-                                    style={{
-                                        color: "black",
-                                        transition: "color 0.3s",
-                                        maxWidth: "192px",
-                                        display: "-webkit-box",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                    }}
-                                    onMouseEnter={(e) => (e.currentTarget.style.color = "red")}
-                                    onMouseLeave={(e) => (e.currentTarget.style.color = "black")}
-                                >
-                                    {course.name}
-                                </Typography>
+                                <Box textAlign="center" mt={1}>
 
-                                <Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>
-                                    {course.price === 0 ? "Miễn phí" : `${course.price} VND`}
-                                    {renderStars(course.rating)}
-                                </Typography>
+                                    <Typography
+                                        variant="subtitle1"
+                                        component="a"
+                                        href="#"
+                                        className="no-underline cursor-pointer"
+                                        style={{
+                                            color: "black",
+                                            transition: "color 0.3s",
+                                            maxWidth: "192px",
+                                            display: "-webkit-box",
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: "vertical",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                        }}
+                                        onMouseEnter={(e) => (e.currentTarget.style.color = "red")}
+                                        onMouseLeave={(e) => (e.currentTarget.style.color = "black")}
+                                    >
 
-                                <Box mt={1}>
-
-                                    {renderStars(5)}
-                                    <Typography variant="body2" color="textSecondary">
-                                        ({Math.round(course.rating * 10)})
+                                        {course.name}
                                     </Typography>
+
+
+                                    <Typography variant="body2" color="textSecondary" style={{ fontStyle: "italic", fontSize: "0.875rem" }}>
+                                        {course.price === 0 ? "Miễn phí" : `${course.price} VND`}
+                                    </Typography>
+
+                                    <Box mt={1}>
+                                        {renderStars(5)}
+                                    </Box>
                                 </Box>
                             </Box>
-                        </Box>
-                    ))}
+                        ))}
+                    </Box>
                 </Box>
             </Box>
             {/* Modal for course details */}
@@ -188,15 +217,34 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 height={390}
                                 layout="fixed"
                             />
-                            <Typography
-                                onClick={() => navigateToDetail(selectedCourse?.id || 0)}
-                                variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft: "120px", color: "red" }}>
-                                Xem chi tiết
-                            </Typography>
+                            {/* 🏷️ Thêm logic kiểm tra */}
+                            {selectedCourse && courseOrder.some(order => order.idCourse === selectedCourse?.id) ? (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    style={{ marginTop: "30px", marginLeft: "70px" }}
+                                    onClick={() => router.push(`/course/detail/${selectedCourse.id}`)}
+                                >
+                                    Đi đến khóa học của bạn
+                                </Button>
+                            ) : (
+                                <>
+                                    <Typography
+                                        onClick={() => navigateToDetail(selectedCourse?.id || 0)}
+                                        variant="body1" className={"text-orange-600 font-thin cursor-pointer"} style={{ marginTop: '32px', marginLeft: "120px", color: "red" }}>
+                                        Xem chi tiết
+                                    </Typography>
 
-                            <Button onClick={() => addToCart()} variant="contained" color="primary" style={{ marginTop: "10px", marginLeft: "90px" }}>
-                                Thêm vào giỏ hàng
-                            </Button>
+                                    <Button
+                                        onClick={() => addToCart()}
+                                        variant="contained"
+                                        color="primary"
+                                        style={{ marginTop: "10px", marginLeft: "90px" }}
+                                    >
+                                        Thêm vào giỏ hàng
+                                    </Button>
+                                </>
+                            )}
                         </Box>
                         {/* Right - Course details */}
                         <Box flex={2} ml={2}>

@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.controller.user.course;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +47,14 @@ public class CourseController {
     }
 
     @GetMapping("/get-course/{id}")
-    public ApiResponse<?> getCourse(@PathVariable String id) {
-        Courses courses = coursesService.getCourse(id);
+    public ApiResponse<?> getCourse(HttpServletRequest request, @PathVariable String id) {
+        Courses courses = coursesService.getCourse(request,id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get courses by id  successfully",courses);
+    }
+
+    @GetMapping("/get-course-filter-lecture/{id}")
+    public ApiResponse<?> getCourseByFilterLecture(HttpServletRequest request, @PathVariable String id) {
+        Courses courses = coursesService.getCourseByFilterLecture(request,id);
         return new ApiResponse<>(HttpStatus.OK.value(), "get courses by id  successfully",courses);
     }
 

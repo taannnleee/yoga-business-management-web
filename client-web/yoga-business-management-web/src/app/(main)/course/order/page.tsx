@@ -42,20 +42,6 @@ const OrderCourse = () => {
 
     return (
         <Container>
-            {/* Tabs cho các loại đơn hàng */}
-            <AppBar position="static" color="default">
-                <Tabs
-                    value={selectedTab}
-                    onChange={handleTabChange}
-                    textColor="primary"
-                    indicatorColor="primary"
-                    variant="fullWidth"
-                >
-                    <Tab label="Tất cả" />
-                    <Tab label="Đang xử lý" />
-                    <Tab label="Thành công" />
-                </Tabs>
-            </AppBar>
 
             {/* Danh sách đơn hàng */}
             <Box mt={4} display="flex" flexDirection="column" gap={3}>
@@ -82,11 +68,11 @@ const OrderCourse = () => {
                             <Typography fontWeight="bold" fontSize="16px">
                                 {item.name}
                             </Typography>
-                            <Typography color="gray" fontSize="14px">
+                            {/* <Typography color="gray" fontSize="14px">
                                 ID đơn hàng: {item.id}
-                            </Typography>
+                            </Typography> */}
                             <Typography color="purple" fontWeight="bold" fontSize="15px">
-                                {item.totalPrice.toLocaleString("vi-VN")} đ
+                                {item.totalPrice.toLocaleString("vi-VN")} VNĐ
                             </Typography>
                         </Box>
                     </Box>

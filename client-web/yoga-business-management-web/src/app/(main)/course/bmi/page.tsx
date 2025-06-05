@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import RadioGroup from "@/app/(main)/bmi/RadioGroup";
+import RadioGroup from "@/app/(main)/course/bmi/RadioGroup";
 import { DatePicker, Space, Button, Select, Divider, Collapse } from "antd";
 import CustomSlider from "./CustomSlider";
 import dayjs from "dayjs";
@@ -136,6 +136,8 @@ const DietPage = () => {
   return (
     <>
       <section>
+        <br>
+        </br>
         <h1 className="text-xl font-bold w-full">Nhập vào thông tin của bạn</h1>
         <div className="flex flex-row gap-3">
           <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6  ml-10">

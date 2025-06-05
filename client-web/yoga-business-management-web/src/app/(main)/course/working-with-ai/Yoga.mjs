@@ -9,7 +9,7 @@ import { drawPoint, drawSegment } from "../../../../utils/helper";
 
 import { POINTS, keypointConnections } from "../../../../utils/data";
 
-import Instructions from "../../../../components/Instrctions/Instructions.mjs";
+import Instructions from "@/components/Instructions/Instructions.mjs";
 import DropDown from "../../../../components/DropDown/DropDown.mjs";
 import { toast } from "react-toastify";
 let skeletonColor = "rgb(255,255,255)";
@@ -244,7 +244,7 @@ function Yoga() {
       return suggestions[maxErrorPoint];
     }
 
-    
+
     const allSuggestions = Object.values(suggestions);
     const randomIndex = Math.floor(Math.random() * allSuggestions.length);
     return allSuggestions[randomIndex];
@@ -283,7 +283,7 @@ function Yoga() {
                     skeletonColor
                   );
                 });
-              } catch (err) {}
+              } catch (err) { }
             }
           } else {
             notDetected += 1;

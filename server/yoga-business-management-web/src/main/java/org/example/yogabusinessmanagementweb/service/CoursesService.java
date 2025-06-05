@@ -1,5 +1,6 @@
 package org.example.yogabusinessmanagementweb.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.yogabusinessmanagementweb.common.entities.Courses;
 import org.example.yogabusinessmanagementweb.dto.request.course.CourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
@@ -15,7 +16,8 @@ public interface CoursesService {
 
     List<TopicCourseResponse> getAllCourseWithTopic();
 
-    Courses getCourse(String id);
+    Courses getCourse(HttpServletRequest request, String id);
+    Courses getCourseByFilterLecture(HttpServletRequest request, String id);
 
     List<CourseResponse> allTeacherCourses(String id);
 

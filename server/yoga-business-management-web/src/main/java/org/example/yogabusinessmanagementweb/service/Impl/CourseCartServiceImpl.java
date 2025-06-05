@@ -26,6 +26,7 @@ import org.example.yogabusinessmanagementweb.repositories.CourseCartRepository;
 import org.example.yogabusinessmanagementweb.service.CourseCartService;
 import org.example.yogabusinessmanagementweb.service.CoursesService;
 import org.example.yogabusinessmanagementweb.service.JwtService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.Console;

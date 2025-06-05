@@ -83,11 +83,9 @@ const UserDropdownMenu: React.FC<IProps> = ({ isHovered }) => {
                 {accessToken ? (
                     <div className="space-y-2 w-28 bg-white p-4 shadow-lg rounded-lg transform translate-y-[-24px]">
                         <p className="cursor-pointer w-full" onClick={() => router.push("/address")}>Địa chỉ</p>
-                        <p className="cursor-pointer w-full" onClick={() => router.push("/bmi")}>Chỉ số BMI</p>
                         <p className="cursor-pointer" onClick={() => router.push("/order")}>Đơn hàng của tôi</p>
                         <p className="cursor-pointer" onClick={() => router.push("/profile")}>Thông tin cá nhân</p>
                         <p className="cursor-pointer" onClick={() => router.push("/wishlist")}>Sản phẩm yêu thích</p>
-                        <p className="cursor-pointer" onClick={() => router.push("/course/order")}>Khóa học của tôi</p>
                         <p
                             className="cursor-pointer"
                             onClick={logout}  // Using logout before it is declared

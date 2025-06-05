@@ -18,6 +18,7 @@ interface Lecture {
     content: string;
     videoPath: string;
     duration: string;
+    isPublic: boolean;
 }
 
 interface Teacher {

@@ -16,7 +16,7 @@ import CartButton from "@/components/molecules/CartButton";
 import HoverDropdown from "@/components/molecules/HoverDropdown";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
-import UserDropdownMenu from "@/components/organisms/UserDropdownMenu";
+import UserDropdownMenu from "@/components/organisms/EcoUserDropdownMenu";
 interface IHeaderV2Props { }
 
 const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {

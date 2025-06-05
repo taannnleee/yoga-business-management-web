@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.entities.Address;
 import org.example.yogabusinessmanagementweb.common.entities.CourseCart;
 import org.example.yogabusinessmanagementweb.common.entities.OrderCourse;
 import org.example.yogabusinessmanagementweb.common.entities.User;
@@ -12,14 +13,20 @@ import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.orderCourse.OrderCourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.coursecart.CourseCartResponse;
 import org.example.yogabusinessmanagementweb.dto.response.orderCourse.OrderCourseResponse;
+import org.example.yogabusinessmanagementweb.exception.AppException;
+import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CourseCartRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderCourseRepository;
 import org.example.yogabusinessmanagementweb.service.CourseCartService;
 import org.example.yogabusinessmanagementweb.service.OrderCourseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +34,6 @@ import java.util.List;
 public class OrderCourseServiceImpl implements OrderCourseService {
     OrderCourseRepository orderCourseRepository;
     CourseCartRepository courseCartRepository;
-    CourseCartService courseCartService;
     OrderCourseMapper orderCourseMapper;
     JwtUtil jwtUtil;
 
@@ -52,7 +58,7 @@ public class OrderCourseServiceImpl implements OrderCourseService {
     public boolean createOrderCourse(OrderCourseCreationRequest orderCourseCreationRequest) {
         try {
             for (String temp : orderCourseCreationRequest.getCourseCartId()) {
-                CourseCart a = courseCartService.getCourseCartById(temp);
+                CourseCart a = courseCartRepository.findById(Long.valueOf(temp)).orElse(null);
 
                 OrderCourse orderCourse = new OrderCourse();
                 orderCourse.setCourse(a.getCourse());
@@ -66,6 +72,16 @@ public class OrderCourseServiceImpl implements OrderCourseService {
         } catch (Exception e) {
             // 👇 Ghi log ra để dễ debug nếu có lỗi
 //            log.error("Lỗi khi tạo đơn hàng: ", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean checkOrderCourse(String userId, String courseId) {
+        Optional<OrderCourse> orderCourse = orderCourseRepository.findByUserIdAndCourseId( Long.parseLong(userId), Long.parseLong(courseId));
+        if (orderCourse.isPresent()) {
+            return true;
+        }else {
             return false;
         }
     }

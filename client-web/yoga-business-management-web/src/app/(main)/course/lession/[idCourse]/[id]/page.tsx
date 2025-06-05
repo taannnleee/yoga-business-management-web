@@ -84,7 +84,7 @@ const LessionPage: React.FC = () => {
   const fetchSections = async () => {
     try {
       const res = await axiosInstance.get(
-        `${API_URL}/api/course/get-course/${courseId}`
+        `${API_URL}/api/course/get-course-filter-lecture/${courseId}`
       );
       if (res.data.status === 200) {
         setCourse(res.data.data);
@@ -99,7 +99,7 @@ const LessionPage: React.FC = () => {
   const fetchLecture = async () => {
     try {
       const res = await axiosInstance.get(
-        `${API_URL}/api/lecture/get-lecture/${lectureId}`
+        `${API_URL}/api/lecture/get-lecture/${courseId}/${lectureId}`
       );
       if (res.data.status === 200) {
         setLecture(res.data.data);

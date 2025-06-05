@@ -8,6 +8,7 @@ interface Lecture {
     content: string;
     videoPath: string;
     duration: string;
+    isPublic: boolean;
 }
 
 interface Section {
@@ -20,7 +21,7 @@ interface CourseContentProps {
     sections: Section[];
 }
 
-const CourseContent: React.FC<CourseContentProps> = ({ sections,courseId }) => {
+const CourseContent: React.FC<CourseContentProps> = ({ sections, courseId }) => {
 
 
     const router = useRouter();
@@ -64,23 +65,40 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections,courseId }) => {
                             <ul>
                                 {section.lectures.map((lecture, index) => (
                                     <div key={lecture.id}>
-                                        <li className="flex justify-between items-center py-2">
-                                            <div>
-                                                <OndemandVideoIcon className="text-blue-500 mr-1 ml-8" />
-                                                <span className="text-gray-800 font-medium">{lecture.title}</span>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
+                                        {
+                                            lecture.isPublic ? (
+                                                <li onClick={() => router.push(`/course/lession/${courseId}/${lecture.id}`)}
+                                                    className="flex justify-between items-center py-2 cursor-pointer">
+                                                    <div>
+                                                        <OndemandVideoIcon className="text-blue-500 mr-1 ml-8" />
+                                                        <span className="text-gray-800 font-medium">{lecture.title}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
+                                                        <Button onClick={() => { router.push(`/course/lession/${courseId}/${lecture.id}`); }}
+                                                            variant="contained" color="primary" sx={{ marginLeft: "auto" }}>
+                                                            Học
+                                                        </Button>
 
-                                                <Button onClick={() => { router.push(`/course/lession/${courseId}/${lecture.id}`); }}
-                                                    variant="contained" color="primary" sx={{ marginLeft: "auto" }}>
-                                                    Học thử
-                                                </Button>
+                                                    </div>
 
+                                                </li>
+                                            ) : (
+                                                <li className="flex justify-between items-center py-2 cursor-pointer">
+                                                    <div>
+                                                        <OndemandVideoIcon className="text-blue-500 mr-1 ml-8" />
+                                                        <span className="text-gray-800 font-medium">{lecture.title}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
+                                                        <span className="text-red-500">Riêng tư</span>
 
-                                            </div>
+                                                    </div>
 
-                                        </li>
+                                                </li>
+                                            )
+                                        }
+
                                         {index < section.lectures.length - 1 && (
                                             <hr className="border-gray-300 my-2" />
                                         )}

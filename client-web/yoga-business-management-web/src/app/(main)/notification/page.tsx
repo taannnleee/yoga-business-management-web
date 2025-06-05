@@ -138,10 +138,10 @@ const NotificationPage: React.FC = () => {
                             </Typography>
                             <Box sx={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
                                 <Typography variant="body2" color="textSecondary">
-                                    Date: {new Date(notification.createdAt).toLocaleDateString()}
+                                    Ngày: {new Date(notification.createdAt).toLocaleDateString()}
                                 </Typography>
                                 <Typography variant="body2" color={notification.read ? 'green' : 'blue'}>
-                                    Status: {notification.read ? 'Read' : 'Unread'}
+                                    Trạng thái: {notification.read ? 'Đã đọc' : 'Chưa đọc'}
                                 </Typography>
                             </Box>
                             <Button
@@ -149,7 +149,7 @@ const NotificationPage: React.FC = () => {
                                 sx={{ marginTop: '10px' }}
                                 variant="outlined"
                             >
-                                View Details
+                                Xem chi tiết
                             </Button>
                         </Box>
                     ))}

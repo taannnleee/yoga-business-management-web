@@ -121,13 +121,13 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
             if (data === 1040) {
                 toast.sendToast("Error", "Khóa học đã có trong giỏ hàng của bạn", "error");
             } else {
-                toast.sendToast("Success", "Đặt hàng thành công");
+                toast.sendToast("Success", "Thêm vào giỏ hàng thành công");
                 handleCloseModal();
             }
 
 
         } catch (error) {
-            toast.sendToast("Error", "Đặt hàng thất bại", "error");
+            toast.sendToast("Error", "Thêm vào giỏ hàng thất bại", "error");
             console.error("Error fetching cart data:", error);
         }
     }

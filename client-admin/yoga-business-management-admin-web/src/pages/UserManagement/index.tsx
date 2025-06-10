@@ -151,17 +151,17 @@ const UserManagement = () => {
         const options = [
           params?.row?.isActive == true
             ? {
-                id: 'deactivate',
-                title: 'Vô hiệu hóa tài khoản',
-                onPress: () => handleDeactivateUser(params.row?.id),
-                onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
-              }
+              id: 'deactivate',
+              title: 'Vô hiệu hóa tài khoản',
+              onPress: () => handleDeactivateUser(params.row?.id),
+              onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
+            }
             : {
-                id: 'activate',
-                title: 'Kích hoạt tài khoản',
-                onPress: () => handleActivateUser(params.row?.id),
-                onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
-              },
+              id: 'activate',
+              title: 'Kích hoạt tài khoản',
+              onPress: () => handleActivateUser(params.row?.id),
+              onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
+            },
         ];
         return <ActionMenu options={options} />;
       },
@@ -174,7 +174,7 @@ const UserManagement = () => {
       addLoadingEffect && setLoading(true);
 
       const response = await axiosInstance.get('/api/admin/getAllUser');
-      const result = await response;
+      const result = await response.data;
       console.log('response user', result.data);
       if (response) {
         setUsers(result.data);

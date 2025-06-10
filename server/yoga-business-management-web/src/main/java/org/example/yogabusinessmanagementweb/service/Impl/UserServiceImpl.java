@@ -17,6 +17,7 @@ import org.example.yogabusinessmanagementweb.dto.response.address.AddressRespons
 import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.RegistrationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.user.UserResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.AddressRepository;
@@ -80,6 +81,17 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Override
+    public List<UserResponse> getAllUserResponse() {
+        List<UserResponse> userResponses = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            userResponses.add(userMapper.toUserResponse(user));
+
+        }
+        return userResponses;
+    }
 
     @Override
     public List<User> getAllUser() {

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
+import { useToast } from "@/hooks/useToast";
 import {
     Box,
     Typography,
@@ -32,6 +33,7 @@ interface Address {
 
 
 const AddressList: React.FC = () => {
+    const toast = useToast();
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -164,7 +166,19 @@ const AddressList: React.FC = () => {
         }
     };
 
+    const validateFields = () => {
+        if (!nameDelivery || !phoneNumberDelivery || !houseNumber || !street || !district || !city) {
+            return false;
+        }
+        return true;
+    };
+
     const handleSave = async () => {
+        if (!validateFields()) {
+            toast.sendToast("Error", "Vui lòng điền đầy đủ tất cả các trường.", "error");
+            return;
+
+        }
         if (isEditMode) {
             await handleUpdateAddress();
         } else {

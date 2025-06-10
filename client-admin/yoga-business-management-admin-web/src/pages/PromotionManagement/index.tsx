@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import axiosInstance from 'utils/axiosClient';
+import MainLayout from '../../components/SIdeBar';
 
 interface Promotion {
   code: string;
@@ -135,19 +136,22 @@ const PromotionManager: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Tạo Khuyến Mãi Mới
-      </Typography>
+    <MainLayout
+      title="Quản lý khuyến mãi"
+      content={
+        <Box sx={{ padding: 3 }}>
+          <Typography variant="h4" gutterBottom>
+            Tạo Khuyến Mãi Mới
+          </Typography>
 
-      {/* Thông báo lỗi hoặc thành công */}
-      {message && <Typography color="green">{message}</Typography>}
-      {error && <Typography color="red">{error}</Typography>}
+          {/* Thông báo lỗi hoặc thành công */}
+          {message && <Typography color="green">{message}</Typography>}
+          {error && <Typography color="red">{error}</Typography>}
 
-      {/* Form tạo khuyến mãi */}
-      <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {/* Mã Khuyến Mãi */}
-        {/* <TextField
+          {/* Form tạo khuyến mãi */}
+          <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Mã Khuyến Mãi */}
+            {/* <TextField
                     label="Mã Khuyến Mãi"
                     variant="outlined"
                     fullWidth
@@ -156,92 +160,95 @@ const PromotionManager: React.FC = () => {
                     onChange={handleChange}
                 /> */}
 
-        {/* Giảm Giá */}
-        <TextField
-          label="Giảm Giá (%)"
-          variant="outlined"
-          fullWidth
-          type="number"
-          name="discount"
-          value={promotion.discount}
-          onChange={handleDiscountChange} // Sử dụng hàm kiểm tra số dương
-        />
+            {/* Giảm Giá */}
+            <TextField
+              label="Giảm Giá (%)"
+              variant="outlined"
+              fullWidth
+              type="number"
+              name="discount"
+              value={promotion.discount}
+              onChange={handleDiscountChange} // Sử dụng hàm kiểm tra số dương
+            />
 
-        {/* Loại Giảm Giá */}
-        <FormControl fullWidth>
-          <InputLabel id="discount-type-label">Loại Giảm Giá</InputLabel>
-          <Select
-            labelId="discount-type-label"
-            name="discountType"
-            value={promotion.discountType}
-            onChange={handleSelectChange} // Sử dụng hàm mới cho Select
-            label="Loại Giảm Giá"
-          >
-            <MenuItem value="PERCENTAGE">Phần Trăm</MenuItem>
-            <MenuItem value="AMOUNT">Số Tiền</MenuItem>
-          </Select>
-        </FormControl>
+            {/* Loại Giảm Giá */}
+            <FormControl fullWidth>
+              <InputLabel id="discount-type-label">Loại Giảm Giá</InputLabel>
+              <Select
+                labelId="discount-type-label"
+                name="discountType"
+                value={promotion.discountType}
+                onChange={handleSelectChange} // Sử dụng hàm mới cho Select
+                label="Loại Giảm Giá"
+              >
+                <MenuItem value="PERCENTAGE">Phần Trăm</MenuItem>
+                <MenuItem value="AMOUNT">Số Tiền</MenuItem>
+              </Select>
+            </FormControl>
 
-        {/* Số Lượng Sử Dụng */}
-        <TextField
-          label="Số Lượng Sử Dụng"
-          variant="outlined"
-          fullWidth
-          type="number"
-          name="usage_limit"
-          value={promotion.usage_limit === 0 ? '' : promotion.usage_limit}
-          onChange={handleUseLimitChange}
-        />
+            {/* Số Lượng Sử Dụng */}
+            <TextField
+              label="Số Lượng Sử Dụng"
+              variant="outlined"
+              fullWidth
+              type="number"
+              name="usage_limit"
+              value={promotion.usage_limit === 0 ? '' : promotion.usage_limit}
+              onChange={handleUseLimitChange}
+            />
 
-        {/* Ngày Bắt Đầu */}
-        <TextField
-          label="Ngày Bắt Đầu"
-          variant="outlined"
-          fullWidth
-          type="date"
-          name="startDate"
-          value={promotion.startDate}
-          onChange={handleChange}
-          InputLabelProps={{ shrink: true }}
-          // Thêm thuộc tính min để ngày bắt đầu không thể là ngày trong quá khứ
-          inputProps={{ min: currentDate }}
-        />
+            {/* Ngày Bắt Đầu */}
+            <TextField
+              label="Ngày Bắt Đầu"
+              variant="outlined"
+              fullWidth
+              type="date"
+              name="startDate"
+              value={promotion.startDate}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              // Thêm thuộc tính min để ngày bắt đầu không thể là ngày trong quá khứ
+              inputProps={{ min: currentDate }}
+            />
 
-        {/* Ngày Kết Thúc */}
-        <TextField
-          label="Ngày Kết Thúc"
-          variant="outlined"
-          fullWidth
-          type="date"
-          name="expiryDate"
-          value={promotion.expiryDate}
-          onChange={handleChange}
-          InputLabelProps={{ shrink: true }}
-          // Thêm thuộc tính min để ngày kết thúc không thể là ngày trong quá khứ
-          inputProps={{ min: currentDate }}
-        />
+            {/* Ngày Kết Thúc */}
+            <TextField
+              label="Ngày Kết Thúc"
+              variant="outlined"
+              fullWidth
+              type="date"
+              name="expiryDate"
+              value={promotion.expiryDate}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              // Thêm thuộc tính min để ngày kết thúc không thể là ngày trong quá khứ
+              inputProps={{ min: currentDate }}
+            />
 
-        {/* Trạng Thái */}
-        <FormControl fullWidth>
-          <InputLabel id="status-label">Trạng Thái</InputLabel>
-          <Select
-            labelId="status-label"
-            name="isActive"
-            value={promotion.isActive ? 'active' : 'inactive'}
-            onChange={(e) => setPromotion({ ...promotion, isActive: e.target.value === 'active' })}
-            label="Trạng Thái"
-          >
-            <MenuItem value="active">Kích hoạt</MenuItem>
-            <MenuItem value="inactive">Không kích hoạt</MenuItem>
-          </Select>
-        </FormControl>
+            {/* Trạng Thái */}
+            <FormControl fullWidth>
+              <InputLabel id="status-label">Trạng Thái</InputLabel>
+              <Select
+                labelId="status-label"
+                name="isActive"
+                value={promotion.isActive ? 'active' : 'inactive'}
+                onChange={(e) => setPromotion({ ...promotion, isActive: e.target.value === 'active' })}
+                label="Trạng Thái"
+              >
+                <MenuItem value="active">Kích hoạt</MenuItem>
+                <MenuItem value="inactive">Không kích hoạt</MenuItem>
+              </Select>
+            </FormControl>
 
-        {/* Nút Gửi */}
-        <Button variant="contained" onClick={handleSubmit} sx={{ marginTop: 2 }}>
-          Tạo Khuyến Mãi
-        </Button>
-      </Box>
-    </Box>
+            {/* Nút Gửi */}
+            <Button variant="contained" onClick={handleSubmit} sx={{ marginTop: 2 }}>
+              Tạo Khuyến Mãi
+            </Button>
+          </Box>
+        </Box>
+      }
+    />
+
   );
 };
 

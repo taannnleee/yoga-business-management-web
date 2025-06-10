@@ -397,7 +397,7 @@ function Yoga() {
       />
       <Instructions currentPose={currentPose} />
       <button onClick={startYoga} className="secondary-btn">
-        Pratice nơw
+        Pratice now
       </button>
     </div>
   );

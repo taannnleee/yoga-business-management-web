@@ -77,7 +77,7 @@ const NotificationPage: React.FC = () => {
             setNotifications(response.data.data);
         } catch (err) {
             console.error('Error fetching notifications:', err);
-            setError('Cannot load notifications. Please try again.');
+            setError('Lỗi hệ thống. Vui lòng thử lại sau');
         } finally {
             setLoading(false);
         }

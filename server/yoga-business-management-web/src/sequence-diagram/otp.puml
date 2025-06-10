@@ -22,7 +22,7 @@ alt User is null
     Database --> userService: return null
     userService --> AuthenticationController: return null
     AuthenticationController --> verifyPage: Account not found
-    deactivate verifyPage
+
 else User is not null
     Database --> userService: return user
     deactivate Database
@@ -32,14 +32,23 @@ else User is not null
     deactivate emailService
 
     alt OTP sent successfully
+    activate Database
         Database --> emailService: OTP saved
+        deactivate Database
+        activate emailService
         emailService --> userService: OTP sent successfully
         userService --> AuthenticationController: OTP sent successfully
+        deactivate emailService
+
         AuthenticationController --> verifyPage: OTP sent successfully
-        deactivate verifyPage
+
     else OTP sending failed
+    activate emailService
+    Database --> emailService: OTP save failed
         emailService --> userService: OTP failed to send
         userService --> AuthenticationController: OTP failed to send
+        deactivate emailService
+
         AuthenticationController --> verifyPage: OTP sending failed
         deactivate verifyPage
     end

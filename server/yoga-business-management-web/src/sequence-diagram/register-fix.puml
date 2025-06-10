@@ -1,0 +1,112 @@
+@startuml RegisterWithOTPVerification
+title Đăng ký và Xác minh OTP (Theo Code Thực Tế)
+
+actor Actor
+boundary registerPage
+boundary verifyPage
+control AuthenticationController
+control OTPVerificationController
+entity userService
+entity authenticationService
+entity userRepository
+entity cartRepository
+Database Database
+
+Actor -> registerPage: Register New Account
+activate registerPage
+registerPage -> AuthenticationController: /register
+activate AuthenticationController
+
+AuthenticationController -> userService: checkUserNotExist(registrationRequest)
+activate userService
+
+userService -> userRepository: checkIfExists(username, phone, email)
+activate userRepository
+userRepository -> Database: checkIfExists(username, phone, email)
+activate Database
+
+alt Username, Phone, or Email exists
+    Database --> userRepository: Exists
+    userRepository --> userService: Exists
+    userService --> AuthenticationController: throw AppException()
+    AuthenticationController --> registerPage: Error - Account already exists
+    deactivate registerPage
+else All checks passed
+    Database --> userRepository: Does not exist
+    deactivate Database
+    userRepository --> userService: true
+    deactivate userRepository
+
+    AuthenticationController -> userService: registerUser(registrationRequest)
+    activate userService
+
+    userService -> userRepository: save(user)
+    activate userRepository
+    userRepository -> Database: Save user (status=false, encoded password, default address)
+    deactivate userRepository
+
+    userService -> authenticationService: sendOTP(email)
+    activate authenticationService
+    authenticationService -> Database: Save OTP for user
+    authenticationService --> userService: OTP sent
+    deactivate authenticationService
+
+    userService --> AuthenticationController: RegistrationResponse
+    deactivate userService
+
+    AuthenticationController --> registerPage: User registered, OTP sent
+    deactivate AuthenticationController
+    deactivate registerPage
+end
+
+== OTP Verification ==
+
+Actor -> verifyPage: Enter OTP
+activate verifyPage
+verifyPage -> OTPVerificationController: /verifyOTP_register
+activate OTPVerificationController
+
+OTPVerificationController -> authenticationService: verifyOTP_register(OTP, email)
+activate authenticationService
+
+authenticationService -> userService: findByEmail(email)
+activate userService
+userService -> userRepository: findByEmail(email)
+activate userRepository
+userRepository -> Database: Retrieve user by email
+activate Database
+
+alt OTP matches
+    Database --> userRepository: User with OTP
+    userRepository --> userService: User
+    deactivate userRepository
+    userService --> authenticationService: User
+    deactivate userService
+
+    note right of authenticationService: user.setStatus(true)\n(NHƯNG KHÔNG SAVE)
+
+    authenticationService -> cartRepository: save(cart)
+    activate cartRepository
+    cartRepository -> Database: Create new cart for user
+    deactivate cartRepository
+
+    authenticationService --> OTPVerificationController: Verification Success
+    deactivate authenticationService
+
+    OTPVerificationController --> verifyPage: Verification Successful
+    deactivate OTPVerificationController
+    verifyPage -> Actor: Redirect to loginHome
+    Actor -> loginHome: Access Login Home
+else OTP does not match
+    Database --> authenticationService: User with different OTP
+    authenticationService --> OTPVerificationController: throw AppException(OTP_INVALID)
+    OTPVerificationController --> verifyPage: Error - Invalid OTP
+    deactivate OTPVerificationController
+    verifyPage -> Actor: Stay on verifyPage
+end
+
+deactivate Database
+deactivate verifyPage
+
+note over authenticationService: BUG: user.setStatus(true) nhưng không save vào DB
+@enduml

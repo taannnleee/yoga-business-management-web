@@ -1,0 +1,126 @@
+@startuml Profile
+title Quản lý cá nhân
+
+actor Actor
+boundary profilePage
+control UserController
+entity userService
+entity addressService
+entity userRepository
+entity addressRepository
+Database Database
+
+== View Profile ==
+
+Actor -> profilePage: View Profile
+activate profilePage
+profilePage -> UserController: getProfile(request)
+activate UserController
+UserController -> userService: getProfile(request)
+activate userService
+
+userService -> userRepository: getUserFromRequest(request)
+activate userRepository
+
+userRepository -> Database: Retrieve user by token
+activate Database
+
+alt User found
+    Database --> userRepository: return user
+
+    userRepository --> userService: return user
+    deactivate userRepository
+    deactivate Database
+    userService -> addressService: getUserAddresses(userId)
+    activate addressService
+    addressService -> addressRepository: getAddresses(userId)
+    activate addressRepository
+    addressRepository -> Database: Retrieve user addresses
+    activate Database
+
+    alt Addresses found
+        Database --> addressRepository: return addresses
+        addressRepository --> addressService: return addresses
+        deactivate Database
+        deactivate addressRepository
+        addressService --> userService: return addresses
+        deactivate addressService
+        userService --> UserController: return user details with address
+    else Addresses not found
+        activate addressRepository
+        Database --> addressRepository: return null
+
+        addressRepository --> addressService: return null
+        deactivate addressRepository
+        activate addressService
+        addressService --> userService: return empty addresses
+        deactivate addressService
+        userService --> UserController: return user details with empty address
+    end
+
+    deactivate userService
+    UserController --> profilePage: getProfile successfully
+    deactivate profilePage
+else User not found
+    activate userRepository
+    Database --> userRepository: return null
+    userRepository --> userService: return null
+    deactivate userRepository
+    activate userService
+    userService --> UserController: throw AppException(ErrorCode.USER_NOT_FOUND)
+    deactivate userService
+    UserController --> profilePage: Error - User not found
+    deactivate profilePage
+end
+
+deactivate UserController
+deactivate Database
+
+== Update Profile ==
+
+Actor -> profilePage: Update Profile
+activate profilePage
+profilePage -> UserController: updateProfile(request, updatedData)
+activate UserController
+UserController -> userService: updateProfile(updatedData, request)
+activate userService
+
+userService -> userRepository: getUserFromRequest(request)
+activate userRepository
+
+userRepository -> Database: Retrieve user by token
+activate Database
+
+alt User found
+    Database --> userRepository: return user
+    userRepository --> userService: return user
+    deactivate Database
+    deactivate userRepository
+
+    userService -> userRepository: updateUser(user, updatedData)
+    activate userRepository
+    activate Database
+    userRepository -> Database: Update user firstName, lastName, email, phone, imagePath, gender, dateOfBirth
+    deactivate userRepository
+    deactivate Database
+
+    userService --> UserController: update profile successfully
+    deactivate userService
+    UserController --> profilePage: update profile successfully
+    deactivate profilePage
+else User not found
+    activate userRepository
+    Database --> userRepository: return null
+    userRepository --> userService: return null
+    deactivate userRepository
+    activate userService
+    userService --> UserController: throw AppException(ErrorCode.USER_NOT_FOUND)
+    deactivate userService
+    UserController --> profilePage: Error - User not found
+    deactivate profilePage
+end
+
+deactivate UserController
+deactivate Database
+
+@enduml

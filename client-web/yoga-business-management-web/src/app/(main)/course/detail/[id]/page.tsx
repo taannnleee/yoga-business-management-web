@@ -87,7 +87,7 @@ const CourseDetailPage: React.FC = () => {
         }
     }, [courseId]);
 
-    if (!course) return <div>Loading...</div>;
+    if (!course) return <div>Lỗi kết nối mạng</div>;
 
     return (
         <div className="w-screen">

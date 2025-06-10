@@ -1,0 +1,58 @@
+@startuml
+title Delete Address
+
+actor Actor
+boundary Client
+control AddressController
+control AddressService
+entity JwtUtil
+entity User
+entity Address
+entity AddressRepository
+database DB
+
+Actor -> Client : Request DELETE /delete/{id}
+activate Client
+Client -> AddressController : deleteAddress(id, request)
+activate AddressController
+
+AddressController -> AddressService : deleteAddress(id, request)
+activate AddressService
+
+AddressService -> JwtUtil : getUserFromRequest(request)
+activate JwtUtil
+JwtUtil --> AddressService : User
+deactivate JwtUtil
+
+AddressService -> User : getAddresses()
+activate User
+User --> AddressService : List<Address>
+deactivate User
+
+loop Find address by id
+    AddressService -> Address : check id match
+end
+
+alt Address found
+    AddressService -> User : remove address
+    AddressService -> AddressRepository : delete(address)
+    activate AddressRepository
+    AddressRepository --> DB : DELETE address
+    DB --> AddressRepository : delete success
+    deactivate AddressRepository
+
+    AddressService --> AddressController : AddressResponse
+    deactivate AddressService
+
+    AddressController --> Client : Return success
+    deactivate AddressController
+    deactivate Client
+else Address not found
+    AddressService --> AddressController : throw AppException(ADDRESS_NOT_FOUND)
+    deactivate AddressService
+    AddressController --> Client : Return error
+    deactivate AddressController
+    deactivate Client
+end
+
+@enduml

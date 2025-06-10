@@ -22,7 +22,7 @@ const RootLayoutClient = ({ children }: { children: React.ReactNode }) => {
                     <ToastProvider>
                         <HeaderSwitcher /> {/* Your header component */}
 
-                        <div style={{ minHeight: "70vh", backgroundColor: "white", paddingTop: "80px" }}>
+                        <div style={{ minHeight: "70vh", backgroundColor: "white", paddingTop: "95px" }}>
                             {children} {/* Render the page content */}
                         </div>
                     </ToastProvider>

@@ -31,7 +31,7 @@ public class AdminUserController {
 
     @GetMapping("/getAllUser")
     public ApiResponse<?> getAllUser() {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Get all user success", userService.getAllUser());
+        return new ApiResponse<>(HttpStatus.OK.value(), "Get all user success", userService.getAllUserResponse());
     }
 
     @GetMapping("getUserById/{id}")

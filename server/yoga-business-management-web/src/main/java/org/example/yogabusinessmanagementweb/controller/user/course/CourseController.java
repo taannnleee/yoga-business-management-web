@@ -35,7 +35,7 @@ public class CourseController {
     SectionsService sectionsService;
 
     @GetMapping("/all-course")
-    public ApiResponse<?> getAllCourses() {
+    public ApiResponse<?> getAllCourseWithTopic() {
         List<TopicCourseResponse> courseResponseList = coursesService.getAllCourseWithTopic();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all courses successfully",courseResponseList);
     }

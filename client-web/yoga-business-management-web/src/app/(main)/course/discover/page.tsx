@@ -62,7 +62,7 @@ const DisCoverPage: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching courses:", error);
-        setError("There was an error fetching the courses.");
+        setError("Lỗi khi tải khóa học.");
       } finally {
         setLoading(false); // Set loading to false after fetch completes
       }

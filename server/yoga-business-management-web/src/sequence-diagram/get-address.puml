@@ -1,0 +1,76 @@
+@startuml
+title Get Address with JwtUtil and UserRepository to DB
+
+actor Actor
+boundary Client
+control AddressController
+control AddressService
+entity JwtUtil
+control JwtService
+control UserService
+entity UserRepository
+entity DB
+entity User
+
+Actor -> Client : Request GET /get-address
+activate Client
+Client -> AddressController : getAddress(request)
+activate AddressController
+
+AddressController -> AddressService : getAddressOfUser(request)
+activate AddressService
+
+AddressService -> JwtUtil : getUserFromRequest(request)
+activate JwtUtil
+
+JwtUtil -> Client : request.getHeader("Authorization")
+activate Client
+Client --> JwtUtil : Authorization header
+deactivate Client
+
+JwtUtil -> JwtUtil : Extract token (substring "Bearer ")
+JwtUtil -> JwtService : extractUsername(token, ACCESSTOKEN)
+activate JwtService
+JwtService --> JwtUtil : userName
+deactivate JwtService
+
+JwtUtil -> UserService : findUserByUserName(userName)
+activate UserService
+
+UserService -> UserRepository : findByUsername(userName)
+activate UserRepository
+
+UserRepository -> DB : Query user by userName
+activate DB
+DB --> UserRepository : User data
+deactivate DB
+
+UserRepository --> UserService : User entity
+deactivate UserRepository
+
+UserService --> JwtUtil : User entity
+deactivate UserService
+
+JwtUtil --> AddressService : User
+deactivate JwtUtil
+
+AddressService -> User : getAddresses()
+activate User
+User --> AddressService : List<Address>
+deactivate User
+
+alt addresses null or empty
+    AddressService --> AddressController : throw AppException(ADDRESS_NOT_FOUND)
+    deactivate AddressService
+    AddressController --> Client : Return error
+    deactivate AddressController
+    deactivate Client
+else addresses available
+    AddressService --> AddressController : List<Address>
+    deactivate AddressService
+    AddressController --> Client : Return addresses with success
+    deactivate AddressController
+    deactivate Client
+end
+
+@enduml

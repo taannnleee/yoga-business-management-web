@@ -1,0 +1,60 @@
+@startuml
+title Create Address
+
+actor Actor
+boundary Client
+control AddressController
+control AddressService
+entity JwtUtil
+entity User
+entity Address
+entity AddressMapper
+entity UserRepository
+database DB
+
+Actor -> Client : Request POST /create
+activate Client
+Client -> AddressController : createAddress(request, addressRequest)
+activate AddressController
+
+AddressController -> AddressService : createAddress(request, addressRequest)
+activate AddressService
+
+AddressService -> JwtUtil : getUserFromRequest(request)
+activate JwtUtil
+JwtUtil --> AddressService : User
+deactivate JwtUtil
+
+AddressService -> AddressMapper : toAddress(addressRequest)
+activate AddressMapper
+AddressMapper --> AddressService : Address
+deactivate AddressMapper
+
+alt User addresses empty or null
+    AddressService -> Address : setStatus(DEFAULT)
+else
+    AddressService -> Address : setStatus(NOTDEFAULT)
+end
+
+AddressService -> User : getAddresses()
+activate User
+User --> AddressService : List<Address>
+AddressService -> User : add address to addresses
+UserRepository -> DB : UPDATE user with new address
+DB --> UserRepository : update success
+deactivate UserRepository
+
+AddressService -> UserRepository : save(user)
+activate UserRepository
+UserRepository --> DB
+DB --> UserRepository
+deactivate UserRepository
+
+AddressService --> AddressController : AddressResponse
+deactivate AddressService
+
+AddressController --> Client : Return success
+deactivate AddressController
+deactivate Client
+
+@enduml

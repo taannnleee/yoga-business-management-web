@@ -3,15 +3,16 @@ package org.example.yogabusinessmanagementweb.dto.response.course;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.yogabusinessmanagementweb.common.entities.Sections;
 import org.example.yogabusinessmanagementweb.common.entities.Teacher;
-import org.example.yogabusinessmanagementweb.common.entities.Topic;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class CourseResponse {
+public class CourseResponsePageDetail {
     Long id;
     String name;
     String instruction;
@@ -21,7 +22,6 @@ public class CourseResponse {
     int level;
     String videoPath;
     BigDecimal price;
-    int capacity;
-//    Teacher teacher;
-//    Topic topic;
+    List<SectionResponsePageDetail> sections;
+    Teacher teacher;
 }

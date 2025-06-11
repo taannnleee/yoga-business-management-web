@@ -8,16 +8,16 @@ import org.example.yogabusinessmanagementweb.common.mapper.CourseMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.course.CourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponsePageDetail;
+import org.example.yogabusinessmanagementweb.dto.response.course.LectureResponsePageDetail;
+import org.example.yogabusinessmanagementweb.dto.response.course.SectionResponsePageDetail;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CoursesRepository;
 import org.example.yogabusinessmanagementweb.repositories.TeacherRepository;
 import org.example.yogabusinessmanagementweb.repositories.TopicRepository;
-import org.example.yogabusinessmanagementweb.service.CoursesService;
-import org.example.yogabusinessmanagementweb.service.OrderCourseService;
-import org.example.yogabusinessmanagementweb.service.TeacherService;
-import org.example.yogabusinessmanagementweb.service.TopicService;
+import org.example.yogabusinessmanagementweb.service.*;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +37,7 @@ public class CoursesServiceImpl implements CoursesService {
     TopicService topicService;
     OrderCourseService orderCourseService;
     JwtUtil jwtUtil;
+    LectureDoneService lectureDoneService;
 
     TopicRepository topicRepository;
 
@@ -84,7 +85,7 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     @Override
-    public Courses getCourse(HttpServletRequest request, String id) {
+    public CourseResponsePageDetail getCourse(HttpServletRequest request, String id) {
         //lấy user đăng kí
         User user = jwtUtil.getUserFromRequest(request);
 
@@ -103,7 +104,23 @@ public class CoursesServiceImpl implements CoursesService {
                 }
             }
         }
-        return courses;
+
+        CourseResponsePageDetail courseResponsePageDetail =  courseMapper.toCourseResponsePageDetail(courses);
+        // đánh dấu khóa học đã hoàn thành
+        List<Long> doneLectureIds = lectureDoneService.getLectureDone(user)
+                .stream()
+                .map(ld -> ld.getLectures().getId())
+                .collect(Collectors.toList());
+
+        for (SectionResponsePageDetail sectionDto : courseResponsePageDetail.getSections()) {
+            for (LectureResponsePageDetail lectureDto : sectionDto.getLectures()) {
+                lectureDto.setIsDone(doneLectureIds.contains(lectureDto.getId())); // dùng List
+            }
+        }
+
+
+
+        return courseResponsePageDetail;
     }
 
     @Override

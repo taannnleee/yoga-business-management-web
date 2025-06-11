@@ -18,6 +18,7 @@ import org.example.yogabusinessmanagementweb.dto.response.coursecart.CourseCartR
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderCommentResponse;
 import org.example.yogabusinessmanagementweb.dto.response.order.OrderResponse;
 import org.example.yogabusinessmanagementweb.dto.response.orderCourse.OrderCourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.product.ProductResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.*;
 import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
@@ -54,4 +55,11 @@ public class OrderCourseController {
         List<OrderCourseResponse> orderCourseResponses = orderCourseService.showOrder(request);
         return new ApiResponse<>(HttpStatus.OK.value(), "show order success",orderCourseResponses);
     }
+
+    @GetMapping("/count-order-of-course/{courseId}")
+    public ApiResponse<?> countAllOrderOfCourse(@PathVariable String courseId) {
+        int countOrder = orderCourseService.countAllOrderOfCourse(courseId);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get order course response success",countOrder);
+    }
+
 }

@@ -30,6 +30,7 @@ interface Course {
     videoPath: string;
     price: number;
     rating: number;
+    capacity: number;
 }
 
 
@@ -115,6 +116,7 @@ const CoursePage: React.FC = () => {
                 );
 
                 if (response.data.status === 200) {
+                    setInstructors(response.data.data);
                     setCourses(response.data.data); // Lưu các khóa học của giáo viên vào state
                 } else {
                     setError("Không thể tải các khóa học.");

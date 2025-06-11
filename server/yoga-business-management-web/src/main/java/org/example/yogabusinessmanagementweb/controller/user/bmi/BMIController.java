@@ -22,10 +22,10 @@ public class BMIController {
         BMIOut result = bmiService.calculateCalories(personIn);
         return new ApiResponse<>(HttpStatus.OK.value(), "Calculated BMI successfully", result);
     }
-//
-//    @PostMapping("/recommend")
-//    public ApiResponse<?> recommendMeals(@RequestBody PersonIn personIn) {
-//        Object recommendations = bmiService.recommendMeals(personIn);
-//        return new ApiResponse<>(HttpStatus.OK.value(), "Recommended meals successfully", recommendations);
-//    }
+
+    @PostMapping("/recommend")
+    public ApiResponse<?> recommendMeals(@RequestBody PersonIn personIn) {
+        Object recommendations = bmiService.recommendMeals(personIn);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Recommended meals successfully", recommendations);
+    }
 }

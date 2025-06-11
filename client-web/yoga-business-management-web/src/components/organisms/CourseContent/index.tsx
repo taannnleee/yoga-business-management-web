@@ -2,6 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { Button } from "@mui/material";
 import { useRouter } from 'next/navigation';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import RadioButtonUncheckedIcon from '@mui/icons-material/CheckCircleOutline';
+import axiosInstance from "@/utils/axiosClient";
+import { API_URL } from "@/config/url";
 interface Lecture {
     id: number;
     title: string;
@@ -9,6 +13,7 @@ interface Lecture {
     videoPath: string;
     duration: string;
     isPublic: boolean;
+    isDone: boolean;
 }
 
 interface Section {
@@ -27,14 +32,60 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections, courseId }) => 
     const router = useRouter();
     const [openPanel, setOpenPanel] = useState<number | null>(null);
 
+    const [localSections, setLocalSections] = useState<Section[]>([]);
+
+    useEffect(() => {
+        setLocalSections(sections);
+    }, [sections]);
+
+    const updateLectureDoneState = (lectureId: number, isDone: boolean) => {
+        setLocalSections(prev =>
+            prev.map(section => ({
+                ...section,
+                lectures: section.lectures.map(lec =>
+                    lec.id === lectureId ? { ...lec, isDone } : lec
+                )
+            }))
+        );
+    };
+
+
     const togglePanel = (id: number) => {
         setOpenPanel(openPanel === id ? null : id);
     };
 
+    const handleMarkAsDone = async (lectureId: number) => {
+        try {
+            const response = await axiosInstance.post(
+                `${API_URL}/api/lecture-done/${lectureId}`
+            );
+            updateLectureDoneState(lectureId, true);
+            console.log("Product added to cart:", response.data.data);
+        } catch (err: any) {
+            console.error("Error marking lecture as done:", err.message);
+        } finally {
+
+        }
+    };
+    const handleUnMarkAsDone = async (lectureId: number) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${API_URL}/api/lecture-done/${lectureId}`
+            );
+            updateLectureDoneState(lectureId, false);
+            console.log("Product added to cart:", response.data.data);
+        } catch (err: any) {
+            console.error("Error marking lecture as done:", err.message);
+        } finally {
+
+        }
+    };
+
+
     return (
         <div className="w-full max-w-7xl mx-auto mt-[70px] pb-[48px] flex flex-col items-center">
             <h2 className="text-2xl font-bold mb-4">Nội dung khóa học</h2>
-            {sections.map((section) => (
+            {localSections.map((section) => (
                 <div key={section.id} className="w-full border-b border-gray-300 my-1">
                     {/* Panel Header */}
                     <div
@@ -54,6 +105,8 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections, courseId }) => 
                                 }, 0).toFixed(2)
                             } phút
                         </span> */}
+
+
                     </div>
 
                     {/* Panel Content */}
@@ -64,17 +117,40 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections, courseId }) => 
                         <div className={`p-4 bg-white transition-all duration-200 ease-in-out`}>
                             <ul>
                                 {section.lectures.map((lecture, index) => (
+
                                     <div key={lecture.id}>
+
                                         {
                                             lecture.isPublic ? (
                                                 <li onClick={() => router.push(`/course/lession/${courseId}/${lecture.id}`)}
-                                                    className="flex justify-between items-center py-2 cursor-pointer">
+                                                    className="flex justify-between items-center py-2 cursor-pointer ml-8">
                                                     <div>
-                                                        <OndemandVideoIcon className="text-blue-500 mr-1 ml-8" />
+
+                                                        <OndemandVideoIcon className="text-blue-500 mr-1" />
+                                                        {lecture.isDone ? (
+
+                                                            <CheckCircleOutlineIcon
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleUnMarkAsDone(lecture.id);
+                                                                }} className="text-green-500 ml-2" fontSize="medium" />
+                                                        ) : (
+                                                            <RadioButtonUncheckedIcon
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleMarkAsDone(lecture.id);
+                                                                }}
+                                                                className="text-gray-400 ml-2" fontSize="medium" />
+                                                        )}
+
+
                                                         <span className="text-gray-800 font-medium">{lecture.title}</span>
+
                                                     </div>
                                                     <div>
+
                                                         <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
+
                                                         <Button onClick={() => { router.push(`/course/lession/${courseId}/${lecture.id}`); }}
                                                             variant="contained" color="primary" sx={{ marginLeft: "auto" }}>
                                                             Học
@@ -84,31 +160,47 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections, courseId }) => 
 
                                                 </li>
                                             ) : (
-                                                <li className="flex justify-between items-center py-2 cursor-pointer">
+                                                <li className="flex justify-between items-center py-2 cursor-pointer ml-8">
                                                     <div>
-                                                        <OndemandVideoIcon className="text-blue-500 mr-1 ml-8" />
+                                                        <OndemandVideoIcon className="text-blue-500 mr-1" />
+                                                        {lecture.isDone ? (
+                                                            <CheckCircleOutlineIcon className="text-green-500 ml-2" fontSize="medium" />
+                                                        ) : (
+                                                            <RadioButtonUncheckedIcon className="text-gray-400 ml-2" fontSize="medium" />
+                                                        )}
                                                         <span className="text-gray-800 font-medium">{lecture.title}</span>
                                                     </div>
                                                     <div>
                                                         <span className="text-gray-600 mr-2">{lecture.duration} phút</span>
                                                         <span className="text-red-500">Riêng tư</span>
-
+                                                        {index < section.lectures.length - 1 && (
+                                                            <hr className="border-gray-300 my-2" />
+                                                        )}
                                                     </div>
-
                                                 </li>
                                             )
-                                        }
 
+
+                                        }
                                         {index < section.lectures.length - 1 && (
-                                            <hr className="border-gray-300 my-2" />
+                                            <hr className="border-t border-gray-300 mx-8" />
                                         )}
                                     </div>
                                 ))}
                             </ul>
+
                         </div>
                     </div>
                 </div>
             ))}
+            <div>
+                🎉 Bạn đã học Bài 1: Giới thiệu và các lưu ý trước khi tập 2 lần! Rất chăm chỉ!
+            </div>
+            {/* {lecture.timesLearned >= 5 && (
+                <div className="text-green-600 font-semibold">
+                    🎉 Bạn đã học bài này {lecture.timesLearned} lần! Rất chăm chỉ!
+                </div>
+            )} */}
         </div>
     );
 };

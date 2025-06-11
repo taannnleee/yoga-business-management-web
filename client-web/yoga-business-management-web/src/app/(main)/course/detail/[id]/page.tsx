@@ -19,6 +19,7 @@ interface Lecture {
     videoPath: string;
     duration: string;
     isPublic: boolean;
+    isDone: boolean;
 }
 
 interface Teacher {
@@ -71,6 +72,7 @@ const CourseDetailPage: React.FC = () => {
                     );
 
                     if (response.data.status === 200) {
+                        console.log("Course data1111111:", response.data.data);
                         setCourse(response.data.data);
                     } else {
                         setError("Không thể tải dữ liệu khóa học.");
@@ -161,6 +163,7 @@ const CourseDetailPage: React.FC = () => {
                             <div key={section.id} className="mb-4">
                                 <h3 className="text-xl font-semibold">{section.title}</h3>
                             </div>
+
                         ))}
                     </div>
                 </div>

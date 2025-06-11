@@ -10,4 +10,6 @@ public interface OrderCourseService {
     boolean createOrderCourse(OrderCourseCreationRequest orderCourseCreationRequest);
     List<OrderCourseResponse> showOrder(HttpServletRequest request);
     boolean checkOrderCourse(String userId, String courseId);
+
+    int  countAllOrderOfCourse(String courseId);
 }

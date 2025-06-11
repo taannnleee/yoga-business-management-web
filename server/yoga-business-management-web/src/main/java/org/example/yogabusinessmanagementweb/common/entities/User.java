@@ -5,9 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EGender;
-import org.example.yogabusinessmanagementweb.common.entities.workout.HealthyInfo;
-import org.example.yogabusinessmanagementweb.common.entities.workout.Post;
-import org.example.yogabusinessmanagementweb.common.entities.workout.WorkoutHistory;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,25 +49,8 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @JoinColumn(name = "user_id")
     List<Address> addresses;
 
-    @OneToMany(mappedBy = "user")
-    List<GroupHasUser> groupHasUsers;
-
-
     @ColumnDefault(value = "0")
     private BigDecimal point;
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER
-            , cascade = CascadeType.ALL)
-    private HealthyInfo healthyInfo;
-
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Post> posts;
-
-    @ManyToMany(mappedBy = "likes", fetch = FetchType.LAZY)
-    private List<Post> likedPosts;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<WorkoutHistory> workoutHistories;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "membership_type_id")

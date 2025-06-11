@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.Courses;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponsePageDetail;
 import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
@@ -48,7 +49,7 @@ public class CourseController {
 
     @GetMapping("/get-course/{id}")
     public ApiResponse<?> getCourse(HttpServletRequest request, @PathVariable String id) {
-        Courses courses = coursesService.getCourse(request,id);
+        CourseResponsePageDetail courses = coursesService.getCourse(request,id);
         return new ApiResponse<>(HttpStatus.OK.value(), "get courses by id  successfully",courses);
     }
 

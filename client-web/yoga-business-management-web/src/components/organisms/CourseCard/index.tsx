@@ -18,6 +18,7 @@ import {
 import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { CheckCircleIcon } from "@heroicons/react/16/solid";
+import { div } from "@tensorflow/tfjs-core";
 interface Course {
     id: number;
     name: string;
@@ -29,6 +30,7 @@ interface Course {
     videoPath: string;
     price: number;
     rating: number;
+    capacity: number;
 }
 
 interface CourseCardProps {
@@ -52,6 +54,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const itemsPerPage = 5;
     const [courseOrder, setCourseOrder] = useState<CourseOrderProps[]>([]);
+    const [capacity, setCapacity] = useState<number>(0);
+    const [registrationCount, setRegistrationCount] = useState<number>(0);
 
     const fetchCourseOrder = async () => {
         try {
@@ -93,8 +97,16 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
         return stars;
     };
 
-    const handleOpenModal = (course: Course) => {
+    const handleOpenModal = async (course: Course) => {
         setSelectedCourse(course);
+        setCapacity(course.capacity);
+        try {
+            const response = await axiosInstance.get(`/api/order-course/count-order-of-course/${course.id}`);
+            setRegistrationCount(response.data.data); // Gán số lượng người đã đăng ký
+        } catch (error) {
+            console.error("Lỗi khi lấy số lượng đăng ký:", error);
+            setRegistrationCount(0); // fallback nếu lỗi
+        }
         setOpen(true);
     };
 
@@ -157,6 +169,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                                 <Box
                                     className="product-hover absolute left-0 w-full h-full flex flex-col justify-center items-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100"
                                 >
+
                                     <IconButton
                                         color="secondary"
                                         className="top-[-80px]"
@@ -210,6 +223,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                     <Box display="flex" width="990px" height="366px">
                         {/* Left - Image */}
                         <Box flex={1}>
+
                             <Image
                                 src={selectedCourse?.imagePath || ""}
                                 alt={selectedCourse?.name || ""}
@@ -248,8 +262,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                         </Box>
                         {/* Right - Course details */}
                         <Box flex={2} ml={2}>
+
                             <Typography variant="h6" fontWeight="bold">
                                 {selectedCourse?.name}
+                            </Typography>
+                            <Typography variant="body2" fontStyle="italic" color="textSecondary">
+                                Sức chứa: {registrationCount}/{capacity} học viên
                             </Typography>
                             <Typography variant="body1" className={"py-2"} style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical' }}>
                                 Bài học Yoga cho Người mới bắt đầu - Học các kỹ năng Yoga, mẹo luyện tập Yoga hiệu quả, các nguyên tắc cơ bản, Cách luyện tập các tư thế Yoga.

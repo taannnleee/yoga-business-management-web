@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.entities.Address;
-import org.example.yogabusinessmanagementweb.common.entities.CourseCart;
-import org.example.yogabusinessmanagementweb.common.entities.OrderCourse;
-import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.common.entities.*;
 import org.example.yogabusinessmanagementweb.common.mapper.OrderCourseMapper;
 import org.example.yogabusinessmanagementweb.common.util.JwtUtil;
 import org.example.yogabusinessmanagementweb.dto.request.orderCourse.OrderCourseCreationRequest;
@@ -16,6 +13,7 @@ import org.example.yogabusinessmanagementweb.dto.response.orderCourse.OrderCours
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.CourseCartRepository;
+import org.example.yogabusinessmanagementweb.repositories.CoursesRepository;
 import org.example.yogabusinessmanagementweb.repositories.OrderCourseRepository;
 import org.example.yogabusinessmanagementweb.service.CourseCartService;
 import org.example.yogabusinessmanagementweb.service.OrderCourseService;
@@ -32,6 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class OrderCourseServiceImpl implements OrderCourseService {
+    CoursesRepository coursesRepository;
     OrderCourseRepository orderCourseRepository;
     CourseCartRepository courseCartRepository;
     OrderCourseMapper orderCourseMapper;
@@ -84,6 +83,19 @@ public class OrderCourseServiceImpl implements OrderCourseService {
         }else {
             return false;
         }
+    }
+
+    @Override
+    public int countAllOrderOfCourse(String courseId) {
+        Optional<Courses> optionalCourse = coursesRepository.findById(Long.parseLong(courseId));
+
+        if (optionalCourse.isPresent()) {
+            Courses course = optionalCourse.get();
+            List<OrderCourse> listOrderCourse = orderCourseRepository.findAllByCourse(course);
+            return listOrderCourse.size();
+        }
+
+        return 0;
     }
 
 }

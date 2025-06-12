@@ -1,0 +1,228 @@
+@startuml
+left to right direction
+' === USER RELATED ===
+class User {
+    - username : String
+    - password : String
+    - phone : String
+    - gender : EGender
+    - email : String
+    - fullname : String
+    - firstName : String
+    - lastName : String
+    - dateOfBirth : Date
+    - imagePath : String
+    - roles : String
+    - OTP : String
+    - expired : Date
+    - status : boolean
+    + getString(): String
+}
+
+class Token {
+    - username: String
+    - accessToken: String
+    - refreshToken: String
+    - revoked : boolean
+    - expired : boolean
+}
+
+class Address {
+    - houseNumber: String
+    - street: String
+    - district: String
+    - city: String
+    - country: String
+    - status : EAddress
+    - nameDelivery : String
+    - phoneNumberDelivery : String
+    + toString(): String
+}
+
+' === PRODUCT RELATED ===
+class Product {
+    - imagePath : String
+    - status : Boolean
+    - price : BigDecimal
+    - title : String
+    - code : String
+    - brand : String
+    - description : String
+    - variants : Map<String, Map<String, String>>
+    - averageRating : Double
+    - sold : Double
+}
+
+class Category {
+    - urlImage : String
+    - status : EStatus
+    - name : String
+}
+
+class SubCategory {
+    - id: Long
+    - name: String
+    - status: String
+}
+
+class Promotion {
+    - code : String
+    - discount : Double
+    - eDiscountType : EDiscountType
+    - usage_limit : int
+    - used_count : int
+    - startDate : Date
+    - expiryDate : Date
+    - isActive : Boolean
+}
+
+' === CART & ORDER RELATED ===
+class Cart {
+    - totalItem : int
+    - totalPrice : BigDecimal
+}
+
+class CartItem {
+    - quantity : int
+    - totalPrice : BigDecimal
+    - currentVariant : Map<String, Map<String, String>>
+}
+
+class Order {
+    - deliveryDate : Date
+    - totalPrice : BigDecimal
+    - totalItem : int
+    - eStatusOrder : EStatusOrder
+    - orderDate : Date
+}
+
+class OrderItem {
+    - title : String
+    - quantity : int
+    - orderStatus : EStatusOrder
+    - totalPrice : BigDecimal
+    - currentVariant : Map<String, Map<String, String>>
+}
+
+class Payment {
+    - nameMethod : String
+    - ePaymentStatus : EPaymentStatus
+}
+
+' === COURSE RELATED ===
+class Topic {
+    - name : String
+    - description : String
+}
+
+class Teachers {
+    - fullName : String
+    - introduction : String
+    - description : String
+    - email : String
+    - phoneNumber : String
+    - experienceYears : int
+    - profilePicture : String
+}
+
+class Course {
+    - name : String
+    - instruction : String
+    - description : String
+    - duration : String
+    - imagePath : String
+    - level : int
+    - videoPath : String
+    - price : BigDecimal
+}
+
+class Section {
+    - title : String
+}
+
+class Lecture {
+    - title : String
+    - content : String
+    - videoPath : String
+    - duration : String
+    - image : String
+    - isPublic : Boolean
+}
+
+class OrderCourse {
+    - totalPrice : BigDecimal
+}
+
+class Roadmap {
+    - title : String
+    - description : String
+}
+
+class TopicRoadmap {
+    - title : String
+    - content : String
+}
+' === ENUMS ===
+enum EGender {
+    MALE
+    FEMALE
+    OTHER
+}
+
+enum EAddress {
+    DEFAULT
+    NOTDEFAULT
+}
+
+enum EDiscountType {
+    PERCENTAGE
+    FIXED
+}
+
+enum EStatus {
+    INACTIVE
+    ACTIVE
+}
+
+enum EStatusOrder {
+    PROCESSING
+    DELIVERING
+    CANCELLED
+    COMPLETED
+}
+
+enum EPaymentStatus {
+    PENDING
+    PAID
+    PROCESSING
+}
+' === RELATIONSHIPS ===
+User *-- "0..*" Token
+User *-- "1..*" Address
+User "0..*" -- "0..*" Product : yêu thích
+User "1" <-- "1" Cart : thuộc về
+Cart o-- "0..*" CartItem : chứa
+CartItem "0..*" -- "1" Product
+Order *-- "1..*" OrderItem
+Order "1" -- "1" Payment
+Order "1" -- "1" Address
+OrderItem "1..*" -- "1" Product
+Product "0..*" -- "0..1" Promotion : áp dụng
+Category *-- "0..*" SubCategory
+SubCategory *-- "0..*" Product
+
+User o-- "0..*" Order
+User "0..*" -- "0..*" Course : đăng ký
+User "1" -- "0..*" OrderCourse : có
+User "0..*" -- "0..*" Roadmap : xem
+
+Topic "1" -- "0..*" Course : chứa
+Teachers "1" -- "0..*" Course : giảng dạy
+Course "1" -- "0..*" OrderCourse : có
+Course *-- "0..*" Section
+Section *-- "0..*" Lecture
+
+Roadmap *--> "0..*" TopicRoadmap : có
+TopicRoadmap "1" --> "0..*" Course : có
+
+@enduml

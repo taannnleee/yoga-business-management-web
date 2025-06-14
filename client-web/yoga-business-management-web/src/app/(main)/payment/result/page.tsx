@@ -16,6 +16,7 @@ const PaymentResult = () => {
     const [addressId, setAddressId] = useState<string | null>(null);
     const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
     const [vnpAmount, setVnpAmount] = useState<string | null>(null);
+    const [listCartIds, setlistCartIds] = useState<string | null>(null);
 
     const [isOrderCreated, setIsOrderCreated] = useState(false);
 
@@ -28,6 +29,8 @@ const PaymentResult = () => {
             setAddressId(urlParams.get("addressId"));
             setPaymentMethod(urlParams.get("paymentMethod"));
             setVnpAmount(urlParams.get("vnp_Amount"));
+            setlistCartIds(urlParams.get("listCartIds"));
+
         }
     }, []);
 
@@ -36,17 +39,36 @@ const PaymentResult = () => {
         setIsOrderCreated(true);
         setLoading(true);
 
-        try {
-            const response = await axiosInstance.post(
-                `${API_URL}/api/order/create-order`,
-                {
-                    addressId,
-                    paymentMethod,
-                    totalPricePromotion: vnpAmount,
-                }
-            );
+        let parsed: number[] = [];
 
-            console.log("Order created successfully:", response.data);
+        if (listCartIds && listCartIds !== "unknown") {
+            try {
+                parsed = JSON.parse(listCartIds);
+            } catch (err) {
+                console.error("Không thể parse listCartIds:", err);
+            }
+        }
+        try {
+            if (addressId !== "") {
+                const response = await axiosInstance.post(
+                    `${API_URL}/api/order/create-order`,
+                    {
+                        addressId,
+                        paymentMethod,
+                        totalPricePromotion: vnpAmount,
+                    }
+                );
+                console.log("Order created successfully:", response.data);
+            } else {
+                const response = await axiosInstance.post(
+                    `${API_URL}/api/order-course/create`,
+                    {
+                        // courseCartId: selectedItems.map((item) => item.toString()),
+                        courseCartId: parsed
+                    }
+
+                );
+            }
         } catch (error: any) {
             console.error("Error creating order:", error.message);
             setError(error.message);

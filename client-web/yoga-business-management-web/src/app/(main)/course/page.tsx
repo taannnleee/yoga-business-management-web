@@ -91,6 +91,7 @@ const CoursePage: React.FC = () => {
 
                 );
                 if (response.data.status === 200) {
+                    console.log("22222222222", response.data.data)
                     setInstructors(response.data.data);
 
                 } else {
@@ -104,7 +105,7 @@ const CoursePage: React.FC = () => {
         };
 
         fetchInstructors();
-    }, []); // Chạy một lần khi component mount
+    }, []);
 
 
     // Fetch các khóa học của giáo viên từ API
@@ -116,7 +117,6 @@ const CoursePage: React.FC = () => {
                 );
 
                 if (response.data.status === 200) {
-                    setInstructors(response.data.data);
                     setCourses(response.data.data); // Lưu các khóa học của giáo viên vào state
                 } else {
                     setError("Không thể tải các khóa học.");

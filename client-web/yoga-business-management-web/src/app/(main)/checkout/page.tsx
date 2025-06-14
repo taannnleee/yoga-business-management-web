@@ -203,9 +203,9 @@ const Checkout: React.FC = () => {
                             Payment Method
                         </Typography>
                         <RadioGroup value={paymentMethod} onChange={handlePaymentChange}>
-                            <FormControlLabel value="creditCard" control={<Radio />} label="Credit/Debit Card" />
+                            {/* <FormControlLabel value="creditCard" control={<Radio />} label="Credit/Debit Card" /> */}
                             <FormControlLabel value="vnpay" control={<Radio />} label="VNPAY" />
-                            <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
+                            {/* <FormControlLabel value="paypal" control={<Radio />} label="PayPal" /> */}
                             <FormControlLabel value="cash" control={<Radio />} label="Cash on Delivery (COD)" />
                         </RadioGroup>
                     </Paper>
@@ -262,7 +262,7 @@ const Checkout: React.FC = () => {
                             sx={{ marginTop: "20px" }}
                             onClick={handleOpenConfirmDialog}
                         >
-                            {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"}
+                            {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Thanh toán"}
                         </Button>
                     </Paper>
 
@@ -278,7 +278,7 @@ const Checkout: React.FC = () => {
                         Huỷ
                     </Button>
                     <Button onClick={handleConfirmOrder} color="primary" autoFocus>
-                        {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Đặt hàng"}
+                        {orderLoading ? <CircularProgress size={24} color="inherit" /> : "Thanh toán"}
                     </Button>
                 </DialogActions>
             </Dialog>

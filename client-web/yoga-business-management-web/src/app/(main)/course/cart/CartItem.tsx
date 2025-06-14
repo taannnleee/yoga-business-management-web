@@ -64,9 +64,6 @@ const CartItemComponent: React.FC<CartItemProps> = ({
                   <span className="text-sm text-gray-400 line-through">
                     {(item.totalPrice ?? 0).toLocaleString()} đ
                   </span>
-                  <span className="ml-2 text-sm bg-purple-100 text-purple-600 px-2 py-1 rounded">
-                    Giảm 82%
-                  </span>
                 </div>
               </div>
               <div

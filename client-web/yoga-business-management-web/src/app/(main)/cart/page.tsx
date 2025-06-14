@@ -212,7 +212,7 @@ const ShoppingCartPage: React.FC<IShoppingCartPageProps> = () => {
                                     onClick={() => router.replace("/checkout")}
                                     disabled={loadPrice}
                                 >
-                                    Tiến hành thanh toán
+                                    Tiến hành đặt hàng
                                 </Button>
                             </div>
                         </div>

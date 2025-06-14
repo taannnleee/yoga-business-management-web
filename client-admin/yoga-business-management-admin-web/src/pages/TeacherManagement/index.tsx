@@ -105,6 +105,11 @@ const TeacherManagement: React.FC = () => {
         const response = await axiosInstance.post<{ data: { url: string } }>(
           `/api/image/upload`,
           formDataObj,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
         );
         return response.data.data.url;
       } catch (error) {
@@ -201,7 +206,10 @@ const TeacherManagement: React.FC = () => {
       };
 
       try {
-        await axiosInstance.put(`/api/admin/update-teacher/${selectedTeacher.id}`);
+        await axiosInstance.put(
+          `/api/admin/update-teacher/${selectedTeacher.id}`,
+          updatedTeacherData,
+        );
         toast.success('Cập nhật giáo viên thành công!');
         fetchTeachers();
         setEditDialogOpen(false);

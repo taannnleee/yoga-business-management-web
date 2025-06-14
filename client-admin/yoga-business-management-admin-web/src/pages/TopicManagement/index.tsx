@@ -40,9 +40,7 @@ const TopicManagement = () => {
   // Function to handle form submission (create new topic)
   const handleSubmit = async () => {
     try {
-      const response = await axiosInstance.post(`/api/admin/add-topic`, {
-        body: JSON.stringify(topic),
-      });
+      const response = await axiosInstance.post(`/api/admin/add-topic`, topic);
 
       if (response?.data?.status === 200) {
         toast.success('Chủ đề được tạo thành công!');

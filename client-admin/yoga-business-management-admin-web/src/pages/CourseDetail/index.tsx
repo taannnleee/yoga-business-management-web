@@ -149,49 +149,23 @@ function CourseEditor() {
 
   const saveChapter = async () => {
     try {
-      if (selectedProducts.length > 0) {
-        const adResponse = await axiosInstance.post('/api/lecture/ads/admin/add', {
-          courseId: id,
-          productIds: selectedProducts.map((p) => p.id),
-          startSecond,
-          endSecond,
-        });
-
-        if (adResponse.status !== 200) {
-          throw new Error('Không thể lưu quảng cáo sản phẩm.');
-        }
-      }
-
-      // Bước 2: Gửi yêu cầu lưu bài giảng
-      const response = await axiosInstance.post(`/api/admin/add-lecture`, {
-        idSection: currentSection.id,
-        title: newLecture.title,
-        content: newLecture.content,
-        videoPath: videoPath,
-        duration: videoDuration,
-        image: imagePath,
+      const response = await axiosInstance.post(`/api/admin/add-section`, {
+        idCourse: id,
+        title: inputValue,
       });
 
       if (response.status === 200) {
         const result = response.data;
-        console.log('Thêm bài giảng thành công:', result);
-
-        // Cập nhật danh sách section
-        setSections((prevSections) =>
-          prevSections.map((section) =>
-            section.id === currentSection.id
-              ? { ...section, lectures: [...section.lectures, result.data] }
-              : section,
-          ),
-        );
-
-        // Reset form
-        setOpenModal(false);
-        setShowVideoForm(false);
-        setNewLecture({ title: '', content: '', videoPath: '' });
-        setVideoPath('');
+        console.log('Thêm chương thành công:', result);
+        setSections((prevSections) => [
+          ...prevSections,
+          { id: result.data.id, title: inputValue, lectures: [] },
+        ]);
+        setShowNewChapterField(false);
+        setShowChapterInfo(false);
+        setInputValue('Tên chương mới');
       } else {
-        console.error('Lỗi khi thêm bài giảng:', response.statusText);
+        console.error('Lỗi khi thêm chương:', response.statusText);
       }
     } catch (error) {
       console.error('Lỗi khi gọi API:', error);
@@ -505,7 +479,7 @@ function CourseEditor() {
                   }
                 />
 
-                {videoDuration && (
+                {videoDuration && selectedProducts && (
                   <Box mt={3}>
                     <Typography gutterBottom>Chọn thời gian hiển thị quảng cáo (giây)</Typography>
                     <Slider

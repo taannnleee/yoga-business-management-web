@@ -26,7 +26,7 @@ const UploadVideoWidget: React.FC<IUploadWidgetProps> = (props) => {
           const fullUrl = result?.info?.secure_url;
           const baseUrl = fullUrl?.split('/upload')[0];
           const shortenedUrl = `${baseUrl}/upload/...`;
-          props.setThumbnailUploaded(shortenedUrl);
+          props.setThumbnailUploaded(fullUrl);
 
           // Lấy phần ngắn gọn của URL
 
@@ -55,7 +55,7 @@ const UploadVideoWidget: React.FC<IUploadWidgetProps> = (props) => {
         className="mt-2 flex flex-wrap rounded-lg border-gray-300 bg-gray-200 px-4 py-2 text-sm text-gray-600"
         onClick={() => widgetRef.current?.open()}
       >
-        {!!props.thumbnailUploaded ? props.thumbnailUploaded : 'Đăng video'}
+        {!!props.thumbnailUploaded ? 'Đã tải video ✔️' : 'Đăng video'}
       </button>
 
       {/* Hiển thị video nhỏ nếu đã tải lên */}

@@ -55,6 +55,14 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
       fetchTopics();
     }
   }, [open]);
+  useEffect(() => {
+    if (isEditMode && course) {
+      setSelectedTopic(course.topicId?.toString() || '');
+      setSelectedTeacher(course.teacherId?.toString() || '');
+      console.log('Course in edit mode:', course);
+      console.log('Selected Topic:', selectedTopic);
+    }
+  }, [isEditMode, course]);
 
   const fetchTeachers = async () => {
     setLoadingTeachers(true);
@@ -149,7 +157,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
             <Typography color="error">{error}</Typography>
           ) : (
             <Select
-              value={selectedTopic}
+              value={selectedTopic || ''} // Tránh undefined
               onChange={(e) => setSelectedTopic(e.target.value)}
               label="Chọn chủ đề"
             >

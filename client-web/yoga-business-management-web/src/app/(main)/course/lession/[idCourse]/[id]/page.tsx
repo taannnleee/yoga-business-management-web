@@ -48,6 +48,7 @@ interface Course {
   rating: number;
   sections: Section[];
   teacher: Teacher;
+  capacity: number;
 }
 
 interface Ad {
@@ -306,7 +307,9 @@ const LessionPage: React.FC = () => {
               variant="secondary"
               onClick={() =>
                 router.push(
-                  `/course/lession/${courseId}/${parseInt(lectureId as string) + 1}`
+                  `/course/lession/${courseId}/${
+                    parseInt(lectureId as string) + 1
+                  }`
                 )
               }
             >
@@ -349,7 +352,9 @@ const LessionPage: React.FC = () => {
             variant="secondary"
             onClick={() =>
               router.push(
-                `/course/lession/${courseId}/${parseInt(lectureId as string) + 1}`
+                `/course/lession/${courseId}/${
+                  parseInt(lectureId as string) + 1
+                }`
               )
             }
           >

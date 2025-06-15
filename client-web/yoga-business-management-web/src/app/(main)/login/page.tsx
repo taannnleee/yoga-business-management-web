@@ -48,6 +48,13 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         router.replace("/home");
       } else if (response.data.status === 1013) {
         // Tài khoản chưa được kích hoạt, gọi API để lấy email
+        toast.sendToast(
+          "Error",
+          "Tài khoản bị khoá, liên hệ quản trị viên để mở lại",
+          "error"
+        );
+        setLoading(false);
+        return;
         toast.sendToast("Error", "Tài khoản chưa được kích hoạt", "error");
 
         // Gọi API để lấy email

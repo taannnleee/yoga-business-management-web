@@ -286,5 +286,10 @@ public class UserServiceImpl implements UserService {
         User user =  findUserByUserName(userName);
         return user.getEmail();
     }
-
+    @Override
+    public void updateStatusUser(String id) {
+        User user = findUserById(id);
+        user.setStatus(!user.isStatus());
+        userRepository.save(user);
+    }
 }

@@ -1,4 +1,4 @@
-package org.example.yogabusinessmanagementweb.common.entities.common;
+package org.example.yogabusinessmanagementweb.common.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -6,9 +6,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.entities.AbstractEntity;
-import org.example.yogabusinessmanagementweb.common.entities.Lectures;
-import org.example.yogabusinessmanagementweb.common.entities.User;
 
 import java.time.LocalDateTime;
 

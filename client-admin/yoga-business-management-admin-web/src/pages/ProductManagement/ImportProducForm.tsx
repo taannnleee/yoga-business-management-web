@@ -51,10 +51,11 @@ const ImportProductForm: React.FC<IImportProductFormProps> = (props) => {
       const formData = new FormData();
       formData.append('file', file); // Thêm file vào formData
 
-      const response = await axiosInstance.post<{ data: { url: string } }>(
-        `/api/image/upload`,
-        formData,
-      );
+      const response = await axiosInstance.post('/api/image/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       const uploadedImageUrl = response.data.data.url;
       setVariants((prev) => ({

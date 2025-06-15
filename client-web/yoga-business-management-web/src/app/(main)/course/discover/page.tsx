@@ -15,6 +15,7 @@ interface Course {
   videoPath: string;
   price: number;
   rating: number;
+  capacity: number;
 }
 
 interface Category {
@@ -98,8 +99,6 @@ const DisCoverPage: React.FC = () => {
       ))}
     </div>
   );
-
-  
 };
 
 export default DisCoverPage;

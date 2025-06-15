@@ -200,7 +200,7 @@ export default function TrendPrediction() {
 
   return (
     <MainLayout
-      title="Tổng quan thông tin của sàn"
+      title="Tổng quan thông tin về doanh thu của cửa hàng"
       content={
         <div className="flex flex-col gap-y-10 px-10">
           <div className="w-full rounded-xl bg-white px-10 py-5 shadow-lg drop-shadow-md">

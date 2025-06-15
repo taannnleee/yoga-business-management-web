@@ -55,7 +55,7 @@ const UserManagement = () => {
     },
     {
       field: 'username',
-      headerName: 'Tên người dùng',
+      headerName: 'Tên đăng nhập',
       width: 250,
       renderHeader: () => <div className="font-bold text-gray-800">Tên người dùng</div>,
     },
@@ -88,6 +88,7 @@ const UserManagement = () => {
     },
     { field: 'email', headerName: 'Email', width: 250 },
     { field: 'phone', headerName: 'Số điện thoại', width: 200 },
+    { field: 'fullname', headerName: 'Tên người dùng', width: 200 },
     {
       field: 'status',
       headerName: 'Trạng thái',
@@ -116,15 +117,13 @@ const UserManagement = () => {
       renderCell: (params: GridRenderCellParams<any>) => {
         const handleDeactivateUser = async (id: string | number) => {
           try {
-            const payload = {
-              isActive: false,
-            };
-            const response = await axiosInstance.put(`/profiles/${id}`, payload);
-
-            if (response?.data?.success == true) {
+            const response = await axiosInstance.put(`/api/admin/profiles/${id}`);
+            console.log('response', response);
+            if (response?.data?.status === 200) {
               toast.success('Vô hiệu hóa tài khoản thành công');
               getAllUser({ addLoadingEffect: true });
             } else {
+              toast.error('Vô hiệu hóa tài khoản thất bại');
             }
           } catch (error) {
             console.log('error');
@@ -133,15 +132,12 @@ const UserManagement = () => {
 
         const handleActivateUser = async (id: string | number) => {
           try {
-            const payload = {
-              isActive: true,
-            };
-            const response = await axiosInstance.put(`/profiles/${id}`, payload);
-
-            if (response?.data?.success == true) {
+            const response = await axiosInstance.put(`/api/admin/profiles/${id}`);
+            if (response?.data?.status === 200) {
               toast.success('Kích hoạt tài khoản thành công');
               getAllUser({ addLoadingEffect: false });
             } else {
+              toast.error('Kích hoạt tài khoản thất bại');
             }
           } catch (error) {
             console.log('error');
@@ -149,19 +145,19 @@ const UserManagement = () => {
         };
 
         const options = [
-          params?.row?.isActive == true
+          params?.row?.status === true
             ? {
-              id: 'deactivate',
-              title: 'Vô hiệu hóa tài khoản',
-              onPress: () => handleDeactivateUser(params.row?.id),
-              onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
-            }
+                id: 'deactivate',
+                title: 'Vô hiệu hóa tài khoản',
+                onPress: () => handleDeactivateUser(params.row?.id),
+                onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
+              }
             : {
-              id: 'activate',
-              title: 'Kích hoạt tài khoản',
-              onPress: () => handleActivateUser(params.row?.id),
-              onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
-            },
+                id: 'activate',
+                title: 'Kích hoạt tài khoản',
+                onPress: () => handleActivateUser(params.row?.id),
+                onActionSuccess: () => getAllUser({ addLoadingEffect: false }),
+              },
         ];
         return <ActionMenu options={options} />;
       },

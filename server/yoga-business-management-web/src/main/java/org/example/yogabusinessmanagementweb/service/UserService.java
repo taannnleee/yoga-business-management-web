@@ -37,4 +37,6 @@ public interface UserService {
 
     String getEmailByUserName(String userName, HttpServletRequest request);
 
+    void updateStatusUser(String id);
+
 }

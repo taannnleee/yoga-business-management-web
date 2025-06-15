@@ -13,8 +13,9 @@ public class UserResponse implements Serializable {
     String id;
     String username;
     String email;
-    boolean isActive;
+    boolean status;
     String fullname;
+    String phone;
 //    String imagePath;
 //    String firstName;
 //    String lastName;

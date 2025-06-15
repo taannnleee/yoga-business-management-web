@@ -200,12 +200,12 @@ export default function DashBoard() {
 
   return (
     <MainLayout
-      title="Tổng quan thông tin của sàn"
+      title="Tổng quan thông tin về doanh thu của cửa hàng"
       content={
         <div className="flex flex-col gap-y-10 px-10">
           <div className="w-full rounded-xl bg-white px-10 py-5 shadow-lg drop-shadow-md">
             <p className="mb-4 text-center text-2xl font-bold text-gray-500">
-              Doanh thu của cửa hàng theo tháng (2024)
+              Doanh thu của cửa hàng theo tháng (2025)
             </p>
             <Chart
               options={lineState.options}

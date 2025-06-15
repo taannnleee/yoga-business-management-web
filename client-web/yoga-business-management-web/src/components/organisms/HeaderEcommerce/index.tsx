@@ -1,11 +1,11 @@
 "use client";
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Bars3Icon,
   UserIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
 } from "@heroicons/react/24/solid";
 import Logo from "@/components/atom/Logo";
 import FulfillmentMangement from "../FulfillmentMangement";
@@ -17,7 +17,7 @@ import HoverDropdown from "@/components/molecules/HoverDropdown";
 import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
 import UserDropdownMenu from "@/components/organisms/EcoUserDropdownMenu";
-interface IHeaderV2Props { }
+interface IHeaderV2Props {}
 
 const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
   const router = useRouter();
@@ -35,7 +35,6 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
   const clickInsideDropdown = useRef(false);
   // Handle the hover modal visibility
   const [isHovered, setIsHovered] = useState(false);
-
 
   return (
     <>
@@ -60,7 +59,6 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
 
             <HoverDropdown buttonText="Sản phẩm" />
 
-
             {/* Tư vấn dropdown */}
             <div className="relative group">
               <button className="text-black hover:text-orange-600 flex items-center relative">
@@ -72,24 +70,31 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
               </button>
 
               {/* Dropdown menu */}
-              <div
-                className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
+              <div className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
                 <ul className="py-2">
                   <li
                     className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer"
                     onClick={() => router.push("/choose-mat")}
                   >
-                    <span className="text-black hover:text-orange-600 text-sm">Chọn thảm yoga</span>
+                    <span className="text-black hover:text-orange-600 text-sm">
+                      Chọn thảm yoga
+                    </span>
                   </li>
                   <li
                     onClick={() => router.push("/yoga-clothing")}
-                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                    <span className="text-black hover:text-orange-600 text-sm">Chọn quần áo yoga</span>
+                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer"
+                  >
+                    <span className="text-black hover:text-orange-600 text-sm">
+                      Chọn quần áo yoga
+                    </span>
                   </li>
                   <li
                     onClick={() => router.push("/question")}
-                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                    <span className="text-black hover:text-orange-600 text-sm">Câu hỏi thường gặp - FAQ</span>
+                    className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer"
+                  >
+                    <span className="text-black hover:text-orange-600 text-sm">
+                      Câu hỏi thường gặp - FAQ
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -106,17 +111,22 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
               </button>
 
               {/* Dropdown menu */}
-              <div
-                className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
+              <div className="absolute left-[-75%] hidden w-40 mt-2 bg-white shadow-lg group-hover:block z-50 overflow-visible">
                 <ul className="py-2">
                   <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                    <span className="text-black hover:text-orange-600 text-sm">Khuyến mãi</span>
+                    <span className="text-black hover:text-orange-600 text-sm">
+                      Khuyến mãi
+                    </span>
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                    <span className="text-black hover:text-orange-600 text-sm">Yoga và Thiền</span>
+                    <span className="text-black hover:text-orange-600 text-sm">
+                      Yoga và Thiền
+                    </span>
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-200 hover:text-orange-600 hover:cursor-pointer">
-                    <span className="text-black hover:text-orange-600 text-sm">Ebook yoga</span>
+                    <span className="text-black hover:text-orange-600 text-sm">
+                      Ebook yoga
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -125,7 +135,11 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
             <ButtonCourse className={"mt-[-12px]"} />
           </nav>
           <div>
-            <NotificationsIcon className={"cursor-pointer"} onClick={() => router.push("/notification")} style={{ fontSize: '30px' }} />
+            <NotificationsIcon
+              className={"cursor-pointer"}
+              onClick={() => router.push("/notification")}
+              style={{ fontSize: "30px" }}
+            />
           </div>
 
           <div className="flex w-1/3 laptop:hidden laptop:w-0 flex-row-reverse">
@@ -138,29 +152,26 @@ const HeaderV2Ecommerce: React.FC<IHeaderV2Props> = (props) => {
 
           <div className="hidden laptop:flex">
             <div className="hidden laptop:flex flex-end space-x-1 items-center justify-between w-64">
-
               <FulfillmentMangement />
               <div
                 className="relative"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                <button
-                  className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100"
-                >
+                <button className="rounded-xl px-4 py-2 text-center text-gray-600 text-sm w-fit flex space-x-1 items-center hover:bg-gray-100">
                   <UserIcon className="w-8 h-8 text-gray-600" />
                 </button>
 
                 {/* Hover modal */}
 
-                <UserDropdownMenu isHovered={isHovered} />
-
+                <UserDropdownMenu
+                  isHovered={isHovered}
+                  setActiveTab={() => {}}
+                />
               </div>
               <CartButton />
             </div>
-
           </div>
-
         </div>
         {/*<div className="flex laptop:hidden px-2">*/}
         {/*  <SearchBar*/}

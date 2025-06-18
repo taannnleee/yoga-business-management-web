@@ -155,7 +155,7 @@ const BMIWeight = ({ BMI }) => {
             />
           </svg>
         )}
-        <p className="text-base pt-4">
+        <p className=" pt-4 px-2 text-small">
           Thiếu cân <br />
           dưới 18.4
         </p>
@@ -320,7 +320,7 @@ const BMIWeight = ({ BMI }) => {
             />
           </svg>
         )}
-        <p className="text-base pt-4">
+        <p className="text-small pt-4 px-2">
           Khỏe mạnh <br />
           18.5 - 22.9
         </p>
@@ -477,7 +477,7 @@ const BMIWeight = ({ BMI }) => {
             />
           </svg>
         )}
-        <p className="text-base pt-4">
+        <p className="text-small pt-4 px-2">
           Thừa cân <br />
           23 - 24.9
         </p>
@@ -634,7 +634,7 @@ const BMIWeight = ({ BMI }) => {
             />
           </svg>
         )}
-        <p className="text-base pt-4">
+        <p className="text-small pt-4 px-2">
           Béo phì độ 1 <br />
           25 - 29.9
         </p>
@@ -791,7 +791,7 @@ const BMIWeight = ({ BMI }) => {
             />
           </svg>
         )}
-        <p className="text-base pt-4">
+        <p className="text-small pt-4 px-2">
           Béo phì độ 2 <br />
           trên 30
         </p>

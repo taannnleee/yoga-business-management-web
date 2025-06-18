@@ -19,7 +19,7 @@ const HeroSection: React.FC<IHeroSectionProps> = (props) => {
       <div className="flex mx-auto laptop:mx-0 flex-col laptop:flex-row w-full space-x-5 justify-between mt-2 bg-gray-100 px-6 tablet:px-10 laptop:px-32 py-10 laptop:space-y-0 ">
         <div className="w-full laptop:w-1/2 flex flex-col ">
           <h2 className="text-gray-600 font-bold text-4xl mb-4">
-            Market Floor - Trang đấu giá hàng đầu Việt Nam
+            The Yoga - Trang đấu giá hàng đầu Việt Nam
           </h2>
           <p className="text-gray-400 text-lg">
             Nơi đấu giá đa dạng ngành hàng từ tác phẩm nghệ thuật, sneaker độc

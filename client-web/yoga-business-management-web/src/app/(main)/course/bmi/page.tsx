@@ -7,15 +7,16 @@ import CustomSlider from "./CustomSlider";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useDietStore } from "@/app/(main)/bmi_resullt/diet";
+
 const DietPage = () => {
-  let activities = [
+  const activities = [
     "Little/no exercise",
     "Light exercise",
     "Moderate exercise (3-5 days/wk)",
     "Very active (6-7 days/wk)",
     "Extra active (very active & physical job)",
   ];
-  let plans = [
+  const plans = [
     "Maintain weight",
     "Mild weight loss",
     "Weight loss",
@@ -23,6 +24,7 @@ const DietPage = () => {
   ];
   const infoHealth = [
     {
+      key: "1",
       label: "Chỉ số BMI là gì? - Định nghĩa chỉ số cơ thể BMI",
       children: (
         <p>
@@ -33,6 +35,7 @@ const DietPage = () => {
       ),
     },
     {
+      key: "2",
       label: "Giải thích chỉ số BMI",
       children: (
         <p>
@@ -50,6 +53,7 @@ const DietPage = () => {
       ),
     },
     {
+      key: "3",
       label: "Công thức tính BMI là gì?",
       children: (
         <p>
@@ -64,6 +68,7 @@ const DietPage = () => {
       ),
     },
     {
+      key: "4",
       label: "Tại sao bạn nên biết về chỉ số BMI",
       children: (
         <p>
@@ -83,6 +88,7 @@ const DietPage = () => {
       ),
     },
     {
+      key: "5",
       label: "Chỉ số BMI cao có gây nguy hiểm nghiêm trọng đến sức khỏe không?",
       children: (
         <p>
@@ -94,6 +100,7 @@ const DietPage = () => {
       ),
     },
     {
+      key: "6",
       label: "Những nguy cơ gây béo phì bạn cần nắm",
       children: (
         <p>
@@ -117,14 +124,14 @@ const DietPage = () => {
   ];
 
   const [selectGoal, setSelectGoal] = useState("Maintain weight");
-  const [selectActivity, setSelectActivity] = useState(null);
-
+  const [selectActivity, setSelectActivity] = useState<string | null>(null);
   const [currentSex, setCurrentSex] = useState("Male");
   const [currentHeight, setCurrentHeight] = useState<number>(170);
   const [currentWeight, setCurrentWeight] = useState<number>(65);
   const [mealsPerDay, setMealsPerDay] = useState(3);
   const router = useRouter();
   const { person, setPerson } = useDietStore((state: any) => state);
+
   useEffect(() => {
     if (!person) return;
     setCurrentWeight(parseInt(person.weight) || 65);
@@ -133,195 +140,143 @@ const DietPage = () => {
     setSelectActivity(person.activity);
     setSelectGoal(person.weight_loss);
   }, [person]);
-  return (
-    <>
-      <section>
-        <br>
-        </br>
-        <h1 className="text-xl font-bold w-full">Nhập vào thông tin của bạn</h1>
-        <div className="flex flex-row gap-3">
-          <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6  ml-10">
-            <div className="flex flex-col gap-2 ">
-              <div className="flex gap-2 items-center">
-                <p>Birthdate</p>
-              </div>
 
-              <div className="w-full flex justify-center items-center">
-                <Space direction="vertical" style={{ width: "100%" }}>
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    format="YYYY-MM-DD"
-                    defaultValue={dayjs()}
-                  />
-                </Space>
-              </div>
+  return (
+    <section className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-10">
+      <div className="max-w-5xl mx-auto bg-white/90 rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden">
+        {/* Left Form */}
+        <div className="md:w-1/2 w-full px-8 py-10 flex flex-col gap-8">
+          <div>
+            <h1 className="text-2xl font-bold text-blue-700 mb-2">
+              Thông tin cá nhân
+            </h1>
+            <p className="text-gray-500 text-sm mb-6">
+              Vui lòng nhập thông tin để nhận được chế độ dinh dưỡng phù hợp
+              nhất cho bạn.
+            </p>
+            <Divider />
+          </div>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block font-medium mb-1">Ngày sinh</label>
+              <DatePicker
+                style={{ width: "100%" }}
+                format="YYYY-MM-DD"
+                defaultValue={dayjs()}
+                className="w-full"
+              />
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-start gap-4 items-center">
-                <p>Sex</p>
-                <RadioGroup
-                  options={[
-                    {
-                      label: "Male",
-                      value: "Male",
-                    },
-                    {
-                      label: "Female",
-                      value: "Female",
-                    },
-                  ]}
-                />
-              </div>
+            <div>
+              <label className="block font-medium mb-1">Giới tính</label>
+              <RadioGroup
+                options={[
+                  { label: "Nam", value: "Male" },
+                  { label: "Nữ", value: "Female" },
+                ]}
+                value={currentSex}
+                onChange={(val: string) => setCurrentSex(val)}
+              />
             </div>
-            <div className="flex flex-col gap-2">
-              <p>Your height (cm)</p>
+            <div>
+              <label className="block font-medium mb-1">Chiều cao (cm)</label>
               <input
-                defaultValue={150}
                 value={currentHeight}
                 onChange={(e) => setCurrentHeight(Number(e.target.value))}
                 type="number"
-                className="border border-gray-300 p-2 rounded-md"
+                min={80}
+                max={250}
+                className="border border-gray-300 p-2 rounded-md w-full focus:ring-2 focus:ring-blue-200 transition"
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <p>Weight (kg)</p>
+            <div>
+              <label className="block font-medium mb-1">Cân nặng (kg)</label>
               <input
                 value={currentWeight}
                 onChange={(e) => setCurrentWeight(Number(e.target.value))}
                 type="number"
-                className="border border-gray-300 p-2 rounded-md"
+                min={20}
+                max={200}
+                className="border border-gray-300 p-2 rounded-md w-full focus:ring-2 focus:ring-blue-200 transition"
               />
             </div>
-
-            <div className="flex flex-col gap-2">
-              <p>Activity level</p>
-              <div className="flex  flex-row">
-                <Select
-                  style={{
-                    width: "100%",
-                  }}
-                  value={selectActivity}
-                  onChange={(value) => {
-                    setSelectActivity(value);
-                  }}
-                  placeholder="Give The yoga your activity level"
-                  dropdownRender={(menu) => (
-                    <>
-                      {menu}
-                      <Divider
-                        style={{
-                          margin: "8px 0",
-                        }}
-                      />
-                      <Space
-                        style={{
-                          padding: "0 8px 4px",
-                        }}
-                      ></Space>
-                    </>
-                  )}
-                  options={activities.map((item) => ({
-                    label: item,
-                    value: item,
-                  }))}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p>Meals per day</p>
-              <div className="flex  flex-row">
-                <CustomSlider
-                  min={1}
-                  max={4}
-                  onChange={(value: number) => {
-                    setMealsPerDay(value);
-                  }}
-                  inputValue={mealsPerDay}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p>Your goal</p>
-              <div className="flex  flex-row">
-                <Select
-                  style={{
-                    width: "100%",
-                  }}
-                  value={selectGoal}
-                  onChange={(value) => {
-                    setSelectGoal(value);
-                  }}
-                  placeholder="What's your goal"
-                  dropdownRender={(menu) => (
-                    <>
-                      {menu}
-                      <Divider
-                        style={{
-                          margin: "8px 0",
-                        }}
-                      />
-                      <Space
-                        style={{
-                          padding: "0 8px 4px",
-                        }}
-                      ></Space>
-                    </>
-                  )}
-                  options={plans.map((item) => ({
-                    label: item,
-                    value: item,
-                  }))}
-                />
-              </div>
-            </div>
-            <Button
-              value="large"
-              block
-              type="primary"
-              onClick={() => {
-                // Collect all information
-                let data = {
-                  // age: AgeCalculate(stringToDate(currentDate)),
-                  height: currentHeight,
-                  weight: currentWeight,
-                  gender: currentSex,
-                  activity: selectActivity,
-                  meals_calories_perc: mealsPerDay,
-                  weight_loss: selectGoal,
-                };
-
-                // Save to store
-                //Tạo ra đối tượng persion để set
-                setPerson(data);
-
-                // chuyên trang
-                router.push("/bmi_resullt");
-              }}
-            >
-              Submit
-            </Button>
-          </div>
-          <div className="right-side pl-10 w-3/6 pt-8">
             <div>
-              <p className="flex flex-row justify-start items-center text-base font-semibold text-blue-500">
-                <IoIosInformationCircleOutline
-                  style={{ width: "40px", height: "20px" }}
-                />
-                Thông tin
-              </p>
-              <div>
-                <Collapse
-                  defaultActiveKey={["1"]}
-                  accordion
-                  ghost
-                  items={infoHealth}
-                />
-              </div>
+              <label className="block font-medium mb-1">Mức độ vận động</label>
+              <Select
+                style={{ width: "100%" }}
+                value={selectActivity}
+                onChange={(value) => setSelectActivity(value)}
+                placeholder="Chọn mức độ vận động"
+                options={activities.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+              />
+            </div>
+            <div>
+              <label className="block font-medium mb-1">Số bữa ăn/ngày</label>
+              <CustomSlider
+                min={1}
+                max={4}
+                onChange={(value: number) => setMealsPerDay(value)}
+                inputValue={mealsPerDay}
+              />
+            </div>
+            <div>
+              <label className="block font-medium mb-1">Mục tiêu</label>
+              <Select
+                style={{ width: "100%" }}
+                value={selectGoal}
+                onChange={(value) => setSelectGoal(value)}
+                placeholder="Chọn mục tiêu"
+                options={plans.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+              />
             </div>
           </div>
+          <Button
+            size="large"
+            block
+            type="primary"
+            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow"
+            onClick={() => {
+              let data = {
+                height: currentHeight,
+                weight: currentWeight,
+                gender: currentSex,
+                activity: selectActivity,
+                meals_calories_perc: mealsPerDay,
+                weight_loss: selectGoal,
+              };
+              setPerson(data);
+              router.push("/bmi_resullt");
+            }}
+          >
+            Xem kết quả
+          </Button>
         </div>
-      </section>
-    </>
+        {/* Right Info */}
+        <div className="md:w-1/2 w-full bg-gradient-to-tl from-blue-100 to-white px-8 py-10 flex flex-col justify-center">
+          <div className="mb-4 flex items-center gap-2">
+            <IoIosInformationCircleOutline
+              className="text-blue-500"
+              size={28}
+            />
+            <span className="text-lg font-semibold text-blue-700">
+              Thông tin về BMI
+            </span>
+          </div>
+          <Collapse
+            defaultActiveKey={["1"]}
+            accordion
+            ghost
+            items={infoHealth}
+            className="bg-transparent"
+          />
+        </div>
+      </div>
+    </section>
   );
 };
 

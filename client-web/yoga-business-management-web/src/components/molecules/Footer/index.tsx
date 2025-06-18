@@ -3,7 +3,7 @@
 import React from "react";
 import Logo from "@/components/atom/Logo";
 
-interface IFooterSectionProps { }
+interface IFooterSectionProps {}
 
 const FooterSection: React.FC<IFooterSectionProps> = () => {
   return (
@@ -13,7 +13,9 @@ const FooterSection: React.FC<IFooterSectionProps> = () => {
           <Logo />
           <div className="mt-3 pr-[100px]">
             <p className="flex-wrap text-gray-600">
-              {"Sell anything, buy anything, and discover a world of endless possibilities. Whether you're looking to declutter your home, find unique treasures, or start a new business, our platform provides the perfect marketplace for all your needs."}
+              {
+                "Sell anything, buy anything, and discover a world of endless possibilities. Whether you're looking to declutter your home, find unique treasures, or start a new business, our platform provides the perfect marketplace for all your needs."
+              }
             </p>
             <div className="flex gap-4 py-6 mt-2"></div>
           </div>
@@ -156,7 +158,7 @@ const FooterSection: React.FC<IFooterSectionProps> = () => {
                     target="_blank"
                     className="text-gray-500 hover:underline hover:text-gray-800"
                   >
-                    Market Floor
+                    The Yoga
                   </a>
                 </li>
                 <li>
@@ -165,7 +167,7 @@ const FooterSection: React.FC<IFooterSectionProps> = () => {
                     target="_blank"
                     className="text-gray-500 hover:underline hover:text-gray-800"
                   >
-                    Market Floor
+                    The Yoga
                   </a>
                 </li>
               </ul>
@@ -235,7 +237,7 @@ const FooterSection: React.FC<IFooterSectionProps> = () => {
       <div className="w-full flex-shrink-0 max-w-[1570px] mt-14">
         <div className="flex flex-col items-center justify-between w-full gap-6 pt-2 mt-1 font-normal gap-x-4 md:flex-row">
           <div className="flex flex-col md:flex-row">
-            <p className="md:mt-0">© 2021-2024 Market Floor LLC</p>
+            <p className="md:mt-0">© 2021-2024 The Yoga LLC</p>
             <ul className="flex gap-2 md:ml-10">
               <li>
                 <a

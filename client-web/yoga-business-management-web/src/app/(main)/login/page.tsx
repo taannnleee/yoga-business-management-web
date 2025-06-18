@@ -125,7 +125,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           <Typography
             sx={{ marginTop: "16px", fontSize: "14px", color: "GrayText" }}
           >
-            Welcome to Market Floor, a marketplace connecting retailers and
+            Welcome to The Yoga, a marketplace connecting retailers and
             customers. Here, you can find a wide variety of products from
             trusted sellers. Enjoy a seamless shopping experience with us.
           </Typography>
@@ -178,7 +178,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         <Box>
           <Typography sx={{ fontSize: "14px", color: "GrayText" }}>
             {
-              "By signing in, you agree to Market Floor's Terms of Service and Privacy Policy, as well as the Cookie Policy."
+              "By signing in, you agree to The Yoga's Terms of Service and Privacy Policy, as well as the Cookie Policy."
             }
           </Typography>
         </Box>

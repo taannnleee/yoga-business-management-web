@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { HeartOutlined, LikeOutlined } from "@ant-design/icons";
+import { HeartOutlined } from "@ant-design/icons";
 import Loading from "@/app/(main)/bmi_resullt/loading";
 import { Breadcrumb, Skeleton, Tabs } from "antd";
-import { FaArrowDown, FaGlassWater, FaS } from "react-icons/fa6";
+import { FaArrowDown } from "react-icons/fa6";
 import { useDietStore } from "@/app/(main)/bmi_resullt/diet";
 import { API_URL } from "@/config/url";
-
 import BMIWeight from "./bodies";
+
 interface BmiData {
   bmi: number;
   calories: {
@@ -16,6 +16,7 @@ interface BmiData {
     weight_loss: string;
   }[];
 }
+
 const BMIResult = () => {
   const [BMI, setBMI] = useState(0);
   const [isLoadingMeals, setIsLoadingMeals] = useState(false);
@@ -40,7 +41,9 @@ const BMIResult = () => {
     setMeals(mealPartition(data.output));
     setIsLoadingMeals(false);
   };
+
   const { setHealthInfo } = useDietStore((state: any) => state);
+
   useEffect(() => {
     if (!person) return;
     (async () => {
@@ -54,22 +57,19 @@ const BMIResult = () => {
         body: JSON.stringify(person),
       });
       const data = await res.json();
-
       setIsLoadingCalories(false);
-      console.log("BMI data : ", data);
-      console.log("BMI : ", data.bmi);
-      setBmiData(data.data); // Lưu lại data con vào state
-      setBMI(data.data?.bmi); // Lấy giá trị bmi từ data con
+      setBmiData(data.data);
+      setBMI(data.data?.bmi);
       setHealthInfo(data.data);
       generateMeals();
     })();
+    // eslint-disable-next-line
   }, [person]);
 
   const mealPartition = (
     meals: any[]
   ): { [key: string]: { id: number; recipes: any } } => {
     if (!meals) return {};
-
     let mealArc = [
       "Breakfast",
       "Morning Snack",
@@ -85,90 +85,85 @@ const BMIResult = () => {
       4: [0, 1, 2, 4],
       5: [0, 1, 2, 3, 4],
     };
-
     let currentMask = masks[meals.length];
     let mealArcByMask = currentMask.map((index) => mealArc[index]);
-
     let dict: { [key: string]: { id: number; recipes: any } } = {};
     mealArcByMask.forEach((item, index) => {
       let recipes = meals[index];
       dict[item] = { id: index, recipes: recipes };
     });
-
     return dict;
   };
 
   return (
-    //<DefaultLayout>
-    <>
-      <section className="space-y-6 flex flex-col justify-center">
-        <div>
-          <Breadcrumb
-            separator=">"
-            items={[
-              {
-                title: "Home",
-                href: "/home",
-              },
-              {
-                title: "BMI calculator",
-                href: "/diet",
-              },
-              {
-                title: "BMI result",
-                href: "",
-              },
-            ]}
-          />
-        </div>
-        <div className="bg-slate-100 p-4 rounded-lg shadow-lg flex justify-center items-center">
-          <p className="flex flex-col justify-center items-center space-y-2">
-            <span className="text-lg font-semibold text-slate-700">
-              Note: The yoga only provides estimated values.
+    <section className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-10">
+      <div className="max-w-3xl mx-auto bg-white/95 rounded-2xl shadow-2xl px-8 py-8 md:px-12 md:py-10">
+        <Breadcrumb
+          separator=">"
+          items={[
+            { title: "Home", href: "/home" },
+            { title: "BMI calculator", href: "/diet" },
+            { title: "BMI result", href: "" },
+          ]}
+          className="mb-6"
+        />
+
+        <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl shadow flex flex-col md:flex-row items-center justify-between mb-8">
+          <div>
+            <span className="text-lg font-semibold text-blue-700">
+              Lưu ý: Kết quả chỉ mang tính chất tham khảo.
             </span>
-            <a
-              className="text-blue-500 text-xl font-semibold hover:text-blue-600 hover:underline transition-all duration-300"
-              href="/bmi"
-            >
-              Calculate again
-            </a>
-          </p>
+            <div className="text-gray-500 text-sm mt-1">
+              The yoga only provides estimated values.
+            </div>
+          </div>
+          <a
+            className="mt-3 md:mt-0 text-blue-600 text-base font-semibold hover:text-blue-800 hover:underline transition-all duration-300"
+            href="/bmi"
+          >
+            Tính lại chỉ số
+          </a>
         </div>
 
         {isLoadingCalories ? (
-          <div>
-            <Skeleton active />
-          </div>
+          <Skeleton active className="mb-8" />
         ) : (
           <>
-            <div className="flex items-center justify-center">
-              <div className="text-3xl font-bold text-center">
-                Your BMI index is{" "}
-                <span className="text-blue-500 font-bold">
+            <div className="flex flex-col items-center mb-8">
+              <div className="text-3xl font-bold text-center mb-2">
+                Chỉ số BMI của bạn là{" "}
+                <span className="text-blue-600 font-extrabold">
                   {bmiData?.bmi} kg/m²
                 </span>
-                <br />
-                <div className="text-center text-base">
-                  Healthy BMI range: 18.5 kg/m² - 25 kg/m².
-                </div>
+              </div>
+              <div className="text-center text-base text-gray-600">
+                Healthy BMI range:{" "}
+                <span className="font-semibold">18.5 - 25 kg/m²</span>
               </div>
             </div>
 
-            <BMIWeight BMI={BMI} />
-            <div>
-              <div className="flex flex-row w-full h-5 rounded-lg">
-                <div className="w-3/6 bg-blue-500 rounded-l-lg"></div>
-                <div className="w-[140px] bg-green-500"></div>
-                <div className="w-[90px] bg-yellow-500"></div>
-                <div className="w-[190px] bg-orange-500"></div>
-                <div className="w-[210px] bg-red-500 rounded-r-lg"></div>
-              </div>
-              <div className="flex flex-row w-full text-lg font-bold text-slate-500">
-                <div className="w-3/6 ">0</div>
-                <div className="w-[140px]">18.5</div>
-                <div className="w-[90px]">23</div>
-                <div className="w-[190px]">25</div>
-                <div className="w-[210px]">30+</div>
+            <div className="flex flex-col items-center w-full mb-8">
+              <div className="relative w-full max-w-[440px] mx-auto">
+                {/* Hình người BMI */}
+                <div className="flex justify-center mb-2">
+                  <BMIWeight BMI={BMI} />
+                </div>
+                {/* Thanh đo BMI */}
+                <div className="flex w-full h-5 rounded-lg overflow-hidden">
+                  <div className="flex-1 bg-blue-400"></div>
+                  <div className="flex-1 bg-green-400"></div>
+                  <div className="flex-1 bg-yellow-400"></div>
+                  <div className="flex-1 bg-orange-400"></div>
+                  <div className="flex-1 bg-red-400"></div>
+                </div>
+                {/* Nhãn chỉ số */}
+                <div className="flex w-full text-xs font-bold text-slate-500 mt-1 justify-between">
+                  <span>0</span>
+                  <span>18.5</span>
+                  <span>23</span>
+                  <span>25</span>
+                  <span>30+</span>
+                </div>
               </div>
             </div>
           </>
@@ -176,51 +171,63 @@ const BMIResult = () => {
 
         <Tabs
           defaultActiveKey="1"
+          className="mt-8"
           items={[
             {
               key: "1",
-              label: "What your BMI tells you",
+              label: (
+                <span>
+                  <HeartOutlined className="mr-1 text-pink-500" />Ý nghĩa chỉ số
+                  BMI
+                </span>
+              ),
               children: (
                 <>
                   {isLoadingCalories ? (
                     <Loading />
                   ) : (
                     <div className="py-4">
-                      <div className="flex flex-row pt-4 gap-4 justify-around rounded-xl border-2 h-32">
+                      <div className="flex flex-col md:flex-row gap-6 justify-around rounded-xl border-2 border-blue-100 bg-blue-50 p-6">
                         {bmiData &&
                         bmiData.calories &&
                         Array.isArray(bmiData.calories) ? (
-                          bmiData.calories.map((item, key) => {
-                            return (
-                              <div className="space-y-1" key={key}>
-                                <p className="text-base">{item.plan}</p>
-                                <h1 className="text-3xl">
-                                  <span className="text-blue-500">
-                                    {item.calories}
-                                  </span>{" "}
-                                  Calories/day
-                                </h1>
-                                <span className="text-green-500 flex-row items-center flex text-base font-bold">
-                                  <FaArrowDown />
-                                  {item.weight_loss}
+                          bmiData.calories.map((item, key) => (
+                            <div
+                              className="space-y-2 flex-1 bg-white rounded-lg shadow p-4 flex flex-col items-center"
+                              key={key}
+                            >
+                              <p className="text-base font-semibold text-blue-700">
+                                {item.plan}
+                              </p>
+                              <h1 className="text-2xl font-bold">
+                                <span className="text-blue-500">
+                                  {item.calories}
+                                </span>{" "}
+                                <span className="text-gray-500 text-base font-normal">
+                                  Calories/ngày
                                 </span>
-                              </div>
-                            );
-                          })
+                              </h1>
+                              <span className="text-green-600 flex items-center gap-1 text-base font-bold">
+                                <FaArrowDown />
+                                {item.weight_loss}
+                              </span>
+                            </div>
+                          ))
                         ) : (
-                          <p>No calorie data available.</p>
+                          <p className="text-center text-gray-500">
+                            No calorie data available.
+                          </p>
                         )}
                       </div>
                     </div>
                   )}
                 </>
               ),
-              icon: <HeartOutlined />,
             },
           ]}
         />
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

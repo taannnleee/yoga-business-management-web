@@ -102,10 +102,11 @@ const AddressList: React.FC = () => {
         try {
           const { latitude, longitude } = position.coords;
           const address = await getAddressFromCoords(latitude, longitude);
+          console.log("Address:", address);
           setHouseNumber(address.house_number || "");
-          setStreet(address.road || "");
+          setStreet(address.quarter || "");
           setDistrict(
-            address.suburb || address.county || address.district || ""
+            address.city_district || address.county || address.district || ""
           );
           setCity(address.city || address.town || address.state || "");
           toast.sendToast("Success", "Đã lấy địa chỉ hiện tại!");
@@ -460,11 +461,12 @@ const AddressList: React.FC = () => {
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
+          </Box>
+          <Box mb={2}>
             <Button
               variant="outlined"
               startIcon={<MyLocationIcon />}
               onClick={handleGetCurrentAddress}
-              sx={{ mb: 2 }}
             >
               Lấy địa chỉ hiện tại
             </Button>

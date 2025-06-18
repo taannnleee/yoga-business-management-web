@@ -115,7 +115,6 @@ const LessionPage: React.FC = () => {
       const res = await axiosInstance.get(
         `${API_URL}/api/lecture/ads/${lectureId}`
       );
-      console.log("Ads response:", res.data.data);
       if (res.data.status === 200) {
         setAds(res.data.data);
       }
@@ -147,19 +146,16 @@ const LessionPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Tạo mới và cập nhật visibleAds khi currentTime thay đổi
     const newVisibleAds = ads.filter(
       (ad) => currentTime >= ad.startSecond && currentTime <= ad.endSecond
     );
-    setVisibleAds(newVisibleAds); // Cập nhật visibleAds khi có quảng cáo mới
+    setVisibleAds(newVisibleAds);
   }, [currentTime, ads]);
 
   useEffect(() => {
     setCurrentAdIndex(0);
   }, [visibleAds]);
-  useEffect(() => {
-    setCurrentAdIndex(0);
-  }, [visibleAds]);
+
   return (
     <div className="flex flex-col items-center py-6 px-4 min-h-screen bg-white">
       <div className="w-full max-w-[750px] relative">
@@ -182,7 +178,6 @@ const LessionPage: React.FC = () => {
               transition={{ duration: 0.3 }}
               className="absolute top-2 right-2 bg-white p-3 rounded-lg shadow-lg border border-gray-300 max-w-[150px] text-sm z-20"
             >
-              {/* Nút đóng "X" */}
               <button
                 onClick={() => setVisibleAds([])}
                 className="absolute top-1 right-1 text-gray-500 hover:text-black text-xs font-bold"
@@ -190,7 +185,6 @@ const LessionPage: React.FC = () => {
               >
                 ✕
               </button>
-
               {visibleAds[currentAdIndex].imagePath && (
                 <div className="w-full h-[150px] relative mb-2">
                   <Image
@@ -211,7 +205,7 @@ const LessionPage: React.FC = () => {
                 onClick={() =>
                   window.open(
                     `/product-detail/${visibleAds[currentAdIndex].productId}`,
-                    "_blank" // Mở trong tab mới
+                    "_blank"
                   )
                 }
                 variant="primary"
@@ -219,7 +213,6 @@ const LessionPage: React.FC = () => {
               >
                 Xem sản phẩm
               </Button>
-
               {visibleAds.length > 1 && (
                 <div className="flex justify-end mt-2">
                   <button
@@ -287,81 +280,114 @@ const LessionPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Bottom Bar */}
-      {isExpanded ? (
-        <div
-          className="z-10 fixed bottom-0 w-full bg-gradient-to-r from-pink-500 to-orange-500 py-5 px-8 h-[366px] flex flex-col text-white shadow-md transition-height duration-300 overflow-y-auto"
-          style={{
-            backgroundImage:
-              "-webkit-linear-gradient(-84.28deg, rgb(236, 52, 150) 0%, rgb(255, 118, 0) 100%)",
-          }}
-        >
-          <div className="flex justify-between items-center w-full">
-            <button onClick={handleExpandCollapse} className="text-white">
-              <ExpandCircleDownIcon />
-            </button>
-            <span className="font-semibold text-sm md:text-base mx-4 whitespace-nowrap">
-              Tập Yoga cơ bản ngay tại nhà
-            </span>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                router.push(
-                  `/course/lession/${courseId}/${
-                    parseInt(lectureId as string) + 1
-                  }`
-                )
-              }
+      {/* Sticky Bottom Bar - Đẹp, hiện đại, không thô, không lặp */}
+      <AnimatePresence>
+        {isExpanded ? (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="z-20 fixed bottom-0 left-0 w-full flex justify-center pointer-events-none"
+          >
+            <div
+              className="relative w-full max-w-2xl mx-auto bg-white/95 rounded-t-3xl shadow-2xl border border-gray-100 px-4 py-4 md:px-8 md:py-6 transition-all duration-300 pointer-events-auto"
+              style={{
+                backdropFilter: "blur(8px)",
+              }}
             >
-              Bài tiếp theo
-            </Button>
-          </div>
-          <div className="mt-4 w-full text-left overflow-y-auto max-h-[250px]">
-            {course?.sections.map((section) => (
-              <div key={section.id} className="mb-4">
-                <h2 className="text-xl font-bold">{section.title}</h2>
-                {section.lectures.map((lec) => (
-                  <LectureItem
-                    courseId={course.id}
-                    isChoosen={lec.id === parseInt(lectureId as string)}
-                    key={lec.id}
-                    id={lec.id}
-                    title={lec.title}
-                    thumbnail={lec.image}
+              <div className="flex items-center justify-between mb-3">
+                <button
+                  onClick={handleExpandCollapse}
+                  className="text-gray-500 hover:text-pink-500 transition"
+                  aria-label="Thu nhỏ"
+                >
+                  <ExpandCircleDownIcon
+                    className="rotate-180"
+                    fontSize="large"
                   />
+                </button>
+                <span className="font-semibold text-base md:text-lg text-pink-600">
+                  Tập Yoga cơ bản ngay tại nhà
+                </span>
+                <Button
+                  variant="secondary"
+                  className="!rounded-full !px-5 !py-2 !text-sm !shadow"
+                  onClick={() =>
+                    router.push(
+                      `/course/lession/${courseId}/${
+                        parseInt(lectureId as string) + 1
+                      }`
+                    )
+                  }
+                >
+                  Bài tiếp theo
+                </Button>
+              </div>
+              <div className="overflow-y-auto max-h-[260px] pr-2 custom-scrollbar">
+                {course?.sections.map((section) => (
+                  <div key={section.id} className="mb-3">
+                    <h2 className="text-base font-bold text-gray-700 mb-1">
+                      {section.title}
+                    </h2>
+                    <div className="space-y-2">
+                      {section.lectures.map((lec) => (
+                        <LectureItem
+                          courseId={course.id}
+                          isChoosen={lec.id === parseInt(lectureId as string)}
+                          key={lec.id}
+                          id={lec.id}
+                          title={lec.title}
+                          thumbnail={lec.image}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div
-          className="fixed bottom-0 w-full bg-gradient-to-r from-pink-500 to-orange-500 py-5 px-8 flex justify-between items-center text-white shadow-md transition-height duration-300"
-          style={{
-            backgroundImage:
-              "-webkit-linear-gradient(-84.28deg, rgb(236, 52, 150) 0%, rgb(255, 118, 0) 100%)",
-          }}
-        >
-          <button onClick={handleExpandCollapse} className="text-white">
-            <ExpandCircleDownIcon className="rotate-180" />
-          </button>
-          <span className="font-semibold text-sm md:text-base mx-4 whitespace-nowrap">
-            Tập Yoga cơ bản ngay tại nhà
-          </span>
-          <Button
-            variant="secondary"
-            onClick={() =>
-              router.push(
-                `/course/lession/${courseId}/${
-                  parseInt(lectureId as string) + 1
-                }`
-              )
-            }
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed bottom-0 left-0 w-full flex justify-center z-20 pointer-events-none"
           >
-            Bài tiếp theo
-          </Button>
-        </div>
-      )}
+            <div
+              className="w-full max-w-2xl mx-auto bg-gradient-to-r from-pink-500 to-orange-400 rounded-t-3xl shadow-2xl px-4 py-3 md:px-8 md:py-4 flex items-center justify-between pointer-events-auto"
+              style={{
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              <button
+                onClick={handleExpandCollapse}
+                className="text-white hover:text-orange-100 transition"
+                aria-label="Mở rộng"
+              >
+                <ExpandCircleDownIcon fontSize="large" />
+              </button>
+              <span className="font-semibold text-base md:text-lg mx-2 text-white truncate">
+                Tập Yoga cơ bản ngay tại nhà
+              </span>
+              <Button
+                variant="secondary"
+                className="!rounded-full !px-5 !py-2 !text-sm !shadow"
+                onClick={() =>
+                  router.push(
+                    `/course/lession/${courseId}/${
+                      parseInt(lectureId as string) + 1
+                    }`
+                  )
+                }
+              >
+                Bài tiếp theo
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,0 +1,45 @@
+@startuml
+actor User
+participant "Frontend (ReactJS)" as FE
+participant "OrderController" as Controller
+participant "OrderService" as Service
+participant "JwtUtil" as JWT
+participant "CartRepository" as CartRepo
+participant "AddressService" as AddressSrv
+participant "OrderRepository" as OrderRepo
+participant "CartItemRepository" as CartItemRepo
+database "MySQL" as DB
+participant "WebSocket (STOMP)" as WS
+
+User -> FE : Click "Thanh toán"
+FE -> Controller : POST /api/order/create-order\n(orderRequest, JWT)
+Controller -> Service : createOrder(request, orderRequest)
+Service -> JWT : getUserFromRequest(request)
+JWT --> Service : User
+
+Service -> CartRepo : findCartByUser(User)
+CartRepo -> DB : SELECT * FROM cart WHERE user_id = ?
+DB --> CartRepo : Cart
+CartRepo --> Service : Optional<Cart>
+
+alt Cart not found
+    Service -> Controller : throw AppException(CART_NOT_FOUND)
+else Found
+    Service -> AddressSrv : getAddressById(addressId)
+    AddressSrv -> DB : SELECT * FROM address WHERE id = ?
+    DB --> AddressSrv : Address
+    AddressSrv --> Service : Address
+
+    Service -> OrderRepo : save(Order + OrderItems + Payment)
+    OrderRepo -> DB : INSERT INTO orders...
+    DB --> OrderRepo : OK
+
+    Service -> CartItemRepo : deleteAll(cartItems)
+    Service -> CartRepo : save(cart với item = 0, price = 0)
+end
+
+Service --> Controller : OrderResponse
+Controller -> WS : convertAndSend("/topic/admin", order)
+Controller --> FE : ApiResponse(200, "create order success", OrderResponse)
+FE --> User : Hiển thị thông báo đặt hàng thành công
+@enduml

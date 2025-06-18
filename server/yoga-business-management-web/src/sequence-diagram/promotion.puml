@@ -1,0 +1,19 @@
+@startuml
+actor User
+participant "Frontend (ReactJS)" as FE
+participant "PromotionController" as Controller
+participant "PromotionService" as Service
+participant "PromotionRepository" as Repository
+database "MySQL" as DB
+
+User -> FE : Click "Xem mã giảm giá"
+FE -> Controller : GET /api/promotion/get-four-big-promotion
+Controller -> Service : getFourBigPromotion()
+Service -> Repository : findTop4ByDiscount()
+Repository -> DB : Query top 4 promotions ORDER BY discount DESC
+DB --> Repository : 4 promotion records
+Repository --> Service : List<Promotion>
+Service --> Controller : List<Promotion>
+Controller --> FE : ApiResponse(200, "success", List<Promotion>)
+FE --> User : Hiển thị danh sách mã giảm giá
+@enduml

@@ -166,6 +166,7 @@ export default function MainLayout(props: ISideBarProps) {
     '/products-management',
     '/order-management',
     '/promotion-management',
+    '/roadmap-management',
   ];
 
   const [openSidebar, setOpenSidebar] = useState(true);
@@ -327,6 +328,7 @@ export default function MainLayout(props: ISideBarProps) {
             'Quản lý sản phẩm',
             'Quản lý đơn hàng',
             'Quản lý khuyến mãi',
+            'Quản lý lộ trình học',
           ].map((text, index) => (
             <Link to={to[index + 1]} key={text}>
               <ListItem disablePadding>

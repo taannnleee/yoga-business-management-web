@@ -73,6 +73,9 @@ public class AuthencationService {
         }
 
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
+        if (!"USER".equals(user.getRoles())) {
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+        }
 
         if(!user.isStatus()){
             System.out.println("User is inactive: " + user.getUsername());
@@ -113,6 +116,7 @@ public class AuthencationService {
     }
 
     public TokenRespone authenticationAdmin(LoginRequest loginRequest){
+
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         }
@@ -121,11 +125,9 @@ public class AuthencationService {
         }
 
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Username or Password is incorrect"));
-
-    //        if(user.isStatus()==false){
-    //            throw new AppException(ErrorCode.USER_NOT_ACTIVE);
-    //        }
-
+        if (!"ADMIN".equals(user.getRoles())) {
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
+        }
 
         String accessToken =  jwtService.generateToken(user);
         String refreshToken =  jwtService.generateRefreshToken(user);

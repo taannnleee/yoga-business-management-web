@@ -39,13 +39,6 @@ export const useAuth = () => {
 
       const result = response.data;
 
-      toast.success('Đăng nhập thành công', {
-        position: 'top-right',
-        autoClose: 0,
-        theme: 'colored',
-        hideProgressBar: true,
-      });
-
       // Lưu token
       localStorage.setItem('accessToken', result.data.accesstoken);
       localStorage.setItem('refreshToken', result.data.accesstoken);
@@ -76,7 +69,7 @@ export const useAuth = () => {
       stompClient.activate();
     } catch (error: any) {
       console.log(error);
-      toast.error('Phone number or password incorrect', {
+      toast.error('Tài khoản hoặc mật khẩu không đúng', {
         position: 'top-right',
         theme: 'colored',
         hideProgressBar: true,

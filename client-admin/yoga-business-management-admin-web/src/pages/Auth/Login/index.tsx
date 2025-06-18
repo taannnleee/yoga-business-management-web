@@ -9,24 +9,24 @@ import BaseInput from '../../../components/BaseInput';
 import { CircularProgress } from '@mui/material';
 
 interface IFormValue {
-  phoneNumber: string;
+  userName: string;
   password: string;
 }
 
 const validationSchema = yup.object().shape({
-  phoneNumber: yup.string().required('Vui lòng nhập username của bạn'),
+  userName: yup.string().required('Vui lòng nhập tài khoản của bạn'),
   password: yup.string().required('Vui lòng nhập mật khẩu của bạn'),
 });
 
 const LoginPage: React.FC = () => {
   const { login, loginLoading, loginError } = useAuth();
   const [initialValues] = useState<IFormValue>({
-    phoneNumber: '',
+    userName: '',
     password: '',
   });
 
   const handleSubmit = (values: IFormValue) => {
-    login(values.phoneNumber, values.password);
+    login(values.userName, values.password);
   };
 
   return (
@@ -50,19 +50,19 @@ const LoginPage: React.FC = () => {
               {({ handleSubmit, submitForm }) => (
                 <div className="space-y-7">
                   <div className="space-x-1">
-                    <h1 className="text-center text-4xl font-bold text-gray-600">Market Floor</h1>
+                    <h1 className="text-center text-4xl font-bold text-gray-600">Yoga</h1>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                      Trang dành cho quản trị viên và nhân viên cửa hàng
+                      Trang dành cho quản trị viên cửa hàng
                     </p>
                   </div>
                   <div className="space-y-5">
-                    {loginError && (
+                    {/* {loginError && (
                       <p className="text-red-500">Đăng nhập thất bại. Vui lòng thử lại!</p>
-                    )}
+                    )} */}
                     <BaseInput
                       mode="name"
-                      name="phoneNumber"
-                      label="Username"
+                      name="userName"
+                      label="Tài khoản"
                       required
                       type="text"
                       className="w-[250px] phone:w-[300px] tablet:w-[400px]"
@@ -75,10 +75,10 @@ const LoginPage: React.FC = () => {
                       className="w-[250px] phone:w-[300px] tablet:w-[400px]"
                     />
 
-                    <div className="mb-[80px] mt-[-10px] flex justify-between">
+                    {/* <div className="mb-[80px] mt-[-10px] flex justify-between">
                       <div></div>
                       <button className="text-sm font-semibold text-gray-600">Quên mật khẩu</button>
-                    </div>
+                    </div> */}
                     <div>
 
                     </div>

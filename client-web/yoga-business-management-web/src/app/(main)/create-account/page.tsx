@@ -69,7 +69,7 @@ const CreateAccountPage: React.FC<ICreateAccountPageProps> = (props) => {
 
 
     return (
-        <div className="w-full h-screen flex justify-center items-center bg-white">
+        <div className="w-full min-h-screen flex justify-center items-center bg-white py-12">
             <Box
                 sx={{
                     display: "flex",

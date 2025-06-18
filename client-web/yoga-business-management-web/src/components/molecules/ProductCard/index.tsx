@@ -30,6 +30,7 @@ interface Product {
 
 // Component ProductCard nhận các props: product, loading, handleAddToCart, và renderStars
 export const ProductCard = ({ product, loading, renderStars }: { product: Product; loading: boolean; renderStars: (rating: number) => JSX.Element }) => {
+
     const [open, setOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
     const [quantity, setQuantity] = useState(1);
@@ -39,14 +40,14 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
     const dispatch = useDispatch();
 
     const handleOpenModal = async (product: Product) => {
-        setOpen(true);
+
         try {
             const response = await axiosInstance.get(`${API_URL}/api/product/${product.id}`
 
             );
-
-            if (response.status === 200) {
+            if (response.data.status === 200) {
                 setSelectedProduct(response.data.data);
+                setOpen(true);
 
             } else {
                 console.error("Failed to fetch product details");
@@ -173,17 +174,18 @@ export const ProductCard = ({ product, loading, renderStars }: { product: Produc
                     {product.price.toLocaleString()}₫
                 </Typography>
             </div>
-            <Dialog open={open} onClose={handleCloseModal} maxWidth={"lg"}>
+            {selectedProduct && (
+                <Dialog open={open} onClose={handleCloseModal} maxWidth={"lg"}>
+                    <ProductDetailModal
 
-                <ProductDetailModal
-
-                    selectedProduct={selectedProduct}
-                    quantity={quantity}
-                    setQuantity={setQuantity}
-                    handleAddToCart={handleAddToCart}
-                    handleVariantChange={handleVariantChange}
-                />
-            </Dialog>
+                        selectedProduct={selectedProduct}
+                        quantity={quantity}
+                        setQuantity={setQuantity}
+                        handleAddToCart={handleAddToCart}
+                        handleVariantChange={handleVariantChange}
+                    />
+                </Dialog>
+            )}
         </div>
     );
 };

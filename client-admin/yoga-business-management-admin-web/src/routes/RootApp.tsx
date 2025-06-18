@@ -14,6 +14,8 @@ import WebSocketDemo from '../pages/test';
 import TrendPrediction from '../pages/TrendPrediction';
 import PromotionManager from '../pages/PromotionManagement';
 import TrashStoreProductManagement from '../pages/Trash';
+import RoadmapManagement from '../pages/RoadmapManagement';
+import CreateRoadmapPage from 'pages/RoadmapManagement/CreateRoadmapPage';
 
 export default function RootApp() {
   const accessToken = true;
@@ -45,6 +47,9 @@ export default function RootApp() {
           <Route path="/order-management" component={OrderManagement} />
           <Route path="/test" component={WebSocketDemo} />
           <Route path="/promotion-management" component={PromotionManager} />
+          <Route path="/roadmap-management" component={RoadmapManagement} />
+          <Route path="/create/roadmap-management" component={CreateRoadmapPage} />
+
         </>
       )}
 

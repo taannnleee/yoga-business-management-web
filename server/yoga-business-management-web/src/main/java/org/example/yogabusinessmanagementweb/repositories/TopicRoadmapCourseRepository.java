@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface TopicRoadmapCourseRepository extends JpaRepository<TopicRoadMap_Course, Long> {
     List<TopicRoadMap_Course> findAllByTopicRoadmap(TopicRoadmap topicRoadmap);
+    void deleteByTopicRoadmap(TopicRoadmap topicRoadmap);
+    void deleteAllByTopicRoadmap(TopicRoadmap topicRoadmap);
 }

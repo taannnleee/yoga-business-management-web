@@ -20,6 +20,7 @@ interface Props {
 }
 
 const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddToCart, handleVariantChange }: Props) => {
+    console.log("111111111111:", selectedProduct);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
@@ -109,10 +110,8 @@ const ProductDetailModal = ({ selectedProduct, quantity, setQuantity, handleAddT
         const defaultVariants: any = {};
 
         // Duyệt qua các variant và chọn cái đầu tiên
-        console.log("heheheeh", selectedProduct?.variants)
         if (selectedProduct?.variants) {
             Object.entries(selectedProduct.variants).forEach(([variantType, variantValues]) => {
-                console.log("kkkkkk", variantValues)
                 const firstValue = Object.entries(variantValues as { [key: string]: string })[0];
                 if (firstValue) {
                     const [value, image] = firstValue;

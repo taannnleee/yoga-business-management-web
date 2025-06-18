@@ -17,7 +17,6 @@ import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.NotificationRepository;
 import org.example.yogabusinessmanagementweb.repositories.ProductRepository;
 import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
-import org.example.yogabusinessmanagementweb.repositories.TempRepository;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
@@ -42,7 +41,6 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
-    TempRepository tempRepository;
     ProductMapper productMapper;
     SubCategoryService subCategoryService;
     UserService userService;

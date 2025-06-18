@@ -14,7 +14,7 @@ if('movenet_thunder.tflite' not in os.listdir()):
 movenet = Movenet('movenet_thunder')
 
 def detect(input_tensor, inference_count=3):
-    movenet.detect(input_tensor.numpy(), reset_crop_region=True) #ảnh tình
+    movenet.detect(input_tensor.numpy(), reset_crop_region=True) #ảnh tỉnh input_tensor.numpy() = (1, 256, 256, 3)
     
     for _ in range(inference_count - 1):
         detection = movenet.detect(input_tensor.numpy(),   #video

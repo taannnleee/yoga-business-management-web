@@ -34,6 +34,7 @@ public class YogaBusinessManagementWebApplication {
                     .description(desc)
                     .price(price)
                     .durationInDays(duration)
+                    .url(url)
                     .build();
             repo.save(type);
         }

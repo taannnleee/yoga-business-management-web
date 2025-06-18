@@ -46,6 +46,7 @@ public class LecturesServiceImpl  implements LecturesService {
         Sections  sections = sectionsService.getSectionsByid(String.valueOf(lectureCreationRequest.getIdSection()));
         sections.getLectures().add(lectures);
 
+//        lectures.setIsPublic(lectureCreationRequest.isPublic());
         // luu course va section
         sectionsRepository.save(sections);
         return lectureMapper.toLectureResponse(lectures);

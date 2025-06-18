@@ -166,15 +166,15 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       align: 'left',
       renderCell: (params: GridRenderCellParams<any>) => {
         const options = [
-          {
-            id: 'update',
-            title: 'Cập nhật sản phẩm',
-            onPress: () => {
-              setSelectedItem(params.row);
-              setOpenUpdateModal(true);
-            },
-            onActionSuccess: () => getAllProducts(),
-          },
+          // {
+          //   id: 'update',
+          //   title: 'Cập nhật sản phẩm',
+          //   onPress: () => {
+          //     setSelectedItem(params.row);
+          //     setOpenUpdateModal(true);
+          //   },
+          //   onActionSuccess: () => getAllProducts(),
+          // },
           {
             id: 'delete',
             title: 'Xóa sản phẩm',

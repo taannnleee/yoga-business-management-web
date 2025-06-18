@@ -191,6 +191,7 @@ function CourseEditor() {
         videoPath: videoPath,
         duration: videoDuration,
         image: imagePath,
+
       });
 
       if (response.status === 200) {

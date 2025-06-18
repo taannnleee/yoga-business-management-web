@@ -295,7 +295,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                 fontStyle="italic"
                 color="textSecondary"
               >
-                Sức chứa: {registrationCount}/{capacity} học viên
+                
               </Typography>
               <Typography
                 variant="body1"

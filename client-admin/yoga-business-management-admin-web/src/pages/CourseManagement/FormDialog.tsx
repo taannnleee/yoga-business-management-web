@@ -236,6 +236,15 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           onChange={(e) => setLevel(e.target.value)}
         />
 
+        <TextField
+          margin="dense"
+          label="Giá"
+          type="number"
+          fullWidth
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+
         {/* Upload Video */}
         <UploadVideoWidget
           setThumbnailUploaded={(image: string) => setVideoPath(image)}

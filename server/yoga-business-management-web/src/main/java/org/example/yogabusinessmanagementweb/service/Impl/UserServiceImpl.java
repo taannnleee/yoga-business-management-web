@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse> getAllUserResponse() {
         List<UserResponse> userResponses = new ArrayList<>();
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByRoles("USER");
         for (User user : users) {
             userResponses.add(userMapper.toUserResponse(user));
 

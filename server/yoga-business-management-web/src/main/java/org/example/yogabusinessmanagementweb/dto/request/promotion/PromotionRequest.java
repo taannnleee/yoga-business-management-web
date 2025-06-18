@@ -28,6 +28,4 @@ public class PromotionRequest {
 
     Date expiryDate;
 
-    Boolean isActive;
-
 }

@@ -21,6 +21,7 @@ public class PromotionServiceImpl implements PromotionService {
     // Hàm tạo mới promotion
     public Promotion createPromotion(PromotionRequest promotionRequest) {
         Promotion promotion =  promotionMapper.toPromotion(promotionRequest);
+        promotion.setIsActive(true);
         // Kiểm tra giá trị đầu vào
         if (promotion.getDiscount() <= 0) {
             throw new IllegalArgumentException("Discount value must be greater than 0.");

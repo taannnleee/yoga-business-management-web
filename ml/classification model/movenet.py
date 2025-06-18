@@ -71,10 +71,10 @@ class Movenet(object):
     self._input_width = interpreter.get_input_details()[0]['shape'][2]
 
     self._interpreter = interpreter
-    self._crop_region = None  
+    self._crop_region = None  #sẽ được tính toán ở lần detect đầu tiên.
 
   def init_crop_region(self, image_height: int,
-                       image_width: int) -> Dict[(str, float)]:
+                       image_width: int) -> Dict[(str, float)]:    #{'apple': 1.2, 'banana': 0.5, 'orange': 0.8, 'grape': 2.5}
     """Defines the default crop region.
 
     The function provides the initial crop region (pads the full image from
@@ -93,6 +93,7 @@ class Movenet(object):
 #Cắt trên & dưới để biến ảnh thành hình vuông.
 #y_min được tính để giữ ảnh nằm giữa.
 #Ví dụ: Nếu ảnh có kích thước 1000x500, cần đệm 250 px trên và 250 px dưới để thành 1000x1000.
+# thuật toán heuristic
     if image_width > image_height:
       x_min = 0.0
       box_width = 1.0
@@ -319,7 +320,7 @@ class Movenet(object):
 
   def _run_detector(
       self, image: np.ndarray, crop_region: Dict[(str, float)],
-      crop_size: (int, int)) -> np.ndarray:
+      crop_size: (int, int)) -> np.ndarray:                               
     """Runs model inference on the cropped region.
 
     The function runs the model inference on the cropped region and updates
@@ -339,7 +340,7 @@ class Movenet(object):
     input_image = input_image.astype(dtype=np.uint8)
 
     self._interpreter.set_tensor(self._input_index,
-                                 np.expand_dims(input_image, axis=0))
+                                 np.expand_dims(input_image, axis=0))  # Thêm chiều batch
     self._interpreter.invoke() # chạy mô hình để nhận diện key point
 
     keypoints_with_scores = self._interpreter.get_tensor(self._output_index)  #Lấy kết quả đầu ra từ mô hình. # Lấy kết quả dự đoán

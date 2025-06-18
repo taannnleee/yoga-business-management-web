@@ -25,13 +25,19 @@ interface Promotion {
 }
 
 const PromotionManager: React.FC = () => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
   const [promotion, setPromotion] = useState<Promotion>({
     code: '',
-    discount: 0,
-    discountType: 'PERCENTAGE', // Mặc định là 'PERCENTAGE'
-    usage_limit: 0,
-    startDate: '',
-    expiryDate: '',
+    discount: 10,
+    discountType: 'PERCENTAGE',
+    usage_limit: 100,
+    startDate: formatDate(today),        // ✅ mặc định hôm nay
+    expiryDate: formatDate(tomorrow),    // ✅ mặc định ngày mai
     isActive: true,
   });
   const [message, setMessage] = useState<string>('');
@@ -55,7 +61,7 @@ const PromotionManager: React.FC = () => {
   const handleDiscountChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     // Chỉ cho phép giá trị là số dương
-    if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
+    if (value === '' || (/^\d{1,3}$/.test(value) && +value >= 1 && +value <= 100)) {
       setPromotion({ ...promotion, discount: parseFloat(value) });
     }
   };
@@ -69,19 +75,15 @@ const PromotionManager: React.FC = () => {
   };
 
   const validateForm = () => {
-    // Kiểm tra Mã Khuyến Mãi (7 chữ số)
-    // const promoCodeRegex = /^\d{7}$/;
-    // if (!promoCodeRegex.test(promotion.code)) {
-    //     setError('Mã khuyến mãi phải gồm 7 chữ số.');
-    //     return false;
-    // }
-
-    // Kiểm tra Ngày Bắt Đầu và Ngày Kết Thúc
     const startDate = new Date(promotion.startDate);
     const expiryDate = new Date(promotion.expiryDate);
 
-    if (expiryDate <= startDate) {
-      setError('Ngày kết thúc phải sau ngày bắt đầu.');
+    // Ngày kết thúc phải sau ngày bắt đầu ít nhất 1 ngày
+    const oneDayLater = new Date(startDate);
+    oneDayLater.setDate(startDate.getDate() + 1);
+
+    if (expiryDate < oneDayLater) {
+      setError('Ngày kết thúc phải sau ngày bắt đầu ít nhất một ngày.');
       return false;
     }
 
@@ -121,11 +123,11 @@ const PromotionManager: React.FC = () => {
         setError('');
         setPromotion({
           code: '',
-          discount: 0,
+          discount: 10,
           discountType: 'PERCENTAGE',
-          usage_limit: 0,
-          startDate: '',
-          expiryDate: '',
+          usage_limit: 100,
+          startDate: formatDate(today),        // ✅ mặc định hôm nay
+          expiryDate: formatDate(tomorrow),
           isActive: true,
         });
       }
@@ -182,7 +184,7 @@ const PromotionManager: React.FC = () => {
                 label="Loại Giảm Giá"
               >
                 <MenuItem value="PERCENTAGE">Phần Trăm</MenuItem>
-                <MenuItem value="AMOUNT">Số Tiền</MenuItem>
+                {/* <MenuItem value="AMOUNT">Số Tiền</MenuItem> */}
               </Select>
             </FormControl>
 
@@ -221,24 +223,14 @@ const PromotionManager: React.FC = () => {
               value={promotion.expiryDate}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
-              // Thêm thuộc tính min để ngày kết thúc không thể là ngày trong quá khứ
-              inputProps={{ min: currentDate }}
+              inputProps={{
+                min: promotion.startDate
+                  ? new Date(new Date(promotion.startDate).getTime() + 24 * 60 * 60 * 1000)
+                    .toISOString()
+                    .split('T')[0]
+                  : currentDate,
+              }}
             />
-
-            {/* Trạng Thái */}
-            <FormControl fullWidth>
-              <InputLabel id="status-label">Trạng Thái</InputLabel>
-              <Select
-                labelId="status-label"
-                name="isActive"
-                value={promotion.isActive ? 'active' : 'inactive'}
-                onChange={(e) => setPromotion({ ...promotion, isActive: e.target.value === 'active' })}
-                label="Trạng Thái"
-              >
-                <MenuItem value="active">Kích hoạt</MenuItem>
-                <MenuItem value="inactive">Không kích hoạt</MenuItem>
-              </Select>
-            </FormControl>
 
             {/* Nút Gửi */}
             <Button variant="contained" onClick={handleSubmit} sx={{ marginTop: 2 }}>

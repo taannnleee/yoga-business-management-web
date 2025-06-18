@@ -81,6 +81,4 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(roles)); // Chuyển đổi Role thành GrantedAuthority
     }
-
-
 }

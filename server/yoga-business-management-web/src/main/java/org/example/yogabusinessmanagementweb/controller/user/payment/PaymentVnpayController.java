@@ -60,7 +60,7 @@ public class PaymentVnpayController {
         Long vnp_Amount_temp = Long.valueOf(request.getParameter("vnp_Amount"));
         String vnp_Amount = String.valueOf(vnp_Amount_temp / 100);
 
-        String frontendUrl = "http://localhost:3000/payment/result";
+        String frontendUrl = "https://yoga-business-management-web-7668.vercel.app//payment/result";
 
         String redirectUrl = frontendUrl
                 + "?status=" + ("00".equals(status) ? "success" : "fail")

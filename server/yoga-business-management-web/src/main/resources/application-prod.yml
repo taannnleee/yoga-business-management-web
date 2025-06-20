@@ -45,10 +45,10 @@ payment:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
     tmnCode: 58X4B4HP
     secretKey: VRLDWNVWDNPCOEPBZUTWSEDQAGXJCNGZ
-    returnUrl: http://localhost:8080/api/payment/vn-pay-callback
+    returnUrl: https://yoga-business-management-web-7668.vercel.app/api/payment/vn-pay-callback
     version: 2.1.0
     command: pay
     orderType: other
 
 frontend:
-  url: http://localhost:3000
+  url: https://yoga-business-management-web-7668.vercel.app

@@ -76,7 +76,7 @@ public class AppConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("*")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("https://yoga-business-management-web-7668.vercel.app/")
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
                         .allowedHeaders("*") // Allowed request headers
                         .allowCredentials(false)

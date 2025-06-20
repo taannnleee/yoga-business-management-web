@@ -113,19 +113,19 @@ const UserDropdownMenu: React.FC<IProps> = ({ isHovered, setActiveTab }) => {
             </p>
             <p
               className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-              onClick={() => handleTabClick("address")}
+              onClick={() => router.push("/address")}
             >
               <span>🏠</span> Địa chỉ
             </p>
             <p
               className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-              onClick={() => handleTabClick("orders")}
+              onClick={() => router.push("/order")}
             >
               <span>📦</span> Đơn hàng của tôi
             </p>
             <p
               className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-              onClick={() => handleTabClick("saved")}
+              onClick={() => router.push("/wishlist")}
             >
               <span>❤️</span> Sản phẩm yêu thích
             </p>

@@ -1,0 +1,60 @@
+@startuml Login
+title Đăng nhập
+
+actor Actor
+boundary loginPage
+boundary HomePage
+control AuthenticationController
+entity authenticationService
+entity userRepository
+entity jwtService
+entity tokenRepository
+Database Database
+
+Actor -> loginPage: Login By Account
+activate loginPage
+loginPage -> AuthenticationController: checkLogin()
+activate AuthenticationController
+AuthenticationController -> authenticationService: authenticate()
+activate authenticationService
+
+authenticationService -> userRepository: findByUsername()
+activate userRepository
+userRepository -> Database: findByUsername()
+activate Database
+
+alt User not found
+    Database --> userRepository: return null
+    userRepository --> authenticationService: return null
+    authenticationService --> AuthenticationController: throw AppException(ErrorCode.INVALID_CREDENTIALS)
+    AuthenticationController --> loginPage : Bad credentials
+    deactivate loginPage
+else User found
+    Database --> userRepository: return user
+    deactivate Database
+    userRepository --> authenticationService: return user
+    deactivate userRepository
+
+    authenticationService -> jwtService: generateToken(user)
+    activate jwtService
+    jwtService --> authenticationService: accessToken, refreshToken
+    deactivate jwtService
+
+    authenticationService -> authenticationService: saveUserToken(user, accessToken, refreshToken)
+    authenticationService -> tokenRepository: saveToken(token)
+    activate tokenRepository
+    activate Database
+    tokenRepository --> Database: save token (accessToken, refreshToken)
+    deactivate tokenRepository
+    deactivate Database
+
+    authenticationService --> AuthenticationController: return TokenRespone
+    deactivate authenticationService
+
+    AuthenticationController -> HomePage: Redirect with token
+    deactivate AuthenticationController
+end
+
+deactivate loginPage
+deactivate HomePage
+@enduml

@@ -1,50 +1,60 @@
 @startuml SendOTP
-title Gửi OTP
+title Gửi OTP (Theo Code Thực Tế - Không có `null`, dùng Optional + Exception)
 
 actor Actor
 boundary verifyPage
 control AuthenticationController
 entity userService
 entity emailService
-
+entity userRepository
 Database Database
 
 Actor -> verifyPage: Request OTP
 activate verifyPage
-verifyPage -> AuthenticationController: sendOTPRequest()
+verifyPage -> AuthenticationController: sendOTPRequest(email)
 activate AuthenticationController
-AuthenticationController -> userService: findByEmail(email)
+
+AuthenticationController -> userService: sendOTP(email)
 activate userService
-userService -> Database: findByEmail(email)
-activate Database
 
-alt User is null
-    Database --> userService: return null
-    userService --> AuthenticationController: return null
-    AuthenticationController --> verifyPage: Account not found
+userService -> userRepository: findByEmail(email)
+activate userRepository
+userRepository -> Database: SELECT * FROM users WHERE email = ?
+Database --> userRepository: Optional<User>
+deactivate Database
+userRepository --> userService: Optional<User>
+deactivate userRepository
+
+alt User not found
+    userService --> AuthenticationController: throw AppException(USER_NOT_FOUND)
+    AuthenticationController --> verifyPage: Error - USER_NOT_FOUND
+    deactivate userService
     deactivate verifyPage
-else User is not null
-    Database --> userService: return user
-    deactivate Database
-    userService -> emailService: sendOTP(email, message, otp)
-    activate emailService
-    emailService -> Database: saveOTP(userID)
-    deactivate emailService
 
-    alt OTP sent successfully
-        Database --> emailService: OTP saved
-        emailService --> userService: OTP sent successfully
-        userService --> AuthenticationController: OTP sent successfully
-        AuthenticationController --> verifyPage: OTP sent successfully
+else User found
+    alt User is not active
+        userService --> AuthenticationController: throw AppException(USER_NOT_ACTIVE)
+        AuthenticationController --> verifyPage: Error - USER_NOT_ACTIVE
+        deactivate userService
         deactivate verifyPage
-    else OTP sending failed
-        emailService --> userService: OTP failed to send
-        userService --> AuthenticationController: OTP failed to send
-        AuthenticationController --> verifyPage: OTP sending failed
+    else User is active
+        userService -> emailService: sendEmail(email, subject, body+OTP)
+        activate emailService
+        emailService --> userService: Email sent
+        deactivate emailService
+
+        userService -> userRepository: save(user with OTP + expired time)
+        activate userRepository
+        userRepository -> Database: UPDATE users SET otp = ?, expired = ? WHERE id = ?
+        deactivate userRepository
+
+        userService --> AuthenticationController: OTP sent successfully
+        deactivate userService
+
+        AuthenticationController --> verifyPage: OTP sent successfully
         deactivate verifyPage
     end
 end
 
-deactivate userService
 deactivate AuthenticationController
 @enduml

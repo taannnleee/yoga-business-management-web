@@ -66,7 +66,7 @@ public class AppConfig {
       };
     }
 
-    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test","/ws/**","/api/category/with-products","api/user/get-email-by-username"};
+    private String[] WHITE_LIST = {"/api/auth/**", "/test", "/api/payment/vn-pay-callback","api/admin/test","/ws/**","/api/category/with-products","api/user/get-email-by-username","api/bmi/**","api/product/**"};
 
 //    private String[] WHITE_LIST = {"/api/login", "/api/refresh", "/api/logout","/api/register"};
 
@@ -75,8 +75,8 @@ public class AppConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("**")
-//                        .allowedOrigins("http://localhost:8500")
+                registry.addMapping("*")
+                        .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
                         .allowedHeaders("*") // Allowed request headers
                         .allowCredentials(false)
@@ -94,8 +94,8 @@ public class AppConfig {
     public SecurityFilterChain configure(@NonNull HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(WHITE_LIST).permitAll()
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())

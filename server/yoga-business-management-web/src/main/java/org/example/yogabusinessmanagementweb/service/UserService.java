@@ -10,6 +10,7 @@ import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.RegistrationResponse;
 import org.example.yogabusinessmanagementweb.common.entities.Address;
 import org.example.yogabusinessmanagementweb.common.entities.User;
+import org.example.yogabusinessmanagementweb.dto.response.user.UserResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public interface UserService {
     User findUserById(String id);
     User findUserByUserName(String userName);
+    List<UserResponse> getAllUserResponse();
     List<User> getAllUser();
     User findByUserName(String username);
     boolean checkUserNotExist(RegistrationRequest registrationRequest);
@@ -34,5 +36,7 @@ public interface UserService {
     AddressResponse getUserAddressDefault(HttpServletRequest request);
 
     String getEmailByUserName(String userName, HttpServletRequest request);
+
+    void updateStatusUser(String id);
 
 }

@@ -19,4 +19,5 @@ public class Lectures  extends AbstractEntity<Long>{
     String videoPath;
     String duration;//phút
     String image;
+    Boolean isPublic;
 }

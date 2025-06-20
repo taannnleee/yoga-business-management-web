@@ -1,4 +1,4 @@
 #prod dev
 spring:
   profiles:
-    active: prod
+    active: dev

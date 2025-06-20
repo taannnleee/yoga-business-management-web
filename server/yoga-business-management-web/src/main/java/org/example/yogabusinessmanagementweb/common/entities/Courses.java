@@ -25,6 +25,7 @@ public class Courses extends AbstractEntity<Long>{
     int level;
     String videoPath;
     BigDecimal price;
+    int capacity;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "teacher_id")

@@ -1,17 +1,18 @@
-'use client'
-import { useEffect, useState } from "react";
-import Chart from "react-apexcharts";
-import { format } from "date-fns";
-import MainLayout from "../../components/SIdeBar";
-import useWindowDimensions from "../../hooks/useWindowDimension";
-import axios from "axios";
-import { apiURL } from "../../config/constanst";
-import { useAppSelector } from "../../hooks/useRedux";
-import { IRootState } from "../../redux";
-import RevenueIcon from "../../assets/images/RevenueIcon.png";
-import GiveMoneyIcon from "../../assets/images/GiveMoneyIcon.png";
-import RevenueOnEveryBid from "../../assets/images/RevenueOnBid.png";
-import CreateFeeRevenue from "../../assets/images/CreateFeeRevenue.png";
+'use client';
+import { useEffect, useState } from 'react';
+import Chart from 'react-apexcharts';
+import { format } from 'date-fns';
+import MainLayout from '../../components/SIdeBar';
+import useWindowDimensions from '../../hooks/useWindowDimension';
+import axios from 'axios';
+import { apiURL } from '../../config/constanst';
+import { useAppSelector } from '../../hooks/useRedux';
+import { IRootState } from '../../store';
+import RevenueIcon from '../../assets/images/RevenueIcon.png';
+import GiveMoneyIcon from '../../assets/images/GiveMoneyIcon.png';
+import RevenueOnEveryBid from '../../assets/images/RevenueOnBid.png';
+import CreateFeeRevenue from '../../assets/images/CreateFeeRevenue.png';
+import axiosInstance from 'utils/axiosClient';
 
 interface ProductWithCategory {
   id: string;
@@ -28,51 +29,41 @@ export default function TrendPrediction() {
   const [theProdcutOfStore, setTheProductOfStore] = useState<ProductWithCategory[]>([]);
 
   const [monthlyRevenueData, setMonthlyRevenueData] = useState<number[]>([]);
-  const accessToken = localStorage.getItem('accessToken');
 
   // Fetch product data from the API
   const fetchTheProductOfStore = async () => {
     setLoading(true);
-    setError(null);  // Reset error state before fetching
+    setError(null);
 
     try {
-      const response = await fetch(`${apiURL}/api/admin/get-all-category-and-quantity-product`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/get-all-category-and-quantity-product`);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+      if (response?.data?.status !== 200) {
+        throw new Error('Failed to fetch data');
       }
 
-      const data = await response.json();
-      setTheProductOfStore(data.data); // Update the products list
+      const data = response.data;
+      setTheProductOfStore(data.data);
 
-      // Update the barState
       const categories = data.data.map((item: ProductWithCategory) => item.name);
-      const quantities = data.data.map((item: ProductWithCategory) => parseInt(item.quantity));  // Convert quantity to number
+      const quantities = data.data.map((item: ProductWithCategory) => parseInt(item.quantity));
 
-      setBarState(prevState => ({
+      setBarState((prevState) => ({
         ...prevState,
         options: {
           ...prevState.options,
           xaxis: {
-            categories, // Update categories from the response data
+            categories,
           },
         },
         series: [
           {
-            name: "Số lượng",
-            data: quantities, // Update data with product quantities
+            name: 'Số lượng',
+            data: quantities,
           },
         ],
       }));
-
     } catch (error) {
-
       console.error(error);
     } finally {
       setLoading(false);
@@ -82,43 +73,36 @@ export default function TrendPrediction() {
   // Fetch product data from the API
   const fetchStoreRevenueByMonth = async () => {
     setLoading(true);
-    setError(null);  // Reset error state before fetching
+    setError(null);
 
     try {
-      const response = await fetch(`${apiURL}/api/admin/get-month-revenue`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/get-month-revenue`);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+      if (response?.data?.status !== 200) {
+        throw new Error('Failed to fetch revenue data');
       }
 
-      const data = await response.json();
-      console.log("tanne");
-      console.log(data.data);
+      const data = response.data;
+      console.log('Revenue response:', data.data);
       setTheProductOfStore(data.data);
 
       const revenuePerMonth = data.data.map((monthData: any) => {
         return monthData.reduce((sum: number, order: any) => sum + order.totalPrice, 0);
       });
-      console.log(revenuePerMonth);
+
+      console.log('Monthly revenue:', revenuePerMonth);
       setMonthlyRevenueData(revenuePerMonth);
 
-      setLineState(prevState => ({
+      setLineState((prevState) => ({
         ...prevState,
         series: [
           {
-            name: "Doanh thu",
-            data: revenuePerMonth,  // Cập nhật dữ liệu của biểu đồ
+            name: 'Doanh thu',
+            data: revenuePerMonth,
           },
         ],
       }));
     } catch (error) {
-
       console.error(error);
     } finally {
       setLoading(false);
@@ -130,7 +114,6 @@ export default function TrendPrediction() {
     fetchStoreRevenueByMonth();
   }, []);
 
-
   // Handle date change
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
@@ -140,30 +123,29 @@ export default function TrendPrediction() {
   const [lineState, setLineState] = useState({
     options: {
       chart: {
-        id: "basic-bar",
+        id: 'basic-bar',
       },
       xaxis: {
         categories: [
-          "Tháng 1",
-          "Tháng 2",
-          "Tháng 3",
-          "Tháng 4",
-          "Tháng 5",
-          "Tháng 6",
-          "Tháng 7",
-          "Tháng 8",
-          "Tháng 9",
-          "Tháng 10",
-          "Tháng 11",
-          "Tháng 12",
+          'Tháng 1',
+          'Tháng 2',
+          'Tháng 3',
+          'Tháng 4',
+          'Tháng 5',
+          'Tháng 6',
+          'Tháng 7',
+          'Tháng 8',
+          'Tháng 9',
+          'Tháng 10',
+          'Tháng 11',
+          'Tháng 12',
         ],
       },
     },
     series: [
       {
-        name: "Doanh thu",
+        name: 'Doanh thu',
         data: monthlyRevenueData,
-
 
         // monthlyRevenueData,
       },
@@ -173,7 +155,7 @@ export default function TrendPrediction() {
   const [barState, setBarState] = useState({
     options: {
       chart: {
-        id: "basic-line",
+        id: 'basic-line',
       },
       xaxis: {
         categories: [], // Initially empty, will be updated after fetching data
@@ -181,7 +163,7 @@ export default function TrendPrediction() {
     },
     series: [
       {
-        name: "Số lượng",
+        name: 'Số lượng',
         data: [], // Initially empty, will be updated after fetching data
       },
     ],
@@ -192,9 +174,9 @@ export default function TrendPrediction() {
     options: {
       chart: {
         width: 380,
-        type: "pie",
+        type: 'pie',
       },
-      labels: ["Chiếu khấu sản phẩm", "Phí đăng sản phẩm"],
+      labels: ['Chiếu khấu sản phẩm', 'Phí đăng sản phẩm'],
       theme: {
         monochrome: {
           enabled: true,
@@ -208,7 +190,7 @@ export default function TrendPrediction() {
               width: 200,
             },
             legend: {
-              position: "bottom",
+              position: 'bottom',
             },
           },
         },
@@ -218,11 +200,11 @@ export default function TrendPrediction() {
 
   return (
     <MainLayout
-      title="Tổng quan thông tin của sàn"
+      title="Tổng quan thông tin về doanh thu của cửa hàng"
       content={
         <div className="flex flex-col gap-y-10 px-10">
-          <div className="bg-white px-10 py-5 rounded-xl shadow-lg drop-shadow-md w-full">
-            <p className="text-center text-2xl text-gray-500 font-bold mb-4">
+          <div className="w-full rounded-xl bg-white px-10 py-5 shadow-lg drop-shadow-md">
+            <p className="mb-4 text-center text-2xl font-bold text-gray-500">
               Xu hướng mua hàng của khách hàng vào các tháng trong năm
             </p>
             <Chart
@@ -232,9 +214,7 @@ export default function TrendPrediction() {
               width="99%"
               height="280"
             />
-
           </div>
-
         </div>
       }
     />

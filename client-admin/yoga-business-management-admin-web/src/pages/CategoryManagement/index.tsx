@@ -1,5 +1,14 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { Box, Button, TextField, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import axios from 'axios';
 import { apiURL } from '../../config/constanst';
@@ -13,11 +22,11 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import axiosInstance from 'utils/axiosClient';
 
 interface SubCategory {
   id: number;
   name: string;
-
 }
 interface Category {
   id: number;
@@ -33,33 +42,29 @@ const CategoryManagement: React.FC = () => {
   const [totalCategories, setTotalCategories] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);// State lưu danh sách subcategory
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]); // State lưu danh sách subcategory
   const [loadingSubCategories, setLoadingSubCategories] = useState(false); // State hiển thị loading
 
   // Dialog State
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
-  const [urlImage, setUrlImage] = useState<string>("");
+  const [urlImage, setUrlImage] = useState<string>('');
 
   // Trạng thái lưu thông tin đã submit form hay chưa
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const fetchCategories = async () => {
     setLoading(true);
-    const accessToken = localStorage.getItem('accessToken');
     try {
-      const response = await axios.get(`${apiURL}/api/admin/get-all-category`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+      const response = await axiosInstance.get(`/api/admin/get-all-category`, {
         params: {
           page,
           limit: rowsPerPage,
         },
       });
       setCategories(response.data.data);
-      setTotalCategories(response.data.totalCount);  // Use total count from response
+      setTotalCategories(response.data.totalCount); // Use total count from response
     } catch (error) {
       console.error('Failed to fetch categories', error);
       toast.error('Không thể tải danh mục.');
@@ -73,34 +78,25 @@ const CategoryManagement: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async () => {
-    setIsSubmitted(true);  // Đặt trạng thái isSubmitted là true khi người dùng submit form
+    setIsSubmitted(true); // Đặt trạng thái isSubmitted là true khi người dùng submit form
     if (!formData.name || formData.name.length > 50) {
       toast.error('Tên danh mục không được để trống và phải dưới 50 ký tự.');
       return;
     }
 
     setLoading(true);
-    const accessToken = localStorage.getItem('accessToken');
     try {
-      await axios.post(
-        `${apiURL}/api/admin/add-category`,
-        {
-          name: formData.name,
-          urlImage: urlImage
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axiosInstance.post(`/api/admin/add-category`, {
+        name: formData.name,
+        urlImage: urlImage,
+      });
       toast.success('Tạo danh mục thành công!');
       setFormData({ name: '' });
-      setIsSubmitted(false);  // Reset lại trạng thái isSubmitted sau khi submit thành công
+      setIsSubmitted(false); // Reset lại trạng thái isSubmitted sau khi submit thành công
       fetchCategories();
     } catch (error) {
       console.error('Failed to create category', error);
@@ -113,15 +109,15 @@ const CategoryManagement: React.FC = () => {
     // Lưu cả id và name của category đã chọn
     setSelectedCategoryId(params.row.id);
     setSelectedCategoryName(params.row.name);
-    fetchSubCategories(params.row.id);// Lưu tên của danh mục vào state
-    setOpenDialog(true);  // Mở dialog
+    fetchSubCategories(params.row.id); // Lưu tên của danh mục vào state
+    setOpenDialog(true); // Mở dialog
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSelectedCategoryId(null);  // Reset lại id khi đóng dialog
-    setSelectedCategoryName('');  // Reset lại name khi đóng dialog
-    setSubcategoryName('');  // Reset lại subcategory name
+    setSelectedCategoryId(null); // Reset lại id khi đóng dialog
+    setSelectedCategoryName(''); // Reset lại name khi đóng dialog
+    setSubcategoryName(''); // Reset lại subcategory name
   };
 
   const handleSubmitSubcategory = async () => {
@@ -135,23 +131,14 @@ const CategoryManagement: React.FC = () => {
     }
 
     setLoading(true);
-    const accessToken = localStorage.getItem('accessToken');
     try {
-      await axios.post(
-        `${apiURL}/api/admin/add-subcategory`,
-        {
-          name: subcategoryName,
-          categoryId: selectedCategoryId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axiosInstance.post(`/api/admin/add-subcategory`, {
+        name: subcategoryName,
+        categoryId: selectedCategoryId,
+      });
       toast.success('Tạo category phụ thành công!');
-      setSubcategoryName('');  // Reset lại subcategory name sau khi thành công
-      // setOpenDialog(false); 
+      setSubcategoryName(''); // Reset lại subcategory name sau khi thành công
+      // setOpenDialog(false);
       fetchSubCategories(selectedCategoryId.toString());
     } catch (error) {
       console.error('Failed to create subcategory', error);
@@ -159,7 +146,6 @@ const CategoryManagement: React.FC = () => {
     }
     setLoading(false);
   };
-
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 100 },
@@ -185,40 +171,32 @@ const CategoryManagement: React.FC = () => {
   ];
 
   // Hàm xử lý xóa
-  const handleDeleteCategory = async (rowData: Category, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleDeleteCategory = async (
+    rowData: Category,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     event.stopPropagation(); // Dừng sự kiện chọn dòng khi nhấn nút xóa
-    console.log("Xóa mục có ID:", rowData.id);
-    console.log("Xóa danh mục")
-    console.log(rowData.id)
-    const accessToken = localStorage.getItem('accessToken');
+    console.log('Xóa mục có ID:', rowData.id);
+    console.log('Xóa danh mục');
+    console.log(rowData.id);
     try {
-
-      const response = await axios.get(`${apiURL}/api/admin/change-status-category/${rowData.id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/change-status-category/${rowData.id}`);
 
       toast.success('xóa danh mục thành công!');
       // const categoryId = selectedCategoryId!;
       fetchCategories();
-
     } catch (error) {
       console.error('Failed to xóa danh mục', error);
       toast.error('Đã có lỗi xảy ra khi xóa danh mục.');
     }
-
   };
 
   const fetchSubCategories = async (categoryId: string) => {
     setLoadingSubCategories(true); // Hiển thị loading
-    const accessToken = localStorage.getItem('accessToken'); // Lấy access token từ localStorage
     try {
-      const response = await axios.get(`${apiURL}/api/admin/get-all-subcategory-of-category/${categoryId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(
+        `/api/admin/get-all-subcategory-of-category/${categoryId}`,
+      );
       setSubCategories(response.data.data); // Lưu danh sách subcategory
     } catch (error) {
       console.error('Failed to fetch subcategories', error);
@@ -228,21 +206,16 @@ const CategoryManagement: React.FC = () => {
   };
 
   const handleDeleSubCategory = async (categoryId1: string) => {
-    console.log("Xóa danh mục phụ")
-    console.log(categoryId1)
-    const accessToken = localStorage.getItem('accessToken');
+    console.log('Xóa danh mục phụ');
+    console.log(categoryId1);
     try {
+      const response = await axiosInstance.get(
+        `/api/admin/change-status-sub-category/${categoryId1}`,
+      );
 
-      const response = await axios.get(`${apiURL}/api/admin/change-status-sub-category/${categoryId1}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      toast.success('xóa danh mục phụ thành công!');
+      toast.success('Xóa danh mục phụ thành công!');
       const categoryId = selectedCategoryId!;
       fetchSubCategories(categoryId.toString());
-
     } catch (error) {
       console.error('Failed to xóa danh mục phụ', error);
       toast.error('Đã có lỗi xảy ra khi xóa danh mục phụ.');
@@ -265,10 +238,10 @@ const CategoryManagement: React.FC = () => {
                 error={isSubmitted && (!formData.name || formData.name.length > 50)} // Chỉ kiểm tra lỗi khi đã submit form
                 helperText={
                   isSubmitted && !formData.name
-                    ? "Tên danh mục không được để trống."
+                    ? 'Tên danh mục không được để trống.'
                     : isSubmitted && formData.name.length > 50
-                      ? "Tên danh mục không được dài quá 50 ký tự."
-                      : ""
+                      ? 'Tên danh mục không được dài quá 50 ký tự.'
+                      : ''
                 }
               />
               <UploadWidget
@@ -323,7 +296,11 @@ const CategoryManagement: React.FC = () => {
                   onChange={(e) => setSubcategoryName(e.target.value)}
                   margin="normal"
                   error={subcategoryName.length > 50} // Kiểm tra lỗi nếu dài quá 50 ký tự
-                  helperText={subcategoryName.length > 50 ? "Tên category phụ không được dài quá 50 ký tự." : ""}
+                  helperText={
+                    subcategoryName.length > 50
+                      ? 'Tên category phụ không được dài quá 50 ký tự.'
+                      : ''
+                  }
                 />
 
                 <Box mt={2}>

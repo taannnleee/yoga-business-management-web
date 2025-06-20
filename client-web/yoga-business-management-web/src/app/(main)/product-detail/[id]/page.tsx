@@ -2,9 +2,8 @@
 import React, { useEffect, useState } from "react";
 import ProductDetailTemplate from "@/components/template/ProductDetail";
 import { useParams } from "next/navigation";
-import axios from "axios";
-import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
+import { API_URL } from "@/config/url";
 
 const ProductDetail: React.FC = () => {
   const params = useParams();
@@ -18,11 +17,11 @@ const ProductDetail: React.FC = () => {
     const fetchProductData = async () => {
       if (id) {
         try {
-          const response = await axiosInstance.get(`${API_URL}/api/product-detail/getProduct/${id}`);
-
+          const response = await axiosInstance.get(
+            `${API_URL}/api/product-detail/getProduct/${id}`
+          );
           if (response) {
             setProduct(response.data.data);
-
           } else {
             setError("Product not found");
           }
@@ -37,12 +36,24 @@ const ProductDetail: React.FC = () => {
     fetchProductData();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-[300px]">
+        Loading...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-[300px] text-red-500">
+        {error}
+      </div>
+    );
 
   return (
-    <div className=" bg-white flex justify-center">
-      <ProductDetailTemplate product={product} />
+    <div className="min-h-screen bg-gray-50 flex justify-center items-start py-10 px-2">
+      <div className="w-full max-w-7xl bg-white rounded-2xl shadow-lg p-8 md:p-12">
+        <ProductDetailTemplate product={product} />
+      </div>
     </div>
   );
 };

@@ -17,6 +17,8 @@ import {
   FormControlLabel,
   Checkbox,
   duration,
+  Autocomplete,
+  Slider,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -34,6 +36,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import Header from '../../components/Header';
 import FooterSection from '../../components/FooterSection';
+import axiosInstance from 'utils/axiosClient';
 
 interface Params {
   id: string;
@@ -72,6 +75,11 @@ function CourseEditor() {
 
   //lecture
   const [newLecture, setNewLecture] = useState({ title: '', content: '', videoPath: '' }); // State for new lecture data
+  const [productOptions, setProductOptions] = useState<IProduct[]>([]);
+  const [productKeyword, setProductKeyword] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
+  const [startSecond, setStartSecond] = useState(0);
+  const [endSecond, setEndSecond] = useState(0);
 
   const { id } = useParams<Params>();
 
@@ -99,22 +107,34 @@ function CourseEditor() {
     setShowNewChapterField(true);
     setShowVideoForm(false);
   };
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axiosInstance.get('/api/product/filter', {
+          params: {
+            page: 1,
+            pageSize: 10,
+            keyword: productKeyword,
+          },
+        });
+        if (response.status === 200) {
+          setProductOptions(response.data.data.content); // content là mảng sản phẩm trong ListDto
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy sản phẩm:', error);
+      }
+    };
 
+    if (productKeyword.length >= 2) {
+      fetchProducts();
+    }
+  }, [productKeyword]);
   const fetchSections = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/get-all-section-by-id-course/${id}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setSections(result.data);
-        console.log('Dữ liệu sections:', result.data);
+      const response = await axiosInstance.get(`/api/admin/get-all-section-by-id-course/${id}`);
+      if (response.status === 200) {
+        setSections(response.data.data);
+        console.log('Dữ liệu sections:', response.data.data);
       } else {
         console.error('Lỗi khi lấy danh sách sections:', response.statusText);
       }
@@ -129,23 +149,14 @@ function CourseEditor() {
 
   const saveChapter = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/add-section`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idCourse: id,
-          title: inputValue,
-        }),
+      const response = await axiosInstance.post(`/api/admin/add-section`, {
+        idCourse: id,
+        title: inputValue,
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200) {
+        const result = response.data;
         console.log('Thêm chương thành công:', result);
-
         setSections((prevSections) => [
           ...prevSections,
           { id: result.data.id, title: inputValue, lectures: [] },
@@ -172,30 +183,37 @@ function CourseEditor() {
 
   const saveLecture = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/add-lecture`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idSection: currentSection.id,
-          title: newLecture.title,
-          content: newLecture.content,
-          videoPath: videoPath, // Truyền videoPath vào đây
-          duration: videoDuration,
-          image: imagePath,
-        }),
+      // 1. Gọi API để tạo bài giảng trước
+      const response = await axiosInstance.post(`/api/admin/add-lecture`, {
+        idSection: currentSection.id,
+        title: newLecture.title,
+        content: newLecture.content,
+        videoPath: videoPath,
+        duration: videoDuration,
+        image: imagePath,
       });
-      console.log('kkk');
-      console.log(newLecture);
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200) {
+        const result = response.data;
+        const newLectureId = result.data.id;
+
         console.log('Thêm bài giảng thành công:', result);
 
-        // Update the sections state with the new lecture
+        // 2. Sau khi có ID, gọi API để thêm quảng cáo sản phẩm nếu có
+        if (selectedProducts.length > 0) {
+          const adResponse = await axiosInstance.post('/api/admin/ads/lecture/add', {
+            lectureId: newLectureId,
+            productIds: selectedProducts.map((p) => p.id),
+            startSecond,
+            endSecond,
+          });
+
+          if (adResponse.status !== 200) {
+            throw new Error('Không thể lưu quảng cáo sản phẩm.');
+          }
+        }
+
+        // 3. Cập nhật state giao diện
         setSections((prevSections) =>
           prevSections.map((section) =>
             section.id === currentSection.id
@@ -206,7 +224,7 @@ function CourseEditor() {
 
         setOpenModal(false);
         setShowVideoForm(false);
-        setNewLecture({ title: '', content: '', videoPath: '' }); // Reset the lecture form
+        setNewLecture({ title: '', content: '', videoPath: '' });
         setVideoPath('');
       } else {
         console.error('Lỗi khi thêm bài giảng:', response.statusText);
@@ -215,10 +233,16 @@ function CourseEditor() {
       console.error('Lỗi khi gọi API:', error);
     }
   };
-
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
   const handleSetVideoDuration = (duration: string) => {
     setVideoDuration(duration);
   };
+  const totalSeconds = Math.floor(parseFloat(videoDuration) * 60); // ví dụ 0.27 phút → 16 giây
+
   return (
     <>
       <Header title={'Cập nhật khoá học'} />
@@ -393,7 +417,90 @@ function CourseEditor() {
                 setThumbnailUploaded={(image: string) => setVideoPath(image)} // Cập nhật đường dẫn video
                 thumbnailUploaded={videoPath} // Giá trị video đã tải lên
                 setVideoDuration={handleSetVideoDuration}
+                videoDuration={videoDuration}
               />
+              <Box mt={3} p={2} bgcolor="#fff" borderRadius={2} boxShadow={1}>
+                <Typography variant="h6">Quảng cáo sản phẩm trong khoá học</Typography>
+
+                <Autocomplete
+                  multiple
+                  options={productOptions}
+                  getOptionLabel={(option) => option.title ?? ''}
+                  filterOptions={(x) => x}
+                  onInputChange={(event, value) => setProductKeyword(value)}
+                  onChange={(e, value) => {
+                    setSelectedProducts(value);
+                    setTimeout(() => {
+                      console.log(
+                        'Selected Product IDs:',
+                        value.map((p) => p.id),
+                      );
+                    }, 0);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Chọn sản phẩm"
+                      placeholder="Nhập tên sản phẩm..."
+                    />
+                  )}
+                  renderOption={(props, option) => (
+                    <li {...props} style={{ display: 'flex', alignItems: 'center' }}>
+                      <img
+                        src={option.imagePath}
+                        alt={option.title}
+                        style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 10 }}
+                      />
+                      <span>{option.title}</span>
+                    </li>
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <span
+                        {...getTagProps({ index })}
+                        key={option.id}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          marginRight: 8,
+                          backgroundColor: '#e0f7fa',
+                          padding: '4px 8px',
+                          borderRadius: 8,
+                        }}
+                      >
+                        <img
+                          src={option.imagePath}
+                          alt={option.title}
+                          style={{ width: 30, height: 30, objectFit: 'cover', marginRight: 6 }}
+                        />
+                        {option.title}
+                      </span>
+                    ))
+                  }
+                />
+
+                {videoDuration && selectedProducts && (
+                  <Box mt={3}>
+                    <Typography gutterBottom>Chọn thời gian hiển thị quảng cáo (giây)</Typography>
+                    <Slider
+                      value={[startSecond, endSecond]}
+                      min={0}
+                      max={totalSeconds}
+                      step={1}
+                      onChange={(event, newValue) => {
+                        const [start, end] = newValue as number[];
+                        setStartSecond(start);
+                        setEndSecond(end);
+                      }}
+                      valueLabelDisplay="on"
+                      valueLabelFormat={(value) => formatTime(value)} // Hiển thị mm:ss
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      Tổng thời lượng video: {formatTime(totalSeconds)} (giây)
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
 
               <FormControlLabel control={<Checkbox name="draft" />} label="Nháp" />
               <Button onClick={saveLecture} variant="contained" color="primary" sx={{ mt: 2 }}>

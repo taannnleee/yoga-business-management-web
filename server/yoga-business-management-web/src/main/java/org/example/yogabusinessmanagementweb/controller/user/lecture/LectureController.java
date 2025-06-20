@@ -1,21 +1,16 @@
 package org.example.yogabusinessmanagementweb.controller.user.lecture;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.example.yogabusinessmanagementweb.common.entities.Courses;
+import org.example.yogabusinessmanagementweb.dto.request.lecture.LectureProductAdDTO;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
+import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureProductAdResponse;
 import org.example.yogabusinessmanagementweb.dto.response.lecture.LectureResponse;
-import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
-import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
-import org.example.yogabusinessmanagementweb.repositories.UserRepository;
 import org.example.yogabusinessmanagementweb.service.*;
-import org.example.yogabusinessmanagementweb.service.Impl.AuthencationService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,11 +21,18 @@ import java.util.List;
 @Slf4j
 public class LectureController {
     LecturesService lecturesService;
-
-    @GetMapping("/get-lecture/{id}")
-    public ApiResponse<?> getAllLectureByIdSection(@PathVariable String id) {
-        LectureResponse lectureResponse = lecturesService.getLectureById(id);
+    LectureProductAdService adService;
+    @GetMapping("/get-lecture/{courseId}/{lectureId}")
+    public ApiResponse<?> getAllLectureByIdSection(HttpServletRequest request,@PathVariable String courseId, @PathVariable String lectureId) {
+        LectureResponse lectureResponse = lecturesService.getLectureById(request,courseId,lectureId);
         return new ApiResponse<>(HttpStatus.OK.value(), "get lecture by id successfully",lectureResponse);
+    }
+
+
+    @GetMapping("/ads/{lectureId}")
+    public ApiResponse<?> getAdsByLecture(@PathVariable String lectureId) {
+        List<LectureProductAdResponse> ads = adService.getAdsByLectureId(lectureId);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Get ads by course", ads);
     }
 
 }

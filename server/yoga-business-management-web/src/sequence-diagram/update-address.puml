@@ -1,0 +1,63 @@
+@startuml
+title Update Address
+
+actor Actor
+boundary AddressPage
+control AddressController
+control AddressService
+entity JwtUtil
+entity User
+entity Address
+entity AddressMapper
+entity AddressRepository
+database UserRepository
+
+Actor -> AddressPage : Request PUT /update/{id}
+activate AddressPage
+AddressPage -> AddressController : updateAddress(id, request, addressRequest)
+activate AddressController
+
+AddressController -> AddressService : updateAddress(id, request, addressRequest)
+activate AddressService
+
+AddressService -> JwtUtil : getUserFromRequest(request)
+activate JwtUtil
+JwtUtil --> AddressService : User
+deactivate JwtUtil
+
+AddressService -> User : getAddresses()
+activate User
+User --> AddressService : List<Address>
+deactivate User
+
+loop Find address by id
+    AddressService -> Address : check id match
+end
+
+alt Address found
+    AddressService -> AddressMapper : updateAddress(address, addressRequest)
+    activate AddressMapper
+    AddressMapper --> AddressService : updated Address
+    deactivate AddressMapper
+
+    AddressService -> AddressRepository : save(address)
+    activate AddressRepository
+    AddressRepository --> UserRepository : UPDATE address
+    UserRepository --> AddressRepository : update success
+    deactivate AddressRepository
+
+    AddressService --> AddressController : AddressResponse
+    deactivate AddressService
+
+    AddressController --> AddressPage : Return success
+    deactivate AddressController
+    deactivate AddressPage
+else Address not found
+    AddressService --> AddressController : throw AppException(ADDRESS_NOT_FOUND)
+    deactivate AddressService
+    AddressController --> AddressPage : Return error
+    deactivate AddressController
+    deactivate AddressPage
+end
+
+@enduml

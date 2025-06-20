@@ -1,11 +1,13 @@
 package org.example.yogabusinessmanagementweb.controller.user.course;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yogabusinessmanagementweb.common.entities.Courses;
 import org.example.yogabusinessmanagementweb.dto.response.ApiResponse;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponsePageDetail;
 import org.example.yogabusinessmanagementweb.dto.response.section.SectionResponse;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.example.yogabusinessmanagementweb.repositories.UserRepository;
@@ -34,7 +36,7 @@ public class CourseController {
     SectionsService sectionsService;
 
     @GetMapping("/all-course")
-    public ApiResponse<?> getAllCourses() {
+    public ApiResponse<?> getAllCourseWithTopic() {
         List<TopicCourseResponse> courseResponseList = coursesService.getAllCourseWithTopic();
         return new ApiResponse<>(HttpStatus.OK.value(), "get all courses successfully",courseResponseList);
     }
@@ -46,8 +48,14 @@ public class CourseController {
     }
 
     @GetMapping("/get-course/{id}")
-    public ApiResponse<?> getCourse(@PathVariable String id) {
-        Courses courses = coursesService.getCourse(id);
+    public ApiResponse<?> getCourse(HttpServletRequest request, @PathVariable String id) {
+        CourseResponsePageDetail courses = coursesService.getCourse(request,id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "get courses by id  successfully",courses);
+    }
+
+    @GetMapping("/get-course-filter-lecture/{id}")
+    public ApiResponse<?> getCourseByFilterLecture(HttpServletRequest request, @PathVariable String id) {
+        Courses courses = coursesService.getCourseByFilterLecture(request,id);
         return new ApiResponse<>(HttpStatus.OK.value(), "get courses by id  successfully",courses);
     }
 

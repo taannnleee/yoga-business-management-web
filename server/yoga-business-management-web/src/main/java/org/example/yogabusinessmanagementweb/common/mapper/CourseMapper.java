@@ -5,8 +5,10 @@ import org.example.yogabusinessmanagementweb.dto.request.address.AddressRequest;
 import org.example.yogabusinessmanagementweb.dto.request.course.CourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.address.AddressResponse;
 import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponse;
+import org.example.yogabusinessmanagementweb.dto.response.course.CourseResponsePageDetail;
 import org.example.yogabusinessmanagementweb.dto.response.topic.TopicCourseResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
@@ -17,6 +19,9 @@ public interface CourseMapper {
     Courses toCourses(CourseCreationRequest courseCreationRequest);
     void updateCourses(@MappingTarget Courses courses, CourseCreationRequest courseCreationRequest );
 
+
     List<CourseResponse> toCoursesResponseList(List<Courses> courses);
 
+    @Mapping(target = "teacher", source = "teacher")
+    CourseResponsePageDetail toCourseResponsePageDetail(Courses courses);
 }

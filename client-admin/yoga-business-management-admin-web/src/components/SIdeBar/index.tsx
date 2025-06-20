@@ -32,15 +32,15 @@ import {
   InboxStackIcon,
   TagIcon,
   UserCircleIcon,
-  HomeIcon,           // Icon cho Tổng quan
-  AcademicCapIcon,    // Icon cho Quản lý khóa học
+  HomeIcon, // Icon cho Tổng quan
+  AcademicCapIcon, // Icon cho Quản lý khóa học
 } from '@heroicons/react/24/outline';
 import UserMenu from '../UserMenu';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IRootState } from '../../redux';
+import { IRootState } from '../../store';
 import { useDispatch } from 'react-redux';
-import { setOpenSideBar } from '../../redux/slices/auth';
+import { setOpenSideBar } from '../../store/slices/auth';
 
 const drawerWidth = 280;
 
@@ -126,8 +126,6 @@ export default function MainLayout(props: ISideBarProps) {
 
   const dispatch = useDispatch();
 
-
-
   // Tạo state riêng biệt cho mỗi mục
   const [openOverview, setOpenOverview] = useState(false);
   const [openCourseManagement, setOpenCourseManagement] = useState(false);
@@ -141,7 +139,6 @@ export default function MainLayout(props: ISideBarProps) {
   };
 
   const icons = [
-
     <ChartBarSquareIcon className="h-6 w-6 text-gray-500" />,
     <UserCircleIcon className="h-6 w-6 text-gray-500" />,
     <TagIcon className="h-6 w-6 text-gray-500" />,
@@ -151,7 +148,6 @@ export default function MainLayout(props: ISideBarProps) {
     <HomeIcon className="h-6 w-6 text-gray-500" />,
     <AcademicCapIcon className="h-6 w-6 text-gray-500" />,
     <GiftIcon className="h-6 w-6 text-gray-500" />,
-
   ];
 
   const activeIcons = [
@@ -160,7 +156,7 @@ export default function MainLayout(props: ISideBarProps) {
     <TagIcon className="h-6 w-6 font-semibold text-gray-500" />,
     <InboxStackIcon className="h-6 w-6 font-semibold text-gray-500" />,
     <BuildingStorefrontIcon className="h-6 w-6 font-semibold text-gray-500" />,
-    <GiftIcon className="h-6 w-6 text-gray-500" />
+    <GiftIcon className="h-6 w-6 text-gray-500" />,
   ];
 
   const to = [
@@ -170,14 +166,13 @@ export default function MainLayout(props: ISideBarProps) {
     '/products-management',
     '/order-management',
     '/promotion-management',
+    '/roadmap-management',
   ];
 
   const [openSidebar, setOpenSidebar] = useState(true);
   const toggleSidebar = () => {
     setOpenSidebar(!openSidebar);
   };
-
-
 
   // Bổ sung vào trong component
 
@@ -188,7 +183,6 @@ export default function MainLayout(props: ISideBarProps) {
     return location.pathname === path;
   };
 
-
   const courseManagementItems = [
     { label: 'Khóa học', url: 'courses' },
     { label: 'Giảng viên', url: 'teachers' },
@@ -198,9 +192,7 @@ export default function MainLayout(props: ISideBarProps) {
   const overviewManagementItems = [
     { label: 'Báo cáo doanh thu', url: 'dashboard' },
     { label: 'Dự đoán xu hướng', url: 'trend' },
-
   ];
-
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -251,9 +243,9 @@ export default function MainLayout(props: ISideBarProps) {
               sx={{
                 justifyContent: 'initial',
                 px: 4,
-                backgroundColor: isSelected('/home') ? 'blue' : 'transparent',  // Thêm màu nền cho mục được chọn
+                backgroundColor: isSelected('/home') ? 'blue' : 'transparent', // Thêm màu nền cho mục được chọn
                 '&:hover': {
-                  backgroundColor: isSelected('/home') ? 'blue' : 'transparent',  // Thêm hiệu ứng hover
+                  backgroundColor: isSelected('/home') ? 'blue' : 'transparent', // Thêm hiệu ứng hover
                 },
               }}
             >
@@ -270,13 +262,9 @@ export default function MainLayout(props: ISideBarProps) {
                     key={url}
                     sx={{
                       pl: 8,
-                      backgroundColor: isSelected(`/home/${url}`)
-                        ? 'blue'
-                        : 'transparent',
+                      backgroundColor: isSelected(`/home/${url}`) ? 'blue' : 'transparent',
                       '&:hover': {
-                        backgroundColor: isSelected(`/home/${url}`)
-                          ? 'blue'
-                          : 'transparent',
+                        backgroundColor: isSelected(`/home/${url}`) ? 'blue' : 'transparent',
                       },
                     }}
                     component={Link}
@@ -296,9 +284,9 @@ export default function MainLayout(props: ISideBarProps) {
               sx={{
                 justifyContent: 'initial',
                 px: 4,
-                backgroundColor: isSelected('/course-management') ? 'blue' : 'transparent',  // Thêm màu nền cho mục được chọn
+                backgroundColor: isSelected('/course-management') ? 'blue' : 'transparent', // Thêm màu nền cho mục được chọn
                 '&:hover': {
-                  backgroundColor: isSelected('/course-management') ? 'blue' : 'transparent',  // Thêm hiệu ứng hover
+                  backgroundColor: isSelected('/course-management') ? 'blue' : 'transparent', // Thêm hiệu ứng hover
                 },
               }}
             >
@@ -334,8 +322,14 @@ export default function MainLayout(props: ISideBarProps) {
             </Collapse>
           </ListItem>
 
-
-          {['Quản lý người dùng', 'Quản lý danh mục', 'Quản lý sản phẩm', 'Quản lý đơn hàng', 'Quản lý khuyến mãi'].map((text, index) => (
+          {[
+            'Quản lý người dùng',
+            'Quản lý danh mục',
+            'Quản lý sản phẩm',
+            'Quản lý đơn hàng',
+            'Quản lý khuyến mãi',
+            'Quản lý lộ trình học',
+          ].map((text, index) => (
             <Link to={to[index + 1]} key={text}>
               <ListItem disablePadding>
                 <ListItemButton

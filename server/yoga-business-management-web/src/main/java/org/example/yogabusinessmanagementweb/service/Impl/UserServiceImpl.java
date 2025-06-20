@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.yogabusinessmanagementweb.common.Enum.EAddress;
 import org.example.yogabusinessmanagementweb.common.Enum.EGender;
+import org.example.yogabusinessmanagementweb.common.entities.MembershipType;
 import org.example.yogabusinessmanagementweb.common.entities.Wishlist;
 import org.example.yogabusinessmanagementweb.common.mapper.AddressMapper;
 import org.example.yogabusinessmanagementweb.common.mapper.UserMapper;
@@ -16,6 +17,7 @@ import org.example.yogabusinessmanagementweb.dto.response.address.AddressRespons
 import org.example.yogabusinessmanagementweb.dto.response.checkout.UserAddressDefaultResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.ProfileResponse;
 import org.example.yogabusinessmanagementweb.dto.response.user.RegistrationResponse;
+import org.example.yogabusinessmanagementweb.dto.response.user.UserResponse;
 import org.example.yogabusinessmanagementweb.exception.AppException;
 import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.AddressRepository;
@@ -81,6 +83,17 @@ public class UserServiceImpl implements UserService {
     private AddressRepository addressRepository;
 
     @Override
+    public List<UserResponse> getAllUserResponse() {
+        List<UserResponse> userResponses = new ArrayList<>();
+        List<User> users = userRepository.findAllByRoles("USER");
+        for (User user : users) {
+            userResponses.add(userMapper.toUserResponse(user));
+
+        }
+        return userResponses;
+    }
+
+    @Override
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
@@ -125,6 +138,10 @@ public class UserServiceImpl implements UserService {
         user.setRoles(ERole.USER.name() );
 
         user.setAddresses(arrayList);
+
+        MembershipType membershipType = new MembershipType();
+        membershipType.setId(1L); // Hoặc 2 tùy giá trị
+        user.setMembershipType(membershipType);
 
         //tạo ra một wish list cho người dùng
 //        Wishlist wishlist = new Wishlist();
@@ -269,5 +286,10 @@ public class UserServiceImpl implements UserService {
         User user =  findUserByUserName(userName);
         return user.getEmail();
     }
-
+    @Override
+    public void updateStatusUser(String id) {
+        User user = findUserById(id);
+        user.setStatus(!user.isStatus());
+        userRepository.save(user);
+    }
 }

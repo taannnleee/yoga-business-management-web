@@ -3,19 +3,17 @@ import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { auth } from '../common/config/firebase';
-import { IRootState } from '../redux';
-import { setAccessToken, setUser } from '../redux/slices/auth';
+import { IRootState } from '../store';
 import { useAppSelector } from './useRedux';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import axiosInstance from 'utils/axiosClient';
 import { apiURL } from '../config/constanst';
-import SockJS from "sockjs-client";
-import { Client, StompSubscription } from "@stomp/stompjs";
-
+import axios from 'axios';
 export const useAuth = () => {
   const [loginWithGoogle] = useSignInWithGoogle(auth);
 
-  //login
   const [loginError, setLoginError] = useState<string>();
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const isAuth = useAppSelector((state: IRootState) => state.auth.accessToken);
@@ -26,76 +24,57 @@ export const useAuth = () => {
   const dispatch = useDispatch();
 
   const login = async (username: string, password: string) => {
-    console.log('Username, password', username);
     try {
       setLoginLoading(true);
-      const response = await fetch('http://localhost:8080/api/auth/login-admin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        `${apiURL}/api/auth/login-admin`,
+        {
+          username,
+          password,
         },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
+        {
+          validateStatus: (status) => true, // Chấp nhận tất cả status code
+        },
+      );
+
+      const result = response.data;
+
+      // Lưu token
+      localStorage.setItem('accessToken', result.data.accesstoken);
+      localStorage.setItem('refreshToken', result.data.accesstoken);
+
+      // Optionally update Redux
+      // dispatch(setUser(result.data));
+      // dispatch(setAccessToken(result.data.accesstoken));
+
+      history.push('/home/dashboard');
+
+      // Kết nối WebSocket
+      const socket = new SockJS(`${apiURL}/ws`);
+      const stompClient = new Client({
+        webSocketFactory: () => socket,
+        debug: (str: string) => console.log(str),
       });
-      const result = await response.json();
-      if (response.ok) {
-        toast.success('Đăng nhập thành công', {
 
-          position: 'top-right',
-          autoClose: 0,
-          theme: 'colored',
-          hideProgressBar: true,
+      stompClient.onConnect = () => {
+        console.log('WebSocket Connected');
+
+        stompClient.subscribe('/topic/admin', (message) => {
+          if (message.body) {
+            alert(message.body);
+          }
         });
+      };
 
-        localStorage.setItem('accessToken', result.data.accesstoken);
-        localStorage.setItem('refreshToken', result.data.accesstoken);
-        history.push('/home/dashboard');
-        console.log("kkk1")
-        console.log(result.data.accesstoken)
-
-        // dispatch(setUser(response?.data?.data as any));
-        // dispatch(setAccessToken(response?.data?.data?.accessToken));
-        // Khởi tạo WebSocket sau khi đăng nhập thành công
-        const socket = new SockJS("http://localhost:8080/ws");
-        const stompClient = new Client({
-          webSocketFactory: () => socket,
-          debug: (str: string) => console.log(str),
-        });
-
-        stompClient.onConnect = () => {
-          console.log("WebSocket Connected");
-
-          // Đăng ký lắng nghe kênh /topic/admin
-          stompClient.subscribe("/topic/admin", (message) => {
-            if (message.body) {
-              alert(message.body); // Hiển thị thông báo
-            }
-          });
-        };
-
-        stompClient.activate();
-
-        // localStorage.setItem('websocket', JSON.stringify(stompClient));
-
-        // Cleanup khi component bị unmount
-        // return () => {
-        //   stompClient.deactivate();
-        // };
-
-        // Lưu trữ stompClient nếu cần sử dụng sau
-        // window.stompClient = stompClient;
-      } else {
-        toast.error('Phone number or password in incorrect', {
-          position: 'top-right',
-          theme: 'colored',
-          hideProgressBar: true,
-        });
-      }
-    } catch (error) {
+      stompClient.activate();
+    } catch (error: any) {
       console.log(error);
-      setLoginError(error as string);
+      toast.error('Tài khoản hoặc mật khẩu không đúng', {
+        position: 'top-right',
+        theme: 'colored',
+        hideProgressBar: true,
+      });
+      setLoginError(error?.message || 'Đăng nhập thất bại');
     } finally {
       setLoginLoading(false);
     }
@@ -107,6 +86,8 @@ export const useAuth = () => {
       await loginWithGoogle();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoginLoading(false);
     }
   };
 

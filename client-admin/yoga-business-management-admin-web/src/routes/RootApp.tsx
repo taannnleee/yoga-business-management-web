@@ -1,10 +1,8 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import UserManagement from '../pages/UserManagement';
 import DashBoard from '../pages/DashBoard';
 import ProductManagement from '../pages/ProductManagement';
 import LoginPage from '../pages/Auth/Login';
-import { useAppSelector } from '../hooks/useRedux';
-import { IRootState } from '../redux';
 import CategoryMangement from '../pages/CategoryManagement';
 import StoreMangement from '../pages/StoreManagement';
 import TeacherManagement from '../pages/TeacherManagement';
@@ -16,79 +14,49 @@ import WebSocketDemo from '../pages/test';
 import TrendPrediction from '../pages/TrendPrediction';
 import PromotionManager from '../pages/PromotionManagement';
 import TrashStoreProductManagement from '../pages/Trash';
+import RoadmapManagement from '../pages/RoadmapManagement';
+import CreateRoadmapPage from 'pages/RoadmapManagement/CreateRoadmapPage';
 
 export default function RootApp() {
-  // const { accessToken } = useAppSelector((state: IRootState) => state.auth);
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = true;
 
   return (
-    <div>
-      <Route
-        path="/"
-        render={() => {
-          return !accessToken ? <Redirect to="/login" /> : <Redirect to="/home/dashboard" />;
-        }}
-      ></Route>
-      {/* <Route path="/home">
-        <DashBoard />
-      </Route> */}
-      <Route path="/user-management">
-        <UserManagement />
-      </Route>
-      <Route path="/category-management">
-        <CategoryMangement />
-      </Route>
-      <Route path="/products-management">
-        <ProductManagement />
+    <Switch>
+      {/* Redirect root based on login status */}
+      <Route exact path="/">
+        {accessToken ? <Redirect to="/home/dashboard" /> : <Redirect to="/login" />}
       </Route>
 
-      <Route path="/trash">
-        <TrashStoreProductManagement />
-      </Route>
+      {/* Public route */}
+      <Route path="/login" component={LoginPage} />
 
-      <Route path="/store-management">
-        <StoreMangement />
-      </Route>
-      <Route path="/login">
-        <LoginPage />
-      </Route>
+      {/* Private routes (you could extract to <PrivateRoute> later) */}
+      {accessToken && (
+        <>
+          <Route path="/home/dashboard" component={DashBoard} />
+          <Route path="/user-management" component={UserManagement} />
+          <Route path="/category-management" component={CategoryMangement} />
+          <Route path="/products-management" component={ProductManagement} />
+          <Route path="/trash" component={TrashStoreProductManagement} />
+          <Route path="/store-management" component={StoreMangement} />
+          <Route path="/home/trend" component={TrendPrediction} />
+          <Route path="/course-management/teachers" component={TeacherManagement} />
+          <Route path="/course-management/topics" component={TopicManagement} />
+          <Route path="/course-management/courses" component={CourseManagement} />
+          <Route path="/course-detail/:id" component={CourseDetailPage} />
+          <Route path="/order-management" component={OrderManagement} />
+          <Route path="/test" component={WebSocketDemo} />
+          <Route path="/promotion-management" component={PromotionManager} />
+          <Route path="/roadmap-management" component={RoadmapManagement} />
+          <Route path="/create/roadmap-management" component={CreateRoadmapPage} />
 
-      <Route path="/home/dashboard">
-        <DashBoard />
-      </Route>
-      <Route path="/home/trend">
-        <TrendPrediction />
-      </Route>
+        </>
+      )}
 
-      <Route path="/course-management/teachers">
-        <TeacherManagement />
+      {/* Catch all unmatched routes */}
+      <Route path="*">
+        <Redirect to="/" />
       </Route>
-
-      <Route path="/course-management/topics">
-        <TopicManagement />
-      </Route>
-
-      <Route path="/course-management/courses">
-        <CourseManagement />
-      </Route>
-
-      <Route path="/course-detail/:id">
-        <CourseDetailPage />
-      </Route>
-
-
-      <Route path="/order-management">
-        <OrderManagement />
-      </Route>
-
-      <Route path="/test">
-        <WebSocketDemo />
-      </Route>
-      <Route path="/promotion-management">
-        <PromotionManager />
-      </Route>
-
-
-    </div>
+    </Switch>
   );
 }

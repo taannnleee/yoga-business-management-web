@@ -13,5 +13,5 @@ public interface CoursesRepository  extends JpaRepository<Courses, Long> {
     List<Courses> findAllByTopic(Topic topic);
     List<Courses> findAllByTeacher(Teacher teacher);
 
-    List<Courses> findTop4ByOrderByIdAsc();
+    List<Courses> findTop6ByOrderByIdAsc();
 }

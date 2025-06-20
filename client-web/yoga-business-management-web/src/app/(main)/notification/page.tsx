@@ -7,6 +7,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useToast } from "@/hooks/useToast";
 import axiosInstance from "@/utils/axiosClient";
+import { div } from '@tensorflow/tfjs-core';
 
 // Define data types
 interface User {
@@ -77,7 +78,7 @@ const NotificationPage: React.FC = () => {
             setNotifications(response.data.data);
         } catch (err) {
             console.error('Error fetching notifications:', err);
-            setError('Cannot load notifications. Please try again.');
+            setError('Lỗi hệ thống. Vui lòng thử lại sau');
         } finally {
             setLoading(false);
         }
@@ -114,45 +115,53 @@ const NotificationPage: React.FC = () => {
     return (
         <Container>
             {loading ? (
+
                 <CircularProgress size={50} />
             ) : error ? (
                 <Typography variant="h6" color="error" align="center">
+
                     {error}
                 </Typography>
             ) : (
                 <Box>
-                    {notifications.map((notification) => (
-                        <Box
-                            key={notification.id}
-                            sx={{
-                                backgroundColor: '#fff',
-                                borderRadius: '10px',
-                                padding: '15px',
-                                marginBottom: '15px',
-                                boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-                            }}
-                        >
-                            <Typography variant="h6">{notification.title}</Typography>
-                            <Typography variant="body1" color="textSecondary">
-                                {notification.message}
-                            </Typography>
-                            <Box sx={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                                <Typography variant="body2" color="textSecondary">
-                                    Date: {new Date(notification.createdAt).toLocaleDateString()}
-                                </Typography>
-                                <Typography variant="body2" color={notification.read ? 'green' : 'blue'}>
-                                    Status: {notification.read ? 'Read' : 'Unread'}
-                                </Typography>
-                            </Box>
-                            <Button
-                                onClick={() => handleNotificationPress(notification)}
-                                sx={{ marginTop: '10px' }}
-                                variant="outlined"
+                    {notifications.length === 0 ? (
+                        <Typography variant="body1" color="textSecondary">
+                            Hiện tại chưa có thông báo mới nào.
+                        </Typography>
+                    ) : (
+                        notifications.map((notification) => (
+                            <Box
+                                key={notification.id}
+                                sx={{
+                                    backgroundColor: '#fff',
+                                    borderRadius: '10px',
+                                    padding: '15px',
+                                    marginBottom: '15px',
+                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                                }}
                             >
-                                View Details
-                            </Button>
-                        </Box>
-                    ))}
+                                <Typography variant="h6">{notification.title}</Typography>
+                                <Typography variant="body1" color="textSecondary">
+                                    {notification.message}
+                                </Typography>
+                                <Box sx={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Ngày: {new Date(notification.createdAt).toLocaleDateString()}
+                                    </Typography>
+                                    <Typography variant="body2" color={notification.read ? 'green' : 'blue'}>
+                                        Trạng thái: {notification.read ? 'Đã đọc' : 'Chưa đọc'}
+                                    </Typography>
+                                </Box>
+                                <Button
+                                    onClick={() => handleNotificationPress(notification)}
+                                    sx={{ marginTop: '10px' }}
+                                    variant="outlined"
+                                >
+                                    Xem chi tiết
+                                </Button>
+                            </Box>
+                        ))
+                    )}
                 </Box>
             )}
 

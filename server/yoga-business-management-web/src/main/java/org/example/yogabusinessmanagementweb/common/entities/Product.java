@@ -37,11 +37,6 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @JoinColumn(name = "subCategory_id")
     SubCategory subCategory;
 
-    @Column(name = "average_rating")
-    Double averageRating = (double) 0;
-    @Column(name = "sold", nullable = false)
-    Double sold = (double) 0;
-
     @Column(name = "code")
     String code;
     @Column(name = "brand")
@@ -52,4 +47,9 @@ public class Product extends AbstractEntity<Long> implements Serializable {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "variants", columnDefinition = "json")
     Map<String, Map<String, String>> variants;
+
+    @Column(name = "average_rating")
+    Double averageRating = (double) 0;
+    @Column(name = "sold", nullable = false)
+    Double sold = (double) 0;
 }

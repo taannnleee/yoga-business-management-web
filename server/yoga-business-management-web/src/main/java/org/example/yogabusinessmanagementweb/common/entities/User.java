@@ -5,20 +5,16 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.yogabusinessmanagementweb.common.Enum.EGender;
-import org.example.yogabusinessmanagementweb.common.Enum.ERole;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
-import javax.print.attribute.standard.Media;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -53,13 +49,12 @@ public class User extends AbstractEntity<Long>  implements UserDetails, Serializ
     @JoinColumn(name = "user_id")
     List<Address> addresses;
 
-    @OneToMany(mappedBy = "user")
-    List<GroupHasUser> groupHasUsers;
+    @ColumnDefault(value = "0")
+    private BigDecimal point;
 
-
-//    @OneToMany()
-//    List<UserHasYogaWorkout> yogaWorkouts;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "membership_type_id")
+    private MembershipType membershipType;
 
     @Override
     public boolean isAccountNonExpired() {

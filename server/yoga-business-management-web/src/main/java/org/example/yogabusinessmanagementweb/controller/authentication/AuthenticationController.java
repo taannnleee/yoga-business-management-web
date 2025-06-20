@@ -75,11 +75,6 @@ public class AuthenticationController {
     public ApiResponse<TokenRespone> loginAdmin(HttpServletRequest request,@Valid @RequestBody LoginRequest loginRequest) {
         try {
             TokenRespone tokenRespone = authencationService.authenticationAdmin(loginRequest);
-
-
-
-            WebSocketSession session = (WebSocketSession) request.getAttribute("webSocketSession");
-//            webSocketService.registerAdminSession(session);
             return new ApiResponse<>( HttpStatus.OK.value(),"Login success",tokenRespone);
         }catch (BadCredentialsException e){
             return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(),"Bad credentials");

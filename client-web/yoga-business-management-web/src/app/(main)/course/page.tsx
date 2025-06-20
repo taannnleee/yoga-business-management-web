@@ -30,6 +30,7 @@ interface Course {
     videoPath: string;
     price: number;
     rating: number;
+    capacity: number;
 }
 
 
@@ -76,7 +77,7 @@ const CoursePage: React.FC = () => {
         router.push(`/course/teacher/${id}`);
     };
 
-    const coursesPerPage = 4;
+    const coursesPerPage = 3;
     const courseGroups = [];
     for (let i = 0; i < courses.length; i += coursesPerPage) {
         courseGroups.push(courses.slice(i, i + coursesPerPage));
@@ -90,6 +91,7 @@ const CoursePage: React.FC = () => {
 
                 );
                 if (response.data.status === 200) {
+                    console.log("22222222222", response.data.data)
                     setInstructors(response.data.data);
 
                 } else {
@@ -103,7 +105,7 @@ const CoursePage: React.FC = () => {
         };
 
         fetchInstructors();
-    }, []); // Chạy một lần khi component mount
+    }, []);
 
 
     // Fetch các khóa học của giáo viên từ API
@@ -163,9 +165,9 @@ const CoursePage: React.FC = () => {
         <div className="w-screen">
             {/* Background Image Section */}
             <div className="h-screen bg-[url('https://yoga.vn/statics/yoga/img/yoga.jpg')] bg-cover bg-center flex items-center justify-center">
-                <button className="w-[400px] h-[54px] bg-[#ee4987] text-white text-[24px] font-bold rounded hover:bg-[#fced0e] hover:text-[#ec3496] transition duration-200">
+                {/* <button className="w-[400px] h-[54px] bg-[#ee4987] text-white text-[24px] font-bold rounded hover:bg-[#fced0e] hover:text-[#ec3496] transition duration-200">
                     BẮT ĐẦU CHƯƠNG TRÌNH NÀY
-                </button>
+                </button> */}
             </div>
 
             {/* Reasons Section */}
@@ -230,7 +232,7 @@ const CoursePage: React.FC = () => {
             </div>
 
             {/* Courses Section */}
-            <div className="w-full max-w-6xl px-4 mx-auto mt-[30px]">
+            <div className="w-full max-w-6xl px-4 mx-auto mt-[30px] z-[-100]">
                 <h2 className="text-2xl font-bold text-center mb-6">CÁC KHÓA HỌC NỔI BẬT</h2>
                 {/* {courses.map((course, index) => (
                     <CourseCard key={index} courses={course} />

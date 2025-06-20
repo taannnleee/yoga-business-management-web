@@ -79,7 +79,7 @@ public class AdminOrderController {
     @GetMapping("/get-month-revenue")
     public ApiResponse<?> getAllOrderByMonth(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
                                              @RequestParam(defaultValue = "50") int pageSize,
-                                             @RequestParam(defaultValue = "2024") String year,
+                                             @RequestParam(defaultValue = "2025") String year,
                                              @RequestParam(defaultValue = "updatedAt") String sortBy, // Field to sort by
                                              @RequestParam(defaultValue = "desc") String sortDir, // Sort direction: "asc" or "desc"
                                              @RequestParam(required = false) String keyword) {

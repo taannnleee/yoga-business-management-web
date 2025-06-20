@@ -12,6 +12,12 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
+```bash
+
+# Start the production server
+yarn start
+# When use yarn start system automatic yarn build && yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

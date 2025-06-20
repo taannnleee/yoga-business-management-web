@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.yogabusinessmanagementweb.common.config.payment.VNPAYConfig;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.request.order.OrderVnpayRequest;
+import org.example.yogabusinessmanagementweb.dto.request.orderCourse.OrderCourseCreationRequest;
 import org.example.yogabusinessmanagementweb.dto.response.payment.PaymentVnpayResponse;
 import org.example.yogabusinessmanagementweb.service.PaymentService;
 import org.example.yogabusinessmanagementweb.utils.VNPayUtil;
@@ -44,6 +45,32 @@ public class PaymentServiceImpl implements PaymentService {
                 .paymentUrl(paymentUrl)
                 .addressId(orderRequest.getAddressId())
                 .paymentMethod(orderRequest.getPaymentMethod())
+                .build();
+    }
+
+    @Override
+    public PaymentVnpayResponse createVnPayPaymentCourse(HttpServletRequest request, OrderCourseCreationRequest orderRequest) throws JsonProcessingException {
+        String amountStr = request.getParameter("amount");  // "500.000 VNĐ"
+        amountStr = amountStr.replaceAll("[^\\d]", "");
+
+        long amount = Integer.parseInt(amountStr) * 100L;
+        String bankCode = request.getParameter("bankCode");
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayCourseConfig(orderRequest);
+        vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
+        if (bankCode != null && !bankCode.isEmpty()) {
+            vnpParamsMap.put("vnp_BankCode", bankCode);
+        }
+        vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
+        //build query url
+        String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
+        String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
+        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
+        queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
+        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+        return PaymentVnpayResponse.builder()
+                .code(00)
+                .message("success")
+                .paymentUrl(paymentUrl)
                 .build();
     }
 

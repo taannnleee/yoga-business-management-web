@@ -1,8 +1,10 @@
 package org.example.yogabusinessmanagementweb.service.Impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.example.yogabusinessmanagementweb.common.Enum.ERole;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.yogabusinessmanagementweb.common.entities.Notification;
 import org.example.yogabusinessmanagementweb.common.entities.User;
 import org.example.yogabusinessmanagementweb.common.mapper.GenericMapper;
@@ -15,7 +17,6 @@ import org.example.yogabusinessmanagementweb.exception.ErrorCode;
 import org.example.yogabusinessmanagementweb.repositories.NotificationRepository;
 import org.example.yogabusinessmanagementweb.repositories.ProductRepository;
 import org.example.yogabusinessmanagementweb.repositories.SubCategoryRepository;
-import org.example.yogabusinessmanagementweb.repositories.TempRepository;
 import org.example.yogabusinessmanagementweb.service.ProductService;
 import org.example.yogabusinessmanagementweb.common.entities.Product;
 import org.example.yogabusinessmanagementweb.common.entities.SubCategory;
@@ -27,7 +28,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +41,6 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
-    TempRepository tempRepository;
     ProductMapper productMapper;
     SubCategoryService subCategoryService;
     UserService userService;
@@ -142,6 +145,43 @@ public class ProductServiceImpl implements ProductService {
         //Lưu product
         return productRepository.save(product);
     }
+    @Transactional
+    @Override
+    public void importProductsByExcel(MultipartFile file) {
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0); // đọc sheet đầu tiên
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) {
+                    continue; // Bỏ qua header
+                }
+
+                String code = getCellStringValue(row.getCell(0)); // Mã sản phẩm
+                String title = getCellStringValue(row.getCell(1)); // Tên sản phẩm
+                double price = getCellNumericValue(row.getCell(2)); // Giá bán
+                String description = getCellStringValue(row.getCell(3)); // Mô tả
+                double quantity = getCellNumericValue(row.getCell(4)); // Số lượng
+                String createdAtStr = getCellStringValue(row.getCell(5)); // Ngày tạo
+
+
+// Nếu thiếu SubCategoryId trong file => tự gán cứng
+                Long subCategoryId = 1L; // Hoặc lookup theo loại sản phẩm nếu có thêm thông tin
+
+                ProductCreationRequest request = new ProductCreationRequest();
+                request.setTitle(title);
+                request.setPrice(BigDecimal.valueOf(price));
+                request.setBrand("No brand"); // file không có brand, có thể gán tạm
+                request.setDescription(description);
+                request.setSubCategoryId(subCategoryId);
+                request.setImagePath("default.jpg"); // hoặc để trống
+
+                addProduct(request);
+            }
+        } catch (IOException e) {
+//            throw new AppException(ErrorCode.EXCEL_IMPORT_ERROR, "Error reading Excel file", e);
+        }
+    }
+
 
     @Override
     public boolean delete(String id) {
@@ -173,5 +213,28 @@ public class ProductServiceImpl implements ProductService {
         product.setAverageRating(rating);
         product.setSold(sold);
         productRepository.save(product);
+    }
+    private String getCellStringValue(Cell cell) {
+        if (cell == null) return "";
+        if (cell.getCellType() == CellType.STRING) {
+            return cell.getStringCellValue().trim();
+        } else if (cell.getCellType() == CellType.NUMERIC) {
+            return String.valueOf((long) cell.getNumericCellValue()); // nếu là số thì convert về String
+        }
+        return "";
+    }
+
+    private double getCellNumericValue(Cell cell) {
+        if (cell == null) return 0.0;
+        if (cell.getCellType() == CellType.NUMERIC) {
+            return cell.getNumericCellValue();
+        } else if (cell.getCellType() == CellType.STRING) {
+            try {
+                return Double.parseDouble(cell.getStringCellValue().trim());
+            } catch (NumberFormatException e) {
+                return 0.0; // hoặc throw exception tùy bạn muốn strict hay không
+            }
+        }
+        return 0.0;
     }
 }

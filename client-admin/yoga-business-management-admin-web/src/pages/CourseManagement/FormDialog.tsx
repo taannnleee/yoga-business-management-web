@@ -22,6 +22,7 @@ import { Topic } from '../../types/topic';
 import UploadWidget from '../../designs/UploadWidget';
 import UploadVideoWidget from '../../designs/UploadVideoWidget';
 import { toast } from 'react-toastify';
+import axiosInstance from 'utils/axiosClient';
 
 interface FormDialogProps {
   open: boolean;
@@ -54,26 +55,21 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
       fetchTopics();
     }
   }, [open]);
+  useEffect(() => {
+    if (isEditMode && course) {
+      setSelectedTopic(course.topicId?.toString() || '');
+      setSelectedTeacher(course.teacherId?.toString() || '');
+      console.log('Course in edit mode:', course);
+      console.log('Selected Topic:', selectedTopic);
+    }
+  }, [isEditMode, course]);
 
   const fetchTeachers = async () => {
     setLoadingTeachers(true);
     setError(null);
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/all-teachers`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setTeachers(data.data || []);
+      const response = await axiosInstance.get(`/api/admin/all-teachers`);
+      setTeachers(response.data.data || []);
     } catch (error) {
       setError(
         'Error fetching teachers: ' + (error instanceof Error ? error.message : 'Unknown error'),
@@ -87,21 +83,8 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
     setLoadingTeachers(true);
     setError(null);
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch(`${apiURL}/api/admin/all-topic`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setTopics(data.data || []);
+      const response = await axiosInstance.get(`/api/admin/all-topic`);
+      setTopics(response.data.data || []);
     } catch (error) {
       setError(
         'Error fetching topics: ' + (error instanceof Error ? error.message : 'Unknown error'),
@@ -113,19 +96,12 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
 
   const handleCreateCourse = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const url = isEditMode
-        ? `${apiURL}/api/admin/update-course/${course?.id}`
-        : `${apiURL}/api/admin/add-course`;
+      const url = isEditMode ? `/api/admin/update-course/${course?.id}` : `/api/admin/add-course`;
       const method = isEditMode ? 'PUT' : 'POST';
 
-      const response = await axios({
+      const response = await axiosInstance({
         url,
         method,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
         data: {
           name: courseName,
           description,
@@ -181,7 +157,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
             <Typography color="error">{error}</Typography>
           ) : (
             <Select
-              value={selectedTopic}
+              value={selectedTopic || ''} // Tránh undefined
               onChange={(e) => setSelectedTopic(e.target.value)}
               label="Chọn chủ đề"
             >
@@ -265,6 +241,7 @@ const FormDialog = ({ open, onClose, course, onSave }: FormDialogProps) => {
           setThumbnailUploaded={(image: string) => setVideoPath(image)}
           thumbnailUploaded={videoPath}
           setVideoDuration={handleSetVideoDuration}
+          videoDuration={duration}
         />
         {/*<TextField*/}
         {/*  margin="dense"*/}

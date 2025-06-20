@@ -6,7 +6,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/
 import { Pagination, Skeleton, TablePagination } from '@mui/material';
 import axios from 'axios';
 import { useAppSelector } from '../../hooks/useRedux';
-import { IRootState } from '../../redux';
+import { IRootState } from '../../store';
 import Spinner from '../../components/Spinner';
 import { apiURL } from '../../config/constanst';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
@@ -19,6 +19,8 @@ import SelectComponent from '../../components/Select';
 import ImportProductForm from './ImportProducForm';
 import StoreProductForm from './StoreProductForm';
 import { useHistory } from 'react-router-dom';
+import axiosInstance from 'utils/axiosClient';
+import ImportExcelProduct from 'pages/ProductManagement/ImportExcelProduct';
 
 interface IStoreManagementProps {
   onChangeViewMode: (mode: 'tenant' | 'store') => void;
@@ -29,40 +31,35 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
   const [deleteDisable, setDeleteDisable] = React.useState<boolean>(false);
   const [selectionModel, setSelectionModel] = React.useState<GridSelectionModel>([]);
 
-  const [products, setProducts] = React.useState<any[]>([]);  // Lưu trữ danh sách sản phẩm
+  const [products, setProducts] = React.useState<any[]>([]); // Lưu trữ danh sách sản phẩm
   const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [page, setPage] = React.useState<number>(1);  // Quản lý trang
-  const [totalPages, setTotalPages] = React.useState<number>(0);  // Tổng số trang
+  const [page, setPage] = React.useState<number>(1); // Quản lý trang
+  const [totalPages, setTotalPages] = React.useState<number>(0); // Tổng số trang
   const [actionLoading, setActionLoading] = React.useState<boolean>(false);
   const [selectedRow, setSelectedRow] = React.useState<string | number>('');
   const [selectedItem, setSelectedItem] = React.useState<IProduct | null>(null);
   const [openImportProductModal, setOpenImportProductModal] = React.useState<boolean>(false);
   const [currentSubCategory, setCurrentSubCategory] = React.useState<IStore | null>(null);
   const [listStore, setListStore] = React.useState<IStore[]>([]);
-  const [subcategories, setSubcategories] = React.useState<any[]>([]);  // State để lưu danh sách subcategories
+  const [subcategories, setSubcategories] = React.useState<any[]>([]); // State để lưu danh sách subcategories
   const [openUpdateModal, setOpenUpdateModal] = React.useState<boolean>(false);
   const [storeLoading, setStoreLoading] = React.useState<boolean>(false);
   const [openDeleteConfirmModal, setOpenDeleteConfirmModal] = React.useState<boolean>(false); // Modal xác nhận xóa
   const [productToDelete, setProductToDelete] = React.useState<IProduct | null>(null); // Sản phẩm cần xóa
-  const accessToken = localStorage.getItem('accessToken');
+  const [openImportExcelModal, setOpenImportExcelModal] = React.useState<boolean>(false);
 
   // Hàm lấy tất cả sản phẩm
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${apiURL}/api/admin/get-all-product?page=${page}&size=10&status=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      const response = await axiosInstance.get(
+        `/api/admin/get-all-product?page=${page}&size=10&status=true`,
       );
       if (response?.data?.status === 200) {
-        setProducts(response.data.data.content);  // Dữ liệu sản phẩm nằm trong content
-        setTotalPages(response.data.data.totalPages);  // Tổng số trang
+        setProducts(response.data.data.content); // Dữ liệu sản phẩm nằm trong content
+        setTotalPages(response.data.data.totalPages); // Tổng số trang
       } else {
-        setProducts([]);  // Nếu không có dữ liệu, reset mảng sản phẩm
+        setProducts([]); // Nếu không có dữ liệu, reset mảng sản phẩm
       }
     } catch (error) {
       console.log('Lỗi khi lấy sản phẩm:', error);
@@ -75,16 +72,12 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
   // Hàm lấy tất cả subcategories
   const getAllSubCategories = async () => {
     try {
-      const response = await axios.get(`${apiURL}/api/admin/get-all-subcategory`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/get-all-subcategory`);
       if (response?.data?.status === 200) {
         setSubcategories(response.data.data);
         setCurrentSubCategory(response.data.data[0]);
       } else {
-        setSubcategories([]);  // Nếu không có subcategories, reset mảng
+        setSubcategories([]); // Nếu không có subcategories, reset mảng
       }
     } catch (error) {
       console.log('Lỗi khi lấy danh sách loại sản phẩm:', error);
@@ -94,16 +87,12 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
 
   const deleteProduct = async (productId: string | number) => {
     try {
-      console.log("kkkkkkk")
+      console.log('kkkkkkk');
       setActionLoading(true);
-      const response = await axios.get(`${apiURL}/api/admin/change-status/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(`/api/admin/change-status/${productId}`);
       if (response?.data?.status === 200) {
         toast.success('Xóa sản phẩm thành công');
-        getAllProducts();  // Tải lại danh sách sản phẩm sau khi xóa thành công
+        getAllProducts(); // Tải lại danh sách sản phẩm sau khi xóa thành công
       } else {
         toast.error('Xóa sản phẩm không thành công');
       }
@@ -112,13 +101,13 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       toast.error('Đã có lỗi khi xóa sản phẩm');
     } finally {
       setActionLoading(false);
-      setOpenDeleteConfirmModal(false);  // Đóng modal xác nhận sau khi xóa
+      setOpenDeleteConfirmModal(false); // Đóng modal xác nhận sau khi xóa
     }
   };
 
   React.useEffect(() => {
-    getAllProducts();  // Lấy danh sách sản phẩm
-    getAllSubCategories();  // Lấy danh sách loại sản phẩm (subcategories)
+    getAllProducts(); // Lấy danh sách sản phẩm
+    getAllSubCategories(); // Lấy danh sách loại sản phẩm (subcategories)
   }, [page]);
 
   // Cột trong DataGrid
@@ -129,7 +118,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       headerName: 'Mã sản phẩm',
       width: 200,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div>{params.row.code}</div>;  // Mã sản phẩm từ API
+        return <div>{params.row.code}</div>; // Mã sản phẩm từ API
       },
     },
     {
@@ -137,7 +126,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       headerName: 'Tên sản phẩm',
       width: 250,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div>{params.row.title}</div>;  // Tên sản phẩm từ API
+        return <div>{params.row.title}</div>; // Tên sản phẩm từ API
       },
     },
     {
@@ -157,7 +146,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       headerName: 'Ngày tạo',
       width: 150,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div>{new Date(params.row.createdAt).toLocaleDateString()}</div>;  // Ngày tạo
+        return <div>{new Date(params.row.createdAt).toLocaleDateString()}</div>; // Ngày tạo
       },
     },
     {
@@ -165,7 +154,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
       headerName: 'Ngày cập nhật',
       width: 150,
       renderCell: (params: GridRenderCellParams<any>) => {
-        return <div>{new Date(params.row.updatedAt).toLocaleDateString()}</div>;  // Ngày cập nhật
+        return <div>{new Date(params.row.updatedAt).toLocaleDateString()}</div>; // Ngày cập nhật
       },
     },
     {
@@ -191,8 +180,8 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             title: 'Xóa sản phẩm',
             onPress: () => {
               setSelectedItem(params.row);
-              setProductToDelete(params.row);  // Lưu sản phẩm cần xóa vào state
-              setOpenDeleteConfirmModal(true);  // Mở modal xác nhận xóa
+              setProductToDelete(params.row); // Lưu sản phẩm cần xóa vào state
+              setOpenDeleteConfirmModal(true); // Mở modal xác nhận xóa
             },
             onActionSuccess: () => getAllProducts(),
           },
@@ -240,15 +229,26 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
                 <p>Nhập sản phẩm</p>
               </button>
 
+              {/* Nút import excel sản phẩm */}
+              <button
+                onClick={() => {
+                  setOpenImportExcelModal(true);
+                  setSelectedItem(null);
+                }}
+                className="flex h-[40px] w-fit items-center rounded-lg bg-gray-500 px-3 py-1 font-bold text-white hover:opacity-80"
+              >
+                <PlusIcon className="h-[20px] w-[20px] font-bold text-white" />
+                <p>Nhập excel</p>
+              </button>
+
               {/* Nút Thùng rác */}
               <button
-                onClick={() => history.push('/trash')}  // Dùng một hàm để gọi history.push
+                onClick={() => history.push('/trash')} // Dùng một hàm để gọi history.push
                 className="flex h-[40px] w-fit items-center rounded-lg bg-red-500 px-3 py-1 font-bold text-white hover:opacity-80"
               >
                 <span className="h-[20px] w-[20px]">🗑️</span>
                 <p>Thùng rác</p>
               </button>
-
             </div>
 
             <div className="flex w-full flex-col gap-y-5 rounded-2xl bg-white shadow-xl">
@@ -326,10 +326,7 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
 
       {/* Modal Xác nhận xóa */}
       {openDeleteConfirmModal && (
-        <Dialog
-          open={openDeleteConfirmModal}
-          onClose={() => setOpenDeleteConfirmModal(false)}
-        >
+        <Dialog open={openDeleteConfirmModal} onClose={() => setOpenDeleteConfirmModal(false)}>
           <DialogTitle>Xóa sản phẩm</DialogTitle>
           <DialogContent>
             <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
@@ -348,6 +345,16 @@ const StoreProductManagement: React.FC<IStoreManagementProps> = (props) => {
             </Button>
           </DialogActions>
         </Dialog>
+      )}
+      {/* Modal Import Excel */}
+      {openImportExcelModal && (
+        <CustomDialog
+          title="Nhập Excel sản phẩm"
+          maxWidth="sm"
+          open={openImportExcelModal}
+          onClose={() => setOpenImportExcelModal(false)}
+          children={<ImportExcelProduct />}
+        />
       )}
     </>
   );

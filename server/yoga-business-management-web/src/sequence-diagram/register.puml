@@ -1,0 +1,112 @@
+@startuml RegisterWithOTPVerification
+title Đăng ký và Xác minh OTP
+
+actor Actor
+boundary registerPage
+boundary verifyPage
+control AuthenticationController
+control OTPVerificationController
+entity userService
+entity userRepository
+entity emailService
+Database Database
+
+Actor -> registerPage: Register New Account
+activate registerPage
+registerPage -> AuthenticationController
+activate AuthenticationController
+AuthenticationController -> userService: checkUserNotExist(registrationRequest)
+activate userService
+
+userService -> userRepository: checkIfExists(username, phone, email)
+activate userRepository
+
+userRepository -> Database: checkIfExists(username, phone, email)
+activate Database
+
+alt Username, Phone, or Email exists
+    Database --> userRepository: Exists
+    userRepository --> userService: Exists
+    userService --> AuthenticationController: throw AppException()
+    AuthenticationController --> registerPage: Error - Account already exists
+    deactivate AuthenticationController
+    deactivate registerPage
+else All checks passed
+    Database --> userRepository: Does not exist
+    deactivate Database
+    userRepository --> userService: true
+    deactivate userRepository
+    activate AuthenticationController
+    userService --> AuthenticationController: true
+    deactivate userService
+    AuthenticationController -> userService: registerUser(registrationRequest)
+    activate userService
+    userService -> userRepository: saveUser(user)
+    activate userRepository
+    userRepository -> Database: Save user with encoded password and default address
+    deactivate userRepository
+    userService --> AuthenticationController: RegistrationResponse
+    deactivate userService
+
+    AuthenticationController -> emailService: sendOtp(user)
+    activate emailService
+    emailService --> AuthenticationController: OTP sent successfully
+    deactivate emailService
+
+    AuthenticationController -> userRepository: saveOtp(user, otp)
+    activate userRepository
+    userRepository -> Database: Save OTP for user
+    deactivate userRepository
+
+    AuthenticationController --> registerPage: OTP sent
+    deactivate registerPage
+end
+
+deactivate AuthenticationController
+
+== OTP Verification ==
+
+Actor -> verifyPage: Enter OTP
+activate verifyPage
+verifyPage -> OTPVerificationController: verifyOTPRegister(email, otp)
+activate OTPVerificationController
+
+OTPVerificationController -> userRepository: findByEmail(email)
+activate userRepository
+
+userRepository -> Database: Retrieve user by email
+activate Database
+
+
+alt OTP matches
+    Database --> userRepository: Retrieved User
+
+    userRepository --> OTPVerificationController: Valid OTP
+    deactivate userRepository
+    OTPVerificationController -> userRepository: updateUserStatus(email)
+
+    activate userRepository
+    userRepository -> Database: Update user status to true
+    deactivate userRepository
+
+    OTPVerificationController -> cartRepository: createCartForUser(user)
+    activate cartRepository
+    cartRepository -> Database: Create new cart for user
+    deactivate cartRepository
+
+    OTPVerificationController --> verifyPage: Verification Successful
+    deactivate OTPVerificationController
+    verifyPage -> Actor: Redirect to loginHome
+    Actor -> loginHome: Access Login Home
+else OTP does not match
+    activate OTPVerificationController
+    Database --> OTPVerificationController: Invalid OTP
+
+    OTPVerificationController --> verifyPage: Error - Invalid OTP
+    deactivate OTPVerificationController
+    verifyPage -> Actor: Stay on verifyPage
+end
+
+deactivate Database
+deactivate verifyPage
+@enduml

@@ -1,9 +1,9 @@
-import axios from "axios";
-import { apiURL } from "../config/constanst";
-
+import axios from 'axios';
+import { apiURL } from '../config/constanst';
+import axiosInstance from 'utils/axiosClient';
 export const loginService = async (email: string, password: string) => {
   try {
-    const data = await axios.post(`${apiURL}/auth/signin`, {
+    const data = await axiosInstance.post(`/auth/signin`, {
       email,
       password,
     });
@@ -13,13 +13,9 @@ export const loginService = async (email: string, password: string) => {
   }
 };
 
-export const registerService = async (
-  username: string,
-  email: string,
-  password: string
-) => {
+export const registerService = async (username: string, email: string, password: string) => {
   try {
-    const data = await axios.post(`${apiURL}/auth/signup`, {
+    const data = await axiosInstance.post(`/auth/signup`, {
       username,
       email,
       password,
@@ -32,16 +28,16 @@ export const registerService = async (
 
 export const isExistedEmail = async (email: string) => {
   try {
-    const isExisted = await axios.post(
-      `${apiURL}/auth/checkemail`,
+    const isExisted = await axiosInstance.post(
+      `/auth/checkemail`,
 
       {
         email: email,
       },
       {
         withCredentials: true,
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      }
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      },
     );
     return isExisted;
   } catch (error) {

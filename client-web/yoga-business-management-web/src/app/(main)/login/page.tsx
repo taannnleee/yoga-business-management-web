@@ -12,7 +12,7 @@ import { API_URL } from "@/config/url";
 import axiosInstance from "@/utils/axiosClient";
 import axios from "axios";
 
-interface ILoginPageProps { }
+interface ILoginPageProps {}
 
 const LoginPage: React.FC<ILoginPageProps> = (props) => {
   const { control, handleSubmit } = useForm();
@@ -23,11 +23,12 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
   const handlePressLogin = async (values: any) => {
     try {
       setLoading(true);
-      const response = await axios.post(`${API_URL}/api/auth/login`, {
-        username: values.username,
-        password: values.password,
-      }
-        ,
+      const response = await axios.post(
+        `${API_URL}/api/auth/login`,
+        {
+          username: values.username,
+          password: values.password,
+        },
         {
           validateStatus: (status) => true, // Chấp nhận tất cả status code
         }
@@ -42,11 +43,18 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
         }
 
         toast.sendToast("Success", "Login successfully");
-
+        window.dispatchEvent(new Event("access-token-updated"));
         // Redirect to home page
         router.replace("/home");
       } else if (response.data.status === 1013) {
         // Tài khoản chưa được kích hoạt, gọi API để lấy email
+        toast.sendToast(
+          "Error",
+          "Tài khoản bị khoá, liên hệ quản trị viên để mở lại",
+          "error"
+        );
+        setLoading(false);
+        return;
         toast.sendToast("Error", "Tài khoản chưa được kích hoạt", "error");
 
         // Gọi API để lấy email
@@ -62,9 +70,13 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           const email = emailResponse.data.data;
 
           // Gọi API để gửi OTP đến email
-          const otpResponse = await axios.post(`${API_URL}/api/auth/send-otp`, null, {
-            params: { email },
-          });
+          const otpResponse = await axios.post(
+            `${API_URL}/api/auth/send-otp`,
+            null,
+            {
+              params: { email },
+            }
+          );
 
           if (otpResponse.data.status === 200 && otpResponse.status === 200) {
             // Nếu gửi OTP thành công, chuyển tới trang verify-account với email
@@ -113,7 +125,7 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
           <Typography
             sx={{ marginTop: "16px", fontSize: "14px", color: "GrayText" }}
           >
-            Welcome to Market Floor, a marketplace connecting retailers and
+            Welcome to The Yoga, a marketplace connecting retailers and
             customers. Here, you can find a wide variety of products from
             trusted sellers. Enjoy a seamless shopping experience with us.
           </Typography>
@@ -165,7 +177,9 @@ const LoginPage: React.FC<ILoginPageProps> = (props) => {
 
         <Box>
           <Typography sx={{ fontSize: "14px", color: "GrayText" }}>
-            {"By signing in, you agree to Market Floor's Terms of Service and Privacy Policy, as well as the Cookie Policy."}
+            {
+              "By signing in, you agree to The Yoga's Terms of Service and Privacy Policy, as well as the Cookie Policy."
+            }
           </Typography>
         </Box>
         <Divider sx={{ height: 4, width: "100%" }} />

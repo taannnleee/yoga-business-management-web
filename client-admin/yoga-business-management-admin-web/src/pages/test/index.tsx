@@ -21,7 +21,7 @@ const WebSocketDemo: React.FC = () => {
                 "/topic/admin",
                 (message) => {
                     if (message.body) {
-                        alert(message.body); // Hiển thị thông báo
+                        // alert(message.body); // Hiển thị thông báo
                     }
                 }
             );

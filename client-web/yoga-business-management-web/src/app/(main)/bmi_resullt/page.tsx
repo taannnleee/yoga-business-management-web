@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { HeartOutlined } from "@ant-design/icons";
-import Loading from "@/app/(main)/bmi_resullt/loading";
+import Loading from "./Loading";
 import { Breadcrumb, Skeleton, Tabs } from "antd";
 import { FaArrowDown } from "react-icons/fa6";
 import { useDietStore } from "@/app/(main)/bmi_resullt/diet";
@@ -189,8 +189,8 @@ const BMIResult = () => {
                     <div className="py-4">
                       <div className="flex flex-col md:flex-row gap-6 justify-around rounded-xl border-2 border-blue-100 bg-blue-50 p-6">
                         {bmiData &&
-                        bmiData.calories &&
-                        Array.isArray(bmiData.calories) ? (
+                          bmiData.calories &&
+                          Array.isArray(bmiData.calories) ? (
                           bmiData.calories.map((item, key) => (
                             <div
                               className="space-y-2 flex-1 bg-white rounded-lg shadow p-4 flex flex-col items-center"

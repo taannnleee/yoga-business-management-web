@@ -168,14 +168,6 @@ const DietPage = () => {
             </div>
             <div>
               <label className="block font-medium mb-1">Giới tính</label>
-              <RadioGroup
-                options={[
-                  { label: "Nam", value: "Male" },
-                  { label: "Nữ", value: "Female" },
-                ]}
-                value={currentSex}
-                onChange={(val: string) => setCurrentSex(val)}
-              />
             </div>
             <div>
               <label className="block font-medium mb-1">Chiều cao (cm)</label>

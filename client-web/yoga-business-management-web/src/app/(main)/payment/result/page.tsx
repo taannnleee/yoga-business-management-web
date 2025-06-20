@@ -138,7 +138,7 @@ const PaymentResult = () => {
             {/* Render different buttons based on status */}
             {status === "success" ? (
                 <Button>
-                    <a href="/status-order">Tiếp tục</a>
+                    <a href={addressId ? "/status-order" : "/course/cart"}>Tiếp tục</a>
                 </Button>
             ) : (
                 <div className="flex space-x-4">

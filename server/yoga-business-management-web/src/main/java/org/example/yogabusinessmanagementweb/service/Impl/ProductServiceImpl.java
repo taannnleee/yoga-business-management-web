@@ -173,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
                 request.setBrand("No brand"); // file không có brand, có thể gán tạm
                 request.setDescription(description);
                 request.setSubCategoryId(subCategoryId);
-                request.setImagePath("default.jpg"); // hoặc để trống
+                request.setImagePath("https://res.cloudinary.com/dfnuzzpe3/image/upload/v1750290509/vang_xnbj3p.jpg"); // hoặc để trống
 
                 addProduct(request);
             }
